@@ -1,9 +1,17 @@
 {
-  "contracts": ["contracts/**"],
+  "contracts": [
+    "contracts/**"
+  ],
   "app": {
-    "css/app.css": ["app/css/**"],
-    "js/app.js": ["app/js/index.js"],
-    "images/": ["app/images/**"],
+    "css/app.css": [
+      "app/css/**"
+    ],
+    "js/app.js": [
+      "app/js/index.js"
+    ],
+    "images/": [
+      "app/images/**"
+    ],
     "index.html": "app/index.html"
   },
   "buildDir": "dist/",
@@ -14,6 +22,7 @@
     "ipfs-api": "17.2.4"
   },
   "plugins": {
+    "embark-solium": {}
   },
   "options": {
     "solc": {
