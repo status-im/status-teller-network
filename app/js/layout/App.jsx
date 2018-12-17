@@ -1,22 +1,48 @@
 import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
+import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
-import HelloContainer from '../containers/HelloContainer';
 import PriceContainer from '../containers/PriceContainer';
+import LicenseContainer from '../containers/LicenseContainer';
+
+import prices from '../features/prices';
+
+const relevantPairs = {
+  from: ['ETH', 'SNT'],
+  to: ['USD']
+};
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.props.fetchPrices(relevantPairs);
+    this.state = { ready: false }
+  }
+
+  componentDidMount() {
+    EmbarkJS.onReady(async (err) => {
+      if (!err) {
+        this.setState({ ready: true })
+      }
+    });
+  }
+
   render() {
+    if (!this.state.ready) {
+      return <p>Connecting...</p>
+    }
+
     return (
       <HashRouter>
         <Fragment>
           <Header />
           <Container>
             <Route exact path="/" component={HomeContainer} />
-            <Route path="/hello" component={HelloContainer} />
             <Route path="/price" component={PriceContainer} />
+            <Route path="/license" component={LicenseContainer} />
           </Container>
         </Fragment>
       </HashRouter>
@@ -24,4 +50,9 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(
+  null, 
+  { 
+    fetchPrices: prices.actions.fetchPrices
+  }
+)(App)

@@ -52,10 +52,9 @@ module.exports = {
     //strategy: 'implicit',
 
     contracts: {
-      // example:
-      //SimpleStorage: {
-      //  args: [ 100 ]
-      //}
+      License: {
+       args: [ "0x0", 1 ]
+      }
     }
   },
 

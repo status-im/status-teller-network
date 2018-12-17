@@ -8,9 +8,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import App from './layout/App';
 import history from './history';
 import store from './store';
-import init from './init';
-
-init();
 
 ReactDOM.render(
   <Provider store={store}>

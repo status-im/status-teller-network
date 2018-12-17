@@ -6,13 +6,13 @@ import { all } from 'redux-saga/effects';
 import history from './history';
 import rootReducer from './reducer';
 
-import example from './features/example';
 import prices from './features/prices';
+import license from './features/license';
 
 function *root() {
   yield all([
-    ...example.saga,
-    ...prices.saga
+    ...prices.saga,
+    ...license.saga
   ]);
 }
 
