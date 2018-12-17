@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux';
-import { Card, CardImg, CardText, CardBody,
-         CardTitle, CardSubtitle, Button } from 'reactstrap';
+import { Card, CardImg, CardBody,
+         CardTitle, CardSubtitle } from 'reactstrap';
 import { getEthUsdPrice, getSntUsdPrice } from '../features/prices/reducer';
 
 

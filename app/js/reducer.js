@@ -3,13 +3,13 @@ import { connectRouter } from 'connected-react-router';
 
 import history from './history';
 
-import example from './features/example';
 import prices from './features/prices';
+import license from './features/license';
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
-  example: example.reducer,
-  prices: prices.reducer
+  prices: prices.reducer,
+  license: license.reducer
 });
 
 export default rootReducer;
