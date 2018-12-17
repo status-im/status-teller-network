@@ -14,5 +14,5 @@ function reducer(state = {}, action) {
 
 export default reducer;
 
-export const getEthUsdPrice = state => state.prices.ETH.USD
-export const getSntUsdPrice = state => state.prices.SNT.USD
+export const getEthUsdPrice = state => state.prices.ETH.USD;
+export const getSntUsdPrice = state => state.prices.SNT.USD;

@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { Container } from 'reactstrap';
-import EmbarkJS from 'Embark/EmbarkJS'; // Needed for auto reload
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
