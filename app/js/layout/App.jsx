@@ -10,14 +10,13 @@ class App extends Component {
   render() {
     return (
       <BrowserRouter>
-      <Fragment>
+        <Fragment>
           <Header />
           <Container>  
             <Route exact path="/" component={HomeContainer} />
             <Route path="/hello" component={HelloContainer} />
           </Container>
-        
-      </Fragment>
+        </Fragment>
       </BrowserRouter>
     );
   }
