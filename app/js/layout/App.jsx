@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { BrowserRouter, Route } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import { Container } from 'reactstrap';
+import EmbarkJS from 'Embark/EmbarkJS'; // Needed for auto reload
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
@@ -10,7 +11,7 @@ import PriceContainer from '../containers/PriceContainer';
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
+      <HashRouter>
         <Fragment>
           <Header />
           <Container>
@@ -19,7 +20,7 @@ class App extends Component {
             <Route path="/price" component={PriceContainer} />
           </Container>
         </Fragment>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
