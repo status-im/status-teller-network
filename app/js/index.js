@@ -1,6 +1,11 @@
-import EmbarkJS from 'Embark/EmbarkJS';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-// import your contracts
-// e.g if you have a contract named SimpleStorage:
-//import SimpleStorage from 'Embark/contracts/SimpleStorage';
+import 'bootstrap/dist/css/bootstrap.css';
+import App from './layout/App';
+
+ReactDOM.render(
+  <App />,
+  document.getElementById('root')
+); 
 
