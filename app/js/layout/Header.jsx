@@ -9,7 +9,7 @@ import {
   NavItem,
   NavLink
  } from 'reactstrap';
- 
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +35,9 @@ class Header extends Component {
           <Nav className="ml-auto" navbar>
             <NavItem>
               <NavLink tag={Link} to="/hello">Hello</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/price">Prices</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
