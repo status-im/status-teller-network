@@ -54,6 +54,9 @@ module.exports = {
     contracts: {
       License: {
        args: [ "0x0", 1 ]
+      },
+      Escrow: {
+        args: ["$License"]
       }
     }
   },
