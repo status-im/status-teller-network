@@ -13,8 +13,8 @@ contract License is Ownable {
         price = _price;
     }
 
-    function isLicenseOwners() public view returns (bool) {
-        return licenseOwners[msg.sender] != 0;
+    function isLicenseOwners(address _address) public view returns (bool) {
+        return licenseOwners[_address] != 0;
     }
 
     function buy() public payable {
