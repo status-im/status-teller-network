@@ -20,9 +20,11 @@
     "embark-solium": "0.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
+    "react-google-maps": "^9.4.5",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "reactstrap": "^6.5.0",
+    "recompose": "^0.30.0",
     "redux": "^4.0.1",
     "redux-saga": "^0.16.2"
   }

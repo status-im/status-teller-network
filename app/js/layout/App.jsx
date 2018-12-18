@@ -2,11 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
+import EmbarkJS from 'Embark/EmbarkJS'; // Needed for auto reload
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/LicenseContainer';
+import MapContainer from '../containers/MapContainer';
 
 import prices from '../features/prices';
 
@@ -43,6 +45,7 @@ class App extends Component {
             <Route exact path="/" component={HomeContainer} />
             <Route path="/price" component={PriceContainer} />
             <Route path="/license" component={LicenseContainer} />
+            <Route path="/map" component={MapContainer} />
           </Container>
         </Fragment>
       </HashRouter>

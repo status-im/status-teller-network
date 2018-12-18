@@ -39,6 +39,9 @@ class Header extends Component {
             <NavItem>
               <NavLink tag={Link} to="/license">License</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/map">Map</NavLink>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>
