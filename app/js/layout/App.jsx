@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
-import EmbarkJS from 'Embark/EmbarkJS'; // Needed for auto reload
+import EmbarkJS from 'Embark/EmbarkJS';
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
@@ -21,20 +21,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.props.fetchPrices(relevantPairs);
-    this.state = { ready: false }
+    this.state = { ready: false };
   }
 
   componentDidMount() {
     EmbarkJS.onReady(async (err) => {
       if (!err) {
-        this.setState({ ready: true })
+        this.setState({ ready: true });
       }
     });
   }
 
   render() {
     if (!this.state.ready) {
-      return <p>Connecting...</p>
+      return <p>Connecting...</p>;
     }
 
     return (
@@ -58,4 +58,4 @@ export default connect(
   { 
     fetchPrices: prices.actions.fetchPrices
   }
-)(App)
+)(App);
