@@ -42,7 +42,7 @@ contract Escrow is Pausable {
     function create(address payable _buyer, uint _expirationTime) public payable whenNotPaused {
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
         require(msg.value > 0, "ETH amount is required"); // TODO: abstract this to use ERC20. Maybe thru the use of wETH
-        require(license.isLicenseOwners(msg.sender), "Must be a valid seller to create escrow transactions");
+        require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create escrow transactions");
 
         uint escrowId = transactions.length++;
 
