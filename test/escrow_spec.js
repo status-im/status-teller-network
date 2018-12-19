@@ -9,7 +9,7 @@ let accounts;
 config({
   contracts: {
     License: {
-      args: ["0x0", 1]
+      args: ["0x0000000000000000000000000000000000000000", 1]
     },
     Escrow: {
       args: ["$License"]
