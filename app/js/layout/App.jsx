@@ -2,11 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
+import EmbarkJS from 'Embark/EmbarkJS';
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/LicenseContainer';
+import MapContainer from '../containers/MapContainer';
 
 import prices from '../features/prices';
 
@@ -19,20 +21,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.props.fetchPrices(relevantPairs);
-    this.state = { ready: false }
+    this.state = { ready: false };
   }
 
   componentDidMount() {
     EmbarkJS.onReady(async (err) => {
       if (!err) {
-        this.setState({ ready: true })
+        this.setState({ ready: true });
       }
     });
   }
 
   render() {
     if (!this.state.ready) {
-      return <p>Connecting...</p>
+      return <p>Connecting...</p>;
     }
 
     return (
@@ -43,6 +45,7 @@ class App extends Component {
             <Route exact path="/" component={HomeContainer} />
             <Route path="/price" component={PriceContainer} />
             <Route path="/license" component={LicenseContainer} />
+            <Route path="/map" component={MapContainer} />
           </Container>
         </Fragment>
       </HashRouter>
@@ -55,4 +58,4 @@ export default connect(
   { 
     fetchPrices: prices.actions.fetchPrices
   }
-)(App)
+)(App);
