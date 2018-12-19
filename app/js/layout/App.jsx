@@ -2,7 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
-import EmbarkJS from 'Embark/EmbarkJS';
+import PropTypes from 'prop-types';
+
 
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
@@ -11,6 +12,7 @@ import LicenseContainer from '../containers/LicenseContainer';
 import MapContainer from '../containers/MapContainer';
 
 import prices from '../features/prices';
+import embarkjs from '../features/embarkjs';
 
 const relevantPairs = {
   from: ['ETH', 'SNT'],
@@ -20,20 +22,12 @@ const relevantPairs = {
 class App extends Component {
   constructor(props) {
     super(props);
+    this.props.init();
     this.props.fetchPrices(relevantPairs);
-    this.state = { ready: false };
-  }
-
-  componentDidMount() {
-    EmbarkJS.onReady(async (err) => {
-      if (!err) {
-        this.setState({ ready: true });
-      }
-    });
   }
 
   render() {
-    if (!this.state.ready) {
+    if (!this.props.isReady) {
       return <p>Connecting...</p>;
     }
 
@@ -53,9 +47,22 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    isReady: embarkjs.selectors.isReady(state)
+  };
+};
+
+App.propTypes = {
+  init: PropTypes.func,
+  fetchPrices: PropTypes.func,
+  isReady: PropTypes.bool
+};
+
 export default connect(
-  null, 
+  mapStateToProps,
   { 
-    fetchPrices: prices.actions.fetchPrices
+    fetchPrices: prices.actions.fetchPrices,
+    init: embarkjs.actions.init
   }
 )(App);

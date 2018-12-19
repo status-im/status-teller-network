@@ -8,11 +8,14 @@ import rootReducer from './reducer';
 
 import prices from './features/prices';
 import license from './features/license';
+import embarkjs from './features/embarkjs';
+
 
 function *root() {
   yield all([
     ...prices.saga,
-    ...license.saga
+    ...license.saga,
+    ...embarkjs.saga
   ]);
 }
 
