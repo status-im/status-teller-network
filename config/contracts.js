@@ -49,14 +49,30 @@ module.exports = {
     //            when not specified
     // - explicit will only attempt to deploy the contracts that are explicity specified inside the
     //            contracts section.
-    //strategy: 'implicit',
+    strategy: 'implicit',
 
     contracts: {
       License: {
-       args: [ "0x0000000000000000000000000000000000000000", 1 ]
+       args: ["0x0000000000000000000000000000000000000000", 1]
       },
       Escrow: {
         args: ["$License"]
+      },
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": {
+
+      },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
       }
     }
   },
