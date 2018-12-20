@@ -3,6 +3,8 @@ pragma solidity ^0.5.0;
 import "./ownable.sol";
 import "./pausable.sol";
 import "./license.sol";
+import "./erc20token.sol";
+
 
 /**
  * @title Escrow
@@ -18,6 +20,7 @@ contract Escrow is Pausable {
         address payable seller;
         address payable buyer;
         uint amount;
+        address token;
         uint expirationTime;
         bool released;
         bool canceled;
@@ -27,33 +30,46 @@ contract Escrow is Pausable {
 
     License public license;
 
-    event Created(address indexed seller, address indexed buyer, uint amount, uint escrowId);
+    event Created(address indexed seller, address indexed buyer, uint escrowId);
     event Paid(uint escrowId);
     event Canceled(uint escrowId);
 
     /**
      * @dev Create a new escrow
      * @param _buyer The address that will perform the buy for the escrow
+     * @param _amount How much ether/tokens will be put in escrow
+     * @param _token Token address. Must be 0 for ETH
      * @param _expirationTime Unix timestamp before the transaction is considered expired
      * @notice Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
+     *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function create(address payable _buyer, uint _expirationTime) public payable whenNotPaused {
+    function create(address payable _buyer, uint _amount, address _token, uint _expirationTime) public payable whenNotPaused {
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
-        require(msg.value > 0, "ETH amount is required"); // TODO: abstract this to use ERC20. Maybe thru the use of wETH
         require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create escrow transactions");
+
+        if(_token == address(0)){
+            require(msg.value == _amount, "ETH amount is required");
+        } else {
+            require(msg.value == 0, "Cannot send ETH with token address different from 0");
+            ERC20Token token = ERC20Token(_token);
+            require(token.allowance(msg.sender, address(this)) >= _amount, "Allowance not set for this contract for specified amount");
+            require(token.transferFrom(msg.sender, address(this), _amount), "Unsuccessful token transfer");
+        }
+
 
         uint escrowId = transactions.length++;
 
         transactions[escrowId].seller = msg.sender;
         transactions[escrowId].buyer = _buyer;
-        transactions[escrowId].amount = msg.value;
+        transactions[escrowId].token = _token;
+        transactions[escrowId].amount = _amount;
         transactions[escrowId].expirationTime = _expirationTime;
         transactions[escrowId].released = false;
         transactions[escrowId].canceled = false;
 
-        emit Created(msg.sender, _buyer, msg.value, escrowId);
+        emit Created(msg.sender, _buyer, escrowId);
     }
 
 
@@ -75,7 +91,13 @@ contract Escrow is Pausable {
         require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
         
         trx.released = true;
-        trx.buyer.transfer(trx.amount); // TODO: transfer fee to Status
+
+        if(trx.token == address(0)){
+            trx.buyer.transfer(trx.amount); // TODO: transfer fee to Status
+        } else {
+            ERC20Token token = ERC20Token(trx.token);
+            require(token.transfer(trx.buyer, trx.amount));
+        }
 
         emit Paid(_escrowId);
     }
@@ -97,7 +119,13 @@ contract Escrow is Pausable {
         require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
         
         trx.canceled = true;
-        trx.seller.transfer(trx.amount);
+
+        if(trx.token == address(0)){
+            trx.seller.transfer(trx.amount);
+        } else {
+            ERC20Token token = ERC20Token(trx.token);
+            require(token.transfer(trx.seller, trx.amount));
+        }
 
         emit Canceled(_escrowId);
     }
@@ -119,8 +147,19 @@ contract Escrow is Pausable {
         require(trx.canceled == false, "Transaction already canceled");
         
         trx.canceled = true;
-        trx.seller.transfer(trx.amount);
 
+        if(trx.token == address(0)){
+            trx.seller.transfer(trx.amount);
+        } else {
+            ERC20Token token = ERC20Token(trx.token);
+            require(token.transfer(trx.seller, trx.amount));
+        }
         emit Canceled(_escrowId);
+    }
+
+    /**
+    * @dev Fallback function
+    */
+    function() external {
     }
 }
