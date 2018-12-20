@@ -1,47 +1,47 @@
+/*global assert, web3*/
 
 // This has been tested with the real Ethereum network and Testrpc.
 // Copied and edited from: https://gist.github.com/xavierlepretre/d5583222fde52ddfbc58b7cfa0d2d0a9
 exports.assertReverts = (contractMethodCall, maxGasAvailable) => {
   return new Promise((resolve, reject) => {
-      try {
-          resolve(contractMethodCall())
-      } catch (error) {
-          reject(error)
-      }
+    try {
+      resolve(contractMethodCall());
+    } catch (error) {
+      reject(error);
+    }
   })
-      .then(tx => {
-          assert.equal(tx.receipt.gasUsed, maxGasAvailable, "tx successful, the max gas available was not consumed")
-      })
-      .catch(error => {
-          if ((error + "").indexOf("invalid opcode") < 0 && (error + "").indexOf("out of gas") < 0) {
-              // Checks if the error is from TestRpc. If it is then ignore it.
-              // Otherwise relay/throw the error produced by the above assertion.
-              // Note that no error is thrown when using a real Ethereum network AND the assertion above is true.
-              throw error
-          }
-      })
-}
+    .then(tx => {
+      assert.equal(tx.receipt.gasUsed, maxGasAvailable, "tx successful, the max gas available was not consumed");
+    })
+    .catch(error => {
+      if ((String(error)).indexOf("invalid opcode") < 0 && (String(error)).indexOf("out of gas") < 0) {
+        // Checks if the error is from TestRpc. If it is then ignore it.
+        // Otherwise relay/throw the error produced by the above assertion.
+        // Note that no error is thrown when using a real Ethereum network AND the assertion above is true.
+        throw error;
+      }
+    });
+};
 
 exports.listenForEvent = event => new Promise((resolve, reject) => {
   event({}, (error, response) => {
-      if (!error) {
-          resolve(response.args)
-      } else {
-          reject(error)
-      }
-      event.stopWatching()
-  })
+    if (!error) {
+      resolve(response.args);
+    } else {
+      reject(error);
+    }
+    event.stopWatching();
+  });
 });
 
 exports.eventValues = (receipt, eventName) => {
-  if(receipt.events[eventName])
-      return receipt.events[eventName].returnValues;
-}
+  if (receipt.events[eventName]) return receipt.events[eventName].returnValues;
+};
 
 exports.addressToBytes32 = (address) => {
   const stringed = "0000000000000000000000000000000000000000000000000000000000000000" + address.slice(2);
-  return "0x" + stringed.substring(stringed.length - 64, stringed.length); 
-}
+  return "0x" + stringed.substring(stringed.length - 64, stringed.length);
+};
 
 
 // OpenZeppelin's expectThrow helper -
@@ -69,74 +69,72 @@ exports.expectThrow = async promise => {
 };
 
 
-
 exports.assertJump = (error) => {
   assert(error.message.search('revert') > -1, 'Revert should happen');
-}
-
-
-var callbackToResolve = function (resolve, reject) {
-  return function (error, value) {
-          if (error) {
-              reject(error);
-          } else {
-              resolve(value);
-          }
-      };
 };
+
+
+function callbackToResolve(resolve, reject) {
+  return function(error, value) {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(value);
+    }
+  };
+}
 
 exports.promisify = (func) =>
   (...args) => {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const callback = (err, data) => err ? reject(err) : resolve(data);
       func.apply(this, [...args, callback]);
-      });
-  }
-      
+    });
+  };
+
 
 // This has been tested with the real Ethereum network and Testrpc.
 // Copied and edited from: https://gist.github.com/xavierlepretre/d5583222fde52ddfbc58b7cfa0d2d0a9
 exports.assertReverts = (contractMethodCall, maxGasAvailable) => {
   return new Promise((resolve, reject) => {
-      try {
-          resolve(contractMethodCall())
-      } catch (error) {
-          reject(error)
-      }
+    try {
+      resolve(contractMethodCall());
+    } catch (error) {
+      reject(error);
+    }
   })
-      .then(tx => {
-          assert.equal(tx.receipt.gasUsed, maxGasAvailable, "tx successful, the max gas available was not consumed")
-      })
-      .catch(error => {
-          if ((error + "").indexOf("invalid opcode") < 0 && (error + "").indexOf("out of gas") < 0) {
-              // Checks if the error is from TestRpc. If it is then ignore it.
-              // Otherwise relay/throw the error produced by the above assertion.
-              // Note that no error is thrown when using a real Ethereum network AND the assertion above is true.
-              throw error
-          }
-      })
-}
+    .then(tx => {
+      assert.equal(tx.receipt.gasUsed, maxGasAvailable, "tx successful, the max gas available was not consumed");
+    })
+    .catch(error => {
+      if ((String(error)).indexOf("invalid opcode") < 0 && (String(error)).indexOf("out of gas") < 0) {
+        // Checks if the error is from TestRpc. If it is then ignore it.
+        // Otherwise relay/throw the error produced by the above assertion.
+        // Note that no error is thrown when using a real Ethereum network AND the assertion above is true.
+        throw error;
+      }
+    });
+};
 
 exports.listenForEvent = event => new Promise((resolve, reject) => {
   event({}, (error, response) => {
-      if (!error) {
-          resolve(response.args)
-      } else {
-          reject(error)
-      }
-      event.stopWatching()
-  })
+    if (!error) {
+      resolve(response.args);
+    } else {
+      reject(error);
+    }
+    event.stopWatching();
+  });
 });
 
 exports.eventValues = (receipt, eventName) => {
-  if(receipt.events[eventName])
-      return receipt.events[eventName].returnValues;
-}
+  if (receipt.events[eventName]) return receipt.events[eventName].returnValues;
+};
 
 exports.addressToBytes32 = (address) => {
   const stringed = "0000000000000000000000000000000000000000000000000000000000000000" + address.slice(2);
-  return "0x" + stringed.substring(stringed.length - 64, stringed.length); 
-}
+  return "0x" + stringed.substring(stringed.length - 64, stringed.length);
+};
 
 
 // OpenZeppelin's expectThrow helper -
@@ -165,26 +163,16 @@ exports.expectThrow = async promise => {
 
 exports.assertJump = (error) => {
   assert(error.message.search('revert') > -1, 'Revert should happen');
-}
-
-var callbackToResolve = function (resolve, reject) {
-  return function (error, value) {
-          if (error) {
-              reject(error);
-          } else {
-              resolve(value);
-          }
-      };
 };
 
 exports.promisify = (func) =>
   (...args) => {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const callback = (err, data) => err ? reject(err) : resolve(data);
       func.apply(this, [...args, callback]);
-      });
-  }
-  
+    });
+  };
+
 exports.zeroAddress = '0x0000000000000000000000000000000000000000';
 exports.zeroBytes32 = "0x0000000000000000000000000000000000000000000000000000000000000000";
 exports.timeUnits = {
@@ -194,7 +182,7 @@ exports.timeUnits = {
   days: 24 * 60 * 60,
   weeks: 7 * 24 * 60 * 60,
   years: 365 * 24 * 60 * 60
-}
+};
 
 exports.ensureException = function(error) {
   assert(isException(error), error.toString());
@@ -207,33 +195,37 @@ function isException(error) {
 
 exports.increaseTime = async (amount) => {
   return new Promise(function(resolve, reject) {
-    web3.currentProvider.sendAsync(
+    const sendMethod = (web3.currentProvider.sendAsync) ? web3.currentProvider.sendAsync.bind(web3.currentProvider) : web3.currentProvider.send.bind(web3.currentProvider);
+    sendMethod(
       {
         jsonrpc: '2.0',
         method: 'evm_increaseTime',
-        params: [+amount],
+        params: [Number(amount)],
         id: new Date().getSeconds()
       },
-      async (error) => {
+      (error) => {
+        console.log('Finsihed the first', error);
         if (error) {
           console.log(error);
-          return reject(err);
+          return reject(error);
         }
-        await web3.currentProvider.sendAsync(
-          {
-            jsonrpc: '2.0',
-            method: 'evm_mine',
-            params: [],
-            id: new Date().getSeconds()
-          }, (error) => {
-            if (error) {
-              console.log(error);
-              return reject(err);
-            }
-            resolve();
-          }
-        )
+        resolve();
+        // sendMethod(
+        //   {
+        //     jsonrpc: '2.0',
+        //     method: 'evm_mine',
+        //     params: [],
+        //     id: new Date().getSeconds()
+        //   }, (error) => {
+        //     console.log('Got the otehr', error);
+        //     if (error) {
+        //       console.log(error);
+        //       return reject(error);
+        //     }
+        //     resolve();
+        //   }
+        // );
       }
-    )
+    );
   });
-}
+};

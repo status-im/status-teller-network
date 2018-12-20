@@ -1,4 +1,4 @@
-// /*global contract, config, it, assert*/
+/*global contract, config, it, assert, embark, web3*/
 const TestUtils = require("../utils/testUtils");
 
 const License = embark.require('Embark/contracts/License');
@@ -19,7 +19,7 @@ config({
   accounts = web3_accounts;
 });
 
-contract("Escrow", function () {
+contract("Escrow", function() {
   const {toBN} = web3.utils;
   const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 3600;
   const value = web3.utils.toWei("0.1", "ether");
@@ -29,12 +29,12 @@ contract("Escrow", function () {
   this.timeout(0);
 
 
-  it("Non-seller must not be able to create escrows", async() => {
+  it("Non-seller must not be able to create escrows", async () => {
     try {
       await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
@@ -48,7 +48,7 @@ contract("Escrow", function () {
     const created = receipt.events.Created;
 
     assert(!!created, "Created() not triggered");
-    
+
     assert.equal(created.returnValues.seller, accounts[0], "Invalid seller");
     assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
     assert.equal(created.returnValues.amount, value, "Invalid amount");
@@ -70,27 +70,27 @@ contract("Escrow", function () {
     assert.equal(escrow.released, false, "Should not be released");
     assert.equal(escrow.canceled, false, "Should not be canceled");
   });
-  
-  
-  it("An invalid escrow cannot be released", async() => {
+
+
+  it("An invalid escrow cannot be released", async () => {
     try {
       await Escrow.methods.release(999).send({from: accounts[0]}); // Invalid escrow
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
-  
+
 
   it("Accounts different from the escrow owner cannot release an escrow", async () => {
     try {
       await Escrow.methods.release(0).send({from: accounts[1]}); // Buyer tries to release
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
-  
+
 
   it("Escrow owner can release his funds to the buyer", async () => {
     const buyerBalanceBeforeEscrow = await web3.eth.getBalance(accounts[1]);
@@ -106,18 +106,18 @@ contract("Escrow", function () {
   });
 
 
-  it("Accounts different from the escrow owner cannot cancel escrows", async() => {
+  it("Accounts different from the escrow owner cannot cancel escrows", async () => {
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
     escrowId = receipt.events.Created.returnValues.escrowId;
 
     try {
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]}); // Buyer tries to cancel
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
-   
+
 
   it("A seller can cancel their escrows", async () => {
     receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
@@ -131,17 +131,17 @@ contract("Escrow", function () {
   });
 
 
-  it("An escrow can only be canceled once", async() => {
+  it("An escrow can only be canceled once", async () => {
     try {
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
 
-  it("Released escrow cannot be released again", async() => {
+  it("Released escrow cannot be released again", async () => {
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
     escrowId = receipt.events.Created.returnValues.escrowId;
 
@@ -150,13 +150,13 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
 
-  it("Released escrow cannot be canceled", async() => {
+  it("Released escrow cannot be canceled", async () => {
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
 
     escrowId = receipt.events.Created.returnValues.escrowId;
@@ -166,13 +166,13 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
-  
-  it("Canceled escrow cannot be released", async() => {
+
+  it("Canceled escrow cannot be released", async () => {
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
 
     escrowId = receipt.events.Created.returnValues.escrowId;
@@ -182,13 +182,13 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
 
-  it("Expired escrow cannot be released", async() => {
+  it("Expired escrow cannot be released", async () => {
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
 
     escrowId = receipt.events.Created.returnValues.escrowId;
@@ -198,17 +198,17 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
   });
 
 
-  it("Paused contract allows withdrawal by owner only on active escrows", async() => {
+  it("Paused contract allows withdrawal by owner only on active escrows", async () => {
     const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
-   
+
     receipt = await Escrow.methods.create(accounts[1], expirationTime).send({from: accounts[0], value: "1"});
-    
+
     const releasedEscrowId = receipt.events.Created.returnValues.escrowId;
 
     await Escrow.methods.release(releasedEscrowId).send({from: accounts[0]});
@@ -220,8 +220,8 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
 
     receipt = await Escrow.methods.pause().send({from: accounts[0]});
@@ -233,8 +233,8 @@ contract("Escrow", function () {
     try {
       receipt = await Escrow.methods.withdraw_emergency(releasedEscrowId).send({from: accounts[0]});
       assert.fail('should have reverted before');
-    } catch(error) {
-        TestUtils.assertJump(error);
+    } catch (error) {
+      TestUtils.assertJump(error);
     }
 
     receipt = await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
