@@ -24,6 +24,7 @@ contract Escrow is Pausable {
         uint expirationTime;
         bool released;
         bool canceled;
+        uint rating;
     }
 
     EscrowTransaction[] public transactions;
@@ -33,6 +34,7 @@ contract Escrow is Pausable {
     event Created(address indexed seller, address indexed buyer, uint escrowId);
     event Paid(uint escrowId);
     event Canceled(uint escrowId);
+    event Rating(address indexed seller, address indexed buyer, uint escrowId, uint rating);
 
     /**
      * @dev Create a new escrow
@@ -72,7 +74,6 @@ contract Escrow is Pausable {
         emit Created(msg.sender, _buyer, escrowId);
     }
 
-
     /**
      * @dev Release escrow funds to buyer
      * @param _escrowId Id of the escrow
@@ -89,7 +90,7 @@ contract Escrow is Pausable {
         require(trx.canceled == false, "Transaction already canceled");
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
         require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
-        
+
         trx.released = true;
 
         if(trx.token == address(0)){
@@ -117,7 +118,7 @@ contract Escrow is Pausable {
         require(trx.released == false, "Transaction already released");
         require(trx.canceled == false, "Transaction already canceled");
         require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
-        
+
         trx.canceled = true;
 
         if(trx.token == address(0)){
@@ -130,7 +131,6 @@ contract Escrow is Pausable {
         emit Canceled(_escrowId);
     }
 
-    
     /**
      * @dev Withdraws funds to the sellers in case of emergency
      * @param _escrowId Id of the escrow
@@ -145,7 +145,7 @@ contract Escrow is Pausable {
 
         require(trx.released == false, "Transaction already released");
         require(trx.canceled == false, "Transaction already canceled");
-        
+
         trx.canceled = true;
 
         if(trx.token == address(0)){
@@ -161,5 +161,28 @@ contract Escrow is Pausable {
     * @dev Fallback function
     */
     function() external {
+    }
+
+    /**
+     * @dev Rates a transaction
+     * @param _escrowId Id of the escrow
+     * @param _rate rating of the transaction from 1 to 5
+     * @notice Requires contract to not be paused.
+     *         Can only be executed by the buyer
+     *         Transaction must released
+     */
+    function rate_transaction(uint _escrowId, uint _rate) public whenNotPaused {
+        require(_escrowId < transactions.length, "Invalid escrow id");
+        require(_rate >= 1, "Rating needs to be at least 1");
+        require(_rate <= 5, "Rating needs to be at less than or equal to 5");
+
+        EscrowTransaction storage trx = transactions[_escrowId];
+
+        require(trx.rating == 0, "Transaction already rated");
+        require(trx.released == true, "Transaction not released yet");
+        require(trx.buyer == msg.sender, "Function can only be invoked by the escrow buyer");
+
+        trx.rating  = _rate;
+        emit Rating(trx.seller, trx.buyer, _escrowId, _rate);
     }
 }

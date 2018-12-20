@@ -43,7 +43,6 @@ exports.addressToBytes32 = (address) => {
   return "0x" + stringed.substring(stringed.length - 64, stringed.length);
 };
 
-
 // OpenZeppelin's expectThrow helper -
 // Source: https://github.com/OpenZeppelin/zeppelin-solidity/blob/master/test/helpers/expectThrow.js
 exports.expectThrow = async promise => {

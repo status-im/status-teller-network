@@ -32,7 +32,6 @@ contract("Escrow", function() {
 
   this.timeout(0);
 
-
   it("Non-seller must not be able to create escrows", async () => {
     try {
       await Escrow.methods.create(accounts[1], value, TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value});
@@ -104,8 +103,7 @@ contract("Escrow", function() {
     assert.equal(escrow.amount, value, "Invalid amount");
 
   });
-  
-  
+
   it("An invalid escrow cannot be released", async() => {
     try {
       await Escrow.methods.release(999).send({from: accounts[0]}); // Invalid escrow
@@ -182,9 +180,9 @@ contract("Escrow", function() {
     const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
     receipt = await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
     receipt = await Escrow.methods.create(accounts[1], value, StandardToken.options.address, expirationTime).send({from: accounts[0]});
-    
+
     escrowTokenId = receipt.events.Created.returnValues.escrowId;
-    
+
     receipt = await Escrow.methods.cancel(escrowTokenId).send({from: accounts[0]});
 
     const balanceAfterCancelation = await StandardToken.methods.balanceOf(accounts[0]).call();
@@ -238,7 +236,7 @@ contract("Escrow", function() {
     }
   });
 
-  
+
   it("Canceled escrow cannot be released", async() => {
     receipt = await Escrow.methods.create(accounts[1], "1", TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value: "1"});
 
@@ -273,9 +271,9 @@ contract("Escrow", function() {
 
   it("Paused contract allows withdrawal by owner only on active escrows", async () => {
     const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
-   
+
     receipt = await Escrow.methods.create(accounts[1], "1", TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value: "1"});
-    
+
     const releasedEscrowId = receipt.events.Created.returnValues.escrowId;
 
     await Escrow.methods.release(releasedEscrowId).send({from: accounts[0]});
@@ -289,9 +287,9 @@ contract("Escrow", function() {
     const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
     receipt = await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
     receipt = await Escrow.methods.create(accounts[1], value, StandardToken.options.address, expirationTime).send({from: accounts[0]});
-    
+
     escrowTokenId = receipt.events.Created.returnValues.escrowId;
-    
+
 
     try {
       receipt = await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
@@ -328,4 +326,97 @@ contract("Escrow", function() {
     assert.equal(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
 
   });
+
+  describe("Rating a released Transaction", async() => {
+    let receipt, created, escrowId;
+
+    beforeEach(async() => {
+      const isPaused = await Escrow.methods.paused().call();
+      if (isPaused) {
+        receipt = await Escrow.methods.unpause().send({from: accounts[0]});
+      }
+      receipt = await Escrow.methods.create(accounts[1], value, TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      await Escrow.methods.release(escrowId).send({from: accounts[0]});
+    })
+
+    it("should not allow a score that's less than 1", async() => {
+      try {
+        await Escrow.methods.rate_transaction(escrowId, 0).send({from: accounts[1]});
+        assert.fail('should have reverted: should not allow a score last less than 1');
+      } catch(error) {
+        TestUtils.assertJump(error);
+        assert.ok(error.message.indexOf('Rating needs to be at least 1') >= 0);
+      }
+    })
+
+    it("should not allow a score to be more than 5", async() => {
+      try {
+        await Escrow.methods.rate_transaction(escrowId, 6).send({from: accounts[1]});
+        assert.fail('should have reverted: should not allow a score to be more than 5');
+      } catch(error) {
+        TestUtils.assertJump(error);
+        assert.ok(error.message.indexOf('Rating needs to be at less than or equal to 5'))
+      }
+    })
+
+    for(let i=1; i<=5; i++) {
+      it("should allow a score of " + i, async() => {
+        await Escrow.methods.rate_transaction(escrowId, i).send({from: accounts[1]});
+        const transaction = await Escrow.methods.transactions(escrowId).call();
+        assert.equal(transaction.rating, i.toString());
+      })
+    }
+
+    it("should only allow rating once", async() => {
+      await Escrow.methods.rate_transaction(escrowId, 3).send({from: accounts[1]});
+      let transaction = await Escrow.methods.transactions(escrowId).call();
+      assert.equal(transaction.rating, "3");
+
+      try {
+        await Escrow.methods.rate_transaction(escrowId, 2).send({from: accounts[1]});
+      } catch(error) {
+        TestUtils.assertJump(error);
+        assert.ok(error.message.indexOf('Transaction already rated') >= 0);
+      }
+    })
+
+    it("should only allow the buyer to rate the transaction", async() => {
+      try {
+        receipt = await Escrow.methods.rate_transaction(escrowId, 4).send({from: accounts[0]});
+        assert.fail('should have reverted: should only allow the buyer to rate the transaction');
+      } catch(error) {
+        TestUtils.assertJump(error);
+        assert.ok(error.message.indexOf('Function can only be invoked by the escrow buyer') >= 0);
+      }
+    })
+
+  })
+
+  describe("Rating an unreleased Transaction", async() => {
+    let receipt, created, escrowId;
+
+    beforeEach(async() => {
+      const isPaused = await Escrow.methods.paused().call();
+      if (isPaused) {
+        receipt = await Escrow.methods.unpause().send({from: accounts[0]});
+      }
+      receipt = await Escrow.methods.create(accounts[1], value, TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+    })
+
+    it("should not allow rating an unreleased transaction", async() => {
+      try {
+        await Escrow.methods.rate_transaction(escrowId, 4).send({from: accounts[0]});
+        assert.fail('should have reverted: should not allow a score last less than 1');
+      } catch(error) {
+        TestUtils.assertJump(error);
+        assert.ok(error.message.indexOf('Transaction not released yet') >= 0);
+      }
+    })
+
+  })
+
 });
