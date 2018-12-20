@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import "../erc20token.sol";
+import "../token/ERC20Token.sol";
 
 
 /**

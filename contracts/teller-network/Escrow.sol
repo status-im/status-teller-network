@@ -1,9 +1,9 @@
 pragma solidity ^0.5.0;
 
-import "./ownable.sol";
-import "./pausable.sol";
-import "./license.sol";
-import "./erc20token.sol";
+import "../common/Ownable.sol";
+import "../common/Pausable.sol";
+import "./License.sol";
+import "../token/ERC20Token.sol";
 
 
 /**
