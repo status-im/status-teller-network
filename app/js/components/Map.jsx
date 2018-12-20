@@ -59,18 +59,16 @@ class Map extends Component {
   render() {
     let {coords, error} = this.props;
 
-    if (error) {
-      if (error.indexOf('denied')) {
-        coords = {
-          latitude: 45.492611,
-          longitude: -73.617959
-        };
-        error = 'You denied access to your position. We do not store that information, it is only to position you the following map.';
-      } else {
-        return (<p>{error}</p>);
-      }
-
+    if (error && error.indexOf('denied')) {
+      coords = {
+        latitude: 45.492611,
+        longitude: -73.617959
+      };
+      error = 'You denied access to your position. We do not store that information, it is only to position you the following map.';
+    } else if (error) {
+      return (<p>{error}</p>);
     }
+
     if (!coords) {
       return 'Loading...';
     }
