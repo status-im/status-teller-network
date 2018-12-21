@@ -1,6 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "../common/Ownable.sol";
+import "../token/ERC20Token.sol";
 
 /**
 * @title License
@@ -9,16 +10,29 @@ import "../common/Ownable.sol";
 contract License is Ownable {
     address payable private recipient;
     uint256 private price;
+    uint256 private releaseDelay;
 
-    mapping(address => uint256) private licenseOwners;
+    ERC20Token token;
+
+    struct LicenseDetails {
+        uint price;
+        uint creationTime;
+    }
+
+    mapping(address => LicenseDetails) private licenseOwners;
 
     event Bought(address buyer, uint256 price);
     event RecipientChanged(address _recipient);
     event PriceChanged(uint256 _price);
+    event Released(address buyer);
+    event ReleaseDelayChanged(uint256 _newDelay);
 
-    constructor(address payable _recipient, uint256 _price) public {
+
+    constructor(address payable _tokenAddress, address payable _recipient, uint256 _price, uint256 _releaseDelay) public {
         recipient = _recipient;
         price = _price;
+        releaseDelay = _releaseDelay;
+        token = ERC20Token(_tokenAddress);
     }
 
     /**
@@ -27,7 +41,7 @@ contract License is Ownable {
     * @return bool
     */
     function isLicenseOwner(address _address) public view returns (bool) {
-        return licenseOwners[_address] != 0;
+        return licenseOwners[_address].price != 0 && licenseOwners[_address].creationTime > 0;
     }
 
     /**
@@ -35,13 +49,29 @@ contract License is Ownable {
     * @notice Requires value to be equal to the price of the license.
     *         The buyers must not already own a license.
     */
-    function buy() public payable {
-        require(msg.value == price, "Value is not equal to expected price");
-        require(licenseOwners[msg.sender] == 0, "License already bought");
+    function buy() public {
+        require(licenseOwners[msg.sender].creationTime == 0, "License already bought");
+        require(token.allowance(msg.sender, address(this)) >= price, "Allowance not set for this contract to expected price");
+        require(token.transferFrom(msg.sender, address(this), price), "Unsuccessful token transfer");
 
-        licenseOwners[msg.sender] = msg.value;
-        recipient.transfer(msg.value);
-        emit Bought(msg.sender, msg.value);
+        licenseOwners[msg.sender].price = price;
+        licenseOwners[msg.sender].creationTime = block.timestamp;
+
+        emit Bought(msg.sender, price);
+    }
+
+    /**
+    * @dev Release a license and retrieve funds
+    * @notice Only the owner of a license can perform the operation after the release delay time has passed.
+    */
+    function release() public { 
+        require(licenseOwners[msg.sender].creationTime > 0, "License already bought");
+        require(licenseOwners[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
+        require(token.transfer(msg.sender, licenseOwners[msg.sender].price), "Unsuccessful token transfer");
+
+        delete licenseOwners[msg.sender];
+
+        emit Released(msg.sender);
     }
 
     /**
@@ -64,7 +94,7 @@ contract License is Ownable {
 
     /**
     * @dev Get the current price of the license
-    * @return address
+    * @return uint
     */
     function getPrice() public view returns (uint256) {
         return price;
@@ -78,6 +108,24 @@ contract License is Ownable {
     function setPrice(uint256 _price) public onlyOwner {
         price = _price;
         emit PriceChanged(_price);
+    }
+
+    /**
+    * @dev Get the current release delay time in seconds
+    * @return uint
+    */
+    function getReleaseDelay() public view returns (uint256) {
+        return releaseDelay;
+    }
+
+    /**
+    * @dev Set the minimum amount of time before a license can be released
+    * @param _releaseDelay The new release delay in seconds
+    * @notice Only the owner of the contract can perform this action
+    */
+    function setReleaseDelay(uint256 _releaseDelay) public onlyOwner {
+        releaseDelay = _releaseDelay;
+        emit ReleaseDelayChanged(releaseDelay);
     }
 
     /**
