@@ -38,7 +38,9 @@ contract("License", function () {
   const {toBN} = web3.utils;
 
   before(async () => {
-    const receipt = await SNT.methods.generateTokens(accounts[0], 1000).send();
+    await SNT.methods.generateTokens(accounts[0], 1000).send();
+    await SNT.methods.generateTokens(accounts[2], 1000).send();
+
   });
 
   it("should set recipient and price on instantiation", async function () {
@@ -72,7 +74,17 @@ contract("License", function () {
     assert.strictEqual(isLicenseOwner, true);
     const contractBalance = await SNT.methods.balanceOf(License.options.address).call();
     assert.strictEqual(contractBalance, "10", "Contract balance is incorrect");
+  });
 
+  it("should buy license with approveAndCall", async () => {
+    let isLicenseOwner = await License.methods.isLicenseOwner(accounts[2]).call();
+    assert.strictEqual(isLicenseOwner, false);
+
+    const encodedCall = License.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[2]});
+
+    isLicenseOwner = await License.methods.isLicenseOwner(accounts[2]).call();
+    assert.strictEqual(isLicenseOwner, true);
   });
 
   it("should not allow to buy license when the address already owns one", async function() {

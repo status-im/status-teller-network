@@ -2,12 +2,13 @@ pragma solidity ^0.5.0;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
+import "../token/ApproveAndCallFallBack.sol";
 
 /**
 * @title License
 * @dev License contract for buying a license
 */
-contract License is Ownable {
+contract License is Ownable, ApproveAndCallFallBack {
     address payable private recipient;
     uint256 private price;
     uint256 private releaseDelay;
@@ -50,19 +51,28 @@ contract License is Ownable {
     /**
     * @dev Buy a license
     * @notice Requires value to be equal to the price of the license.
-    *         The buyers must not already own a license.
+    *         The msg.sender must not already own a license.
     */
     function buy() public {
-        require(licenseOwners[msg.sender].creationTime == 0, "License already bought");
-        require(token.allowance(msg.sender, address(this)) >= price, "Allowance not set for this contract to expected price");
-        require(token.transferFrom(msg.sender, address(this), price), "Unsuccessful token transfer");
+        buyFrom(msg.sender);
+    }
 
-        licenseOwners[msg.sender].price = price;
-        licenseOwners[msg.sender].creationTime = block.timestamp;
+    /**
+    * @dev Buy a license
+    * @notice Requires value to be equal to the price of the license.
+    *         The _owner must not already own a license.
+    */
+    function buyFrom(address _owner) private {
+        require(licenseOwners[_owner].creationTime == 0, "License already bought");
+        require(token.allowance(_owner, address(this)) >= price, "Allowance not set for this contract to expected price");
+        require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
+
+        licenseOwners[_owner].price = price;
+        licenseOwners[_owner].creationTime = block.timestamp;
 
         reserveAmount += price;
 
-        emit Bought(msg.sender, price);
+        emit Bought(_owner, price);
     }
 
     /**
@@ -142,10 +152,10 @@ contract License is Ownable {
      **/
     function withdrawExcessBalance(
         address _token,
-        address _beneficiary
+        address payable _beneficiary
     )
         external 
-        onlyController 
+        onlyOwner 
     {
         require(_beneficiary != address(0), "Cannot burn token");
         if (_token == address(0)) {
@@ -161,6 +171,58 @@ contract License is Ownable {
             }
             excessToken.transfer(_beneficiary, amount);
         }
+    }
+
+
+    /**
+     * @notice Support for "approveAndCall". Callable only by `token()`.  
+     * @param _from Who approved.
+     * @param _amount Amount being approved, need to be equal `getPrice()`.
+     * @param _token Token being approved, need to be equal `token()`.
+     * @param _data Abi encoded data with selector of `register(bytes32,address,bytes32,bytes32)`.
+     */
+    function receiveApproval(
+        address _from,
+        uint256 _amount,
+        address _token,
+        bytes memory _data
+    ) 
+        public
+    {
+        require(_amount == price, "Wrong value");
+        require(_token == address(token), "Wrong token");
+        require(_token == address(msg.sender), "Wrong call");
+        require(_data.length == 4, "Wrong data length");
+        
+        bytes4 sig = abiDecodeRegister(_data);
+
+        require(
+            sig == bytes4(0xa6f2ae3a), //bytes4(keccak256("buy()"))
+            "Wrong method selector"
+        );
+
+        buyFrom(_from);
+    }
+
+
+    /**
+     * @dev Decodes abi encoded data with selector for "buy()".
+     * @param _data Abi encoded data.
+     * @return Decoded registry call.
+     */
+    function abiDecodeRegister(
+        bytes memory _data
+    ) 
+        private 
+        pure 
+        returns(
+            bytes4 sig
+        )
+    {
+        assembly {
+            sig := mload(add(_data, add(0x20, 0)))
+        }
+    }
 
 
     /**
