@@ -27,6 +27,9 @@ contract License is Ownable {
     event Released(address buyer);
     event ReleaseDelayChanged(uint256 _newDelay);
 
+    uint256 public reserveAmount;
+
+
 
     constructor(address payable _tokenAddress, address payable _recipient, uint256 _price, uint256 _releaseDelay) public {
         recipient = _recipient;
@@ -57,6 +60,8 @@ contract License is Ownable {
         licenseOwners[msg.sender].price = price;
         licenseOwners[msg.sender].creationTime = block.timestamp;
 
+        reserveAmount += price;
+
         emit Bought(msg.sender, price);
     }
 
@@ -68,6 +73,8 @@ contract License is Ownable {
         require(licenseOwners[msg.sender].creationTime > 0, "License already bought");
         require(licenseOwners[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
         require(token.transfer(msg.sender, licenseOwners[msg.sender].price), "Unsuccessful token transfer");
+
+        reserveAmount -= licenseOwners[msg.sender].price;
 
         delete licenseOwners[msg.sender];
 
@@ -127,6 +134,34 @@ contract License is Ownable {
         releaseDelay = _releaseDelay;
         emit ReleaseDelayChanged(releaseDelay);
     }
+
+    /**
+     * @notice Withdraw not reserved tokens
+     * @param _token Address of ERC20 withdrawing excess, or address(0) if want ETH.
+     * @param _beneficiary Address to send the funds.
+     **/
+    function withdrawExcessBalance(
+        address _token,
+        address _beneficiary
+    )
+        external 
+        onlyController 
+    {
+        require(_beneficiary != address(0), "Cannot burn token");
+        if (_token == address(0)) {
+            _beneficiary.transfer(address(this).balance);
+        } else {
+            ERC20Token excessToken = ERC20Token(_token);
+            uint256 amount = excessToken.balanceOf(address(this));
+            if(_token == address(token)){
+                require(amount > reserveAmount, "Is not excess");
+                amount -= reserveAmount;
+            } else {
+                require(amount > 0, "No balance");
+            }
+            excessToken.transfer(_beneficiary, amount);
+        }
+
 
     /**
     * @dev Fallback function
