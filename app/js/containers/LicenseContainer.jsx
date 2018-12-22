@@ -6,6 +6,7 @@ import License from '../components/License';
 class LicenseContainer extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
+    this.props.checkUserRating();
   }
 
   buyLicense = () => {
@@ -13,18 +14,20 @@ class LicenseContainer extends Component {
   }
 
   render() {
-    return <License buyLicense={this.buyLicense} isLicenseOwner={this.props.isLicenseOwner} />
+    return <License buyLicense={this.buyLicense} isLicenseOwner={this.props.isLicenseOwner} userRating={this.props.userRating} />
   }
 }
 
 const mapStateToProps = state => ({
   isLicenseOwner: license.selectors.isLicenseOwner(state),
+  userRating: license.selectors.userRating(state)
 })
 
 export default connect(
-  mapStateToProps, 
-  { 
+  mapStateToProps,
+  {
     buyLicense: license.actions.buyLicense,
-    checkLicenseOwner: license.actions.checkLicenseOwner
+    checkLicenseOwner: license.actions.checkLicenseOwner,
+    checkUserRating: license.actions.checkUserRating
   }
 )(LicenseContainer)
