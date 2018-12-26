@@ -4,13 +4,30 @@ const TestUtils = require("../utils/testUtils");
 const License = embark.require('Embark/contracts/License');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
+const SNT = embark.require('Embark/contracts/SNT');
 
 let accounts;
 
 config({
   contracts: {
+    "MiniMeToken": { "deploy": false },
+    "MiniMeTokenFactory": {
+
+    },
+    "SNT": {
+      "instanceOf": "MiniMeToken",
+      "args": [
+        "$MiniMeTokenFactory",
+        "0x0000000000000000000000000000000000000000",
+        0,
+        "TestMiniMeToken",
+        18,
+        "STT",
+        true
+      ]
+    },
     License: {
-      args: [TestUtils.zeroAddress, 1]
+      args: ["$SNT", TestUtils.zeroAddress, 10, 86400 * 365]
     },
     Escrow: {
       args: ["$License"]
@@ -32,6 +49,10 @@ contract("Escrow", function() {
 
   this.timeout(0);
 
+  before(async () => {
+    await SNT.methods.generateTokens(accounts[0], 1000).send();
+  });
+
   it("Non-seller must not be able to create escrows", async () => {
     try {
       await Escrow.methods.create(accounts[1], value, TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value});
@@ -45,7 +66,9 @@ contract("Escrow", function() {
   it("Seller should be able to create escrows", async () => {
     let receipt;
 
-    receipt = await License.methods.buy().send({from: accounts[0], value: 1});
+    const encodedCall = License.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
+
     receipt = await Escrow.methods.create(accounts[1], value, TestUtils.zeroAddress, expirationTime).send({from: accounts[0], value});
 
     const created = receipt.events.Created;
