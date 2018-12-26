@@ -72,7 +72,8 @@ module.exports = {
           18,
           "STT",
           true
-        ]
+        ],
+        "onDeploy": ["SNT.methods.generateTokens('$accounts[0]', '100000000000000000000').send()"]
       }
     }
   },

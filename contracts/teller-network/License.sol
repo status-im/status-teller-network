@@ -30,12 +30,13 @@ contract License is Ownable, ApproveAndCallFallBack {
 
     uint256 public reserveAmount;
 
-
+ 
 
     constructor(address payable _tokenAddress, address payable _recipient, uint256 _price, uint256 _releaseDelay) public {
         recipient = _recipient;
         price = _price;
         releaseDelay = _releaseDelay;
+        reserveAmount = 0;
         token = ERC20Token(_tokenAddress);
     }
 
@@ -69,10 +70,8 @@ contract License is Ownable, ApproveAndCallFallBack {
 
         licenseOwners[_owner].price = price;
         licenseOwners[_owner].creationTime = block.timestamp;
-
         reserveAmount += price;
-
-        emit Bought(_owner, price);
+        emit Bought(_owner, token.allowance(_owner, address(this)));
     }
 
     /**
@@ -195,7 +194,7 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(_data.length == 4, "Wrong data length");
         
         bytes4 sig = abiDecodeRegister(_data);
-
+       
         require(
             sig == bytes4(0xa6f2ae3a), //bytes4(keccak256("buy()"))
             "Wrong method selector"
