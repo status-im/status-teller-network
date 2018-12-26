@@ -13,7 +13,9 @@ export function *doBuyLicense() {
   try {
     const price = yield call(License.methods.getPrice().call);
     const encodedCall = License.methods.buy().encodeABI();
-    const receipt = yield call(SNT.methods.approveAndCall(License.options.address, price, encodedCall).send);
+    const toSend = SNT.methods.approveAndCall(License.options.address, price, encodedCall);
+    const estimatedGas = yield call(toSend.estimateGas);
+    const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000});
     console.log(receipt);
     yield put({type: BUY_LICENSE_SUCCEEDED});
   } catch (error) {
