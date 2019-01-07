@@ -1,6 +1,8 @@
 /*global web3*/
 
 import License from 'Embark/contracts/License';
+import SNT from 'Embark/contracts/SNT';
+
 import { fork, takeEvery, call, put } from 'redux-saga/effects';
 import { 
   BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED,
@@ -10,7 +12,10 @@ import {
 export function *doBuyLicense() {
   try {
     const price = yield call(License.methods.getPrice().call);
-    yield call(License.methods.buy().send, { value: price });
+    const encodedCall = License.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(License.options.address, price, encodedCall);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000});
     yield put({type: BUY_LICENSE_SUCCEEDED});
   } catch (error) {
     yield put({type: BUY_LICENSE_FAILED, error});

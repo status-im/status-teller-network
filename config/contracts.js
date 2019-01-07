@@ -49,14 +49,30 @@ module.exports = {
     //            when not specified
     // - explicit will only attempt to deploy the contracts that are explicity specified inside the
     //            contracts section.
-    //strategy: 'implicit',
+    strategy: 'implicit',
 
     contracts: {
       License: {
-       args: [ "0x0000000000000000000000000000000000000000", 1 ]
+       args: ["$SNT", "0x0000000000000000000000000000000000000000", 10, 86400 * 365]
       },
       Escrow: {
         args: ["$License"]
+      },
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": {
+
+      },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
       }
     }
   },
@@ -68,7 +84,8 @@ module.exports = {
       "ws://localhost:8546",
       "http://localhost:8545",
       "$WEB3"  // uses pre existing web3 object if available (e.g in Mist)
-    ]
+    ],
+    "afterDeploy": ["SNT.methods.generateTokens('$accounts[0]', '100000000000000000000').send()"]
   },
 
   // merges with the settings in default
