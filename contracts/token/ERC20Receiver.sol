@@ -65,7 +65,7 @@ contract ERC20Receiver {
     )
         private 
     {
-        require(_amount > 0, "Bad argument");
+        require(_amount != 0, "Amount is required to be more than zero");
         if (_token.transferFrom(_from, address(this), _amount)) {
             tokenBalances[address(_token)][_from] += _amount;
             emit TokenDeposited(address(_token), _from, _amount);
