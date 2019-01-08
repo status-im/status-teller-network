@@ -26,7 +26,7 @@
     "bootstrap": "^4.1.3",
     "connected-react-router": "^6.0.0",
     "cryptocompare": "^0.7.0",
-    "embark": "4.0.0-alpha.2",
+    "embark": "4.0.0-alpha.3",
     "embark-solium": "0.0.1",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
