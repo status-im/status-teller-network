@@ -12,14 +12,15 @@
   "license": "ISC",
   "homepage": "",
   "devDependencies": {
-    "eslint": "5.7.0",
-    "eslint-plugin-react": "7.11.1",
-    "@storybook/react": "^4.1.4",
+    "@babel/core": "^7.2.2",
     "@storybook/addon-actions": "^4.1.4",
+    "@storybook/addon-info": "^4.1.4",
     "@storybook/addon-links": "^4.1.4",
     "@storybook/addons": "^4.1.4",
-    "@babel/core": "^7.2.2",
-    "babel-loader": "^8.0.5"
+    "@storybook/react": "^4.1.4",
+    "babel-loader": "^8.0.5",
+    "eslint": "5.7.0",
+    "eslint-plugin-react": "7.11.1"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",
