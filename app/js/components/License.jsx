@@ -1,8 +1,7 @@
 import React from 'react';
-import { 
-  Card, CardHeader, CardBody, CardTitle, Button 
+import {
+  Card, CardHeader, CardBody, CardTitle, Button
 } from 'reactstrap';
-
 
 const BuyLicense = (props) => (
   <Button onClick={props.buyLicense}>Buy License</Button>
@@ -17,6 +16,7 @@ const License = (props) => (
     </CardHeader>
     <CardBody>
       {props.isLicenseOwner ? <IsLicenseOwner/> : <BuyLicense buyLicense={props.buyLicense}/>}
+      rating: {props.userRating}
     </CardBody>
   </Card>
 );

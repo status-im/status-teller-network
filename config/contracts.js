@@ -85,6 +85,16 @@ module.exports = {
       "http://localhost:8545",
       "$WEB3"  // uses pre existing web3 object if available (e.g in Mist)
     ],
+    deployment: {
+      // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
+      accounts: [
+        {
+          mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
+          balance: "5 ether",
+          numAddresses: "10",
+        }
+      ]
+    },
     "afterDeploy": ["SNT.methods.generateTokens('$accounts[0]', '100000000000000000000').send()"]
   },
 

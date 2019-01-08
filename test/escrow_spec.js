@@ -9,6 +9,16 @@ const SNT = embark.require('Embark/contracts/SNT');
 let accounts;
 
 config({
+  deployment: {
+    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
+    accounts: [
+      {
+        mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
+        balance: "5 ether",
+        numAddresses: "10",
+      }
+    ]
+  },
   contracts: {
     "MiniMeToken": { "deploy": false },
     "MiniMeTokenFactory": {
@@ -33,7 +43,6 @@ config({
       args: ["$License"]
     },
     StandardToken: {
-
     }
   }
 }, (_err, web3_accounts) => {
@@ -438,6 +447,35 @@ contract("Escrow", function() {
         TestUtils.assertJump(error);
         assert.ok(error.message.indexOf('Transaction not released yet') >= 0);
       }
+    })
+  })
+
+  describe("Getting a user rating", async() => {
+    let receipt, created, escrowId, seller;
+
+    beforeEach(async() => {
+      seller = accounts[0];
+      for (let i = 1; i <= 5; i++) {
+        let buyer = accounts[i];
+        let rating = i;
+        const isPaused = await Escrow.methods.paused().call();
+        if (isPaused) {
+          receipt = await Escrow.methods.unpause().send({from: seller});
+        }
+        receipt = await Escrow.methods.create(buyer, value, TestUtils.zeroAddress, expirationTime).send({from: seller, value});
+        created = receipt.events.Created;
+        escrowId = created.returnValues.escrowId;
+        await Escrow.methods.release(escrowId).send({from: seller});
+        await Escrow.methods.rate_transaction(escrowId, i).send({from: buyer});
+      }
+    })
+
+    it("should calculate the user rating", async() => {
+      const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
+      const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}})
+
+      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10))
+      assert.equal(arrAvg(ratings), 3, "The seller rating is not correct")
     })
 
   })
