@@ -58,8 +58,7 @@ class Map extends Component {
 
   render() {
     let {coords, error} = this.props;
-
-    if (error && error.indexOf('denied')) {
+    if (error && error.indexOf('denied') > -1) {
       coords = {
         latitude: 45.492611,
         longitude: -73.617959

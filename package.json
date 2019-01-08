@@ -4,12 +4,21 @@
   "description": "",
   "scripts": {
     "test": "embark test",
-    "lint": "eslint app/js/"
+    "lint": "eslint app/js/",
+    "storybook": "start-storybook -p 9009",
+    "build-storybook": "build-storybook"
   },
   "author": "",
   "license": "ISC",
   "homepage": "",
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@storybook/addon-actions": "^4.1.4",
+    "@storybook/addon-info": "^4.1.4",
+    "@storybook/addon-links": "^4.1.4",
+    "@storybook/addons": "^4.1.4",
+    "@storybook/react": "^4.1.4",
+    "babel-loader": "^8.0.5",
     "eslint": "5.7.0",
     "eslint-plugin-react": "7.11.1"
   },
