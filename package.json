@@ -28,6 +28,7 @@
     "cryptocompare": "^0.7.0",
     "embark": "4.0.0-alpha.2",
     "embark-solium": "0.0.1",
+    "ethereumjs-util": "^6.0.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-google-maps": "^9.4.5",
