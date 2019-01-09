@@ -8,7 +8,7 @@ const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
 
 let accounts;
-let arbitrer;
+let arbitrator;
 let deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_revert/snapshot to reset state between tests
 
 config({
@@ -50,7 +50,7 @@ config({
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
-  arbitrer = accounts[5];
+  arbitrator = accounts[5];
 });
 
 contract("Escrow", function() {
@@ -546,9 +546,9 @@ contract("Escrow", function() {
     const ARBITRATION_SOLVED_BUYER = 1; 
     const ARBITRATION_SOLVED_SELLER = 2;
 
-    it("non arbitrers cannot resolve a case", async() => {
+    it("non arbitrators cannot resolve a case", async() => {
       try {
-        receipt = await Escrow.methods.setArbitrageResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
+        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
@@ -559,7 +559,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
 
-      receipt = await Escrow.methods.setArbitrageResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrer});
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
       const released = receipt.events.Released;
       assert(!!released, "Released() not triggered");
     });
@@ -568,7 +568,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
 
-      receipt = await Escrow.methods.setArbitrageResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrer});
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
       const released = receipt.events.Canceled;
       assert(!!released, "Canceled() not triggered");
     });
@@ -632,16 +632,16 @@ contract("Escrow", function() {
     });
 
     it("arbitrator should be valid", async () => {
-      const isArbitrer = await Escrow.methods.isArbitrer(arbitrer).call();
-      assert.equal(isArbitrer, true, "Invalid arbitrer");
+      const isArbitrator = await Escrow.methods.isArbitrator(arbitrator).call();
+      assert.equal(isArbitrator, true, "Invalid arbitrator");
 
-      const nonArbitrer = await Escrow.methods.isArbitrer(accounts[9]).call();
-      assert.equal(nonArbitrer, false, "Account should not be an arbitrator");
+      const nonArbitrator = await Escrow.methods.isArbitrator(accounts[9]).call();
+      assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
     });
 
     it("non-owner should not be able to change the arbitrator", async () => {
       try {
-        receipt = await await Escrow.methods.setArbitrer(accounts[7]).send({from: accounts[9]});
+        receipt = await await Escrow.methods.setArbitrator(accounts[7]).send({from: accounts[9]});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
@@ -651,14 +651,14 @@ contract("Escrow", function() {
     it("owner should be able to change the arbitrator", async() => {
       const newArbitrator = "0x1122334455667788990011223344556677889900";
       
-      receipt = await Escrow.methods.setArbitrer(newArbitrator).send({from: accounts[0]});
+      receipt = await Escrow.methods.setArbitrator(newArbitrator).send({from: accounts[0]});
 
-      const arbitrerChanged = receipt.events.ArbitrerChanged;
-      assert(!!arbitrerChanged, "ArbitrerChanged() not triggered");
-      assert.equal(arbitrerChanged.returnValues.arbitrer, newArbitrator, "Invalid Arbitrator");
+      const arbitratorChanged = receipt.events.ArbitratorChanged;
+      assert(!!arbitratorChanged, "ArbitratorChanged() not triggered");
+      assert.equal(arbitratorChanged.returnValues.arbitrator, newArbitrator, "Invalid Arbitrator");
 
-      const isArbitrer = await Escrow.methods.isArbitrer(newArbitrator).call();
-      assert.equal(isArbitrer, true, "New arbitrator not set correctly");
+      const isArbitrator = await Escrow.methods.isArbitrator(newArbitrator).call();
+      assert.equal(isArbitrator, true, "New arbitrator not set correctly");
     });
   });
 

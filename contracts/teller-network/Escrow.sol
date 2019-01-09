@@ -13,9 +13,9 @@ import "../token/ERC20Token.sol";
  */
 contract Escrow is Pausable, MessageSigned {
 
-    constructor(address _license, address _arbitrer) public {
+    constructor(address _license, address _arbitrator) public {
         license = License(_license);
-        arbitrer = _arbitrer;
+        arbitrator = _arbitrator;
     }
 
     struct EscrowTransaction {
@@ -34,7 +34,7 @@ contract Escrow is Pausable, MessageSigned {
 
     License public license;
 
-    address public arbitrer;
+    address public arbitrator;
 
     event Created(address indexed seller, address indexed buyer, uint escrowId, uint expirationTime);
     event Paid(uint escrowId);
@@ -47,13 +47,13 @@ contract Escrow is Pausable, MessageSigned {
     struct ArbitrationCase {
         bool open;
         address openBy;
-        address arbitrer;
+        address arbitrator;
         ArbitrationResult result;
     }
 
-    event ArbitrerChanged(address arbitrer);
+    event ArbitratorChanged(address arbitrator);
     event ArbitrationRequired(uint escrowId);
-    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrer);
+    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
 
@@ -279,28 +279,28 @@ contract Escrow is Pausable, MessageSigned {
         emit Rating(trx.seller, trx.buyer, _escrowId, _rate);
     }
 
-    modifier onlyArbitrer {
-        require(isArbitrer(msg.sender), "Only arbitrers can invoke this function");
+    modifier onlyArbitrator {
+        require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
         _;
     }
 
     /**
-     * @notice Determine if address is arbitrer
+     * @notice Determine if address is arbitrator
      * @param _addr Address to be verified
      * @return result
      */
-    function isArbitrer(address _addr) public view returns(bool){
-        return arbitrer == _addr;
+    function isArbitrator(address _addr) public view returns(bool){
+        return arbitrator == _addr;
     }
 
     /**
-     * @notice Set address as arbitrer
-     * @param _addr New arbitrer address
+     * @notice Set address as arbitrator
+     * @param _addr New arbitrator address
      * @dev Can only be called by the owner of the controller
      */
-    function setArbitrer(address _addr) public onlyOwner {
-        arbitrer = _addr;
-        emit ArbitrerChanged(_addr);
+    function setArbitrator(address _addr) public onlyOwner {
+        arbitrator = _addr;
+        emit ArbitratorChanged(_addr);
     }
 
     /**
@@ -316,7 +316,7 @@ contract Escrow is Pausable, MessageSigned {
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: msg.sender,
-            arbitrer: address(0),
+            arbitrator: address(0),
             result: ArbitrationResult.UNSOLVED
         });
 
@@ -340,7 +340,7 @@ contract Escrow is Pausable, MessageSigned {
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: msg.sender,
-            arbitrer: address(0),
+            arbitrator: address(0),
             result: ArbitrationResult.UNSOLVED
         });
 
@@ -352,13 +352,13 @@ contract Escrow is Pausable, MessageSigned {
      * @param _escrowId Id of the escrow
      * @param _result Result of the arbitration
      */
-    function setArbitrageResult(uint _escrowId, ArbitrationResult _result) public onlyArbitrer {
+    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public onlyArbitrator {
         require(arbitrationCases[_escrowId].open == true && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.buyer != arbitrer && trx.seller != arbitrer, "Arbitrer cannot be part of transaction");
+        require(trx.buyer != arbitrator && trx.seller != arbitrator, "Arbitrator cannot be part of transaction");
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;
