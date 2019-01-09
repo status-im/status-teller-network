@@ -46,6 +46,7 @@ contract Escrow is Pausable, MessageSigned {
 
     struct ArbitrationCase {
         bool open;
+        address openBy;
         address arbitrer;
         ArbitrationResult result;
     }
@@ -305,6 +306,7 @@ contract Escrow is Pausable, MessageSigned {
     /**
      * @notice Open case as a buyer or seller for arbitration
      * @param _escrowId Id of the escrow
+     * @dev Consider using Aragon Court for this.
      */
     function openCase(uint _escrowId) public {
         require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
@@ -313,6 +315,7 @@ contract Escrow is Pausable, MessageSigned {
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
+            openBy: msg.sender,
             arbitrer: address(0),
             result: ArbitrationResult.UNSOLVED
         });
@@ -324,6 +327,7 @@ contract Escrow is Pausable, MessageSigned {
      * @notice Open case as a buyer or seller for arbitration via a relay account
      * @param _escrowId Id of the escrow
      * @param _signature Signed message result of openCaseSignHash(uint256)
+     * @dev Consider opening a dispute in aragon court.
      */
     function openCase(uint _escrowId, bytes calldata _signature) external {
         require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
@@ -335,6 +339,7 @@ contract Escrow is Pausable, MessageSigned {
         
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
+            openBy: msg.sender,
             arbitrer: address(0),
             result: ArbitrationResult.UNSOLVED
         });
@@ -357,6 +362,11 @@ contract Escrow is Pausable, MessageSigned {
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;
+
+        // TODO: incentive mechanism for opening arbitration process
+        // if(arbitrationCases[_escrowId].openBy != trx.seller || arbitrationCases[_escrowId].openBy != trx.buyer){
+            // Consider deducting a fee as reward for whoever opened the arbitration process.
+        // }
 
         emit ArbitrationResolved(_escrowId, _result, msg.sender);
 
