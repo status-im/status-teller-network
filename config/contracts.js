@@ -56,7 +56,7 @@ module.exports = {
        args: ["$SNT", "0x0000000000000000000000000000000000000000", 10, 86400 * 365]
       },
       Escrow: {
-        args: ["$License"]
+        args: ["$License", "$accounts[0]"]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
