@@ -630,6 +630,36 @@ contract("Escrow", function() {
       assert.equal(contractBalanceAfterCancelation, contractBalanceBeforeCancelation, "Invalid contract balance");
       assert.equal(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
     });
+
+    it("arbitrator should be valid", async () => {
+      const isArbitrer = await Escrow.methods.isArbitrer(arbitrer).call();
+      assert.equal(isArbitrer, true, "Invalid arbitrer");
+
+      const nonArbitrer = await Escrow.methods.isArbitrer(accounts[9]).call();
+      assert.equal(nonArbitrer, false, "Account should not be an arbitrator");
+    });
+
+    it("non-owner should not be able to change the arbitrator", async () => {
+      try {
+        receipt = await await Escrow.methods.setArbitrer(accounts[7]).send({from: accounts[9]});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        TestUtils.assertJump(error);
+      }
+    });
+
+    it("owner should be able to change the arbitrator", async() => {
+      const newArbitrator = "0x1122334455667788990011223344556677889900";
+      
+      receipt = await Escrow.methods.setArbitrer(newArbitrator).send({from: accounts[0]});
+
+      const arbitrerChanged = receipt.events.ArbitrerChanged;
+      assert(!!arbitrerChanged, "ArbitrerChanged() not triggered");
+      assert.equal(arbitrerChanged.returnValues.arbitrer, newArbitrator, "Invalid Arbitrator");
+
+      const isArbitrer = await Escrow.methods.isArbitrer(newArbitrator).call();
+      assert.equal(isArbitrer, true, "New arbitrator not set correctly");
+    });
   });
 
 });
