@@ -69,7 +69,7 @@ exports.expectThrow = async promise => {
 
 
 exports.assertJump = (error) => {
-  assert(error.message.search('revert') > -1, 'Revert should happen');
+  assert(error.message.search('VM Exception while processing transaction: revert') > -1, 'Revert should happen');
 };
 
 
@@ -111,39 +111,37 @@ function isException(error) {
   return strError.includes('invalid opcode') || strError.includes('invalid JUMP') || strError.includes('revert');
 }
 
-exports.increaseTime = async (amount) => {
+const evmMethod = (method, params = []) => {
   return new Promise(function(resolve, reject) {
     const sendMethod = (web3.currentProvider.sendAsync) ? web3.currentProvider.sendAsync.bind(web3.currentProvider) : web3.currentProvider.send.bind(web3.currentProvider);
     sendMethod(
       {
         jsonrpc: '2.0',
-        method: 'evm_increaseTime',
-        params: [Number(amount)],
+        method,
+        params,
         id: new Date().getSeconds()
       },
-      (error) => {
-        console.log('Finsihed the first', error);
+      (error, res) => {
         if (error) {
-          console.log(error);
           return reject(error);
         }
-        resolve();
-        // sendMethod(
-        //   {
-        //     jsonrpc: '2.0',
-        //     method: 'evm_mine',
-        //     params: [],
-        //     id: new Date().getSeconds()
-        //   }, (error) => {
-        //     console.log('Got the otehr', error);
-        //     if (error) {
-        //       console.log(error);
-        //       return reject(error);
-        //     }
-        //     resolve();
-        //   }
-        // );
+        resolve(res.result);
       }
     );
   });
+};
+
+exports.evmSnapshot = async () => {
+  const result = await evmMethod("evm_snapshot");
+  return web3.utils.hexToNumber(result);
+};
+
+exports.evmRevert = (id) => {
+  const params = [id];
+  return evmMethod("evm_revert", params);
+};
+
+exports.increaseTime = async (amount) => {
+  await evmMethod("evm_increaseTime", [Number(amount)]);
+  await evmMethod("evm_mine");
 };
