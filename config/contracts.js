@@ -89,6 +89,9 @@ module.exports = {
       // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
       accounts: [
         {
+          nodeAccounts: true,
+        },
+        {
           mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
           balance: "5 ether",
           numAddresses: "10",
