@@ -12,6 +12,8 @@ contract License is Ownable, ApproveAndCallFallBack {
     address payable private recipient;
     uint256 private price;
     uint256 private releaseDelay;
+    string private constant LICENSE_ALREADY_BOUGHT = "License already bought";
+    string private constant UNSUCCESSFUL_TOKEN_TRANSFER = "Unsuccessful token transfer";
 
     ERC20Token token;
 
@@ -21,7 +23,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     }
 
     mapping(address => LicenseDetails) private licenseDetails;
-    
+
     address[] public licenseOwners;
     mapping(address => uint) private idxLicenseOwners;
 
@@ -65,9 +67,9 @@ contract License is Ownable, ApproveAndCallFallBack {
     *         The _owner must not already own a license.
     */
     function buyFrom(address _owner) private {
-        require(licenseDetails[_owner].creationTime == 0, "License already bought");
+        require(licenseDetails[_owner].creationTime == 0, LICENSE_ALREADY_BOUGHT);
         require(token.allowance(_owner, address(this)) >= price, "Allowance not set for this contract to expected price");
-        require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
+        require(token.transferFrom(_owner, address(this), price), UNSUCCESSFUL_TOKEN_TRANSFER);
 
         licenseDetails[_owner].price = price;
         licenseDetails[_owner].creationTime = block.timestamp;
@@ -83,13 +85,12 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @dev Release a license and retrieve funds
     * @notice Only the owner of a license can perform the operation after the release delay time has passed.
     */
-    function release() public { 
-        require(licenseDetails[msg.sender].creationTime > 0, "License already bought");
+    function release() public {
+        require(licenseDetails[msg.sender].creationTime > 0, LICENSE_ALREADY_BOUGHT);
         require(licenseDetails[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
-        require(token.transfer(msg.sender, licenseDetails[msg.sender].price), "Unsuccessful token transfer");
+        require(token.transfer(msg.sender, licenseDetails[msg.sender].price), UNSUCCESSFUL_TOKEN_TRANSFER);
 
         reserveAmount -= licenseDetails[msg.sender].price;
-
 
         uint256 position = idxLicenseOwners[msg.sender];
         delete idxLicenseOwners[msg.sender];
@@ -107,7 +108,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @dev Get the recipient of the license
     * @return address
     */
-    function getRecipient() public view returns (address) { 
+    function getRecipient() public view returns (address) {
         return recipient;
     }
 
@@ -189,7 +190,7 @@ contract License is Ownable, ApproveAndCallFallBack {
 
 
     /**
-     * @notice Support for "approveAndCall". Callable only by `token()`.  
+     * @notice Support for "approveAndCall". Callable only by `token()`.
      * @param _from Who approved.
      * @param _amount Amount being approved, need to be equal `getPrice()`.
      * @param _token Token being approved, need to be equal `token()`.
@@ -200,9 +201,9 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(_token == address(token), "Wrong token");
         require(_token == address(msg.sender), "Wrong call");
         require(_data.length == 4, "Wrong data length");
-        
+
         bytes4 sig = abiDecodeRegister(_data);
-       
+
         require(
             sig == bytes4(0xa6f2ae3a), //bytes4(keccak256("buy()"))
             "Wrong method selector"

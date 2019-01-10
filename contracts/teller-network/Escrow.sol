@@ -12,6 +12,10 @@ import "../token/ERC20Token.sol";
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
 contract Escrow is Pausable, MessageSigned {
+    string private constant TRANSACTION_ALREADY_RELEASED = "Transaction already released";
+    string private constant TRANSACTION_ALREADY_CANCELED = "Transaction already canceled";
+    string private constant INVALID_ESCROW_ID = "Invalid escrow id";
+    string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
     constructor(address _license, address _arbitrator) public {
         license = License(_license);
@@ -104,13 +108,13 @@ contract Escrow is Pausable, MessageSigned {
      *      Transaction must not be expired, or previously canceled or released
      */
     function release(uint _escrowId) public {
-        require(_escrowId < transactions.length, "Invalid escrow id");
+        require(_escrowId < transactions.length, INVALID_ESCROW_ID);
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
-        require(trx.released == false, "Transaction already released");
-        require(trx.canceled == false, "Transaction already canceled");
+        require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
+        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
+        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
 
         _release(_escrowId, trx);
     }
@@ -138,7 +142,7 @@ contract Escrow is Pausable, MessageSigned {
      * @param _escrowId Id of the escrow
      * @param _sender Address marking the transaction as paid
      */
-    function _pay(address _sender, uint _escrowId) private { 
+    function _pay(address _sender, uint _escrowId) private {
         require(_escrowId < transactions.length, "Invalid escrow id");
 
         EscrowTransaction storage trx = transactions[_escrowId];
@@ -171,8 +175,8 @@ contract Escrow is Pausable, MessageSigned {
     function paySignHash(uint _escrowId) public view returns(bytes32){
         return keccak256(
             abi.encodePacked(
-                address(this), 
-                "pay(uint256)", 
+                address(this),
+                "pay(uint256)",
                 _escrowId
             )
         );
@@ -182,9 +186,9 @@ contract Escrow is Pausable, MessageSigned {
      * @notice Mark transaction as paid (via signed message)
      * @param _escrowId Id of the escrow
      * @param _signature Signature of the paySignHash result.
-     * @dev There's a high probability of buyers not having ether to pay for the transaction. 
+     * @dev There's a high probability of buyers not having ether to pay for the transaction.
      *      This allows anyone to relay the transaction.
-     *      TODO: consider deducting funds later on release to pay the relayer (?) 
+     *      TODO: consider deducting funds later on release to pay the relayer (?)
      */
     function pay(uint _escrowId, bytes calldata _signature) external {
         address sender = recoverAddress(getSignHash(paySignHash(_escrowId)), _signature);
@@ -199,17 +203,17 @@ contract Escrow is Pausable, MessageSigned {
      *         Transaction must be expired, or previously canceled or released
      */
     function cancel(uint _escrowId) public whenNotPaused {
-        require(_escrowId < transactions.length, "Invalid escrow id");
+        require(_escrowId < transactions.length, INVALID_ESCROW_ID);
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.released == false, "Transaction already released");
-        require(trx.canceled == false, "Transaction already canceled");
-        require(trx.seller == msg.sender, "Function can only be invoked by the escrow owner");
+        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
+        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
+        require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
         require(trx.expirationTime < block.timestamp, "Transaction has not expired");
         require(trx.paid == false, "Cannot cancel an already paid transaction. Open a case");
 
-        _cancel(_escrowId, trx);        
+        _cancel(_escrowId, trx);
     }
 
     /**
@@ -238,12 +242,12 @@ contract Escrow is Pausable, MessageSigned {
      *         Transaction must not be canceled or released
      */
     function withdraw_emergency(uint _escrowId) public whenPaused {
-        require(_escrowId < transactions.length, "Invalid escrow id");
+        require(_escrowId < transactions.length, INVALID_ESCROW_ID);
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.released == false, "Transaction already released");
-        require(trx.canceled == false, "Transaction already canceled");
+        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
+        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
         require(trx.paid == false, "Cannot withdraw an already paid transaction. Open a case");
 
         _cancel(_escrowId, trx);
@@ -264,7 +268,7 @@ contract Escrow is Pausable, MessageSigned {
      *         Transaction must released
      */
     function rateTransaction(uint _escrowId, uint _rate) public whenNotPaused {
-        require(_escrowId < transactions.length, "Invalid escrow id");
+        require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Can't rate a transaction that has an arbitration process");
@@ -336,7 +340,7 @@ contract Escrow is Pausable, MessageSigned {
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
 
         require(transactions[_escrowId].buyer == senderAddress || transactions[_escrowId].seller == senderAddress, "Only a buyer or seller can open a case");
-        
+
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: msg.sender,
@@ -373,7 +377,7 @@ contract Escrow is Pausable, MessageSigned {
         if(_result == ArbitrationResult.BUYER){
             _release(_escrowId, trx);
         } else {
-            _cancel(_escrowId, trx);        
+            _cancel(_escrowId, trx);
         }
     }
 
@@ -386,8 +390,8 @@ contract Escrow is Pausable, MessageSigned {
     function openCaseSignHash(uint _escrowId) public view returns(bytes32){
         return keccak256(
             abi.encodePacked(
-                address(this), 
-                "openCase(uint256)", 
+                address(this),
+                "openCase(uint256)",
                 _escrowId
             )
         );
