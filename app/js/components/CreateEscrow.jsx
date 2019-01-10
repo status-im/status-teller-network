@@ -22,7 +22,8 @@ class CreateEscrowForm extends Component {
     super(props);
     this.state = {
       value: '',
-      expiration: new Date()
+      expiration: new Date(),
+      buyer: ''
     };
   }
 
@@ -35,13 +36,17 @@ class CreateEscrowForm extends Component {
   }
 
   submit = () => {
-    this.props.create(this.state.value, this.state.expiration.getTime());
+    this.props.create(this.state.buyer, this.state.value, this.state.expiration.getTime());
   };
 
   render() {
-    // dateString = dateString.substring(0, dateString.length - 2); // Remove noisy last char
     return <Form>
       <h2>Create an Escrow</h2>
+      <FormGroup>
+        <Label for="buyer">Value</Label>
+        <Input type="text" name="buyer" id="buyer" placeholder="Address of the buyer"
+               onChange={(e) => this.onChange(e, 'buyer')} value={this.state.buyer}/>
+      </FormGroup>
       <FormGroup>
         <Label for="escrowValue">Value</Label>
         <Input type="number" name="escrowValue" id="escrowValue" placeholder="Value your are selling"

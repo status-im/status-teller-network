@@ -9,13 +9,15 @@ import rootReducer from './reducer';
 import prices from './features/prices';
 import license from './features/license';
 import embarkjs from './features/embarkjs';
+import escrow from './features/escrow';
 
 
 function *root() {
   yield all([
     ...prices.saga,
     ...license.saga,
-    ...embarkjs.saga
+    ...embarkjs.saga,
+    ...escrow.saga
   ]);
 }
 

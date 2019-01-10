@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import license from '../features/license';
+import escrow from '../features/escrow';
 import License from '../components/License';
 import PropTypes from 'prop-types';
 
@@ -18,8 +19,9 @@ class LicenseContainer extends Component {
     console.log('ok', rating);
   };
 
-  createEscrow = (value, expiration) => {
+  createEscrow = (buyer, value, expiration) => {
     console.log(value, expiration);
+    this.props.createEscrow(buyer, value, expiration);
   };
 
   render() {
@@ -33,6 +35,7 @@ LicenseContainer.propTypes = {
   checkLicenseOwner: PropTypes.func,
   checkUserRating: PropTypes.func,
   buyLicense: PropTypes.func,
+  createEscrow: PropTypes.func,
   error: PropTypes.string,
   userRating: PropTypes.number,
   isLicenseOwner: PropTypes.bool
@@ -48,6 +51,7 @@ export default connect(
   mapStateToProps,
   {
     buyLicense: license.actions.buyLicense,
+    createEscrow: escrow.actions.createEscrow,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     checkUserRating: license.actions.checkUserRating
   }

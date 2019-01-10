@@ -8,7 +8,8 @@ import {
   ADD_USER_RATING,
   BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED,
   CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
-  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED
+  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS, GET_LICENSE_OWNERS_SUCCCEDED,
+  GET_LICENSE_OWNERS_FAILED
 } from './constants';
 
 export function *doBuyLicense() {
@@ -43,10 +44,28 @@ export function *onCheckLicenseOwner() {
   yield takeEvery(CHECK_LICENSE_OWNER, doCheckLicenseOwner);
 }
 
-export async function *checkUserRating() {
+export function *doGetLicenseOwners() {
+  try {
+    // TODO get more information like position and rate
+    const events = yield License.getPastEvents('Bought', {fromBlock: 1});
+    const licenseOwners = events.map(event => {
+      return {address: event.returnValues.buyer};
+    });
+    yield put({type: GET_LICENSE_OWNERS_SUCCCEDED, licenseOwners});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_LICENSE_OWNERS_FAILED, error});
+  }
+}
+
+export function *onGetLicenseOwners() {
+  yield takeEvery(GET_LICENSE_OWNERS, doGetLicenseOwners);
+}
+
+export function *checkUserRating() {
   try {
     const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-    const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
+    const events = yield Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
     const ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
     const averageRating = arrAvg(ratings);
 
@@ -73,4 +92,4 @@ export function *onAddUserRating() {
   yield takeEvery(ADD_USER_RATING, addRating);
 }
 
-export default [fork(onBuyLicense), fork(onCheckLicenseOwner), fork(onUserRating), fork(onAddUserRating)];
+export default [fork(onBuyLicense), fork(onCheckLicenseOwner), fork(onUserRating), fork(onAddUserRating), fork(onGetLicenseOwners)];
