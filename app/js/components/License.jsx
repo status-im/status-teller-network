@@ -1,6 +1,5 @@
 import React from 'react';
 import {Card, CardHeader, CardBody, CardTitle, Button, Alert, ButtonGroup} from 'reactstrap';
-import CreateEscrowForm from "./CreateEscrow";
 import PropTypes from 'prop-types';
 
 const BuyLicense = (props) => (
@@ -20,19 +19,15 @@ const Buttons = ({rate}) => {
   return buttons;
 };
 
-//Escrow.methods.create(buyer, value, TestUtils.zeroAddress, expirationTime).send({from: seller, value});
-// const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 3600;
 const License = (props) => (
-  <Card>
+  <Card className="mt-2">
     <CardHeader>
       <CardTitle>License</CardTitle>
     </CardHeader>
     <CardBody>
       {props.error && <Alert color="danger">{this.props.error}</Alert>}
       {props.isLicenseOwner ? <IsLicenseOwner/> : <BuyLicense buyLicense={props.buyLicense}/>}
-      <p>Rating: {props.userRating}</p>
-
-      <CreateEscrowForm create={props.createEscrow}/>
+      <p>Rating: {props.userRating ? props.userRating : '-'}</p>
 
       <form>
         <label className="mr-3">Rate the transaction:</label>
@@ -49,7 +44,6 @@ License.propTypes = {
   isLicenseOwner: PropTypes.bool,
   userRating: PropTypes.number,
   rate: PropTypes.func,
-  createEscrow: PropTypes.func,
   buyLicense: PropTypes.func
 };
 

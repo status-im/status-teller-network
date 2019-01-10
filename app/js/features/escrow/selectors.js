@@ -1,3 +1,2 @@
-export const isLicenseOwner = state => state.license.licenseOwner;
-export const userRating = state => state.license.userRating;
-export const error = state => state.license.error;
+export const result = state => state.escrow.result;
+export const error = state => state.escrow.error;

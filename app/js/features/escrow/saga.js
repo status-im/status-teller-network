@@ -6,17 +6,17 @@ import {CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED} from './co
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
-export async function *createEscrow({expiration, value, buyer}) {
+export function *createEscrow({expiration, value, buyer}) {
   try {
     // TODO do we want to change the token or always ETH?
-    const toSend = Escrow.methods.create(buyer, value, zeroAddress, expiration);
-    const estimatedGas = yield call(toSend.estimateGas);
+    expiration /= 1000; // Solidity is in seconds, while this is milliseconds
+    const toSend = Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration);
+    const estimatedGas = yield call(toSend.estimateGas, {value});
     const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
-    console.log(receipt);
-    yield put({type: CREATE_ESCROW_SUCCEEDED});
+    yield put({type: CREATE_ESCROW_SUCCEEDED, result: receipt});
   } catch (error) {
     console.error(error);
-    yield put({type: CREATE_ESCROW_FAILED, error});
+    yield put({type: CREATE_ESCROW_FAILED, error: error.message});
   }
 }
 

@@ -36,7 +36,7 @@ export function *doCheckLicenseOwner() {
     yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner});
   } catch (error) {
     console.error(error);
-    yield put({type: CHECK_LICENSE_OWNER_FAILED, error});
+    yield put({type: CHECK_LICENSE_OWNER_FAILED, error: error.message});
   }
 }
 
@@ -54,7 +54,7 @@ export function *doGetLicenseOwners() {
     yield put({type: GET_LICENSE_OWNERS_SUCCCEDED, licenseOwners});
   } catch (error) {
     console.error(error);
-    yield put({type: GET_LICENSE_OWNERS_FAILED, error});
+    yield put({type: GET_LICENSE_OWNERS_FAILED, error: error.message});
   }
 }
 
@@ -72,7 +72,7 @@ export function *checkUserRating() {
     yield put({type: USER_RATING_SUCCEEDED, userRating: averageRating});
   } catch (error) {
     console.error(error);
-    yield put({type: USER_RATING_FAILED, error});
+    yield put({type: USER_RATING_FAILED, error: error.message});
   }
 }
 export function *onUserRating() {
@@ -84,7 +84,7 @@ export async function *addRating() {
     //rate_transaction(uint _escrowId, uint _rate)
   } catch (error) {
     console.error(error);
-    yield put({type: USER_RATING_FAILED, error});
+    yield put({type: USER_RATING_FAILED, error: error.message});
   }
 }
 
