@@ -1,5 +1,5 @@
 import React, {Fragment} from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Button} from 'reactstrap';
+import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const escrowStates = {
@@ -41,6 +41,8 @@ const EscrowList = (props) => (<Card className="mt-2">
       <CardTitle>Escrow List</CardTitle>
     </CardHeader>
     <CardBody>
+      {props.error &&
+      <Alert color="danger">Error: {props.error}</Alert>}
       {props.escrows && props.escrows.length && <Table>
         <thead>
         <tr>
@@ -66,7 +68,7 @@ const EscrowList = (props) => (<Card className="mt-2">
                 <Button color="success" size="sm" className="mb-1" block onClick={() => props.releaseEscrow(escrow.escrowId)}>
                   Release
                 </Button>
-                <Button color="warning" size="sm" block>Cancel</Button>
+                <Button color="warning" size="sm" block onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>
               </Fragment>}
             </td>
           </tr>)}
@@ -78,7 +80,9 @@ const EscrowList = (props) => (<Card className="mt-2">
 
 EscrowList.propTypes = {
   escrows: PropTypes.array,
-  releaseEscrow: PropTypes.func
+  releaseEscrow: PropTypes.func,
+  cancelEscrow: PropTypes.func,
+  error: PropTypes.string
 };
 
 export default EscrowList;
