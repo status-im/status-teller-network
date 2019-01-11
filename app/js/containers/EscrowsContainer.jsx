@@ -35,7 +35,7 @@ class EscrowsContainer extends Component {
       {isLicenseOwner &&
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
 
-      <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow} errorGet={this.props.errorGet}/>
+      <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
                   cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}/>
     </Fragment>;
   }
