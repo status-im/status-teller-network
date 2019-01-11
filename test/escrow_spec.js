@@ -471,7 +471,7 @@ contract("Escrow", function() {
         created = receipt.events.Created;
         escrowId = created.returnValues.escrowId;
         await Escrow.methods.release(escrowId).send({from: seller});
-        await Escrow.methods.rateTransaction(escrowId, i).send({from: buyer});
+        await Escrow.methods.rateTransaction(escrowId, rating).send({from: buyer});
       }
     });
 
