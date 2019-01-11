@@ -6,7 +6,8 @@ import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
   RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED,
-  CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED
+  CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
+  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -61,6 +62,22 @@ export function *onCancelEscrow() {
   yield takeEvery(CANCEL_ESCROW, cancelEscrow);
 }
 
+export function *rateTx({escrowId, rating}) {
+  try {
+    const toSend = Escrow.methods.rateTransaction(escrowId, rating);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
+  } catch (error) {
+    console.error(error);
+    yield put({type: RATE_TRANSACTION_FAILED, error: error.message});
+  }
+}
+
+export function *onRateTx() {
+  yield takeEvery(RATE_TRANSACTION, rateTx);
+}
+
 export function *doGetEscrows() {
   try {
     const eventsSeller = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
@@ -88,4 +105,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx)];
