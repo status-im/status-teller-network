@@ -3,7 +3,8 @@ import Escrow from 'Embark/contracts/Escrow';
 
 import { fork, takeEvery, call, put } from 'redux-saga/effects';
 import {CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED,
-  GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED} from './constants';
+  GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
+  RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED} from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
@@ -25,6 +26,21 @@ export function *onCreateEscrow() {
   yield takeEvery(CREATE_ESCROW, createEscrow);
 }
 
+export function *releaseEscrow({escrowId}) {
+  try {
+    const toSend = Escrow.methods.release(escrowId);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: RELEASE_ESCROW_FAILED, error: error.message});
+  }
+}
+
+export function *onReleaseEscrow() {
+  yield takeEvery(RELEASE_ESCROW, releaseEscrow);
+}
 
 export function *doGetEscows() {
   try {
@@ -51,4 +67,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow)];

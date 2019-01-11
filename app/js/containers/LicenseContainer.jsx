@@ -34,7 +34,7 @@ class LicenseContainer extends Component {
 
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>
 
-      <EscrowList escrows={this.props.escrows}/>
+      <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow} errorGet={this.props.errorGet}/>
     </Fragment>;
   }
 }
@@ -44,8 +44,10 @@ LicenseContainer.propTypes = {
   checkUserRating: PropTypes.func,
   buyLicense: PropTypes.func,
   createEscrow: PropTypes.func,
+  releaseEscrow: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
+  errorGet: PropTypes.string,
   error: PropTypes.string,
   userRating: PropTypes.number,
   isLicenseOwner: PropTypes.bool,
@@ -59,6 +61,7 @@ const mapStateToProps = state => ({
   error: license.selectors.error(state),
   escrowError: escrow.selectors.error(state),
   escrowReceipt: escrow.selectors.receipt(state),
+  errorGet: escrow.selectors.result(state),
   escrows: escrow.selectors.escrows(state)
 });
 
@@ -68,6 +71,7 @@ export default connect(
     buyLicense: license.actions.buyLicense,
     createEscrow: escrow.actions.createEscrow,
     getEscrows: escrow.actions.getEscrows,
+    releaseEscrow: escrow.actions.releaseEscrow,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     checkUserRating: license.actions.checkUserRating
   }

@@ -1,9 +1,7 @@
-import {CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED} from './constants';
+import {CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED,
+RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED} from './constants';
 
-const DEFAULT_STATE = {
-  licenseOwner: false,
-  userRating: 0
-};
+const DEFAULT_STATE = {};
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
@@ -20,6 +18,17 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_ESCROWS_SUCCEEDED:
       return {...state, ...{
           escrows: action.escrows
+        }};
+    case RELEASE_ESCROW_FAILED:
+    case GET_ESCROWS_FAILED:
+      return {...state, ...{
+          errorGet: action.error
+        }};
+    case RELEASE_ESCROW_SUCCEEDED:
+      const escrows = state.escrows;
+      escrows[action.escrowId].released = true;
+      return {...state, ...{
+          escrows: escrows
         }};
     default:
       return state;

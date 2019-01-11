@@ -32,7 +32,7 @@ function getEscrowStateText(escrow) {
       return <p className="text-danger">Expired</p>;
     case escrowStates.waiting:
     default:
-      return <p className="text-success">Released</p>;
+      return <p className="text-primary">Waiting</p>;
   }
 }
 
@@ -63,7 +63,9 @@ const EscrowList = (props) => (<Card className="mt-2">
             <td>
               {getEscrowState(escrow) === escrowStates.waiting &&
               <Fragment>
-                <Button color="success" size="sm" className="mb-1" block>Release</Button>
+                <Button color="success" size="sm" className="mb-1" block onClick={() => props.releaseEscrow(escrow.escrowId)}>
+                  Release
+                </Button>
                 <Button color="warning" size="sm" block>Cancel</Button>
               </Fragment>}
             </td>
@@ -75,7 +77,8 @@ const EscrowList = (props) => (<Card className="mt-2">
 );
 
 EscrowList.propTypes = {
-  escrows: PropTypes.array
+  escrows: PropTypes.array,
+  releaseEscrow: PropTypes.func
 };
 
 export default EscrowList;
