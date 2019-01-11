@@ -31,6 +31,7 @@ class EscrowsContainer extends Component {
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
+                  openCase={this.props.openCase} payEscrow={this.props.payEscrow}
                   cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
                   rateTransaction={this.props.rateTransaction}/>
     </Fragment>;
@@ -43,6 +44,8 @@ EscrowsContainer.propTypes = {
   buyLicense: PropTypes.func,
   createEscrow: PropTypes.func,
   releaseEscrow: PropTypes.func,
+  payEscrow: PropTypes.func,
+  openCase: PropTypes.func,
   cancelEscrow: PropTypes.func,
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
@@ -73,6 +76,8 @@ export default connect(
     buyLicense: license.actions.buyLicense,
     createEscrow: escrow.actions.createEscrow,
     getEscrows: escrow.actions.getEscrows,
+    payEscrow: escrow.actions.payEscrow,
+    openCase: escrow.actions.openCase,
     releaseEscrow: escrow.actions.releaseEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
     rateTransaction: escrow.actions.rateTransaction,
