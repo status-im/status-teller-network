@@ -10,11 +10,11 @@ function reducer(state = DEFAULT_STATE, action) {
     case CREATE_ESCROW_FAILED:
       return {...state, ...{
           error: action.error,
-          result: null
+          receipt: null
         }};
     case CREATE_ESCROW_SUCCEEDED:
       return {...state, ...{
-          result: action.result,
+          receipt: action.receipt,
           error: ''
         }};
     default:

@@ -13,7 +13,7 @@ export function *createEscrow({expiration, value, buyer}) {
     const toSend = Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration);
     const estimatedGas = yield call(toSend.estimateGas, {value});
     const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
-    yield put({type: CREATE_ESCROW_SUCCEEDED, result: receipt});
+    yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
   } catch (error) {
     console.error(error);
     yield put({type: CREATE_ESCROW_FAILED, error: error.message});

@@ -21,9 +21,7 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.licenseOwners || !this.props.licenseOwners.length) {
-      this.props.getLicenseOwners();
-    }
+    this.props.getLicenseOwners();
   }
 
   render() {
