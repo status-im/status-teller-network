@@ -7,15 +7,6 @@ import cloneDeep from 'clone-deep';
 
 import EscrowList from '../app/js/components/EscrowList';
 
-// EscrowList.propTypes = {
-//   escrows: PropTypes.array,
-//   releaseEscrow: PropTypes.func,
-//   cancelEscrow: PropTypes.func,
-//   rateTransaction: PropTypes.func,
-//   loading: PropTypes.bool,
-//   error: PropTypes.string
-// };
-
 global.web3 = {
   eth: {
     defaultAccount: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d'
