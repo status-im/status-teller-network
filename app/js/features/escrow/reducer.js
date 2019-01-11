@@ -1,5 +1,5 @@
 import {
-  CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED,
+  CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED, GET_ESCROWS,
   RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED
 } from './constants';
 
@@ -18,15 +18,21 @@ function reducer(state = DEFAULT_STATE, action) {
           receipt: action.receipt,
           error: ''
         }};
+    case GET_ESCROWS:
+      return {...state, ...{
+        loading: true
+      }};
     case GET_ESCROWS_SUCCEEDED:
       return {...state, ...{
-          escrows: action.escrows
+          escrows: action.escrows,
+          loading: false
         }};
     case RELEASE_ESCROW_FAILED:
     case CANCEL_ESCROW_FAILED:
     case GET_ESCROWS_FAILED:
       return {...state, ...{
-          errorGet: action.error
+          errorGet: action.error,
+          loading: false
         }};
     case RELEASE_ESCROW_SUCCEEDED:
       escrows[action.escrowId].released = true;

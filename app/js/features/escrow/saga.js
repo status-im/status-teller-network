@@ -63,7 +63,9 @@ export function *onCancelEscrow() {
 
 export function *doGetEscrows() {
   try {
-    const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
+    const eventsSeller = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
+    const eventsBuyer = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {buyer: web3.eth.defaultAccount}});
+    const events = eventsSeller.concat(eventsBuyer);
     const escrowIds = events.map(event => {
       return event.returnValues.escrowId;
     });

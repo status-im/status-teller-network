@@ -1,3 +1,4 @@
+/*global web3*/
 import React, {Fragment} from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -41,9 +42,11 @@ const EscrowList = (props) => (<Card className="mt-2">
       <CardTitle>Escrow List</CardTitle>
     </CardHeader>
     <CardBody>
+      {props.loading && <p>Loading...</p>}
       {props.error &&
       <Alert color="danger">Error: {props.error}</Alert>}
-      {props.escrows && props.escrows.length && <Table>
+      {(!props.escrows || props.escrows.length === 0) && !props.loading && <p>No Escrows</p>}
+      {props.escrows && props.escrows.length > 0 && <Table>
         <thead>
         <tr>
           <th>#</th>
@@ -63,7 +66,7 @@ const EscrowList = (props) => (<Card className="mt-2">
             <td>{escrow.amount}</td>
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
             <td>
-              {getEscrowState(escrow) === escrowStates.waiting &&
+              {getEscrowState(escrow) === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
               <Fragment>
                 <Button color="success" size="sm" className="mb-1" block onClick={() => props.releaseEscrow(escrow.escrowId)}>
                   Release
@@ -82,6 +85,7 @@ EscrowList.propTypes = {
   escrows: PropTypes.array,
   releaseEscrow: PropTypes.func,
   cancelEscrow: PropTypes.func,
+  loading: PropTypes.bool,
   error: PropTypes.string
 };
 

@@ -37,7 +37,7 @@ class Header extends Component {
               <NavLink tag={Link} to="/price">Prices</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to="/license">License</NavLink>
+              <NavLink tag={Link} to="/escrows">My Escrows</NavLink>
             </NavItem>
             <NavItem>
               <NavLink tag={Link} to="/map">Map</NavLink>

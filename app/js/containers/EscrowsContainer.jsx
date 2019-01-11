@@ -7,7 +7,7 @@ import CreateEscrowForm from '../components/CreateEscrow';
 import PropTypes from 'prop-types';
 import EscrowList from "../components/EscrowList";
 
-class LicenseContainer extends Component {
+class EscrowsContainer extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
     this.props.checkUserRating();
@@ -32,15 +32,16 @@ class LicenseContainer extends Component {
       <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating}
                error={error} rate={this.rateTransaction}/>
 
-      <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>
+      {isLicenseOwner &&
+      <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
-                  cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet}/>
+                  cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}/>
     </Fragment>;
   }
 }
 
-LicenseContainer.propTypes = {
+EscrowsContainer.propTypes = {
   checkLicenseOwner: PropTypes.func,
   checkUserRating: PropTypes.func,
   buyLicense: PropTypes.func,
@@ -49,6 +50,7 @@ LicenseContainer.propTypes = {
   cancelEscrow: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
+  escrowsLoading: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
   userRating: PropTypes.number,
@@ -64,6 +66,7 @@ const mapStateToProps = state => ({
   escrowError: escrow.selectors.error(state),
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
+  escrowsLoading: escrow.selectors.loading(state),
   escrows: escrow.selectors.escrows(state)
 });
 
@@ -78,4 +81,4 @@ export default connect(
     checkLicenseOwner: license.actions.checkLicenseOwner,
     checkUserRating: license.actions.checkUserRating
   }
-)(LicenseContainer);
+)(EscrowsContainer);
