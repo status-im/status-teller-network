@@ -1,5 +1,8 @@
 export const escrowStates = {
-  released: 'released',
+  released: 'released', 
+  paid: 'paid',
+  arbitration_open: 'arbitration_open',
+  arbitration_closed: 'arbitration_closed',
   canceled: 'canceled',
   expired: 'expired',
   waiting: 'waiting'
@@ -8,6 +11,15 @@ export const escrowStates = {
 export function getEscrowState(escrow) {
   if (escrow.released) {
     return escrowStates.released;
+  }
+  if (escrow.paid) {
+    if(escrow.arbitration && escrow.arbitration.open){
+      if(escrow.arbitration.result !== "0"){
+        return escrowStates.arbitration_closed;
+      }
+      return escrowStates.arbitration_open;
+    }
+    return escrowStates.paid;
   }
   if (escrow.canceled) {
     return escrowStates.canceled;
