@@ -1,6 +1,7 @@
 import {
-  BUY_LICENSE_SUCCEEDED,
-  CHECK_LICENSE_OWNER_SUCCEEDED,
+  BUY_LICENSE_FAILED,
+  BUY_LICENSE_SUCCEEDED, CHECK_LICENSE_OWNER_FAILED,
+  CHECK_LICENSE_OWNER_SUCCEEDED, USER_RATING_FAILED,
   USER_RATING_SUCCEEDED
 } from './constants';
 
@@ -22,6 +23,12 @@ function reducer(state = DEFAULT_STATE, action) {
     case USER_RATING_SUCCEEDED:
       return {...state, ...{
         userRating: action.userRating
+      }};
+    case BUY_LICENSE_FAILED:
+    case CHECK_LICENSE_OWNER_FAILED:
+    case USER_RATING_FAILED:
+      return {...state, ...{
+        error: action.error
       }};
     default:
       return state;
