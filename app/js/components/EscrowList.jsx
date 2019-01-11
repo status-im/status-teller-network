@@ -33,7 +33,7 @@ const EscrowList = (props) => (<Card className="mt-2">
         <tr>
           <th>#</th>
           <th>State</th>
-          <th>Buyer</th>
+          <th>{props.escrows[0].buyer === web3.eth.defaultAccount ? 'Seller' : 'Buyer'}</th>
           <th>Value</th>
           <th>Expiration</th>
           <th>Actions</th>
@@ -44,7 +44,7 @@ const EscrowList = (props) => (<Card className="mt-2">
           <tr key={escrow.escrowId}>
             <th scope="row">{escrow.escrowId}</th>
             <td>{getEscrowStateText(escrow)}</td>
-            <td>{escrow.buyer}</td>
+            <td>{escrow.buyer === web3.eth.defaultAccount ? escrow.seller : escrow.buyer}</td>
             <td>{escrow.amount}</td>
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
             <td>
