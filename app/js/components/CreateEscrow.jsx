@@ -1,21 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
-
-function pad(number) {
-  if (number < 10) {
-    return '0' + number;
-  }
-  return number;
-}
-
-function toInputDate(date) {
-  return date.getUTCFullYear() +
-    '-' + pad(date.getUTCMonth() + 1) +
-    '-' + pad(date.getUTCDate()) +
-    'T' + pad(date.getUTCHours()) +
-    ':' + pad(date.getUTCMinutes());
-}
+import {toInputDate} from '../utils';
 
 class CreateEscrowForm extends Component {
   constructor(props) {
