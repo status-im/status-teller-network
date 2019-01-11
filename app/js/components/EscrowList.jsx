@@ -1,8 +1,9 @@
 /*global web3*/
 import React from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
+import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert } from 'reactstrap';
 import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
+import Rating from "./Rating";
 
 function getEscrowStateText(escrow) {
   switch (getEscrowState(escrow)) {
