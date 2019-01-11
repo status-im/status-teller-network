@@ -1,8 +1,13 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import { fork, takeEvery, call, put } from 'redux-saga/effects';
-import {CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED} from './constants';
+import {fork, takeEvery, call, put} from 'redux-saga/effects';
+import {
+  CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED,
+  GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
+  RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED,
+  CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED
+} from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
@@ -24,4 +29,63 @@ export function *onCreateEscrow() {
   yield takeEvery(CREATE_ESCROW, createEscrow);
 }
 
-export default [fork(onCreateEscrow)];
+export function *releaseEscrow({escrowId}) {
+  try {
+    const toSend = Escrow.methods.release(escrowId);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: RELEASE_ESCROW_FAILED, error: error.message});
+  }
+}
+
+export function *onReleaseEscrow() {
+  yield takeEvery(RELEASE_ESCROW, releaseEscrow);
+}
+
+export function *cancelEscrow({escrowId}) {
+  try {
+    const toSend = Escrow.methods.cancel(escrowId);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: CANCEL_ESCROW_SUCCEEDED, escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: CANCEL_ESCROW_FAILED, error: error.message});
+  }
+}
+
+export function *onCancelEscrow() {
+  yield takeEvery(CANCEL_ESCROW, cancelEscrow);
+}
+
+export function *doGetEscrows() {
+  try {
+    const eventsSeller = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
+    const eventsBuyer = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {buyer: web3.eth.defaultAccount}});
+    const events = eventsSeller.concat(eventsBuyer);
+    const escrowIds = events.map(event => {
+      return event.returnValues.escrowId;
+    });
+
+    const escrows = [];
+    for (let i = 0; i < escrowIds.length; i++) {
+      const escrow = yield call(Escrow.methods.transactions(parseInt(escrowIds[i], 10)).call);
+      escrow.escrowId = escrowIds[i];
+      escrows.push(escrow);
+    }
+
+    yield put({type: GET_ESCROWS_SUCCEEDED, escrows});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_ESCROWS_FAILED, error: error.message});
+  }
+}
+
+export function *onGetLicenseOwners() {
+  yield takeEvery(GET_ESCROWS, doGetEscrows);
+}
+
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow)];

@@ -1,11 +1,12 @@
-import {CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED} from './constants';
+import {
+  CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED, GET_ESCROWS,
+  RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED
+} from './constants';
 
-const DEFAULT_STATE = {
-  licenseOwner: false,
-  userRating: 0
-};
+const DEFAULT_STATE = {};
 
 function reducer(state = DEFAULT_STATE, action) {
+  let escrows  = state.escrows;
   switch (action.type) {
     case CREATE_ESCROW_FAILED:
       return {...state, ...{
@@ -16,6 +17,34 @@ function reducer(state = DEFAULT_STATE, action) {
       return {...state, ...{
           receipt: action.receipt,
           error: ''
+        }};
+    case GET_ESCROWS:
+      return {...state, ...{
+        loading: true
+      }};
+    case GET_ESCROWS_SUCCEEDED:
+      return {...state, ...{
+          escrows: action.escrows,
+          loading: false
+        }};
+    case RELEASE_ESCROW_FAILED:
+    case CANCEL_ESCROW_FAILED:
+    case GET_ESCROWS_FAILED:
+      return {...state, ...{
+          errorGet: action.error,
+          loading: false
+        }};
+    case RELEASE_ESCROW_SUCCEEDED:
+      escrows[action.escrowId].released = true;
+      return {...state, ...{
+          escrows: escrows,
+          errorGet: ''
+        }};
+    case CANCEL_ESCROW_SUCCEEDED:
+      escrows[action.escrowId].canceled = true;
+      return {...state, ...{
+          escrows: escrows,
+          errorGet: ''
         }};
     default:
       return state;
