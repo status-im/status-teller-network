@@ -57,7 +57,7 @@ const EscrowList = (props) => (<Card className="mt-2">
               <Button color="warning" size="sm" block
                       onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>}
               {getEscrowState(escrow) !== escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount &&
-              <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
+              <Rating rating={escrow.rating} rateTransaction={props.rateTransaction}
                       escrowId={escrow.escrowId}/>}
             </td>
           </tr>)}

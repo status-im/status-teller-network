@@ -11,7 +11,7 @@ import {
   RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
 
-const DEFAULT_STATE = {};
+const DEFAULT_STATE = {escrows: []};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows  = state.escrows;
