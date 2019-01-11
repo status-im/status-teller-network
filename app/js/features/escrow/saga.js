@@ -64,7 +64,7 @@ export function *onCancelEscrow() {
 
 export function *rateTx({escrowId, rating}) {
   try {
-    const toSend = Escrow.methods.rate_transaction(escrowId, rating);
+    const toSend = Escrow.methods.rateTransaction(escrowId, rating);
     const estimatedGas = yield call(toSend.estimateGas);
     yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
