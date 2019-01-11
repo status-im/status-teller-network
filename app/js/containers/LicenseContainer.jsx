@@ -5,11 +5,13 @@ import escrow from '../features/escrow';
 import License from '../components/License';
 import CreateEscrowForm from '../components/CreateEscrow';
 import PropTypes from 'prop-types';
+import EscrowList from "../components/EscrowList";
 
 class LicenseContainer extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
     this.props.checkUserRating();
+    this.props.getEscrows();
   }
 
   buyLicense = () => {
@@ -31,6 +33,8 @@ class LicenseContainer extends Component {
                error={error} rate={this.rateTransaction}/>
 
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>
+
+      <EscrowList escrows={this.props.escrows}/>
     </Fragment>;
   }
 }
@@ -40,6 +44,8 @@ LicenseContainer.propTypes = {
   checkUserRating: PropTypes.func,
   buyLicense: PropTypes.func,
   createEscrow: PropTypes.func,
+  getEscrows: PropTypes.func,
+  escrows: PropTypes.array,
   error: PropTypes.string,
   userRating: PropTypes.number,
   isLicenseOwner: PropTypes.bool,
@@ -52,7 +58,8 @@ const mapStateToProps = state => ({
   userRating: license.selectors.userRating(state),
   error: license.selectors.error(state),
   escrowError: escrow.selectors.error(state),
-  escrowReceipt: escrow.selectors.receipt(state)
+  escrowReceipt: escrow.selectors.receipt(state),
+  escrows: escrow.selectors.escrows(state)
 });
 
 export default connect(
@@ -60,6 +67,7 @@ export default connect(
   {
     buyLicense: license.actions.buyLicense,
     createEscrow: escrow.actions.createEscrow,
+    getEscrows: escrow.actions.getEscrows,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     checkUserRating: license.actions.checkUserRating
   }

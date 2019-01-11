@@ -1,4 +1,4 @@
-import {CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED} from './constants';
+import {CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED} from './constants';
 
 const DEFAULT_STATE = {
   licenseOwner: false,
@@ -16,6 +16,10 @@ function reducer(state = DEFAULT_STATE, action) {
       return {...state, ...{
           receipt: action.receipt,
           error: ''
+        }};
+    case GET_ESCROWS_SUCCEEDED:
+      return {...state, ...{
+          escrows: action.escrows
         }};
     default:
       return state;
