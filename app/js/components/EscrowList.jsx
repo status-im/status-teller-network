@@ -67,12 +67,14 @@ const EscrowList = (props) => (<Card className="mt-2">
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
             <td>
               {getEscrowState(escrow) === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
-              <Fragment>
-                <Button color="success" size="sm" className="mb-1" block onClick={() => props.releaseEscrow(escrow.escrowId)}>
-                  Release
-                </Button>
-                <Button color="warning" size="sm" block onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>
-              </Fragment>}
+              <Button color="success" size="sm" className="mb-1" block
+                      onClick={() => props.releaseEscrow(escrow.escrowId)}>
+                Release
+              </Button>}
+              {getEscrowState(escrow) === escrowStates.expired && escrow.seller === web3.eth.defaultAccount &&
+              <Button color="warning" size="sm" block
+                      onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>
+              }
             </td>
           </tr>)}
         </tbody>
