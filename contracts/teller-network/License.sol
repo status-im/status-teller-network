@@ -20,7 +20,10 @@ contract License is Ownable, ApproveAndCallFallBack {
         uint creationTime;
     }
 
-    mapping(address => LicenseDetails) private licenseOwners;
+    mapping(address => LicenseDetails) private licenseDetails;
+    
+    address[] public licenseOwners;
+    mapping(address => uint) private idxLicenseOwners;
 
     event Bought(address buyer, uint256 price);
     event RecipientChanged(address _recipient);
@@ -44,7 +47,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @return bool
     */
     function isLicenseOwner(address _address) public view returns (bool) {
-        return licenseOwners[_address].price != 0 && licenseOwners[_address].creationTime > 0;
+        return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime > 0;
     }
 
     /**
@@ -62,13 +65,17 @@ contract License is Ownable, ApproveAndCallFallBack {
     *         The _owner must not already own a license.
     */
     function buyFrom(address _owner) private {
-        require(licenseOwners[_owner].creationTime == 0, "License already bought");
+        require(licenseDetails[_owner].creationTime == 0, "License already bought");
         require(token.allowance(_owner, address(this)) >= price, "Allowance not set for this contract to expected price");
         require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
 
-        licenseOwners[_owner].price = price;
-        licenseOwners[_owner].creationTime = block.timestamp;
+        licenseDetails[_owner].price = price;
+        licenseDetails[_owner].creationTime = block.timestamp;
         reserveAmount += price;
+
+        uint idx = licenseOwners.push(msg.sender);
+        idxLicenseOwners[msg.sender] = idx;
+
         emit Bought(_owner, token.allowance(_owner, address(this)));
     }
 
@@ -77,13 +84,21 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @notice Only the owner of a license can perform the operation after the release delay time has passed.
     */
     function release() public { 
-        require(licenseOwners[msg.sender].creationTime > 0, "License already bought");
-        require(licenseOwners[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
-        require(token.transfer(msg.sender, licenseOwners[msg.sender].price), "Unsuccessful token transfer");
+        require(licenseDetails[msg.sender].creationTime > 0, "License already bought");
+        require(licenseDetails[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
+        require(token.transfer(msg.sender, licenseDetails[msg.sender].price), "Unsuccessful token transfer");
 
-        reserveAmount -= licenseOwners[msg.sender].price;
+        reserveAmount -= licenseDetails[msg.sender].price;
 
-        delete licenseOwners[msg.sender];
+
+        uint256 position = idxLicenseOwners[msg.sender];
+        delete idxLicenseOwners[msg.sender];
+        address replacer = licenseOwners[licenseOwners.length - 1];
+        licenseOwners[position] = replacer;
+        idxLicenseOwners[replacer] = position;
+        licenseOwners.length--;
+
+        delete licenseDetails[msg.sender];
 
         emit Released(msg.sender);
     }
@@ -130,6 +145,14 @@ contract License is Ownable, ApproveAndCallFallBack {
     */
     function getReleaseDelay() public view returns (uint256) {
         return releaseDelay;
+    }
+
+    /**
+     * @dev Get number of license owners
+     * @return uint
+     */
+    function getNumLicenseOwners() public view returns (uint256) {
+        return licenseOwners.length;
     }
 
     /**

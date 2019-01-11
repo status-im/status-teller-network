@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import license from '../features/license';
 import escrow from '../features/escrow';
 import License from '../components/License';
-import CreateEscrowForm from '../components/CreateEscrow';
+import CreateEscrowForm from '../components/CreateEscrowForm';
 import PropTypes from 'prop-types';
 import EscrowList from "../components/EscrowList";
 
@@ -18,10 +18,6 @@ class EscrowsContainer extends Component {
     this.props.buyLicense();
   };
 
-  rateTransaction = (rating) => {
-    console.log('ok', rating);
-  };
-
   createEscrow = (buyer, value, expiration) => {
     this.props.createEscrow(buyer, value, expiration);
   };
@@ -29,14 +25,14 @@ class EscrowsContainer extends Component {
   render() {
     const {error, userRating, isLicenseOwner} = this.props;
     return <Fragment>
-      <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating}
-               error={error} rate={this.rateTransaction}/>
+      <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating} error={error}/>
 
       {isLicenseOwner &&
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
-                  cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}/>
+                  cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
+                  rateTransaction={this.props.rateTransaction}/>
     </Fragment>;
   }
 }
@@ -48,6 +44,7 @@ EscrowsContainer.propTypes = {
   createEscrow: PropTypes.func,
   releaseEscrow: PropTypes.func,
   cancelEscrow: PropTypes.func,
+  rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
   escrowsLoading: PropTypes.bool,
@@ -78,6 +75,7 @@ export default connect(
     getEscrows: escrow.actions.getEscrows,
     releaseEscrow: escrow.actions.releaseEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
+    rateTransaction: escrow.actions.rateTransaction,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     checkUserRating: license.actions.checkUserRating
   }
