@@ -432,6 +432,8 @@ contract("Escrow", function() {
 
 
   describe("Rating an unreleased Transaction", async() => {
+    let receipt, created, escrowId;
+
     beforeEach(async() => {
       const isPaused = await Escrow.methods.paused().call();
       if (isPaused) {
