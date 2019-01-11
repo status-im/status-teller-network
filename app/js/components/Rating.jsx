@@ -22,6 +22,10 @@ class Rating extends Component {
     this.setState({rating: e.target.value});
   }
 
+  submit() {
+    this.props.rateTransaction(this.props.escrowId, this.state.rating);
+  }
+
   render() {
     const disabled = this.props.rating !== 0;
     return (<FormGroup>
@@ -30,13 +34,15 @@ class Rating extends Component {
              onChange={(e) => this.onChange(e)} value={this.props.rating || this.state.rating}>
         <Options/>
       </Input>
-      {!disabled && <Button color="secondary">Rate</Button>}
+      {!disabled && <Button color="secondary" onClick={() => this.submit()}>Rate</Button>}
     </FormGroup>);
   }
 }
 
 Rating.propTypes = {
-  rating: PropTypes.number
+  escrowId: PropTypes.string,
+  rating: PropTypes.number,
+  rateTransaction: PropTypes.func
 };
 
 export default Rating;

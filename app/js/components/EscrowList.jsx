@@ -1,6 +1,6 @@
 /*global web3*/
 import React from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert } from 'reactstrap';
+import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
 import Rating from "./Rating";
@@ -55,8 +55,10 @@ const EscrowList = (props) => (<Card className="mt-2">
               </Button>}
               {getEscrowState(escrow) === escrowStates.expired && escrow.seller === web3.eth.defaultAccount &&
               <Button color="warning" size="sm" block
-                      onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>
-              }
+                      onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>}
+              {getEscrowState(escrow) !== escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount &&
+              <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
+                      escrowId={escrow.escrowId}/>}
             </td>
           </tr>)}
         </tbody>
@@ -69,6 +71,7 @@ EscrowList.propTypes = {
   escrows: PropTypes.array,
   releaseEscrow: PropTypes.func,
   cancelEscrow: PropTypes.func,
+  rateTransaction: PropTypes.func,
   loading: PropTypes.bool,
   error: PropTypes.string
 };

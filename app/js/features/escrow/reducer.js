@@ -1,6 +1,14 @@
 import {
-  CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED, GET_ESCROWS,
-  RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED
+  CREATE_ESCROW_FAILED,
+  CREATE_ESCROW_SUCCEEDED,
+  GET_ESCROWS_SUCCEEDED,
+  GET_ESCROWS_FAILED,
+  GET_ESCROWS,
+  RELEASE_ESCROW_SUCCEEDED,
+  RELEASE_ESCROW_FAILED,
+  CANCEL_ESCROW_FAILED,
+  CANCEL_ESCROW_SUCCEEDED,
+  RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
 
 const DEFAULT_STATE = {};
@@ -30,6 +38,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case RELEASE_ESCROW_FAILED:
     case CANCEL_ESCROW_FAILED:
     case GET_ESCROWS_FAILED:
+    case RATE_TRANSACTION_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
@@ -42,6 +51,12 @@ function reducer(state = DEFAULT_STATE, action) {
         }};
     case CANCEL_ESCROW_SUCCEEDED:
       escrows[action.escrowId].canceled = true;
+      return {...state, ...{
+          escrows: escrows,
+          errorGet: ''
+        }};
+    case RATE_TRANSACTION_SUCCEEDED:
+      escrows[action.escrowId].rating = action.rating;
       return {...state, ...{
           escrows: escrows,
           errorGet: ''

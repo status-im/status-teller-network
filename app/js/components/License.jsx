@@ -28,7 +28,6 @@ License.propTypes = {
   error: PropTypes.string,
   isLicenseOwner: PropTypes.bool,
   userRating: PropTypes.number,
-  rate: PropTypes.func,
   buyLicense: PropTypes.func
 };
 
