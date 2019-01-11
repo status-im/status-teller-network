@@ -10,10 +10,16 @@ function getEscrowStateText(escrow, t) {
   switch (getEscrowState(escrow)) {
     case escrowStates.released:
       return <p className="text-success">{t('escrowList.state.released')}</p>;
+    case escrowStates.paid:
+      return <p className="text-primary">Paid</p>;
     case escrowStates.canceled:
       return <p className="text-warning">{t('escrowList.state.canceled')}</p>;
     case escrowStates.expired:
       return <p className="text-danger">{t('escrowList.state.expired')}</p>;
+    case escrowStates.arbitration_open:
+      return <p className="text-danger">In arbitration</p>;
+    case escrowStates.arbitration_closed:
+      return <p className="text-warning">Arbitration completed</p>;
     case escrowStates.waiting:
     default:
       return <p className="text-primary">{t('escrowList.state.waiting')}</p>;
@@ -59,10 +65,13 @@ const EscrowList = (props) => (
               {getEscrowState(escrow) === escrowStates.expired && escrow.seller === web3.eth.defaultAccount &&
               <Button color="warning" size="sm" block
                       onClick={() => props.cancelEscrow(escrow.escrowId)}>{props.t('escrowList.actions.cancel')}</Button>}
-
-              {getEscrowState(escrow) !== escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount &&
-              <Rating rating={escrow.rating} rateTransaction={props.rateTransaction}
-                      escrowId={escrow.escrowId}/>}
+              {getEscrowState(escrow) === escrowStates.released && !escrow.arbitration && escrow.buyer === web3.eth.defaultAccount &&
+              <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
+                        escrowId={escrow.escrowId}/>}
+              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  &&
+              <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>}
+              {getEscrowState(escrow) === escrowStates.paid && 
+              <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>}
             </td>
           </tr>)}
         </tbody>
@@ -75,6 +84,8 @@ EscrowList.propTypes = {
   t: PropTypes.func,
   escrows: PropTypes.array,
   releaseEscrow: PropTypes.func,
+  payEscrow: PropTypes.func,
+  openCase: PropTypes.func,
   cancelEscrow: PropTypes.func,
   rateTransaction: PropTypes.func,
   loading: PropTypes.bool,

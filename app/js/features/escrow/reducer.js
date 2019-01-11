@@ -8,7 +8,12 @@ import {
   RELEASE_ESCROW_FAILED,
   CANCEL_ESCROW_FAILED,
   CANCEL_ESCROW_SUCCEEDED,
-  RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
+  RATE_TRANSACTION_FAILED,
+  RATE_TRANSACTION_SUCCEEDED,
+  PAY_ESCROW_SUCCEEDED,
+  PAY_ESCROW_FAILED,
+  OPEN_CASE_FAILED,
+  OPEN_CASE_SUCCEEDED
 } from './constants';
 import cloneDeep from 'clone-deep';
 
@@ -56,6 +61,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case CANCEL_ESCROW_FAILED:
     case GET_ESCROWS_FAILED:
     case RATE_TRANSACTION_FAILED:
+    case PAY_ESCROW_FAILED:
+    case OPEN_CASE_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
@@ -66,6 +73,17 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           errorGet: ''
         }};
+    case PAY_ESCROW_SUCCEEDED:
+      escrows[action.escrowId].paid = true;
+      return {...state, ...{
+        escrows,
+        errorGet: ''
+      }};
+    case OPEN_CASE_SUCCEEDED:
+      return {...state, ...{
+        escrows,
+        errorGet: ''
+      }};
     case CANCEL_ESCROW_SUCCEEDED:
       escrows[action.escrowId].canceled = true;
       return {...state, ...{

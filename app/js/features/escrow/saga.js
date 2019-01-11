@@ -7,7 +7,9 @@ import {
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
   RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED,
   CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
-  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
+  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED,
+  PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED,
+  OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -43,6 +45,38 @@ export function *releaseEscrow({escrowId}) {
 
 export function *onReleaseEscrow() {
   yield takeEvery(RELEASE_ESCROW, releaseEscrow);
+}
+
+export function *payEscrow({escrowId}) {
+  try {
+    const toSend = Escrow.methods.pay(escrowId);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: PAY_ESCROW_FAILED, error: error.message});
+  }
+}
+
+ export function *onPayEscrow() {
+  yield takeEvery(PAY_ESCROW, payEscrow);
+}
+
+ export function *openCase({escrowId}) {
+  try {
+    const toSend = Escrow.methods.openCase(escrowId);
+    const estimatedGas = yield call(toSend.estimateGas);
+    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: OPEN_CASE_SUCCEEDED, escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: OPEN_CASE_FAILED, error: error.message});
+  }
+}
+
+ export function *onOpenCase() {
+  yield takeEvery(OPEN_CASE, openCase);
 }
 
 export function *cancelEscrow({escrowId}) {
@@ -88,8 +122,14 @@ export function *doGetEscrows() {
 
     const escrows = [];
     for (let i = 0; i < escrowIds.length; i++) {
-      const escrow = yield call(Escrow.methods.transactions(parseInt(escrowIds[i], 10)).call);
+      const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
       escrow.escrowId = escrowIds[i];
+      if(escrow.paid){
+        const arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
+        if(arbitration.open){
+          escrow.arbitration = arbitration;
+        }
+      }
       escrows.push(escrow);
     }
 
@@ -104,4 +144,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onOpenCase)];
