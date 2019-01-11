@@ -1,27 +1,8 @@
 /*global web3*/
-import React, {Fragment} from 'react';
+import React from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
-
-const escrowStates = {
-  released: 'released',
-  canceled: 'canceled',
-  expired: 'expired',
-  waiting: 'waiting'
-};
-
-function getEscrowState(escrow) {
-  if (escrow.released) {
-    return escrowStates.released;
-  }
-  if (escrow.canceled) {
-    return escrowStates.canceled;
-  }
-  if (escrow.expired <= Date.now() / 1000) {
-    return escrowStates.expired;
-  }
-  return escrowStates.waiting;
-}
+import {getEscrowState, escrowStates} from "../features/escrow/helpers";
 
 function getEscrowStateText(escrow) {
   switch (getEscrowState(escrow)) {
