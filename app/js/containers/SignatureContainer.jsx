@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import escrow from '../features/escrow';
 
 class SignatureContainer extends Component {
-  includeSignature = (signedMessage) => {
-    this.props.includeSignature(signedMessage);
+  includeSignature = (signature) => {
+    this.props.includeSignature(signature);
   };
 
   render() {
