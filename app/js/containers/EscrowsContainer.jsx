@@ -32,7 +32,7 @@ class EscrowsContainer extends Component {
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
                   openCase={this.props.openCase} payEscrow={this.props.payEscrow}
-                  signatureDialog={this.props.signatureDialog}
+                  signature={this.props.signature}
                   payEscrowSignature={this.props.payEscrowSignature}
                   openCaseSignature={this.props.openCaseSignature}
                   closeDialog={this.props.closeDialog}
@@ -57,7 +57,7 @@ EscrowsContainer.propTypes = {
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
-  signatureDialog: PropTypes.object,
+  signature: PropTypes.object,
   escrowsLoading: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
@@ -76,7 +76,7 @@ const mapStateToProps = state => ({
   errorGet: escrow.selectors.errorGet(state),
   escrowsLoading: escrow.selectors.loading(state),
   escrows: escrow.selectors.escrows(state),
-  signatureDialog: escrow.selectors.signatureDialog(state)
+  signature: escrow.selectors.signature(state)
 });
 
 export default connect(

@@ -6,7 +6,7 @@ export const escrows = state => state.escrow.escrows.map(escrow => {
 });
 export const errorGet = state => state.escrow.errorGet;
 export const loading = state => state.escrow.loading;
-export const signatureDialog = state => {
+export const signature = state => {
   const {signedMessage, escrowId, type} = state.escrow;
   return {signedMessage, escrowId, type};
 };
