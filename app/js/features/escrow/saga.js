@@ -12,7 +12,8 @@ import {
   OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
-  DIALOG_PAY_SIGNATURE, DIALOG_OPEN_CASE_SIGNATURE
+  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, INCLUDE_SIGNATURE, 
+  INCLUDE_SIGNATURE_FAILED, INCLUDE_SIGNATURE_SUCCEEDED
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -70,7 +71,7 @@ export function *payEscrowSignature({escrowId}) {
   try {
     const messageHash = yield call(Escrow.methods.paySignHash(escrowId).call, {from: web3.eth.defaultAccount});
     const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
-    yield put({type: PAY_ESCROW_SIGNATURE_SUCCEEDED, escrowId, signedMessage, dialogType: DIALOG_PAY_SIGNATURE});
+    yield put({type: PAY_ESCROW_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_PAYMENT});
   } catch (error) {
     console.error(error);
     yield put({type: PAY_ESCROW_SIGNATURE_FAILED, error: error.message});
@@ -85,7 +86,7 @@ export function *openCaseSignature({escrowId}) {
   try {
     const messageHash = yield call(Escrow.methods.openCaseSignHash(escrowId).call, {from: web3.eth.defaultAccount});
     const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
-    yield put({type: OPEN_CASE_SIGNATURE_SUCCEEDED, escrowId, signedMessage, dialogType: DIALOG_OPEN_CASE_SIGNATURE});
+    yield put({type: OPEN_CASE_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_OPEN_CASE});
   } catch (error) {
     console.error(error);
     yield put({type: OPEN_CASE_SIGNATURE_FAILED, error: error.message});
@@ -110,6 +111,35 @@ export function *openCase({escrowId}) {
 
 export function *onOpenCase() {
   yield takeEvery(OPEN_CASE, openCase);
+}
+
+export function *includeSignature({signedMessage}) {
+  try {
+    let method;
+    
+    switch(signedMessage.type){
+      case SIGNATURE_PAYMENT:
+        method = 'pay(uint256,bytes)';
+      break;
+      case SIGNATURE_OPEN_CASE:
+        method = 'openCase(uint256,bytes)';
+      break;
+      default:
+        throw new Error("Invalid signature type");
+    }
+    
+    const toSend = Escrow.methods[method](signedMessage.escrowId, signedMessage.message);
+    const estimatedGas = yield call(toSend.estimateGas);
+    const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    yield put({type: INCLUDE_SIGNATURE_SUCCEEDED, receipt});
+  } catch (error) {
+    console.error(error);
+    yield put({type: INCLUDE_SIGNATURE_FAILED, error: error.message});
+  }
+}
+
+export function *onIncludeSignature() {
+  yield takeEvery(INCLUDE_SIGNATURE, includeSignature);
 }
 
 export function *cancelEscrow({escrowId}) {
@@ -177,4 +207,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onIncludeSignature)];

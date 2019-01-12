@@ -18,11 +18,13 @@ import {
   OPEN_CASE_SUCCEEDED,
   OPEN_CASE_SIGNATURE_SUCCEEDED,
   OPEN_CASE_SIGNATURE_FAILED,
-  CLOSE_DIALOG
+  CLOSE_DIALOG,
+  INCLUDE_SIGNATURE_SUCCEEDED,
+  INCLUDE_SIGNATURE_FAILED
 } from './constants';
 import cloneDeep from 'clone-deep';
 
-const DEFAULT_STATE = {escrows: [], signedMessage: null, dialogType: null, escrowId: null};
+const DEFAULT_STATE = {escrows: [], signedMessage: null, type: null, escrowId: null};
 
 const escrowBuilder = function (escrowObject) {
   return {
@@ -42,10 +44,12 @@ function reducer(state = DEFAULT_STATE, action) {
   let escrows  = cloneDeep(state.escrows);
   switch (action.type) {
     case CREATE_ESCROW_FAILED:
+    case INCLUDE_SIGNATURE_FAILED:
       return {...state, ...{
           error: action.error,
           receipt: null
         }};
+    case INCLUDE_SIGNATURE_SUCCEEDED:
     case CREATE_ESCROW_SUCCEEDED:
       escrows.push(escrowBuilder(action.receipt.events.Created.returnValues));
       return {...state, ...{
@@ -78,7 +82,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case OPEN_CASE_SIGNATURE_SUCCEEDED:
       return { ...state, ...{
           signedMessage: action.signedMessage,
-          dialogType: action.dialogType,
+          type: action.signatureType,
           escrowId: action.escrowId
         }};
     case RELEASE_ESCROW_SUCCEEDED:
@@ -113,7 +117,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case CLOSE_DIALOG: 
       return {...state, ...{
         signedMessage: null,
-        dialogType: null,
+        type: null,
         escrowId: null
       }};
     default:

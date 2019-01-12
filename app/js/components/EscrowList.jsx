@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
-import {DIALOG_PAY_SIGNATURE, DIALOG_OPEN_CASE_SIGNATURE} from "../features/escrow/constants";
+import {SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE} from "../features/escrow/constants";
 import Rating from "./Rating";
 import { withNamespaces } from 'react-i18next';
 import SignatureDialog from "./SignatureDialog";
@@ -33,10 +33,11 @@ const EscrowList = (props) => <Fragment>
                    onClose={props.closeDialog}
                    message={{
                     escrowId: props.signatureDialog.escrowId,
-                    message: props.signatureDialog.signedMessage
-                    }}>
-    {props.signatureDialog.dialogType === DIALOG_PAY_SIGNATURE && "Mark escrow as paid"}
-    {props.signatureDialog.dialogType === DIALOG_OPEN_CASE_SIGNATURE && "Open arbitration case"}
+                    message: props.signatureDialog.signedMessage,
+                    type: props.signatureDialog.type
+                   }}>
+    {props.signatureDialog.type === SIGNATURE_PAYMENT && "Mark escrow as paid"}
+    {props.signatureDialog.type === SIGNATURE_OPEN_CASE && "Open arbitration case"}
 
   </SignatureDialog>
   <Card className="mt-2">
