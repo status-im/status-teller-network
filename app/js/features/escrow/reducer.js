@@ -12,12 +12,15 @@ import {
   RATE_TRANSACTION_SUCCEEDED,
   PAY_ESCROW_SUCCEEDED,
   PAY_ESCROW_FAILED,
+  PAY_ESCROW_SIGNATURE_SUCCEEDED,
+  PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_FAILED,
-  OPEN_CASE_SUCCEEDED
+  OPEN_CASE_SUCCEEDED,
+  CLOSE_DIALOG
 } from './constants';
 import cloneDeep from 'clone-deep';
 
-const DEFAULT_STATE = {escrows: []};
+const DEFAULT_STATE = {escrows: [], signedMessage: null, dialogType: null, escrowId: null};
 
 const escrowBuilder = function (escrowObject) {
   return {
@@ -63,9 +66,16 @@ function reducer(state = DEFAULT_STATE, action) {
     case RATE_TRANSACTION_FAILED:
     case PAY_ESCROW_FAILED:
     case OPEN_CASE_FAILED:
+    case PAY_ESCROW_SIGNATURE_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
+        }};
+    case PAY_ESCROW_SIGNATURE_SUCCEEDED:
+      return { ...state, ...{
+          signedMessage: action.signedMessage,
+          dialogType: action.dialogType,
+          escrowId: action.escrowId
         }};
     case RELEASE_ESCROW_SUCCEEDED:
       escrows[action.escrowId].released = true;
@@ -96,6 +106,12 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           errorGet: ''
         }};
+    case CLOSE_DIALOG: 
+      return {...state, ...{
+        signedMessage: null,
+        dialogType: null,
+        escrowId: null
+      }};
     default:
       return state;
   }

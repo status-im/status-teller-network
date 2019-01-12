@@ -9,7 +9,9 @@ import {
   CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED,
   PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED,
-  OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED
+  OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE,
+  PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
+  DIALOG_PAY_SIGNATURE
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -59,11 +61,26 @@ export function *payEscrow({escrowId}) {
   }
 }
 
- export function *onPayEscrow() {
+export function *onPayEscrow() {
   yield takeEvery(PAY_ESCROW, payEscrow);
 }
 
- export function *openCase({escrowId}) {
+export function *payEscrowSignature({escrowId}) {
+  try {
+    const messageHash = yield call(Escrow.methods.paySignHash(escrowId).call, {from: web3.eth.defaultAccount});
+    const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
+    yield put({type: PAY_ESCROW_SIGNATURE_SUCCEEDED, escrowId, signedMessage, dialogType: DIALOG_PAY_SIGNATURE});
+  } catch (error) {
+    console.error(error);
+    yield put({type: PAY_ESCROW_SIGNATURE_FAILED, error: error.message});
+  }
+}
+
+export function *onPayEscrowSignature() {
+  yield takeEvery(PAY_ESCROW_SIGNATURE, payEscrowSignature);
+}
+
+export function *openCase({escrowId}) {
   try {
     const toSend = Escrow.methods.openCase(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
@@ -75,7 +92,7 @@ export function *payEscrow({escrowId}) {
   }
 }
 
- export function *onOpenCase() {
+export function *onOpenCase() {
   yield takeEvery(OPEN_CASE, openCase);
 }
 
@@ -144,4 +161,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onOpenCase)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase)];
