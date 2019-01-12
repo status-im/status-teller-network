@@ -3,7 +3,7 @@ import React, {Fragment} from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
-import {DIALOG_PAY_SIGNATURE} from "../features/escrow/constants";
+import {DIALOG_PAY_SIGNATURE, DIALOG_OPEN_CASE_SIGNATURE} from "../features/escrow/constants";
 import Rating from "./Rating";
 import SignatureDialog from "./SignatureDialog";
 
@@ -35,6 +35,8 @@ const EscrowList = (props) => <Fragment>
                     message: props.signatureDialog.signedMessage
                     }}>
     {props.signatureDialog.dialogType === DIALOG_PAY_SIGNATURE && "Mark escrow as paid"}
+    {props.signatureDialog.dialogType === DIALOG_OPEN_CASE_SIGNATURE && "Open arbitration case"}
+
   </SignatureDialog>
   <Card className="mt-2">
     <CardHeader>
@@ -77,12 +79,16 @@ const EscrowList = (props) => <Fragment>
               {getEscrowState(escrow) === escrowStates.released && !escrow.arbitration && escrow.buyer === web3.eth.defaultAccount &&
               <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
                         escrowId={escrow.escrowId}/>}
-              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  &&
-              <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>}
-              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  &&
-                <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>Sign as paid (for relayers)</Button>}
-              {getEscrowState(escrow) === escrowStates.paid && 
-              <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>}
+              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  && <Fragment>
+                <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>
+                <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>Sign as paid (for relayers)</Button>
+              </Fragment>}
+              {getEscrowState(escrow) === escrowStates.paid && <Fragment>
+                <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>
+                <Button color="warning" size="sm" block onClick={() => props.openCaseSignature(escrow.escrowId)}>Open a case signature (for relayers)</Button>
+              </Fragment>
+              }
+              
             </td>
           </tr>)}
         </tbody>
@@ -98,6 +104,7 @@ EscrowList.propTypes = {
   payEscrow: PropTypes.func,
   payEscrowSignature: PropTypes.func,
   openCase: PropTypes.func,
+  openCaseSignature: PropTypes.func,
   cancelEscrow: PropTypes.func,
   closeDialog: PropTypes.func,
   rateTransaction: PropTypes.func,
