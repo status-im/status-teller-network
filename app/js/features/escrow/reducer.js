@@ -23,7 +23,7 @@ import {
   INCLUDE_SIGNATURE_FAILED
 } from './constants';
 
-const DEFAULT_STATE = {escrows: [], signedMessage: null, type: null, escrowId: null};
+const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows  = state.escrows;
@@ -64,7 +64,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case PAY_ESCROW_SIGNATURE_SUCCEEDED:
     case OPEN_CASE_SIGNATURE_SUCCEEDED:
       return { ...state, ...{
-          signedMessage: action.signedMessage,
+          message: action.signedMessage,
           type: action.signatureType,
           escrowId: action.escrowId
         }};
@@ -99,7 +99,7 @@ function reducer(state = DEFAULT_STATE, action) {
         }};
     case CLOSE_DIALOG: 
       return {...state, ...{
-        signedMessage: null,
+        message: null,
         type: null,
         escrowId: null
       }};

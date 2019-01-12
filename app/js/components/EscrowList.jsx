@@ -28,11 +28,11 @@ function getEscrowStateText(escrow) {
 }
 
 const EscrowList = (props) => <Fragment> 
-  <SignatureDialog open={!!props.signature.signedMessage}
+  <SignatureDialog open={!!props.signature.message}
                    onClose={props.closeDialog}
                    message={{
                     escrowId: props.signature.escrowId,
-                    message: props.signature.signedMessage,
+                    message: props.signature.message,
                     type: props.signature.type
                    }}>
     {props.signature.type === SIGNATURE_PAYMENT && "Mark escrow as paid"}
