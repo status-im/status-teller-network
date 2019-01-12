@@ -11,7 +11,8 @@ import {
   PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED,
   OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
-  DIALOG_PAY_SIGNATURE
+  OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
+  DIALOG_PAY_SIGNATURE, DIALOG_OPEN_CASE_SIGNATURE
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -78,6 +79,21 @@ export function *payEscrowSignature({escrowId}) {
 
 export function *onPayEscrowSignature() {
   yield takeEvery(PAY_ESCROW_SIGNATURE, payEscrowSignature);
+}
+
+export function *openCaseSignature({escrowId}) {
+  try {
+    const messageHash = yield call(Escrow.methods.openCaseSignHash(escrowId).call, {from: web3.eth.defaultAccount});
+    const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
+    yield put({type: OPEN_CASE_SIGNATURE_SUCCEEDED, escrowId, signedMessage, dialogType: DIALOG_OPEN_CASE_SIGNATURE});
+  } catch (error) {
+    console.error(error);
+    yield put({type: OPEN_CASE_SIGNATURE_FAILED, error: error.message});
+  }
+}
+
+export function *onOpenCaseSignature() {
+  yield takeEvery(OPEN_CASE_SIGNATURE, openCaseSignature);
 }
 
 export function *openCase({escrowId}) {
@@ -161,4 +177,4 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase)];
+export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature)];
