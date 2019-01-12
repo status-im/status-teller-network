@@ -16,6 +16,8 @@ import {
   PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_FAILED,
   OPEN_CASE_SUCCEEDED,
+  OPEN_CASE_SIGNATURE_SUCCEEDED,
+  OPEN_CASE_SIGNATURE_FAILED,
   CLOSE_DIALOG
 } from './constants';
 
@@ -50,11 +52,13 @@ function reducer(state = DEFAULT_STATE, action) {
     case PAY_ESCROW_FAILED:
     case OPEN_CASE_FAILED:
     case PAY_ESCROW_SIGNATURE_FAILED:
+    case OPEN_CASE_SIGNATURE_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
         }};
     case PAY_ESCROW_SIGNATURE_SUCCEEDED:
+    case OPEN_CASE_SIGNATURE_SUCCEEDED:
       return { ...state, ...{
           signedMessage: action.signedMessage,
           dialogType: action.dialogType,

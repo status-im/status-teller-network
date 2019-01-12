@@ -34,6 +34,7 @@ class EscrowsContainer extends Component {
                   openCase={this.props.openCase} payEscrow={this.props.payEscrow}
                   signatureDialog={this.props.signatureDialog}
                   payEscrowSignature={this.props.payEscrowSignature}
+                  openCaseSignature={this.props.openCaseSignature}
                   closeDialog={this.props.closeDialog}
                   cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
                   rateTransaction={this.props.rateTransaction}/>
@@ -50,6 +51,7 @@ EscrowsContainer.propTypes = {
   payEscrow: PropTypes.func,
   payEscrowSignature: PropTypes.func,
   openCase: PropTypes.func,
+  openCaseSignature: PropTypes.func,
   closeDialog: PropTypes.func,
   cancelEscrow: PropTypes.func,
   rateTransaction: PropTypes.func,
@@ -86,6 +88,7 @@ export default connect(
     payEscrow: escrow.actions.payEscrow,
     payEscrowSignature: escrow.actions.payEscrowSignature,
     openCase: escrow.actions.openCase,
+    openCaseSignature: escrow.actions.openCaseSignature,
     releaseEscrow: escrow.actions.releaseEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
     rateTransaction: escrow.actions.rateTransaction,
