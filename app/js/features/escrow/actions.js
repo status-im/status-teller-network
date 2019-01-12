@@ -20,5 +20,5 @@ export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, 
 
 export const closeDialog = () => ({ type: CLOSE_DIALOG });
 
-export const includeSignature = (signedMessage) => ({ type: INCLUDE_SIGNATURE, signedMessage });
+export const includeSignature = (signature) => ({ type: INCLUDE_SIGNATURE, signature });
 

@@ -113,11 +113,11 @@ export function *onOpenCase() {
   yield takeEvery(OPEN_CASE, openCase);
 }
 
-export function *includeSignature({signedMessage}) {
+export function *includeSignature({signature: {escrowId, message, type}}) {
   try {
     let method;
     
-    switch(signedMessage.type){
+    switch(type){
       case SIGNATURE_PAYMENT:
         method = 'pay(uint256,bytes)';
       break;
@@ -128,7 +128,7 @@ export function *includeSignature({signedMessage}) {
         throw new Error("Invalid signature type");
     }
     
-    const toSend = Escrow.methods[method](signedMessage.escrowId, signedMessage.message);
+    const toSend = Escrow.methods[method](escrowId, message);
     const estimatedGas = yield call(toSend.estimateGas);
     const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     yield put({type: INCLUDE_SIGNATURE_SUCCEEDED, receipt});
