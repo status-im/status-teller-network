@@ -10,6 +10,7 @@ import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
+import SignatureContainer from '../containers/SignatureContainer';
 
 import prices from '../features/prices';
 import embarkjs from '../features/embarkjs';
@@ -40,6 +41,7 @@ class App extends Component {
             <Route path="/price" component={PriceContainer} />
             <Route path="/escrows" component={LicenseContainer} />
             <Route path="/map" component={MapContainer} />
+            <Route path="/signature" component={SignatureContainer} />
           </Container>
         </Fragment>
       </HashRouter>
