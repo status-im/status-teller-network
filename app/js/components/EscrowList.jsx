@@ -1,9 +1,11 @@
 /*global web3*/
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
+import {DIALOG_PAY_SIGNATURE} from "../features/escrow/constants";
 import Rating from "./Rating";
+import SignatureDialog from "./SignatureDialog";
 
 function getEscrowStateText(escrow) {
   switch (getEscrowState(escrow)) {
@@ -25,7 +27,16 @@ function getEscrowStateText(escrow) {
   }
 }
 
-const EscrowList = (props) => (<Card className="mt-2">
+const EscrowList = (props) => <Fragment> 
+  <SignatureDialog open={!!props.signatureDialog.signedMessage}
+                   onClose={props.closeDialog}
+                   message={{
+                    escrowId: props.signatureDialog.escrowId,
+                    message: props.signatureDialog.signedMessage
+                    }}>
+    {props.signatureDialog.dialogType === DIALOG_PAY_SIGNATURE && "Mark escrow as paid"}
+  </SignatureDialog>
+  <Card className="mt-2">
     <CardHeader>
       <CardTitle>Escrow List</CardTitle>
     </CardHeader>
@@ -67,6 +78,8 @@ const EscrowList = (props) => (<Card className="mt-2">
                         escrowId={escrow.escrowId}/>}
               {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  &&
               <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>}
+              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  &&
+                <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>Sign as paid (for relayers)</Button>}
               {getEscrowState(escrow) === escrowStates.paid && 
               <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>}
             </td>
@@ -75,14 +88,17 @@ const EscrowList = (props) => (<Card className="mt-2">
       </Table>}
     </CardBody>
   </Card>
-);
+  </Fragment>;
 
 EscrowList.propTypes = {
   escrows: PropTypes.array,
+  signatureDialog: PropTypes.object,
   releaseEscrow: PropTypes.func,
   payEscrow: PropTypes.func,
+  payEscrowSignature: PropTypes.func,
   openCase: PropTypes.func,
   cancelEscrow: PropTypes.func,
+  closeDialog: PropTypes.func,
   rateTransaction: PropTypes.func,
   loading: PropTypes.bool,
   error: PropTypes.string

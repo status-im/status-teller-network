@@ -32,6 +32,9 @@ class EscrowsContainer extends Component {
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
                   openCase={this.props.openCase} payEscrow={this.props.payEscrow}
+                  signatureDialog={this.props.signatureDialog}
+                  payEscrowSignature={this.props.payEscrowSignature}
+                  closeDialog={this.props.closeDialog}
                   cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
                   rateTransaction={this.props.rateTransaction}/>
     </Fragment>;
@@ -45,11 +48,14 @@ EscrowsContainer.propTypes = {
   createEscrow: PropTypes.func,
   releaseEscrow: PropTypes.func,
   payEscrow: PropTypes.func,
+  payEscrowSignature: PropTypes.func,
   openCase: PropTypes.func,
+  closeDialog: PropTypes.func,
   cancelEscrow: PropTypes.func,
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
+  signatureDialog: PropTypes.object,
   escrowsLoading: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
@@ -67,7 +73,8 @@ const mapStateToProps = state => ({
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
   escrowsLoading: escrow.selectors.loading(state),
-  escrows: escrow.selectors.escrows(state)
+  escrows: escrow.selectors.escrows(state),
+  signatureDialog: escrow.selectors.signatureDialog(state)
 });
 
 export default connect(
@@ -77,11 +84,13 @@ export default connect(
     createEscrow: escrow.actions.createEscrow,
     getEscrows: escrow.actions.getEscrows,
     payEscrow: escrow.actions.payEscrow,
+    payEscrowSignature: escrow.actions.payEscrowSignature,
     openCase: escrow.actions.openCase,
     releaseEscrow: escrow.actions.releaseEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
     rateTransaction: escrow.actions.rateTransaction,
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    checkUserRating: license.actions.checkUserRating
+    checkUserRating: license.actions.checkUserRating,
+    closeDialog: escrow.actions.closeDialog
   }
 )(EscrowsContainer);
