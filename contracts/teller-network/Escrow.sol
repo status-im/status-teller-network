@@ -143,6 +143,7 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
+        require(trx.paid == false, "Transaction already paid");
         require(trx.released == false, "Transaction already released");
         require(trx.canceled == false, "Transaction already canceled");
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
