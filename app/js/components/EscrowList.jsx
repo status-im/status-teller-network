@@ -29,7 +29,7 @@ function getEscrowStateText(escrow, t) {
 }
 
 const EscrowList = (props) => <Fragment> 
-  <SignatureDialog open={!!props.signature.message}
+  {props.signature && <SignatureDialog open={!!props.signature.message}
                    onClose={props.closeDialog}
                    message={{
                     escrowId: props.signature.escrowId,
@@ -38,8 +38,7 @@ const EscrowList = (props) => <Fragment>
                    }}>
     {props.signature.type === SIGNATURE_PAYMENT && "Mark escrow as paid"}
     {props.signature.type === SIGNATURE_OPEN_CASE && "Open arbitration case"}
-
-  </SignatureDialog>
+  </SignatureDialog> }
   <Card className="mt-2">
     <CardHeader>
       <CardTitle>{props.t('escrowList.title')}</CardTitle>

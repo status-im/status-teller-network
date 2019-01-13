@@ -8,6 +8,7 @@ import license from './features/license';
 import escrow from './features/escrow';
 import embarkjs from './features/embarkjs';
 import signature from './features/signature';
+import arbitration from './features/arbitration';
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
   license: license.reducer,
   embarkjs: embarkjs.reducer,
   escrow: escrow.reducer,
-  signature: signature.reducer
+  signature: signature.reducer,
+  arbitration: arbitration.reducer
 });
 
 export default rootReducer;
