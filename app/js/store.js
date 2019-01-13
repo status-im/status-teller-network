@@ -10,14 +10,15 @@ import prices from './features/prices';
 import license from './features/license';
 import embarkjs from './features/embarkjs';
 import escrow from './features/escrow';
-
+import signature from './features/signature';
 
 function *root() {
   yield all([
     ...prices.saga,
     ...license.saga,
     ...embarkjs.saga,
-    ...escrow.saga
+    ...escrow.saga,
+    ...signature.saga
   ]);
 }
 
