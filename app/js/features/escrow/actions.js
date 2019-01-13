@@ -1,4 +1,4 @@
-import { CREATE_ESCROW, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW, RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG, INCLUDE_SIGNATURE } from './constants';
+import { CREATE_ESCROW, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW, RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG } from './constants';
 
 export const createEscrow = (buyer, value, expiration) => ({ type: CREATE_ESCROW, buyer, value, expiration });
 
@@ -19,6 +19,3 @@ export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId });
 export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating });
 
 export const closeDialog = () => ({ type: CLOSE_DIALOG });
-
-export const includeSignature = (signature) => ({ type: INCLUDE_SIGNATURE, signature });
-
