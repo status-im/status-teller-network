@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
 import IncludeSignatureForm from '../components/IncludeSignatureForm';
 import PropTypes from 'prop-types';
-import escrow from '../features/escrow';
+import signature from '../features/signature';
 
 class SignatureContainer extends Component {
   includeSignature = (signature) => {
@@ -11,25 +11,25 @@ class SignatureContainer extends Component {
 
   render() {
     return <Fragment>
-      <IncludeSignatureForm onSubmit={this.includeSignature} result={this.props.escrowReceipt} error={this.props.escrowError} />
+      <IncludeSignatureForm onSubmit={this.includeSignature} result={this.props.receipt} error={this.props.error} />
     </Fragment>;
   }
 }
 
 SignatureContainer.propTypes = {
   includeSignature: PropTypes.func,
-  escrowError: PropTypes.string,
-  escrowReceipt: PropTypes.object
+  error: PropTypes.string,
+  receipt: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  escrowError: escrow.selectors.error(state),
-  escrowReceipt: escrow.selectors.receipt(state)
+  error: signature.selectors.error(state),
+  receipt: signature.selectors.receipt(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    includeSignature: escrow.actions.includeSignature
+    includeSignature: signature.actions.includeSignature
   }
 )(SignatureContainer);
