@@ -13,6 +13,20 @@ import {
 
 const DEFAULT_STATE = {escrows: []};
 
+const escrowBuilder = function (escrowObject) {
+  return {
+    escrowId: escrowObject.escrowId,
+    buyer: escrowObject.buyer,
+    seller: escrowObject.seller,
+    expirationTime: escrowObject.expirationTime,
+    amount: escrowObject.amount,
+    released: false,
+    canceled: false,
+    paid: false,
+    rating: 0
+  };
+};
+
 function reducer(state = DEFAULT_STATE, action) {
   let escrows  = state.escrows;
   switch (action.type) {
@@ -22,7 +36,9 @@ function reducer(state = DEFAULT_STATE, action) {
           receipt: null
         }};
     case CREATE_ESCROW_SUCCEEDED:
+      escrows.push(escrowBuilder(action.receipt.events.Created.returnValues));
       return {...state, ...{
+          escrows: escrows,
           receipt: action.receipt,
           error: ''
         }};

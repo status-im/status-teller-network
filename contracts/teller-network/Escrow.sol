@@ -40,7 +40,7 @@ contract Escrow is Pausable, MessageSigned {
 
     address public arbitrator;
 
-    event Created(address indexed seller, address indexed buyer, uint escrowId, uint expirationTime);
+    event Created(address indexed seller, address indexed buyer, uint escrowId, uint expirationTime, uint amount);
     event Paid(uint escrowId);
     event Released(uint escrowId);
     event Canceled(uint escrowId);
@@ -97,7 +97,7 @@ contract Escrow is Pausable, MessageSigned {
         transactions[escrowId].canceled = false;
         transactions[escrowId].paid = false;
 
-        emit Created(msg.sender, _buyer, escrowId, _expirationTime);
+        emit Created(msg.sender, _buyer, escrowId, _expirationTime, _amount);
     }
 
     /**
