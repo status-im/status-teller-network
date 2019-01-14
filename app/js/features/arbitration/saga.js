@@ -4,23 +4,25 @@ import Escrow from 'Embark/contracts/Escrow';
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
-  PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED
+  RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
+  ARBITRATION_UNSOLVED
 } from './constants';
 
-export function *payEscrow({escrowId}) {
+export function *resolveDispute({escrowId, result}) {
   try {
-    const toSend = Escrow.methods.pay(escrowId);
+    if(ARBITRATION_UNSOLVED === result) throw new Error("Arbitration must have a result");
+    const toSend = Escrow.methods.setArbitrationResult(escrowId, result);
     const estimatedGas = yield call(toSend.estimateGas);
     yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
+    yield put({type: RESOLVE_DISPUTE_SUCCEEDED, escrowId});
   } catch (error) {
     console.error(error);
-    yield put({type: PAY_ESCROW_FAILED, error: error.message});
+    yield put({type: RESOLVE_DISPUTE_FAILED, error: error.message});
   }
 }
 
-export function *onPayEscrow() {
-  yield takeEvery(PAY_ESCROW, payEscrow);
+export function *onResolveDispute() {
+  yield takeEvery(RESOLVE_DISPUTE, resolveDispute);
 }
 
 export function *doGetEscrows() {
@@ -45,8 +47,8 @@ export function *doGetEscrows() {
   }
 }
 
-export function *onGetLicenseOwners() {
+export function *onGetEscrows() {
   yield takeEvery(GET_DISPUTED_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onGetLicenseOwners), fork(onPayEscrow)];
+export default [fork(onGetEscrows), fork(onResolveDispute)];
