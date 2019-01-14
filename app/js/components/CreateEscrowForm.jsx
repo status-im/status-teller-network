@@ -1,32 +1,37 @@
 import React, {Component} from 'react';
 import {Alert, Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, Input, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {toInputDate} from '../utils';
+import Datetime from 'react-datetime';
+import moment from 'moment';
+
+import '../../../node_modules/react-datetime/css/react-datetime.css';
 
 class CreateEscrowForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       value: '',
-      expiration: new Date(),
+      expiration: moment(),
       buyer: ''
     };
   }
 
   onChange(e, field) {
     let data = e.target.value;
-    if (field === 'expiration') {
-      data = new Date(e.target.value);
-    }
     this.setState({[field]: data});
+  }
+
+  onExpirationChange(newDate) {
+    this.setState({expiration: newDate});
   }
 
   submit = () => {
     // TODO add validation before submitting
-    this.props.create(this.state.buyer, this.state.value, this.state.expiration.getTime());
+    this.props.create(this.state.buyer, this.state.value, this.state.expiration.unix());
   };
 
   render() {
+    const {expiration, buyer, value} = this.state;
     return <Card className="mt-2">
       <CardHeader>
         <CardTitle>Create an Escrow</CardTitle>
@@ -40,17 +45,16 @@ class CreateEscrowForm extends Component {
           <FormGroup>
             <Label for="buyer">Value</Label>
             <Input type="text" name="buyer" id="buyer" placeholder="Address of the buyer"
-                   onChange={(e) => this.onChange(e, 'buyer')} value={this.state.buyer}/>
+                   onChange={(e) => this.onChange(e, 'buyer')} value={buyer}/>
           </FormGroup>
           <FormGroup>
             <Label for="escrowValue">Value</Label>
             <Input type="number" name="escrowValue" id="escrowValue" placeholder="Value your are selling"
-                   onChange={(e) => this.onChange(e, 'value')} value={this.state.value}/>
+                   onChange={(e) => this.onChange(e, 'value')} value={value}/>
           </FormGroup>
           <FormGroup>
             <Label for="expiration">Value</Label>
-            <Input type="datetime-local" name="expiration" id="expiration"
-                   onChange={(e) => this.onChange(e, 'expiration')} value={toInputDate(this.state.expiration)}/>
+            <Datetime value={expiration} onChange={(newDate) => this.onExpirationChange(newDate)} />
           </FormGroup>
           <Button onClick={this.submit}>Submit</Button>
         </Form>
