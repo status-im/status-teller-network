@@ -29,8 +29,8 @@ class IncludeSignatureForm extends Component {
         <Form>
           {this.props.error &&
           <Alert color="danger">Error while executing the transaction: {this.props.error}</Alert>}
-          {this.props.result &&
-          <Alert color="success">Receipt: <pre>{JSON.stringify(this.props.result, null, 2)}</pre></Alert>}
+          {this.props.receipt &&
+          <Alert color="success">Receipt: <pre>{JSON.stringify(this.props.receipt, null, 2)}</pre></Alert>}
           <FormGroup>
             <Label for="signature">Signature</Label>
             <Input type="textarea" name="escrowValue" id="escrowValue" placeholder="Message"
@@ -45,7 +45,7 @@ class IncludeSignatureForm extends Component {
 
 IncludeSignatureForm.propTypes = {
   error: PropTypes.string,
-  result: PropTypes.object,
+  receipt: PropTypes.object,
   onSubmit: PropTypes.func
 };
 

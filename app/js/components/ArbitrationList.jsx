@@ -3,6 +3,7 @@ import React from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
+import Address from "../components/Address";
 import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
 
 function getArbitrationState(escrow) {
@@ -12,12 +13,8 @@ function getArbitrationState(escrow) {
   return <p className="text-success">Arbitration completed</p>;
 }
 
-const Address = (props) => <span title={props.address}>{props.address.substring(0, 6) + "..." + props.address.substring(38)}</span>;
-Address.propTypes = {
-  address: PropTypes.string
-};
-
-const ArbitrationList = (props) => <Card className="mt-2">
+const ArbitrationList = (props) => (
+  <Card className="mt-2">
     <CardHeader>
       <CardTitle>Disputed escrows</CardTitle>
     </CardHeader>
@@ -25,8 +22,8 @@ const ArbitrationList = (props) => <Card className="mt-2">
       {props.loading && <p>Loading...</p>}
       {props.error &&
       <Alert color="danger">Error: {props.error}</Alert>}
-      {(!props.escrows || props.escrows.length === 0) && !props.loading && <p>No Escrows</p>}
-      {props.escrows && props.escrows.length > 0 && <Table>
+      {(props.escrows.length === 0) && !props.loading && <p>No Arbitration cases</p>}
+      {props.escrows.length > 0 && <Table>
         <thead>
         <tr>
           <th>#</th>
@@ -44,8 +41,8 @@ const ArbitrationList = (props) => <Card className="mt-2">
           <tr key={escrow.escrowId}>
             <th scope="row">{escrow.escrowId}</th>
             <td>{getArbitrationState(escrow)}</td>
-            <td><Address address={escrow.seller} /></td>
-            <td><Address address={escrow.buyer} /></td>
+            <td><Address address={escrow.seller} compact={true} /></td>
+            <td><Address address={escrow.buyer} compact={true} /></td>
             <td>{escrow.buyer === escrow.arbitration.openBy ? 'Buyer' : 'Seller'}</td>
             <td>{escrow.amount}</td>
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
@@ -56,7 +53,7 @@ const ArbitrationList = (props) => <Card className="mt-2">
         </tbody>
       </Table>}
     </CardBody>
-  </Card>
+  </Card>);
 
 ArbitrationList.propTypes = {
   escrows: PropTypes.array,
