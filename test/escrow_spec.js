@@ -1,4 +1,4 @@
-/*global contract, config, it, assert, embark, web3*/
+/*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
 const EthUtil = require('ethereumjs-util');
 const TestUtils = require("../utils/testUtils");
 
@@ -18,7 +18,7 @@ config({
       {
         mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
         balance: "5 ether",
-        numAddresses: "10",
+        numAddresses: "10"
       }
     ]
   },
@@ -394,7 +394,7 @@ contract("Escrow", function() {
         assert.fail('should have reverted: should not allow a score to be more than 5');
       } catch(error) {
         TestUtils.assertJump(error);
-        assert.ok(error.message.indexOf('Rating needs to be at less than or equal to 5'))
+        assert.ok(error.message.indexOf('Rating needs to be at less than or equal to 5'));
       }
     });
 
@@ -432,6 +432,8 @@ contract("Escrow", function() {
 
 
   describe("Rating an unreleased Transaction", async() => {
+    let receipt, created, escrowId;
+
     beforeEach(async() => {
       const isPaused = await Escrow.methods.paused().call();
       if (isPaused) {
@@ -469,17 +471,17 @@ contract("Escrow", function() {
         created = receipt.events.Created;
         escrowId = created.returnValues.escrowId;
         await Escrow.methods.release(escrowId).send({from: seller});
-        await Escrow.methods.rateTransaction(escrowId, i).send({from: buyer});
+        await Escrow.methods.rateTransaction(escrowId, rating).send({from: buyer});
       }
     });
 
     it("should calculate the user rating", async() => {
-      const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length
-      const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}})
+      const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+      const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}});
 
-      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10))
-      assert.equal(arrAvg(ratings), 3, "The seller rating is not correct")
-    })
+      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
+      assert.equal(arrAvg(ratings), 3, "The seller rating is not correct");
+    });
   });
 
 

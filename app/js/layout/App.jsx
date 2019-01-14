@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';
-import LicenseContainer from '../containers/LicenseContainer';
+import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
 
 import prices from '../features/prices';
@@ -38,7 +38,7 @@ class App extends Component {
           <Container>
             <Route exact path="/" component={HomeContainer} />
             <Route path="/price" component={PriceContainer} />
-            <Route path="/license" component={LicenseContainer} />
+            <Route path="/escrows" component={LicenseContainer} />
             <Route path="/map" component={MapContainer} />
           </Container>
         </Fragment>

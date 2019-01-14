@@ -1,4 +1,4 @@
-/*global contract, config, it, assert*/
+/*global contract, config, it, assert, web3, before*/
 
 const TestUtils = require("../utils/testUtils");
 
