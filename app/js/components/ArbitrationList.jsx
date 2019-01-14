@@ -1,17 +1,21 @@
 /*global web3*/
-import React, {Fragment} from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Button, Alert} from 'reactstrap';
+import React from 'react';
+import {Card, CardBody, CardHeader, CardTitle, Table, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
+import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
 
 function getArbitrationState(escrow) {
-  if(escrow.arbitration.open && escrow.arbitration.result === "0"){
-    return <p className="text-danger">In arbitration</p>
+  if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
+    return <p className="text-danger">In arbitration</p>;
   }
-  return <p className="text-success">Arbitration completed</p>
+  return <p className="text-success">Arbitration completed</p>;
 }
 
 const Address = (props) => <span title={props.address}>{props.address.substring(0, 6) + "..." + props.address.substring(38)}</span>;
+Address.propTypes = {
+  address: PropTypes.string
+};
 
 const ArbitrationList = (props) => <Card className="mt-2">
     <CardHeader>
@@ -46,7 +50,7 @@ const ArbitrationList = (props) => <Card className="mt-2">
             <td>{escrow.amount}</td>
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
             <td>
-              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} rateTransaction={props.rateTransaction} escrowId={escrow.escrowId}/>
+              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute} escrowId={escrow.escrowId}/>
             </td>
           </tr>)}
         </tbody>
@@ -56,7 +60,7 @@ const ArbitrationList = (props) => <Card className="mt-2">
 
 ArbitrationList.propTypes = {
   escrows: PropTypes.array,
-  payEscrow: PropTypes.func,
+  resolveDispute: PropTypes.func,
   loading: PropTypes.bool,
   error: PropTypes.string
 };
