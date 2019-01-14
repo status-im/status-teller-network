@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import IncludeSignatureForm from '../components/IncludeSignatureForm';
 import PropTypes from 'prop-types';
@@ -10,9 +10,7 @@ class SignatureContainer extends Component {
   };
 
   render() {
-    return <Fragment>
-      <IncludeSignatureForm onSubmit={this.includeSignature} result={this.props.receipt} error={this.props.error} />
-    </Fragment>;
+    return <IncludeSignatureForm onSubmit={this.includeSignature} receipt={this.props.receipt} error={this.props.error} />;
   }
 }
 

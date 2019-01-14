@@ -12,3 +12,7 @@ export function toInputDate(date) {
     'T' + pad(date.getUTCHours()) +
     ':' + pad(date.getUTCMinutes());
 }
+
+export function compactAddress(addr) {
+  return addr.substring(0, 6) + "..." + addr.substring(38);
+}

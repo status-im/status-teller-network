@@ -27,7 +27,8 @@ function getEscrowStateText(escrow) {
   }
 }
 
-const EscrowList = (props) => <Fragment> 
+const EscrowList = (props) => (
+<Fragment> 
   {props.signature && <SignatureDialog open={!!props.signature.message}
                    onClose={props.closeDialog}
                    message={{
@@ -59,31 +60,31 @@ const EscrowList = (props) => <Fragment>
         </tr>
         </thead>
         <tbody>
-        {props.escrows.map(escrow =>
-          <tr key={escrow.escrowId}>
+        {props.escrows.map(escrow => { escrow.state = getEscrowState(escrow); return escrow; })
+                      .map(escrow => <tr key={escrow.escrowId}>
             <th scope="row">{escrow.escrowId}</th>
             <td>{getEscrowStateText(escrow)}</td>
             <td>{escrow.buyer === web3.eth.defaultAccount ? escrow.seller : escrow.buyer}</td>
             <td>{escrow.amount}</td>
             <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
             <td>
-              {getEscrowState(escrow) === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
+              {escrow.state === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
               <Button color="success" size="sm" className="mb-1" block
                       onClick={() => props.releaseEscrow(escrow.escrowId)}>
                 Release
               </Button>}
 
-              {getEscrowState(escrow) === escrowStates.expired && escrow.seller === web3.eth.defaultAccount &&
+              {escrow.state === escrowStates.expired && escrow.seller === web3.eth.defaultAccount &&
               <Button color="warning" size="sm" block
                       onClick={() => props.cancelEscrow(escrow.escrowId)}>Cancel</Button>}
-              {getEscrowState(escrow) === escrowStates.released && !escrow.arbitration && escrow.buyer === web3.eth.defaultAccount &&
+              {escrow.state === escrowStates.released && !escrow.arbitration && escrow.buyer === web3.eth.defaultAccount &&
               <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
                         escrowId={escrow.escrowId}/>}
-              {getEscrowState(escrow) === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  && <Fragment>
+              {escrow.state === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  && <Fragment>
                 <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>
                 <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>Sign as paid (for relayers)</Button>
               </Fragment>}
-              {getEscrowState(escrow) === escrowStates.paid && <Fragment>
+              {escrow.state === escrowStates.paid && <Fragment>
                 <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>
                 <Button color="warning" size="sm" block onClick={() => props.openCaseSignature(escrow.escrowId)}>Open a case signature (for relayers)</Button>
               </Fragment>
@@ -95,7 +96,7 @@ const EscrowList = (props) => <Fragment>
       </Table>}
     </CardBody>
   </Card>
-  </Fragment>;
+  </Fragment>);
 
 EscrowList.propTypes = {
   escrows: PropTypes.array,

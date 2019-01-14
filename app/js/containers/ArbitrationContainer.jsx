@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import arbitration from '../features/arbitration';
 import PropTypes from 'prop-types';
@@ -10,12 +10,10 @@ class ArbitrationContainer extends Component {
   }
 
   render() {
-    return <Fragment>
-      <ArbitrationList escrows={this.props.escrows} 
+    return <ArbitrationList escrows={this.props.escrows} 
                        resolveDispute={this.props.resolveDispute}
                        error={this.props.errorGet} 
-                       loading={this.props.escrowsLoading} />
-    </Fragment>;
+                       loading={this.props.escrowsLoading} />;
   }
 }
 
