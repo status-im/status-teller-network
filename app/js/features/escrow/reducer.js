@@ -10,6 +10,7 @@ import {
   CANCEL_ESCROW_SUCCEEDED,
   RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
+import cloneDeep from 'clone-deep';
 
 const DEFAULT_STATE = {escrows: []};
 
@@ -28,7 +29,7 @@ const escrowBuilder = function (escrowObject) {
 };
 
 function reducer(state = DEFAULT_STATE, action) {
-  let escrows  = state.escrows;
+  let escrows  = cloneDeep(state.escrows);
   switch (action.type) {
     case CREATE_ESCROW_FAILED:
       return {...state, ...{
