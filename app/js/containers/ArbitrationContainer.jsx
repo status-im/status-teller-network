@@ -11,23 +11,23 @@ class ArbitrationContainer extends Component {
 
   render() {
     return <Fragment>
-      <ArbitrationList escrows={this.props.escrows} payEscrow={this.props.payEscrow}
-                  error={this.props.errorGet} loading={this.props.escrowsLoading} />
+      <ArbitrationList escrows={this.props.escrows} 
+                       resolveDispute={this.props.resolveDispute}
+                       error={this.props.errorGet} 
+                       loading={this.props.escrowsLoading} />
     </Fragment>;
   }
 }
 
 ArbitrationContainer.propTypes = {
-  payEscrow: PropTypes.func,
+  resolveDispute: PropTypes.func,
   getDisputedEscrows: PropTypes.func,
   escrows: PropTypes.array,
   errorGet: PropTypes.string,
-  error: PropTypes.string
+  escrowsLoading: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
-  escrowError: arbitration.selectors.error(state),
-  escrowReceipt: arbitration.selectors.receipt(state),
   errorGet: arbitration.selectors.errorGet(state),
   escrowsLoading: arbitration.selectors.loading(state),
   escrows: arbitration.selectors.escrows(state)
@@ -37,6 +37,6 @@ export default connect(
   mapStateToProps,
   {
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
-    payEscrow: arbitration.actions.payEscrow
+    resolveDispute: arbitration.actions.resolveDispute
   }
 )(ArbitrationContainer);

@@ -2,8 +2,8 @@ import {
   GET_DISPUTED_ESCROWS_SUCCEEDED,
   GET_DISPUTED_ESCROWS_FAILED,
   GET_DISPUTED_ESCROWS,
-  PAY_ESCROW_SUCCEEDED,
-  PAY_ESCROW_FAILED
+  RESOLVE_DISPUTE_SUCCEEDED,
+  RESOLVE_DISPUTE_FAILED
 } from './constants';
 
 const DEFAULT_STATE = {escrows: []};
@@ -21,13 +21,12 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }};
     case GET_DISPUTED_ESCROWS_FAILED:
-    case PAY_ESCROW_FAILED:
+    case RESOLVE_DISPUTE_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
         }};
-    case PAY_ESCROW_SUCCEEDED:
-      escrows[action.escrowId].paid = true;
+    case RESOLVE_DISPUTE_SUCCEEDED:
       return {...state, ...{
         escrows,
         errorGet: ''
