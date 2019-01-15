@@ -40,6 +40,11 @@ const escrowBuilder = function (escrowObject) {
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows  = cloneDeep(state.escrows);
+  let currentEscrow;
+  if (action.escrowId) {
+    currentEscrow = escrows.find(escrow => escrow.escrowId === action.escrowId);
+  }
+
   switch (action.type) {
     case CREATE_ESCROW_FAILED:
       return {...state, ...{
@@ -82,13 +87,13 @@ function reducer(state = DEFAULT_STATE, action) {
           escrowId: action.escrowId
         }};
     case RELEASE_ESCROW_SUCCEEDED:
-      escrows[action.escrowId].released = true;
+      currentEscrow.released = true;
       return {...state, ...{
           escrows: escrows,
           errorGet: ''
         }};
     case PAY_ESCROW_SUCCEEDED:
-      escrows[action.escrowId].paid = true;
+      currentEscrow.paid = true;
       return {...state, ...{
         escrows,
         errorGet: ''
@@ -99,13 +104,13 @@ function reducer(state = DEFAULT_STATE, action) {
         errorGet: ''
       }};
     case CANCEL_ESCROW_SUCCEEDED:
-      escrows[action.escrowId].canceled = true;
+      currentEscrow.canceled = true;
       return {...state, ...{
           escrows: escrows,
           errorGet: ''
         }};
     case RATE_TRANSACTION_SUCCEEDED:
-      escrows[action.escrowId].rating = action.rating;
+      currentEscrow.rating = action.rating;
       return {...state, ...{
           escrows: escrows,
           errorGet: ''
