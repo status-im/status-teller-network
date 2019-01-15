@@ -13,15 +13,15 @@ function getEscrowStateText(escrow, t) {
     case escrowStates.released:
       return <p className="text-success">{t('escrowList.state.released')}</p>;
     case escrowStates.paid:
-      return <p className="text-primary">Paid</p>;
+      return <p className="text-primary">{t('escrowList.state.paid')}</p>;
     case escrowStates.canceled:
       return <p className="text-warning">{t('escrowList.state.canceled')}</p>;
     case escrowStates.expired:
       return <p className="text-danger">{t('escrowList.state.expired')}</p>;
     case escrowStates.arbitration_open:
-      return <p className="text-danger">In arbitration</p>;
+      return <p className="text-danger">{t('escrowList.state.inArbitration')}</p>;
     case escrowStates.arbitration_closed:
-      return <p className="text-warning">Arbitration completed</p>;
+      return <p className="text-warning">{t('escrowList.state.arbitrationCompleted')}</p>;
     case escrowStates.waiting:
     default:
       return <p className="text-primary">{t('escrowList.state.waiting')}</p>;
@@ -37,8 +37,8 @@ const EscrowList = (props) => (
                     message: props.signature.message,
                     type: props.signature.type
                    }}>
-    {props.signature.type === SIGNATURE_PAYMENT && "Mark escrow as paid"}
-    {props.signature.type === SIGNATURE_OPEN_CASE && "Open arbitration case"}
+    {props.signature.type === SIGNATURE_PAYMENT && props.t('escrowList.actions.markAsPaid')}
+    {props.signature.type === SIGNATURE_OPEN_CASE && props.t('escrowList.actions.openCase')}
   </SignatureDialog> }
   <Card className="mt-2">
     <CardHeader>
@@ -82,12 +82,12 @@ const EscrowList = (props) => (
               <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
                         escrowId={escrow.escrowId}/>}
               {escrow.state === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  && <Fragment>
-                <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>Mark as paid</Button>
-                <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>Sign as paid (for relayers)</Button>
+                <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>{props.t('escrowList.actions.markAsPaid')}</Button>
+                <Button color="warning" size="sm" block onClick={() => props.payEscrowSignature(escrow.escrowId)}>{props.t('escrowList.actions.signAsPaid')}</Button>
               </Fragment>}
               {escrow.state === escrowStates.paid && <Fragment>
-                <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>Open case</Button>
-                <Button color="warning" size="sm" block onClick={() => props.openCaseSignature(escrow.escrowId)}>Open a case signature (for relayers)</Button>
+                <Button color="warning" size="sm" block onClick={() => props.openCase(escrow.escrowId)}>{props.t('escrowList.actions.openCase')}</Button>
+                <Button color="warning" size="sm" block onClick={() => props.openCaseSignature(escrow.escrowId)}>{props.t('escrowList.actions.openCaseSignature')}</Button>
               </Fragment>
               }
               
