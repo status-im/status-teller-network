@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`License should render correctly 1`] = `
+<Card
+  className="mt-2"
+  tag="div"
+>
+  <CardHeader
+    tag="div"
+  >
+    <CardTitle
+      tag="h5"
+    />
+  </CardHeader>
+  <CardBody
+    tag="div"
+  >
+    <BuyLicense
+      t={[Function]}
+    />
+    <p>
+       
+      -
+    </p>
+  </CardBody>
+</Card>
+`;
+
+exports[`License should render when being license owner 1`] = `
+<Card
+  className="mt-2"
+  tag="div"
+>
+  <CardHeader
+    tag="div"
+  >
+    <CardTitle
+      tag="h5"
+    />
+  </CardHeader>
+  <CardBody
+    tag="div"
+  >
+    <IsLicenseOwner
+      t={[Function]}
+    />
+    <p>
+       
+      -
+    </p>
+  </CardBody>
+</Card>
+`;
