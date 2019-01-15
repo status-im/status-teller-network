@@ -66,6 +66,8 @@
   "validators": {
     "required": "This field is required",
     "isInteger": "This field needs to be an integer",
-    "isAddress": "This field needs to be a valid Ethereum address"
+    "isAddress": "This field needs to be a valid Ethereum address",
+    "isJSON": "This field needs to be a valid JSON string",
+    "isEscrowPaymentSignature": "Missing some of the needed properties. Needed are: `escrowId`, `message` and `type`"
   }
 }

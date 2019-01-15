@@ -1,7 +1,7 @@
 import React from 'react';
 import web3 from 'Embark/web3';
 import {FormFeedback} from "reactstrap";
-import {NamespacesConsumer } from 'react-i18next';
+import {NamespacesConsumer} from 'react-i18next';
 
 export const required = (value) => {
   if (!value.toString().trim().length) {
@@ -24,6 +24,31 @@ export const isAddress = (value) => {
   if (!web3.utils.isAddress(value)) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.isAddress')}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+export const isJSON = (value) => {
+  try {
+    JSON.parse(value);
+  } catch (e) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.isJSON')}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+export const isEscrowPaymentSignature = (value) => {
+  try {
+    const signature = JSON.parse(value);
+    if (!signature.escrowId || !signature.message || !signature.type) {
+      return <NamespacesConsumer>
+        {t => <FormFeedback className="d-block">{t('validators.isEscrowPaymentSignature')}</FormFeedback>}
+      </NamespacesConsumer>;
+    }
+  } catch (e) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.isJSON')}</FormFeedback>}
     </NamespacesConsumer>;
   }
 };
