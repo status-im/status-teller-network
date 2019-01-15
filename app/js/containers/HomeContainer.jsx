@@ -9,5 +9,5 @@ class HomeContainer extends Component {
     );
   }
 }
- 
+
 export default HomeContainer;

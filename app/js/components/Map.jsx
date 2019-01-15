@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {compose, withProps} from "recompose";
 import {GoogleMap, Marker, withGoogleMap, withScriptjs} from "react-google-maps";
 import PropTypes from 'prop-types';
+import { withNamespaces } from 'react-i18next';
 
 import CustomInfoWindow from './CustomInfoWindow';
 import unknownImage from '../../images/unknown.png';
@@ -57,19 +58,19 @@ class Map extends Component {
   }
 
   render() {
-    let {coords, error} = this.props;
+    let {coords, error, t} = this.props;
     if (error && error.indexOf('denied') > -1) {
       coords = {
         latitude: 45.492611,
         longitude: -73.617959
       };
-      error = 'You denied access to your position. We do not store that information, it is only to position you the following map.';
+      error = t('map.denied');
     } else if (error) {
       return (<p>{error}</p>);
     }
 
     if (!coords) {
-      return 'Loading...';
+      return t('map.loading');
     }
 
     // TODO remove this when we have actual data
@@ -103,6 +104,7 @@ class Map extends Component {
 }
 
 Map.propTypes = {
+  t: PropTypes.func,
   coords: PropTypes.object,
   error: PropTypes.string,
   google: PropTypes.object
@@ -117,5 +119,5 @@ export default compose(
   }),
   withScriptjs,
   withGoogleMap
-)(Map);
+)(withNamespaces()(Map));
 
