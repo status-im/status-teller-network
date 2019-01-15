@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Card, CardImg, CardBody,
          CardTitle, CardSubtitle } from 'reactstrap';
 
-const cardBodyStyle = { textAlign: 'center' }
-const cardStyle = { border: 'none' }
+const cardBodyStyle = { textAlign: 'center' };
+const cardStyle = { border: 'none' };
 
 const Price = (props) => (
   <Card style={cardStyle}>
@@ -14,5 +15,12 @@ const Price = (props) => (
     </CardBody>
   </Card>
 );
+
+
+Price.propTypes = {
+  logo: PropTypes.string,
+  price: PropTypes.number,
+  priceTicker: PropTypes.string
+};
 
 export default Price;

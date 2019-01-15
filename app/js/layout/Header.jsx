@@ -8,8 +8,9 @@ import {
   Nav,
   NavItem,
   NavLink
- } from 'reactstrap';
-
+} from 'reactstrap';
+import { withNamespaces } from 'react-i18next';
+import PropTypes from 'prop-types';
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -27,20 +28,22 @@ class Header extends Component {
   }
 
   render() {
+    const {t} = this.props;
+
     return (
       <Navbar color="light" light expand="md">
-        <NavbarBrand tag={Link} to="/">Status Teller Network</NavbarBrand>
+        <NavbarBrand tag={Link} to="/">{t('header.title')}</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink tag={Link} to="/price">Prices</NavLink>
+              <NavLink tag={Link} to="/price">{t('header.prices')}</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to="/escrows">My Escrows</NavLink>
+              <NavLink tag={Link} to="/escrows">{t('header.my_escrows')}</NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to="/map">Map</NavLink>
+              <NavLink tag={Link} to="/map">{t('header.map')}</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
@@ -49,4 +52,8 @@ class Header extends Component {
   }
 }
 
-export default Header
+Header.propTypes = {
+  t: PropTypes.func
+};
+
+export default withNamespaces()(Header);

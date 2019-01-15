@@ -1,15 +1,15 @@
 import React from 'react';
 
 import { storiesOf } from '@storybook/react';
-import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
+import { withKnobs, text, number } from '@storybook/addon-knobs';
 import { withInfo } from "@storybook/addon-info";
-import { action } from '@storybook/addon-actions';
 
 import Price from '../app/js/components/Price';
 
-const stories = storiesOf('Price', module)
+const stories = storiesOf('Price', module);
 
-stories.addDecorator(withKnobs)
+stories.addDecorator(withKnobs);
+
 stories.add(
     "Display Price",
     withInfo({ inline: true })(() => (

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-
 import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';

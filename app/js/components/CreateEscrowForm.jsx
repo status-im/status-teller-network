@@ -3,8 +3,8 @@ import {Alert, Button, Card, CardBody, CardHeader, CardTitle, Form, FormGroup, I
 import PropTypes from 'prop-types';
 import Datetime from 'react-datetime';
 import moment from 'moment';
-
 import '../../../node_modules/react-datetime/css/react-datetime.css';
+import {withNamespaces} from 'react-i18next';
 
 class CreateEscrowForm extends Component {
   constructor(props) {
@@ -32,31 +32,32 @@ class CreateEscrowForm extends Component {
 
   render() {
     const {expiration, buyer, value} = this.state;
+    const {t} = this.props;
     return <Card className="mt-2">
       <CardHeader>
-        <CardTitle>Create an Escrow</CardTitle>
+        <CardTitle>{t('createEscrowFrom.title')}</CardTitle>
       </CardHeader>
       <CardBody>
         <Form>
           {this.props.error &&
-          <Alert color="danger">Error while creating the escrow: {this.props.error}</Alert>}
+          <Alert color="danger">{t('createEscrowFrom.error')} {this.props.error}</Alert>}
           {this.props.result &&
-          <Alert color="success">Escrow receipt: <pre>{JSON.stringify(this.props.result, null, 2)}</pre></Alert>}
+          <Alert color="success">{t('createEscrowFrom.receipt')} <pre>{JSON.stringify(this.props.result, null, 2)}</pre></Alert>}
           <FormGroup>
-            <Label for="buyer">Value</Label>
+            <Label for="buyer">{t('createEscrowFrom.value')}</Label>
             <Input type="text" name="buyer" id="buyer" placeholder="Address of the buyer"
                    onChange={(e) => this.onChange(e, 'buyer')} value={buyer}/>
           </FormGroup>
           <FormGroup>
-            <Label for="escrowValue">Value</Label>
+            <Label for="escrowValue">{t('createEscrowFrom.value')}</Label>
             <Input type="number" name="escrowValue" id="escrowValue" placeholder="Value your are selling"
                    onChange={(e) => this.onChange(e, 'value')} value={value}/>
           </FormGroup>
           <FormGroup>
-            <Label for="expiration">Value</Label>
+            <Label for="expiration">{t('createEscrowFrom.value')}</Label>
             <Datetime value={expiration} onChange={(newDate) => this.onExpirationChange(newDate)} />
           </FormGroup>
-          <Button onClick={this.submit}>Submit</Button>
+          <Button onClick={this.submit}>{t('createEscrowFrom.submit')}</Button>
         </Form>
       </CardBody>
     </Card>;
@@ -64,9 +65,10 @@ class CreateEscrowForm extends Component {
 }
 
 CreateEscrowForm.propTypes = {
+  t: PropTypes.func,
   create: PropTypes.func,
   error: PropTypes.string,
   result: PropTypes.object
 };
 
-export default CreateEscrowForm;
+export default withNamespaces()(CreateEscrowForm);

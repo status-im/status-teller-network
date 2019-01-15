@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, FormGroup, Input, Label} from "reactstrap";
 import PropTypes from 'prop-types';
+import { withNamespaces } from 'react-i18next';
 
 const Options = () => {
   const buttons = [];
@@ -29,7 +30,7 @@ class Rating extends Component {
   render() {
     const disabled = this.props.rating !== 0;
     return (<FormGroup>
-      <Label for="exampleSelect">Rating: </Label>
+      <Label for="exampleSelect">{this.props.t('rating.label')} </Label>
       <Input type="select" name="select" id="exampleSelect" disabled={disabled}
              onChange={(e) => this.onChange(e)} value={this.props.rating || this.state.rating}>
         <Options/>
@@ -40,9 +41,10 @@ class Rating extends Component {
 }
 
 Rating.propTypes = {
+  t: PropTypes.func,
   escrowId: PropTypes.string,
   rating: PropTypes.number,
   rateTransaction: PropTypes.func
 };
 
-export default Rating;
+export default withNamespaces()(Rating);

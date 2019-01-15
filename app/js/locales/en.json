@@ -1,0 +1,57 @@
+{
+  "header": {
+    "title": "Status Teller network",
+    "prices": "Prices",
+    "my_escrows": "My Escrows",
+    "map": "Map"
+  },
+  "createEscrowFrom": {
+    "title": "Create an Escrow",
+    "error": "Error while creating an escrow",
+    "receipt": "Escrow receipt:",
+    "value": "Value",
+    "submit": "Submit"
+  },
+  "escrowList": {
+    "title": "Escrow List",
+    "loading": "Loading...",
+    "error": "Error:",
+    "empty": "No Escrows",
+    "head": {
+      "state": "State",
+      "value": "Value",
+      "expiration": "Expiration",
+      "seller": "Seller",
+      "buyer": "Buyer",
+      "actions": "Actions"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "release": "Release"
+    },
+    "state": {
+      "released": "Released",
+      "canceled": "Canceled",
+      "expired": "Expired",
+      "waiting": "Waiting"
+    }
+  },
+  "license": {
+    "title": "License",
+    "rating": "Rating:",
+    "buy": "Buy license",
+    "alreadyOwner": "You already own a license"
+  },
+  "map": {
+    "loading": "Loading...",
+    "denied": "You denied access to your position. We do not store that information, it is only to position you the following map." 
+  },
+  "rating": {
+    "label": "Rating:"
+  },
+  "sellerList": {
+    "title": "ETH Sellers",
+    "address": "Address:",
+    "error": "Error getting seller list:"
+  }
+}

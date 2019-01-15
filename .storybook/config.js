@@ -9,3 +9,4 @@ function loadStories() {
 configure(loadStories, module);
 
 import 'bootstrap/dist/css/bootstrap.css';
+import '../app/js/i18n';
