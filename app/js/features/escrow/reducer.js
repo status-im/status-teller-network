@@ -8,11 +8,21 @@ import {
   RELEASE_ESCROW_FAILED,
   CANCEL_ESCROW_FAILED,
   CANCEL_ESCROW_SUCCEEDED,
-  RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
+  RATE_TRANSACTION_FAILED,
+  RATE_TRANSACTION_SUCCEEDED,
+  PAY_ESCROW_SUCCEEDED,
+  PAY_ESCROW_FAILED,
+  PAY_ESCROW_SIGNATURE_SUCCEEDED,
+  PAY_ESCROW_SIGNATURE_FAILED,
+  OPEN_CASE_FAILED,
+  OPEN_CASE_SUCCEEDED,
+  OPEN_CASE_SIGNATURE_SUCCEEDED,
+  OPEN_CASE_SIGNATURE_FAILED,
+  CLOSE_DIALOG
 } from './constants';
 import cloneDeep from 'clone-deep';
 
-const DEFAULT_STATE = {escrows: []};
+const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null};
 
 const escrowBuilder = function (escrowObject) {
   return {
@@ -56,9 +66,20 @@ function reducer(state = DEFAULT_STATE, action) {
     case CANCEL_ESCROW_FAILED:
     case GET_ESCROWS_FAILED:
     case RATE_TRANSACTION_FAILED:
+    case PAY_ESCROW_FAILED:
+    case OPEN_CASE_FAILED:
+    case PAY_ESCROW_SIGNATURE_FAILED:
+    case OPEN_CASE_SIGNATURE_FAILED:
       return {...state, ...{
           errorGet: action.error,
           loading: false
+        }};
+    case PAY_ESCROW_SIGNATURE_SUCCEEDED:
+    case OPEN_CASE_SIGNATURE_SUCCEEDED:
+      return { ...state, ...{
+          message: action.signedMessage,
+          type: action.signatureType,
+          escrowId: action.escrowId
         }};
     case RELEASE_ESCROW_SUCCEEDED:
       escrows[action.escrowId].released = true;
@@ -66,6 +87,17 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           errorGet: ''
         }};
+    case PAY_ESCROW_SUCCEEDED:
+      escrows[action.escrowId].paid = true;
+      return {...state, ...{
+        escrows,
+        errorGet: ''
+      }};
+    case OPEN_CASE_SUCCEEDED:
+      return {...state, ...{
+        escrows,
+        errorGet: ''
+      }};
     case CANCEL_ESCROW_SUCCEEDED:
       escrows[action.escrowId].canceled = true;
       return {...state, ...{
@@ -78,6 +110,12 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           errorGet: ''
         }};
+    case CLOSE_DIALOG: 
+      return {...state, ...{
+        message: null,
+        type: null,
+        escrowId: null
+      }};
     default:
       return state;
   }

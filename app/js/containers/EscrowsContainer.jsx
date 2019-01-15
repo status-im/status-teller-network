@@ -31,6 +31,11 @@ class EscrowsContainer extends Component {
       <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
 
       <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
+                  openCase={this.props.openCase} payEscrow={this.props.payEscrow}
+                  signature={this.props.signature}
+                  payEscrowSignature={this.props.payEscrowSignature}
+                  openCaseSignature={this.props.openCaseSignature}
+                  closeDialog={this.props.closeDialog}
                   cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
                   rateTransaction={this.props.rateTransaction}/>
     </Fragment>;
@@ -43,10 +48,16 @@ EscrowsContainer.propTypes = {
   buyLicense: PropTypes.func,
   createEscrow: PropTypes.func,
   releaseEscrow: PropTypes.func,
+  payEscrow: PropTypes.func,
+  payEscrowSignature: PropTypes.func,
+  openCase: PropTypes.func,
+  openCaseSignature: PropTypes.func,
+  closeDialog: PropTypes.func,
   cancelEscrow: PropTypes.func,
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
+  signature: PropTypes.object,
   escrowsLoading: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
@@ -64,7 +75,8 @@ const mapStateToProps = state => ({
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
   escrowsLoading: escrow.selectors.loading(state),
-  escrows: escrow.selectors.escrows(state)
+  escrows: escrow.selectors.escrows(state),
+  signature: escrow.selectors.signature(state)
 });
 
 export default connect(
@@ -73,10 +85,15 @@ export default connect(
     buyLicense: license.actions.buyLicense,
     createEscrow: escrow.actions.createEscrow,
     getEscrows: escrow.actions.getEscrows,
+    payEscrow: escrow.actions.payEscrow,
+    payEscrowSignature: escrow.actions.payEscrowSignature,
+    openCase: escrow.actions.openCase,
+    openCaseSignature: escrow.actions.openCaseSignature,
     releaseEscrow: escrow.actions.releaseEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
     rateTransaction: escrow.actions.rateTransaction,
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    checkUserRating: license.actions.checkUserRating
+    checkUserRating: license.actions.checkUserRating,
+    closeDialog: escrow.actions.closeDialog
   }
 )(EscrowsContainer);

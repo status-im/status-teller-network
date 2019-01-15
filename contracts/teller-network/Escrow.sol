@@ -113,8 +113,8 @@ contract Escrow is Pausable, MessageSigned {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
-        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
-        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
+        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
+        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
 
         _release(_escrowId, trx);
     }
@@ -147,8 +147,9 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.released == false, "Transaction already released");
-        require(trx.canceled == false, "Transaction already canceled");
+        require(!trx.paid, "Transaction already paid");
+        require(!trx.released, "Transaction already released");
+        require(!trx.canceled, "Transaction already canceled");
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
         require(trx.buyer == _sender || trx.seller == _sender, "Function can only be invoked by the escrow buyer or seller");
 
@@ -207,11 +208,11 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
-        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
+        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
+        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
         require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
         require(trx.expirationTime < block.timestamp, "Transaction has not expired");
-        require(trx.paid == false, "Cannot cancel an already paid transaction. Open a case");
+        require(!trx.paid, "Cannot cancel an already paid transaction. Open a case");
 
         _cancel(_escrowId, trx);
     }
@@ -246,9 +247,9 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.released == false, TRANSACTION_ALREADY_RELEASED);
-        require(trx.canceled == false, TRANSACTION_ALREADY_CANCELED);
-        require(trx.paid == false, "Cannot withdraw an already paid transaction. Open a case");
+        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
+        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
+        require(!trx.paid, "Cannot withdraw an already paid transaction. Open a case");
 
         _cancel(_escrowId, trx);
     }
@@ -271,7 +272,7 @@ contract Escrow is Pausable, MessageSigned {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
-        require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Can't rate a transaction that has an arbitration process");
+        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Can't rate a transaction that has an arbitration process");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
@@ -313,7 +314,7 @@ contract Escrow is Pausable, MessageSigned {
      * @dev Consider using Aragon Court for this.
      */
     function openCase(uint _escrowId) public {
-        require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
+        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
         require(transactions[_escrowId].buyer == msg.sender || transactions[_escrowId].seller == msg.sender, "Only a buyer or seller can open a case");
         require(transactions[_escrowId].paid == true, "Cases can only be open for paid transactions");
 
@@ -334,7 +335,7 @@ contract Escrow is Pausable, MessageSigned {
      * @dev Consider opening a dispute in aragon court.
      */
     function openCase(uint _escrowId, bytes calldata _signature) external {
-        require(arbitrationCases[_escrowId].open == false && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
+        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
         require(transactions[_escrowId].paid == true, "Cases can only be open for paid transactions");
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
@@ -357,7 +358,7 @@ contract Escrow is Pausable, MessageSigned {
      * @param _result Result of the arbitration
      */
     function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public onlyArbitrator {
-        require(arbitrationCases[_escrowId].open == true && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
+        require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
 
         EscrowTransaction storage trx = transactions[_escrowId];

@@ -56,7 +56,7 @@ module.exports = {
        args: ["$SNT", "0x0000000000000000000000000000000000000000", 10, 86400 * 365]
       },
       Escrow: {
-        args: ["$License", "$accounts[0]"]
+        args: ["$License", "$accounts[1]"]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
@@ -89,12 +89,12 @@ module.exports = {
       // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
       accounts: [
         {
-          nodeAccounts: true,
+          nodeAccounts: true
         },
         {
           mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
           balance: "5 ether",
-          numAddresses: "10",
+          numAddresses: "10"
         }
       ]
     },

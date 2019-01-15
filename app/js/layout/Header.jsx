@@ -45,6 +45,12 @@ class Header extends Component {
             <NavItem>
               <NavLink tag={Link} to="/map">{t('header.map')}</NavLink>
             </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/signature">Include signatures</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/arbitration">Arbitration</NavLink>
+            </NavItem>
           </Nav>
         </Collapse>
       </Navbar>

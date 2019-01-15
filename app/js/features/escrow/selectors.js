@@ -6,3 +6,8 @@ export const escrows = state => state.escrow.escrows.map(escrow => {
 });
 export const errorGet = state => state.escrow.errorGet;
 export const loading = state => state.escrow.loading;
+export const signature = state => {
+  const {message, escrowId, type} = state.escrow;
+  return {message, escrowId, type};
+};
+

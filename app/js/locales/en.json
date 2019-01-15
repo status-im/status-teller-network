@@ -27,13 +27,20 @@
     },
     "actions": {
       "cancel": "Cancel",
-      "release": "Release"
+      "release": "Release",
+      "markAsPaid": "Mark as paid",
+      "signAsPaid": "Sign as paid (for relayers)",
+      "openCase": "Open arbitration case",
+      "openCaseSignature": "Open a case signature (for relayers)"
     },
     "state": {
       "released": "Released",
       "canceled": "Canceled",
       "expired": "Expired",
-      "waiting": "Waiting"
+      "waiting": "Waiting",
+      "paid": "Paid",
+      "inArbitration": "In Arbitration",
+      "arbitrationCompleted": "Arbitration Completed"
     }
   },
   "license": {
