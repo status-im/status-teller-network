@@ -9,7 +9,9 @@
     "title": "Create an Escrow",
     "error": "Error while creating an escrow",
     "receipt": "Escrow receipt:",
-    "value": "Value",
+    "buyer": "Buyer address",
+    "amount": "Amount (in wei)",
+    "expiration": "Expiration (must be at least in 10 minutes)",
     "submit": "Submit"
   },
   "escrowList": {
@@ -60,5 +62,10 @@
     "title": "ETH Sellers",
     "address": "Address:",
     "error": "Error getting seller list:"
+  },
+  "validators": {
+    "required": "This field is required",
+    "isInteger": "This field needs to be an integer",
+    "isAddress": "This field needs to be a valid Ethereum address"
   }
 }

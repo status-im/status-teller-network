@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {getEscrowState, escrowStates} from "../features/escrow/helpers";
 import {SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE} from "../features/escrow/constants";
 import Rating from "./Rating";
+import moment from 'moment';
 import { withNamespaces } from 'react-i18next';
 import SignatureDialog from "./SignatureDialog";
 
@@ -67,7 +68,7 @@ const EscrowList = (props) => (
             <td>{getEscrowStateText(escrow, props.t)}</td>
             <td>{escrow.buyer === web3.eth.defaultAccount ? escrow.seller : escrow.buyer}</td>
             <td>{escrow.amount}</td>
-            <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
+            <td>{moment(escrow.expirationTime * 1000).toString()}</td>
             <td>
               {escrow.state === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
               <Button color="success" size="sm" className="mb-1" block
