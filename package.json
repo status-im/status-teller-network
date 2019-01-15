@@ -6,7 +6,9 @@
     "test": "embark test",
     "lint": "eslint app/js/",
     "storybook": "start-storybook -p 9009",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +23,7 @@
     "@storybook/react": "^4.1.4",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
+    "cypress": "^3.1.4",
     "eslint": "5.7.0",
     "eslint-plugin-react": "7.11.1"
   },
