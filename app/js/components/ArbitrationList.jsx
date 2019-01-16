@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
 import Address from "../components/Address";
 import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
-import moment from 'moment';
 
 function getArbitrationState(escrow) {
   if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
@@ -45,7 +44,7 @@ const ArbitrationList = (props) => (
             <td><Address address={escrow.buyer} compact={true} /></td>
             <td>{escrow.buyer === escrow.arbitration.openBy ? 'Buyer' : 'Seller'}</td>
             <td>{escrow.amount}</td>
-            <td>{moment(escrow.expirationTime * 1000).toString()}</td>
+            <td>{escrow.expirationTime.toString()}</td>
             <td>
               <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute} escrowId={escrow.escrowId}/>
             </td>

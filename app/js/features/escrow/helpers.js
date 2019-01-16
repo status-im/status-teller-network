@@ -24,7 +24,7 @@ export function getEscrowState(escrow) {
   if (escrow.canceled) {
     return escrowStates.canceled;
   }
-  if (escrow.expirationTime <= Date.now() / 1000) {
+  if (escrow.expirationTime.valueOf() <= Date.now()) {
     return escrowStates.expired;
   }
   return escrowStates.waiting;

@@ -1,5 +1,5 @@
 import React from 'react';
-import web3 from 'Embark/web3';
+import Web3 from 'web3';
 import {FormFeedback} from "reactstrap";
 import {NamespacesConsumer} from 'react-i18next';
 
@@ -21,7 +21,7 @@ export const isInteger = (value) => {
 };
 
 export const isAddress = (value) => {
-  if (!web3.utils.isAddress(value)) {
+  if (!Web3.utils.isAddress(value)) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.isAddress')}</FormFeedback>}
     </NamespacesConsumer>;
