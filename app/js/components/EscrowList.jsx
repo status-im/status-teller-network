@@ -67,7 +67,7 @@ const EscrowList = (props) => (
             <td>{getEscrowStateText(escrow, props.t)}</td>
             <td>{escrow.buyer === web3.eth.defaultAccount ? escrow.seller : escrow.buyer}</td>
             <td>{escrow.amount}</td>
-            <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
+            <td>{escrow.expirationTime.toString()}</td>
             <td>
               {escrow.state === escrowStates.waiting && escrow.seller === web3.eth.defaultAccount &&
               <Button color="success" size="sm" className="mb-1" block
@@ -79,7 +79,7 @@ const EscrowList = (props) => (
               <Button color="warning" size="sm" block
                       onClick={() => props.cancelEscrow(escrow.escrowId)}>{props.t('escrowList.actions.cancel')}</Button>}
               {escrow.state === escrowStates.released && !escrow.arbitration && escrow.buyer === web3.eth.defaultAccount &&
-              <Rating rating={parseInt(escrow.rating, 10)} rateTransaction={props.rateTransaction}
+              <Rating rating={escrow.rating} rateTransaction={props.rateTransaction}
                         escrowId={escrow.escrowId}/>}
               {escrow.state === escrowStates.waiting && escrow.buyer === web3.eth.defaultAccount  && <Fragment>
                 <Button color="warning" size="sm" block onClick={() => props.payEscrow(escrow.escrowId)}>{props.t('escrowList.actions.markAsPaid')}</Button>

@@ -1,4 +1,3 @@
-/*global web3*/
 import React from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -45,7 +44,7 @@ const ArbitrationList = (props) => (
             <td><Address address={escrow.buyer} compact={true} /></td>
             <td>{escrow.buyer === escrow.arbitration.openBy ? 'Buyer' : 'Seller'}</td>
             <td>{escrow.amount}</td>
-            <td>{new Date(escrow.expirationTime * 1000).toString()}</td>
+            <td>{escrow.expirationTime.toString()}</td>
             <td>
               <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute} escrowId={escrow.escrowId}/>
             </td>

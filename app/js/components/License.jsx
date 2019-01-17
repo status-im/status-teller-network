@@ -24,7 +24,7 @@ const License = (props) => (
       <CardTitle>{props.t('license.title')}</CardTitle>
     </CardHeader>
     <CardBody>
-      {props.error && <Alert color="danger">{this.props.error}</Alert>}
+      {props.error && <Alert color="danger">{props.error}</Alert>}
       {props.isLicenseOwner ? <IsLicenseOwner t={props.t}/> : <BuyLicense buyLicense={props.buyLicense} t={props.t}/>}
       <p>{props.t('license.rating')} {props.userRating ? props.userRating : '-'}</p>
     </CardBody>

@@ -4,6 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from '@storybook/addon-actions';
 import cloneDeep from 'clone-deep';
+import moment from 'moment';
 
 import EscrowList from '../app/js/components/EscrowList';
 
@@ -19,7 +20,7 @@ const escrows = [
     buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
     seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
     amount: 5,
-    expirationTime: (Date.now() / 1000) + 60000,
+    expirationTime: moment(Date.now() + 60000),
     rating: 4,
     released: true,
     canceled: false
@@ -29,7 +30,7 @@ const escrows = [
     buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
     seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
     amount: 6,
-    expirationTime: (Date.now() / 1000) + 60000,
+    expirationTime: moment(Date.now() + 60000),
     rating: 0,
     released: false,
     canceled: false
@@ -39,7 +40,7 @@ const escrows = [
     buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
     seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
     amount: 2,
-    expirationTime: (Date.now() / 1000) - 60000,
+    expirationTime: moment(Date.now() - 60000),
     rating: 0,
     released: false,
     canceled: false
@@ -49,7 +50,7 @@ const escrows = [
     buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
     seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
     amount: 8,
-    expirationTime: (Date.now() / 1000) - 60000,
+    expirationTime: moment(Date.now() - 60000),
     rating: 0,
     released: false,
     canceled: true
