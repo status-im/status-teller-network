@@ -3,7 +3,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from "@storybook/addon-info";
 
-import SellerList from '../app/js/components/SellerList';
+import SellerList, {SellerListComponent} from '../app/js/components/SellerList';
+
+const info = {inline: true, propTables: [SellerListComponent], propTablesExclude: [SellerList]};
 
 const owners = [
   {
@@ -17,13 +19,13 @@ const owners = [
 storiesOf('SellerList', module)
   .add(
     "Seller List",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <SellerList licenseOwners={owners} licenseOwnersError={false}/>
     ))
   )
   .add(
     "List error",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <SellerList licenseOwners={[]} licenseOwnersError="Error loading"/>
     ))
   );

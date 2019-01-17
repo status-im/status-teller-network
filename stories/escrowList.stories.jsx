@@ -6,7 +6,7 @@ import {action} from '@storybook/addon-actions';
 import cloneDeep from 'clone-deep';
 import moment from 'moment';
 
-import EscrowList from '../app/js/components/EscrowList';
+import EscrowList, {EscrowListComponent} from '../app/js/components/EscrowList';
 
 global.web3 = {
   eth: {
@@ -23,7 +23,8 @@ const escrows = [
     expirationTime: moment(Date.now() + 60000),
     rating: 4,
     released: true,
-    canceled: false
+    canceled: false,
+    paid: false
   },
   {
     escrowId: 1,
@@ -33,7 +34,8 @@ const escrows = [
     expirationTime: moment(Date.now() + 60000),
     rating: 0,
     released: false,
-    canceled: false
+    canceled: false,
+    paid: false
   },
   {
     escrowId: 2,
@@ -43,17 +45,54 @@ const escrows = [
     expirationTime: moment(Date.now() - 60000),
     rating: 0,
     released: false,
-    canceled: false
+    canceled: false,
+    paid: false
   },
   {
     escrowId: 3,
+    buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
+    seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
+    amount: 2,
+    expirationTime: moment(Date.now() - 60000),
+    rating: 0,
+    released: false,
+    canceled: false,
+    paid: true
+  },
+  {
+    escrowId: 4,
     buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
     seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
     amount: 8,
     expirationTime: moment(Date.now() - 60000),
     rating: 0,
     released: false,
-    canceled: true
+    canceled: true,
+    paid: false
+  },
+  {
+    escrowId: 5,
+    buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
+    seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
+    amount: 8,
+    arbitration: {open: true, result: "0"},
+    expirationTime: moment(Date.now() - 60000),
+    rating: 0,
+    paid: true,
+    released: false,
+    canceled: false
+  },
+  {
+    escrowId: 6,
+    buyer: '0xBa31E1a4Ce37FE67DcAEa7950D379CB89A36867d',
+    seller: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3',
+    amount: 8,
+    arbitration: {open: true, result: "1"},
+    expirationTime: moment(Date.now() - 60000),
+    rating: 0,
+    paid: true,
+    released: false,
+    canceled: false
   }
 ];
 
@@ -65,10 +104,12 @@ sellerEscrows.forEach(escrow => {
   escrow.seller = buyer;
 });
 
+const info = {inline: true, propTables: [EscrowListComponent], propTablesExclude: [EscrowList]};
+
 storiesOf('EscrowList', module)
   .add(
     "Buyer List",
-    withInfo({inline: true})(() => (
+    withInfo(info)(() => (
       <EscrowList escrows={escrows} releaseEscrow={action("release-escrow")}
                   cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
                   loading={false} error={false}/>
@@ -76,7 +117,7 @@ storiesOf('EscrowList', module)
   )
   .add(
     "Seller List",
-    withInfo({inline: true})(() => (
+    withInfo(info)(() => (
       <EscrowList escrows={sellerEscrows} releaseEscrow={action("release-escrow")}
                   cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
                   loading={false} error={false}/>
@@ -84,7 +125,7 @@ storiesOf('EscrowList', module)
   )
   .add(
     "Loading List",
-    withInfo({inline: true})(() => (
+    withInfo(info)(() => (
       <EscrowList escrows={[]} releaseEscrow={action("release-escrow")}
                   cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
                   loading={true} error={false}/>
@@ -92,7 +133,7 @@ storiesOf('EscrowList', module)
   )
   .add(
     "Error doing something",
-    withInfo({inline: true})(() => (
+    withInfo(info)(() => (
       <EscrowList escrows={escrows} releaseEscrow={action("release-escrow")}
                   cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
                   loading={false} error="Error releasing or something"/>
@@ -100,7 +141,7 @@ storiesOf('EscrowList', module)
   )
   .add(
     "Empty list",
-    withInfo({inline: true})(() => (
+    withInfo(info)(() => (
       <EscrowList escrows={[]} releaseEscrow={action("release-escrow")}
                   cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
                   loading={false} error={false}/>

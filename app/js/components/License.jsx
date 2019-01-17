@@ -39,4 +39,5 @@ License.propTypes = {
   buyLicense: PropTypes.func
 };
 
+export const LicenseComponent = License;
 export default withNamespaces()(License);

@@ -115,4 +115,5 @@ EscrowList.propTypes = {
   error: PropTypes.string
 };
 
+export const EscrowListComponent = EscrowList;
 export default withNamespaces()(EscrowList);

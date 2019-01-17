@@ -21,4 +21,5 @@ SellerList.propTypes = {
   licenseOwnersError: PropTypes.string
 };
 
+export const SellerListComponent = SellerList;
 export default withNamespaces()(SellerList);
