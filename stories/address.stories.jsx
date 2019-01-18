@@ -6,7 +6,6 @@ import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
 import Address from '../app/js/components/Address';
 
-
 storiesOf('Address', module)
   .addDecorator(withKnobs)
   .add(

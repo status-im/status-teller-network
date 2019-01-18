@@ -103,5 +103,4 @@ CreateEscrowForm.propTypes = {
   result: PropTypes.object
 };
 
-export const CreateEscrowFormComponent = CreateEscrowForm;
 export default withNamespaces()(CreateEscrowForm);

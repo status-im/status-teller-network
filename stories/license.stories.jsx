@@ -4,9 +4,9 @@ import { storiesOf } from '@storybook/react';
 import { withInfo } from "@storybook/addon-info";
 import { action } from '@storybook/addon-actions';
 
-import License, {LicenseComponent} from '../app/js/components/License';
+import License from '../app/js/components/License';
 
-const info = {inline: true, propTables: [LicenseComponent], propTablesExclude: [License]};
+const info = {inline: true, propTables: [License.WrappedComponent]};
 
 storiesOf('License', module)
   .add(

@@ -3,9 +3,9 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from "@storybook/addon-info";
 
-import SellerList, {SellerListComponent} from '../app/js/components/SellerList';
+import SellerList from '../app/js/components/SellerList';
 
-const info = {inline: true, propTables: [SellerListComponent], propTablesExclude: [SellerList]};
+const info = {inline: true, propTables: [SellerList.WrappedComponent]};
 
 const owners = [
   {

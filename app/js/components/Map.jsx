@@ -20,7 +20,7 @@ const fakeData = [
   {name: 'Memphis', address: '0xdf18cb4f2005bc52f94e9bd6c31f7b0c6394e2c2'}
 ];
 
-class Map extends Component {
+export class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -110,7 +110,6 @@ Map.propTypes = {
   google: PropTypes.object
 };
 
-export const MapComponent = Map;
 export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyALAskxuamVIKbyUiw6CxgfVTk6YM2wYu8&v=3.exp&libraries=geometry,drawing,places",
