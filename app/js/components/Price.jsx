@@ -16,7 +16,6 @@ const Price = (props) => (
   </Card>
 );
 
-
 Price.propTypes = {
   logo: PropTypes.string,
   price: PropTypes.number,

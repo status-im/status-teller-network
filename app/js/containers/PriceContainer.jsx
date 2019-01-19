@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { getEthUsdPrice, getSntUsdPrice, hasPricesError } from '../features/prices/reducer';
+import { withNamespaces } from 'react-i18next';
 
 import Price from '../components/Price';
 
-const PriceContainer = ({ ethUsd, sntUsd, hasErrors }) => (
+const PriceContainer = ({ ethUsd, sntUsd, hasErrors, t }) => (
   <div>
     {hasErrors &&
-      <p>Could not fetch prices</p>
+      <p>{t('price.fetchError')}</p>
     }
     {!hasErrors &&
       <div>
@@ -26,8 +27,9 @@ const mapStateToProps = state => ({
 });
 
 PriceContainer.propTypes = {
+  t: PropTypes.func,
   ethUsd: PropTypes.number,
   sntUsd: PropTypes.number
 };
 
-export default connect(mapStateToProps)(PriceContainer);
+export default withNamespaces()(connect(mapStateToProps)(PriceContainer));

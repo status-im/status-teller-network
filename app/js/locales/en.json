@@ -49,11 +49,15 @@
     "title": "License",
     "rating": "Rating:",
     "buy": "Buy license",
-    "alreadyOwner": "You already own a license"
+    "alreadyOwner": "You already own a license",
+    "noRating": "No rating available yet"
   },
   "map": {
     "loading": "Loading...",
-    "denied": "You denied access to your position. We do not store that information, it is only to position you the following map." 
+    "denied": "You denied access to your position. We do not store that information, it is only to position you the following map."
+  },
+  "price": {
+    "fetchError": "Could not fetch prices"
   },
   "rating": {
     "label": "Rating:"
