@@ -20,7 +20,7 @@ const fakeData = [
   {name: 'Memphis', address: '0xdf18cb4f2005bc52f94e9bd6c31f7b0c6394e2c2'}
 ];
 
-class Map extends Component {
+export class Map extends Component {
   constructor(props) {
     super(props);
     this.state = {

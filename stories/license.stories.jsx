@@ -6,15 +6,17 @@ import { action } from '@storybook/addon-actions';
 
 import License from '../app/js/components/License';
 
+const info = {inline: true, propTables: [License.WrappedComponent]};
+
 storiesOf('License', module)
   .add(
     "Display License",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <License buyLicense={action("buy-license")}/>
     ))
   ).add(
     "Display License when already own one",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <License isLicenseOwner/>
     ))
   );

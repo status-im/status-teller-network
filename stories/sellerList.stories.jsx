@@ -5,6 +5,8 @@ import { withInfo } from "@storybook/addon-info";
 
 import SellerList from '../app/js/components/SellerList';
 
+const info = {inline: true, propTables: [SellerList.WrappedComponent]};
+
 const owners = [
   {
     address: '0xB8D851486d1C953e31A44374ACa11151D49B8bb3'
@@ -17,13 +19,13 @@ const owners = [
 storiesOf('SellerList', module)
   .add(
     "Seller List",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <SellerList licenseOwners={owners} licenseOwnersError={false}/>
     ))
   )
   .add(
     "List error",
-    withInfo({ inline: true })(() => (
+    withInfo(info)(() => (
       <SellerList licenseOwners={[]} licenseOwnersError="Error loading"/>
     ))
   );
