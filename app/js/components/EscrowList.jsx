@@ -8,6 +8,8 @@ import Rating from "./Rating";
 import {withNamespaces} from 'react-i18next';
 import SignatureDialog from "./SignatureDialog";
 import TransactionHash from "./TransactionHash";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 
 function getEscrowStateText(escrow, t) {
   switch (getEscrowState(escrow)) {
@@ -46,7 +48,7 @@ const EscrowList = (props) => (
         <CardTitle>{props.t('escrowList.title')}</CardTitle>
       </CardHeader>
       <CardBody>
-        {props.loading && <p>{props.t('escrowList.loading')}</p>}
+        {props.loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{props.t('escrowList.loading')}</p>}
         {props.txHash && <TransactionHash txHash={props.txHash}/>}
         {props.error &&
         <Alert color="danger">{props.t('escrowList.error')} {props.error}</Alert>}

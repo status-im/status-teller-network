@@ -25,7 +25,7 @@ class EscrowsContainer extends Component {
   render() {
     const {error, userRating, isLicenseOwner, isCreateLoading, escrowError, escrowReceipt, escrows, releaseEscrow,
       openCase, payEscrow, signature, payEscrowSignature, openCaseSignature, closeDialog, cancelEscrow,
-      errorGet, escrowsLoading, rateTransaction, createdTxHash, txHashList} = this.props;
+      errorGet, loadingList, rateTransaction, createdTxHash, txHashList} = this.props;
 
     return <Fragment>
       <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating} error={error}/>
@@ -40,7 +40,7 @@ class EscrowsContainer extends Component {
                   payEscrowSignature={payEscrowSignature}
                   openCaseSignature={openCaseSignature}
                   closeDialog={closeDialog}
-                  cancelEscrow={cancelEscrow} error={errorGet} loading={escrowsLoading}
+                  cancelEscrow={cancelEscrow} error={errorGet} loading={loadingList}
                   rateTransaction={rateTransaction} txHash={txHashList}/>
     </Fragment>;
   }
@@ -65,7 +65,7 @@ EscrowsContainer.propTypes = {
   createdTxHash: PropTypes.string,
   txHashList: PropTypes.string,
   signature: PropTypes.object,
-  escrowsLoading: PropTypes.bool,
+  loadingList: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
   userRating: PropTypes.number,
@@ -82,7 +82,7 @@ const mapStateToProps = state => ({
   isCreateLoading: escrow.selectors.isLoading(state),
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
-  escrowsLoading: escrow.selectors.loading(state),
+  loadingList: escrow.selectors.loadingList(state),
   createdTxHash: escrow.selectors.txHash(state),
   txHashList: escrow.selectors.txHashList(state),
   escrows: escrow.selectors.escrows(state),

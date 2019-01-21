@@ -11,7 +11,7 @@ export const escrows = state => state.escrow.escrows.map(escrow => {
   return escrow;
 });
 export const errorGet = state => state.escrow.errorGet;
-export const loading = state => state.escrow.loading;
+export const loadingList = state => state.escrow.loadingList;
 export const signature = state => {
   const {message, escrowId, type} = state.escrow;
   return {message, escrowId, type};
