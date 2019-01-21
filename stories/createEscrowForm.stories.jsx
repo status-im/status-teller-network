@@ -15,6 +15,12 @@ storiesOf('CreateEscrowForm', module)
     ))
   )
   .add(
+    "Loading Form",
+    withInfo(info)(() => (
+      <CreateEscrowForm create={action("create-escrow")} result={null} error="" isLoading={true}/>
+    ))
+  )
+  .add(
     "Form with error",
     withInfo(info)(() => (
       <CreateEscrowForm create={action("create-escrow")} result={null} error="Error while creating"/>

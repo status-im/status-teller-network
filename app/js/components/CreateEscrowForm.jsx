@@ -7,6 +7,8 @@ import classnames from 'classnames';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isInteger, isAddress, required} from '../validators';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import '../../../node_modules/react-datetime/css/react-datetime.css';
 import '../../css/Form.scss';
@@ -62,34 +64,35 @@ class CreateEscrowForm extends Component {
 
   render() {
     const {expiration, buyer, amount, expirationError, error} = this.state;
-    const {t} = this.props;
+    const {t, isLoading, result, error: propsError} = this.props;
     return <Card className="mt-2">
       <CardHeader>
         <CardTitle>{t('createEscrowFrom.title')}</CardTitle>
       </CardHeader>
       <CardBody>
         <Form ref={c => { this.form = c; }}>
-          {(this.props.error || error) &&
-          <Alert color="danger">{t('createEscrowFrom.error')} {this.props.error || error}</Alert>}
-          {this.props.result &&
-          <Alert color="success">{t('createEscrowFrom.receipt')} <pre>{JSON.stringify(this.props.result, null, 2)}</pre></Alert>}
+          {isLoading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/> Creating...</p>}
+          {(propsError || error) &&
+          <Alert color="danger">{t('createEscrowFrom.error')} {propsError || error}</Alert>}
+          {result &&
+          <Alert color="success">{t('createEscrowFrom.receipt')} <pre>{JSON.stringify(result, null, 2)}</pre></Alert>}
           <FormGroup>
             <Label for="buyer">{t('createEscrowFrom.buyer')}</Label>
             <Input type="text" name="buyer" id="buyer" placeholder="Address of the buyer" className="form-control"
-                   onChange={(e) => this.onBuyerChange(e)} value={buyer} validations={[required, isAddress]}/>
+                   onChange={(e) => this.onBuyerChange(e)} value={buyer} validations={[required, isAddress]} disabled={isLoading}/>
           </FormGroup>
           <FormGroup>
             <Label for="amount">{t('createEscrowFrom.amount')}</Label>
             <Input type="number" name="amount" id="amount" placeholder="Amount your are selling" className="form-control"
-                   onChange={(e) => this.onAmountChange(e)} value={amount} validations={[required, isInteger]}/>
+                   onChange={(e) => this.onAmountChange(e)} value={amount} validations={[required, isInteger]} disabled={isLoading}/>
           </FormGroup>
           <FormGroup>
             <Label for="expiration">{t('createEscrowFrom.expiration')}</Label>
-            <Datetime inputProps={{className: classnames({'is-invalid': !!expirationError, 'form-control': true})}} value={expiration}
-                      onChange={(newDate) => this.onExpirationChange(newDate)}/>
+            <Datetime inputProps={{className: classnames({'is-invalid': !!expirationError, 'form-control': true}), disabled:isLoading}}
+                      value={expiration} onChange={(newDate) => this.onExpirationChange(newDate)}/>
             <FormFeedback className={classnames({'d-block': !!expirationError})}>{expirationError}</FormFeedback>
           </FormGroup>
-          <Button onClick={this.submit}>{t('createEscrowFrom.submit')}</Button>
+          <Button onClick={this.submit} disabled={isLoading}>{t('createEscrowFrom.submit')}</Button>
         </Form>
       </CardBody>
     </Card>;
@@ -100,7 +103,8 @@ CreateEscrowForm.propTypes = {
   t: PropTypes.func,
   create: PropTypes.func,
   error: PropTypes.string,
-  result: PropTypes.object
+  result: PropTypes.object,
+  isLoading: PropTypes.bool
 };
 
 export default withNamespaces()(CreateEscrowForm);
