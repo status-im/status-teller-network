@@ -21,6 +21,13 @@ storiesOf('CreateEscrowForm', module)
     ))
   )
   .add(
+    "Loading Form + Tx Hash",
+    withInfo(info)(() => (
+      <CreateEscrowForm create={action("create-escrow")} result={null} error="" isLoading={true}
+                        txHash="0xd152ad280723b7b275ff4da1eb8afa09e99077beef253a387f7bc1c61e826230"/>
+    ))
+  )
+  .add(
     "Form with error",
     withInfo(info)(() => (
       <CreateEscrowForm create={action("create-escrow")} result={null} error="Error while creating"/>

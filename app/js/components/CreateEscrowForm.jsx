@@ -9,6 +9,7 @@ import Input from 'react-validation/build/input';
 import {isInteger, isAddress, required} from '../validators';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import TransactionHash from './TransactionHash';
 
 import '../../../node_modules/react-datetime/css/react-datetime.css';
 import '../../css/Form.scss';
@@ -64,7 +65,7 @@ class CreateEscrowForm extends Component {
 
   render() {
     const {expiration, buyer, amount, expirationError, error} = this.state;
-    const {t, isLoading, result, error: propsError} = this.props;
+    const {t, isLoading, result, error: propsError, txHash} = this.props;
     return <Card className="mt-2">
       <CardHeader>
         <CardTitle>{t('createEscrowFrom.title')}</CardTitle>
@@ -72,6 +73,7 @@ class CreateEscrowForm extends Component {
       <CardBody>
         <Form ref={c => { this.form = c; }}>
           {isLoading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/> Creating...</p>}
+          {txHash && <TransactionHash txHash={txHash}/>}
           {(propsError || error) &&
           <Alert color="danger">{t('createEscrowFrom.error')} {propsError || error}</Alert>}
           {result &&
@@ -104,7 +106,8 @@ CreateEscrowForm.propTypes = {
   create: PropTypes.func,
   error: PropTypes.string,
   result: PropTypes.object,
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
+  txHash: PropTypes.string
 };
 
 export default withNamespaces()(CreateEscrowForm);

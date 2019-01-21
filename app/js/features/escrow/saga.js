@@ -3,7 +3,7 @@ import Escrow from 'Embark/contracts/Escrow';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
-  CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED,
+  CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
   RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED,
   CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
@@ -22,7 +22,10 @@ export function *createEscrow({expiration, value, buyer}) {
     // TODO do we want to change the token or always ETH?
     const toSend = Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration);
     const estimatedGas = yield call(toSend.estimateGas, {value});
-    const receipt = yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
+
+    const receipt = yield toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value}).on('transactionHash', (hash) => {
+      put({type: CREATE_ESCROW_PRE_SUCCESS, txHash: hash});
+    });
     yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
   } catch (error) {
     console.error(error);

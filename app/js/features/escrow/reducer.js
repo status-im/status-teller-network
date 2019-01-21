@@ -1,5 +1,6 @@
 import {
   CREATE_ESCROW_FAILED,
+  CREATE_ESCROW_PRE_SUCCESS,
   CREATE_ESCROW_SUCCEEDED,
   CREATE_ESCROW,
   GET_ESCROWS_SUCCEEDED,
@@ -23,7 +24,7 @@ import {
 } from './constants';
 import cloneDeep from 'clone-deep';
 
-const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null, loading: false, error: ''};
+const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null, loading: false, error: '', txHash: ''};
 
 const escrowBuilder = function (escrowObject) {
   return {
@@ -51,13 +52,19 @@ function reducer(state = DEFAULT_STATE, action) {
       return {...state, ...{
           error: '',
           receipt: null,
-          loading: true
+          loading: true,
+          txHash: ''
+        }};
+    case CREATE_ESCROW_PRE_SUCCESS:
+      return {...state, ...{
+          txHash: action.txHash
         }};
     case CREATE_ESCROW_FAILED:
       return {...state, ...{
           error: action.error,
           receipt: null,
-          loading: false
+          loading: false,
+          txHash: ''
         }};
     case CREATE_ESCROW_SUCCEEDED:
       escrows.push(escrowBuilder(action.receipt.events.Created.returnValues));
@@ -65,7 +72,8 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           receipt: action.receipt,
           error: '',
-          loading: false
+          loading: false,
+          txHash: ''
         }};
     case GET_ESCROWS:
       return {...state, ...{

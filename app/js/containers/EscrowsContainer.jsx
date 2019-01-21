@@ -25,13 +25,14 @@ class EscrowsContainer extends Component {
   render() {
     const {error, userRating, isLicenseOwner, isCreateLoading, escrowError, escrowReceipt, escrows, releaseEscrow,
       openCase, payEscrow, signature, payEscrowSignature, openCaseSignature, closeDialog, cancelEscrow,
-      errorGet, escrowsLoading, rateTransaction} = this.props;
+      errorGet, escrowsLoading, rateTransaction, createdTxHash} = this.props;
 
     return <Fragment>
       <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating} error={error}/>
 
       {isLicenseOwner &&
-      <CreateEscrowForm create={this.createEscrow} result={escrowReceipt} error={escrowError} isLoading={isCreateLoading}/>}
+      <CreateEscrowForm create={this.createEscrow} result={escrowReceipt} error={escrowError}
+                        isLoading={isCreateLoading} txHash={createdTxHash}/>}
 
       <EscrowList escrows={escrows} releaseEscrow={releaseEscrow}
                   openCase={openCase} payEscrow={payEscrow}
@@ -60,7 +61,8 @@ EscrowsContainer.propTypes = {
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
-  isCreateLoading: PropTypes.boolean,
+  isCreateLoading: PropTypes.bool,
+  createdTxHash: PropTypes.string,
   signature: PropTypes.object,
   escrowsLoading: PropTypes.bool,
   errorGet: PropTypes.string,
@@ -80,6 +82,7 @@ const mapStateToProps = state => ({
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
   escrowsLoading: escrow.selectors.loading(state),
+  createdTxHash: escrow.selectors.txHash(state),
   escrows: escrow.selectors.escrows(state),
   signature: escrow.selectors.signature(state)
 });
