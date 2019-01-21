@@ -6,8 +6,10 @@ import {
   GET_ESCROWS_SUCCEEDED,
   GET_ESCROWS_FAILED,
   GET_ESCROWS,
+  RELEASE_ESCROW,
   RELEASE_ESCROW_SUCCEEDED,
   RELEASE_ESCROW_FAILED,
+  RELEASE_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW_FAILED,
   CANCEL_ESCROW_SUCCEEDED,
   RATE_TRANSACTION_FAILED,
@@ -24,7 +26,8 @@ import {
 } from './constants';
 import cloneDeep from 'clone-deep';
 
-const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null, loading: false, error: '', txHash: ''};
+const DEFAULT_STATE = {escrows: [], message: null, type: null, escrowId: null, loading: false, error: '', txHash: '',
+  txHashList: ''};
 
 const escrowBuilder = function (escrowObject) {
   return {
@@ -40,6 +43,7 @@ const escrowBuilder = function (escrowObject) {
   };
 };
 
+// eslint-disable-next-line complexity
 function reducer(state = DEFAULT_STATE, action) {
   let escrows  = cloneDeep(state.escrows);
   let currentEscrow;
@@ -72,8 +76,7 @@ function reducer(state = DEFAULT_STATE, action) {
           escrows: escrows,
           receipt: action.receipt,
           error: '',
-          loading: false,
-          txHash: ''
+          loading: false
         }};
     case GET_ESCROWS:
       return {...state, ...{
@@ -94,7 +97,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case OPEN_CASE_SIGNATURE_FAILED:
       return {...state, ...{
           errorGet: action.error,
-          loading: false
+          loading: false,
+          txHashList:''
         }};
     case PAY_ESCROW_SIGNATURE_SUCCEEDED:
     case OPEN_CASE_SIGNATURE_SUCCEEDED:
@@ -102,6 +106,15 @@ function reducer(state = DEFAULT_STATE, action) {
           message: action.signedMessage,
           type: action.signatureType,
           escrowId: action.escrowId
+        }};
+    case RELEASE_ESCROW_PRE_SUCCESS:
+      return {...state, ...{
+          txHashList: action.txHash
+        }};
+    case RELEASE_ESCROW:
+      return {...state, ...{
+          txHashList: '',
+          errorGet: ''
         }};
     case RELEASE_ESCROW_SUCCEEDED:
       currentEscrow.released = true;

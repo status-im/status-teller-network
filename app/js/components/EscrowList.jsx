@@ -7,6 +7,7 @@ import {SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE} from "../features/escrow/constan
 import Rating from "./Rating";
 import {withNamespaces} from 'react-i18next';
 import SignatureDialog from "./SignatureDialog";
+import TransactionHash from "./TransactionHash";
 
 function getEscrowStateText(escrow, t) {
   switch (getEscrowState(escrow)) {
@@ -46,6 +47,7 @@ const EscrowList = (props) => (
       </CardHeader>
       <CardBody>
         {props.loading && <p>{props.t('escrowList.loading')}</p>}
+        {props.txHash && <TransactionHash txHash={props.txHash}/>}
         {props.error &&
         <Alert color="danger">{props.t('escrowList.error')} {props.error}</Alert>}
         {(!props.escrows || props.escrows.length === 0) && !props.loading && <p>{props.t('escrowList.empty')}</p>}
@@ -119,7 +121,8 @@ EscrowList.propTypes = {
   closeDialog: PropTypes.func,
   rateTransaction: PropTypes.func,
   loading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
+  txHash: PropTypes.string
 };
 
 export default withNamespaces()(EscrowList);

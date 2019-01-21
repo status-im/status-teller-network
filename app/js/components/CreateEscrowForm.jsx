@@ -72,7 +72,7 @@ class CreateEscrowForm extends Component {
       </CardHeader>
       <CardBody>
         <Form ref={c => { this.form = c; }}>
-          {isLoading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/> Creating...</p>}
+          {isLoading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{t('createEscrowFrom.creating')}...</p>}
           {txHash && <TransactionHash txHash={txHash}/>}
           {(propsError || error) &&
           <Alert color="danger">{t('createEscrowFrom.error')} {propsError || error}</Alert>}

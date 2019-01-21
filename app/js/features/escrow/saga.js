@@ -1,11 +1,12 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import {fork, takeEvery, call, put} from 'redux-saga/effects';
+import { eventChannel, END } from 'redux-saga';
+import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
-  RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED,
+  RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED,
   PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED,
@@ -23,10 +24,27 @@ export function *createEscrow({expiration, value, buyer}) {
     const toSend = Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration);
     const estimatedGas = yield call(toSend.estimateGas, {value});
 
-    const receipt = yield toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value}).on('transactionHash', (hash) => {
-      put({type: CREATE_ESCROW_PRE_SUCCESS, txHash: hash});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
+    const channel = eventChannel(emitter => {
+      promiseEvent.on('transactionHash', function(hash) {
+        emitter({hash});
+      });
+      promiseEvent.on('receipt', function(receipt) {
+        emitter({receipt});
+        emitter(END);
+      });
+      return () => {};
     });
-    yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: CREATE_ESCROW_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: CREATE_ESCROW_FAILED, error: error.message});
@@ -41,8 +59,27 @@ export function *releaseEscrow({escrowId}) {
   try {
     const toSend = Escrow.methods.release(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    const channel = eventChannel(emitter => {
+      promiseEvent.on('transactionHash', function(hash) {
+        emitter({hash});
+      });
+      promiseEvent.on('receipt', function(receipt) {
+        emitter({receipt});
+        emitter(END);
+      });
+      return () => {};
+    });
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: RELEASE_ESCROW_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: RELEASE_ESCROW_FAILED, error: error.message});

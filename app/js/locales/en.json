@@ -12,7 +12,8 @@
     "buyer": "Buyer address",
     "amount": "Amount (in wei)",
     "expiration": "Expiration (must be at least in 10 minutes)",
-    "submit": "Submit"
+    "submit": "Submit",
+    "creating": "Creating"
   },
   "escrowList": {
     "title": "Escrow List",

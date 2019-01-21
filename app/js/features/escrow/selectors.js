@@ -4,6 +4,7 @@ export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;
 export const isLoading = state => state.escrow.loading;
 export const txHash = state => state.escrow.txHash;
+export const txHashList = state => state.escrow.txHashList;
 export const escrows = state => state.escrow.escrows.map(escrow => {
   escrow.rating = (typeof escrow.rating === 'string') ? parseInt(escrow.rating, 10) : escrow.rating;
   escrow.expirationTime = moment(escrow.expirationTime * 1000);
