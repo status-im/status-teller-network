@@ -18,10 +18,6 @@ exports[`License should render correctly 1`] = `
     <BuyLicense
       t={[Function]}
     />
-    <p>
-       
-      -
-    </p>
   </CardBody>
 </Card>
 `;
@@ -46,7 +42,6 @@ exports[`License should render when being license owner 1`] = `
     />
     <p>
        
-      -
     </p>
   </CardBody>
 </Card>
