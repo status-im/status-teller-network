@@ -7,16 +7,28 @@ import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
   RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_PRE_SUCCESS,
-  CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED,
-  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED,
-  PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED,
-  OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE,
+  CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_PRE_SUCCESS,
+  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
+  PAY_ESCROW, PAY_ESCROW_FAILED, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_PRE_SUCCESS,
+  OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE, OPEN_CASE_PRE_SUCCESS,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE 
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
+
+// TODO CATCH ERROR
+function promiseEventEmitter(promiseEvent, emitter) {
+  promiseEvent.on('transactionHash', function(hash) {
+    emitter({hash});
+  });
+  promiseEvent.on('receipt', function(receipt) {
+    emitter({receipt});
+    emitter(END);
+  });
+  return () => {};
+}
 
 export function *createEscrow({expiration, value, buyer}) {
   try {
@@ -25,16 +37,7 @@ export function *createEscrow({expiration, value, buyer}) {
     const estimatedGas = yield call(toSend.estimateGas, {value});
 
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
-    const channel = eventChannel(emitter => {
-      promiseEvent.on('transactionHash', function(hash) {
-        emitter({hash});
-      });
-      promiseEvent.on('receipt', function(receipt) {
-        emitter({receipt});
-        emitter(END);
-      });
-      return () => {};
-    });
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
       const {hash, receipt} = yield take(channel);
       if (hash) {
@@ -60,16 +63,7 @@ export function *releaseEscrow({escrowId}) {
     const toSend = Escrow.methods.release(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(emitter => {
-      promiseEvent.on('transactionHash', function(hash) {
-        emitter({hash});
-      });
-      promiseEvent.on('receipt', function(receipt) {
-        emitter({receipt});
-        emitter(END);
-      });
-      return () => {};
-    });
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
       const {hash, receipt} = yield take(channel);
       if (hash) {
@@ -94,8 +88,18 @@ export function *payEscrow({escrowId}) {
   try {
     const toSend = Escrow.methods.pay(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: PAY_ESCROW_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: PAY_ESCROW_FAILED, error: error.message});
@@ -140,8 +144,18 @@ export function *openCase({escrowId}) {
   try {
     const toSend = Escrow.methods.openCase(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: OPEN_CASE_SUCCEEDED, escrowId});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: OPEN_CASE_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: OPEN_CASE_SUCCEEDED, escrowId});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: OPEN_CASE_FAILED, error: error.message});
@@ -156,8 +170,18 @@ export function *cancelEscrow({escrowId}) {
   try {
     const toSend = Escrow.methods.cancel(escrowId);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: CANCEL_ESCROW_SUCCEEDED, escrowId});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: CANCEL_ESCROW_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: CANCEL_ESCROW_SUCCEEDED, escrowId});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: CANCEL_ESCROW_FAILED, error: error.message});
@@ -172,8 +196,18 @@ export function *rateTx({escrowId, rating}) {
   try {
     const toSend = Escrow.methods.rateTransaction(escrowId, rating);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt} = yield take(channel);
+      if (hash) {
+        yield put({type: RATE_TRANSACTION_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
     yield put({type: RATE_TRANSACTION_FAILED, error: error.message});
