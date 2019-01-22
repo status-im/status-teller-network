@@ -7,6 +7,7 @@ import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
+import TransactionHash from "./TransactionHash";
 
 function getArbitrationState(escrow) {
   if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
@@ -22,6 +23,7 @@ const ArbitrationList = (props) => (
     </CardHeader>
     <CardBody>
       {props.loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{props.t('arbitrationList.loading')}</p>}
+      {props.txHash && <TransactionHash txHash={props.txHash}/>}
       {props.error &&
       <Alert color="danger">Error: {props.error}</Alert>}
       {(props.escrows.length === 0) && !props.loading && <p>No Arbitration cases</p>}
@@ -63,7 +65,8 @@ ArbitrationList.propTypes = {
   resolveDispute: PropTypes.func,
   t: PropTypes.func,
   loading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
+  txHash: PropTypes.string
 };
 
 export default withNamespaces()(ArbitrationList);

@@ -3,6 +3,7 @@ import {
   GET_DISPUTED_ESCROWS_FAILED,
   GET_DISPUTED_ESCROWS,
   RESOLVE_DISPUTE,
+  RESOLVE_DISPUTE_PRE_SUCCESS,
   RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_FAILED
 } from './constants';
@@ -16,6 +17,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           loading: true
+        }
+      };
+    case RESOLVE_DISPUTE_PRE_SUCCESS:
+      return {
+        ...state, ...{
+          txHash: action.txHash
         }
       };
     case GET_DISPUTED_ESCROWS_SUCCEEDED:

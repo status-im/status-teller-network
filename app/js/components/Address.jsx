@@ -10,7 +10,7 @@ Address.defaultProps = {
 
 Address.propTypes = {
   address: PropTypes.string,
-  compact: PropTypes.bool.n
+  compact: PropTypes.bool
 };
 
 export default Address;
