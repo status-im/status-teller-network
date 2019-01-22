@@ -151,6 +151,7 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     case OPEN_CASE_SUCCEEDED:
+      currentEscrow.arbitration = action.arbitration;
       return {
         ...state, ...{
           escrows,

@@ -161,7 +161,9 @@ export function *openCase({escrowId}) {
       if (hash) {
         yield put({type: OPEN_CASE_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
-        yield put({type: OPEN_CASE_SUCCEEDED, escrowId});
+        const escrows = yield formatEscrows([escrowId]);
+        const arbitration = escrows[0].arbitration;
+        yield put({type: OPEN_CASE_SUCCEEDED, escrowId, arbitration});
       } else if (error) {
         throw error;
       } else {
@@ -234,6 +236,22 @@ export function *onRateTx() {
   yield takeEvery(RATE_TRANSACTION, rateTx);
 }
 
+function *formatEscrows(escrowIds) {
+  const escrows = [];
+  for (let i = 0; i < escrowIds.length; i++) {
+    const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
+    escrow.escrowId = escrowIds[i];
+    if(escrow.paid){
+      const arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
+      if(arbitration.open){
+        escrow.arbitration = arbitration;
+      }
+    }
+    escrows.push(escrow);
+  }
+  return escrows;
+}
+
 export function *doGetEscrows() {
   try {
     const eventsSeller = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
@@ -242,19 +260,7 @@ export function *doGetEscrows() {
     const escrowIds = events.map(event => {
       return event.returnValues.escrowId;
     });
-
-    const escrows = [];
-    for (let i = 0; i < escrowIds.length; i++) {
-      const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
-      escrow.escrowId = escrowIds[i];
-      if(escrow.paid){
-        const arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
-        if(arbitration.open){
-          escrow.arbitration = arbitration;
-        }
-      }
-      escrows.push(escrow);
-    }
+    const escrows = yield formatEscrows(escrowIds);
 
     yield put({type: GET_ESCROWS_SUCCEEDED, escrows});
   } catch (error) {
