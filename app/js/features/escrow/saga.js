@@ -27,6 +27,10 @@ function promiseEventEmitter(promiseEvent, emitter) {
     emitter({receipt});
     emitter(END);
   });
+  promiseEvent.on('error', function(error) {
+    emitter({error});
+    emitter(END);
+  });
   return () => {};
 }
 
@@ -39,11 +43,13 @@ export function *createEscrow({expiration, value, buyer}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: CREATE_ESCROW_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
@@ -65,11 +71,13 @@ export function *releaseEscrow({escrowId}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: RELEASE_ESCROW_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
@@ -91,11 +99,13 @@ export function *payEscrow({escrowId}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: PAY_ESCROW_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
@@ -147,11 +157,13 @@ export function *openCase({escrowId}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: OPEN_CASE_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: OPEN_CASE_SUCCEEDED, escrowId});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
@@ -173,11 +185,13 @@ export function *cancelEscrow({escrowId}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: CANCEL_ESCROW_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: CANCEL_ESCROW_SUCCEEDED, escrowId});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
@@ -199,11 +213,13 @@ export function *rateTx({escrowId, rating}) {
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
-      const {hash, receipt} = yield take(channel);
+      const {hash, receipt, error} = yield take(channel);
       if (hash) {
         yield put({type: RATE_TRANSACTION_PRE_SUCCESS, txHash: hash});
       } else if (receipt) {
         yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
+      } else if (error) {
+        throw error;
       } else {
         break;
       }
