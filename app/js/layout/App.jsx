@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import Header from './Header';
 import HomeContainer from '../containers/HomeContainer';
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
@@ -34,17 +33,14 @@ class App extends Component {
 
     return (
       <HashRouter>
-        <Fragment>
-          <Header />
-          <Container>
-            <Route exact path="/" component={HomeContainer} />
-            <Route path="/price" component={PriceContainer} />
-            <Route path="/escrows" component={LicenseContainer} />
-            <Route path="/map" component={MapContainer} />
-            <Route path="/signature" component={SignatureContainer} />
-            <Route path="/arbitration" component={ArbitrationContainer} />
-          </Container>
-        </Fragment>
+        <Container className="h-100">
+          <Route exact path="/" component={HomeContainer} />
+          <Route path="/price" component={PriceContainer} />
+          <Route path="/escrows" component={LicenseContainer} />
+          <Route path="/map" component={MapContainer} />
+          <Route path="/signature" component={SignatureContainer} />
+          <Route path="/arbitration" component={ArbitrationContainer} />
+        </Container>
       </HashRouter>
     );
   }

@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`License should render correctly 1`] = `
+<Fragment>
+  <Row
+    tag="div"
+  >
+    <Col
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <NavLink
+        className="float-right"
+        tag={[Function]}
+        to="/login"
+      />
+    </Col>
+  </Row>
+  <Row
+    className="h-75"
+    tag="div"
+  >
+    <Col
+      className="my-auto"
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+      xs={12}
+    >
+      <h1
+        className="text-center"
+      />
+    </Col>
+  </Row>
+  <Row
+    className="mt-5"
+    tag="div"
+  >
+    <Col
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+      xs={6}
+    >
+      <Button
+        block={true}
+        color="info"
+        tag={[Function]}
+        to="/buy"
+      />
+    </Col>
+    <Col
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+      xs={6}
+    >
+      <Button
+        block={true}
+        color="info"
+        tag={[Function]}
+        to="/sell"
+      />
+    </Col>
+  </Row>
+</Fragment>
+`;
