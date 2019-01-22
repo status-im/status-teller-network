@@ -1,9 +1,9 @@
 {
-  "header": {
-    "title": "Status Teller network",
-    "prices": "Prices",
-    "my_escrows": "My Escrows",
-    "map": "Map"
+  "home": {
+    "login": "Login",
+    "buy": "Buy",
+    "sell": "Sell",
+    "welcome": "The best and convenient way to buy and sell crypto"
   },
   "createEscrowFrom": {
     "title": "Create an Escrow",
