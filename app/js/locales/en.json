@@ -81,5 +81,8 @@
   },
   "signatureForm": {
     "paying": "Paying using Signature..."
+  },
+  "arbitrationList": {
+    "loading": "Loading..."
   }
 }

@@ -4,6 +4,9 @@ import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
 import Address from "../components/Address";
 import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import {withNamespaces} from "react-i18next";
 
 function getArbitrationState(escrow) {
   if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
@@ -18,7 +21,7 @@ const ArbitrationList = (props) => (
       <CardTitle>Disputed escrows</CardTitle>
     </CardHeader>
     <CardBody>
-      {props.loading && <p>Loading...</p>}
+      {props.loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{props.t('arbitrationList.loading')}</p>}
       {props.error &&
       <Alert color="danger">Error: {props.error}</Alert>}
       {(props.escrows.length === 0) && !props.loading && <p>No Arbitration cases</p>}
@@ -46,7 +49,8 @@ const ArbitrationList = (props) => (
             <td>{escrow.amount}</td>
             <td>{escrow.expirationTime.toString()}</td>
             <td>
-              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute} escrowId={escrow.escrowId}/>
+              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute}
+                                 escrowId={escrow.escrowId} disabled={props.loading}/>
             </td>
           </tr>)}
         </tbody>
@@ -57,8 +61,9 @@ const ArbitrationList = (props) => (
 ArbitrationList.propTypes = {
   escrows: PropTypes.array,
   resolveDispute: PropTypes.func,
+  t: PropTypes.func,
   loading: PropTypes.bool,
   error: PropTypes.string
 };
 
-export default ArbitrationList;
+export default withNamespaces()(ArbitrationList);
