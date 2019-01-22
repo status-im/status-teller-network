@@ -15,6 +15,10 @@ import {
 export function *doBuyLicense() {
   try {
     const price = yield call(License.methods.getPrice().call);
+    const balance = yield call(SNT.methods.balanceOf(web3.eth.defaultAccount).call);
+    if (balance < price) {
+      throw new Error(`Insufficient funds to buy a License. You need to have at least ${price} SNT, but you have ${balance}`);
+    }
     const encodedCall = License.methods.buy().encodeABI();
     const toSend = SNT.methods.approveAndCall(License.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
