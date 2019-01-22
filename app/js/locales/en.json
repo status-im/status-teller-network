@@ -51,7 +51,8 @@
     "rating": "Rating:",
     "buy": "Buy license",
     "alreadyOwner": "You already own a license",
-    "noRating": "No rating available yet"
+    "noRating": "No rating available yet",
+    "buying": "Buying License"
   },
   "map": {
     "loading": "Loading...",

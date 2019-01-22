@@ -22,7 +22,7 @@ export function *doBuyLicense() {
     yield put({type: BUY_LICENSE_SUCCEEDED});
   } catch (error) {
     console.error(error);
-    yield put({type: BUY_LICENSE_FAILED, error});
+    yield put({type: BUY_LICENSE_FAILED, error: error.message});
   }
 }
 
