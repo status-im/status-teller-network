@@ -78,5 +78,8 @@
   },
   "transaction": {
     "hash": "Transaction Hash"
+  },
+  "signatureForm": {
+    "paying": "Paying using Signature..."
   }
 }

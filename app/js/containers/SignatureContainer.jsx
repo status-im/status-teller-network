@@ -10,19 +10,24 @@ class SignatureContainer extends Component {
   };
 
   render() {
-    return <IncludeSignatureForm onSubmit={this.includeSignature} receipt={this.props.receipt} error={this.props.error} />;
+    return <IncludeSignatureForm onSubmit={this.includeSignature} receipt={this.props.receipt} error={this.props.error}
+                                 loading={this.props.loading} txHash={this.props.txHash}/>;
   }
 }
 
 SignatureContainer.propTypes = {
   includeSignature: PropTypes.func,
   error: PropTypes.string,
+  txHash: PropTypes.string,
+  loading: PropTypes.bool,
   receipt: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   error: signature.selectors.error(state),
-  receipt: signature.selectors.receipt(state)
+  receipt: signature.selectors.receipt(state),
+  txHash: signature.selectors.txHash(state),
+  loading: signature.selectors.loading(state)
 });
 
 export default connect(
