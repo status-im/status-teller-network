@@ -1,5 +1,5 @@
 import {
-  BUY_LICENSE_FAILED, BUY_LICENSE,
+  BUY_LICENSE_FAILED, BUY_LICENSE, BUY_LICENSE_PRE_SUCCESS,
   BUY_LICENSE_SUCCEEDED, CHECK_LICENSE_OWNER_FAILED,
   CHECK_LICENSE_OWNER_SUCCEEDED, USER_RATING_FAILED,
   USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED
@@ -16,6 +16,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           loading: true
+        }
+      };
+    case BUY_LICENSE_PRE_SUCCESS:
+      return {
+        ...state, ...{
+          txHash: action.txHash
         }
       };
     case BUY_LICENSE_SUCCEEDED:

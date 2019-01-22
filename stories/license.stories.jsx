@@ -37,5 +37,11 @@ stories
     withInfo({ inline: true })(() => (
       <License loading={true}/>
     ))
+  )
+  .add(
+    "Buying License with Hash",
+    withInfo({ inline: true })(() => (
+      <License loading={true} txHash="0xd152ad280723b7b275ff4da1eb8afa09e99077beef253a387f7bc1c61e826230"/>
+    ))
   );
 

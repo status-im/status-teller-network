@@ -1,8 +1,9 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import { eventChannel, END } from 'redux-saga';
+import { eventChannel } from 'redux-saga';
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
+import {promiseEventEmitter} from '../utils';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
@@ -17,22 +18,6 @@ import {
 } from './constants';
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
-
-// TODO CATCH ERROR
-function promiseEventEmitter(promiseEvent, emitter) {
-  promiseEvent.on('transactionHash', function(hash) {
-    emitter({hash});
-  });
-  promiseEvent.on('receipt', function(receipt) {
-    emitter({receipt});
-    emitter(END);
-  });
-  promiseEvent.on('error', function(error) {
-    emitter({error});
-    emitter(END);
-  });
-  return () => {};
-}
 
 export function *createEscrow({expiration, value, buyer}) {
   try {

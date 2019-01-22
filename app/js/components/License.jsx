@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import TransactionHash from "./TransactionHash";
 
 const BuyLicense = (props) => (
   <Button onClick={props.buyLicense} disabled={props.disabled}>{props.t('license.buy')}</Button>
@@ -28,6 +29,7 @@ const License = (props) => (
     </CardHeader>
     <CardBody>
       {props.loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{props.t('license.buying')}</p>}
+      {props.txHash && <TransactionHash txHash={props.txHash}/>}
       {props.error && <Alert color="danger">{props.error}</Alert>}
       {props.isLicenseOwner ? <IsLicenseOwner t={props.t}/> : <BuyLicense buyLicense={props.buyLicense} t={props.t} disabled={props.loading}/>}
       {props.isLicenseOwner &&
@@ -40,6 +42,7 @@ const License = (props) => (
 License.propTypes = {
   t: PropTypes.func,
   error: PropTypes.string,
+  txHash: PropTypes.string,
   isLicenseOwner: PropTypes.bool,
   loading: PropTypes.bool,
   userRating: PropTypes.number,
