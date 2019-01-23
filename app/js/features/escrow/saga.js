@@ -1,10 +1,8 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import { eventChannel } from 'redux-saga';
-import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
-import {promiseEventEmitter} from '../utils';
-import cloneDeep from 'clone-deep';
+import {fork, takeEvery, call, put} from 'redux-saga/effects';
+import {doTransaction} from '../utils';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
@@ -17,34 +15,6 @@ import {
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
 } from './constants';
-
-function *doTransaction(preSuccess, success, failed, {value = 0, toSend}) {
-  try {
-    console.log('Doing transaction', arguments[3].type);
-    const estimatedGas = yield call(toSend.estimateGas, {value});
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: preSuccess, txHash: hash});
-      } else if (receipt) {
-        const parsedPayload = cloneDeep(arguments[3]);
-        delete parsedPayload.toSend;
-        delete parsedPayload.type;
-        yield put({type: success, receipt: receipt, ...parsedPayload});
-        break;
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    yield put({type: failed, error: error.message});
-  }
-}
 
 export function *onCreateEscrow() {
   yield takeEvery(CREATE_ESCROW, doTransaction.bind(null, CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED));
