@@ -4,6 +4,7 @@ import Escrow from 'Embark/contracts/Escrow';
 import { eventChannel } from 'redux-saga';
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {promiseEventEmitter} from '../utils';
+import cloneDeep from 'clone-deep';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
@@ -14,25 +15,25 @@ import {
   OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE, OPEN_CASE_PRE_SUCCESS,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
-  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE 
+  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
 } from './constants';
 
-const zeroAddress = '0x0000000000000000000000000000000000000000';
-
-export function *createEscrow({expiration, value, buyer}) {
+function *doTransaction(preSuccess, success, failed, {value = 0, toSend}) {
   try {
-    // TODO do we want to change the token or always ETH?
-    const toSend = Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration);
+    console.log('Doing transaction', arguments[3].type);
     const estimatedGas = yield call(toSend.estimateGas, {value});
-
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
       const {hash, receipt, error} = yield take(channel);
       if (hash) {
-        yield put({type: CREATE_ESCROW_PRE_SUCCESS, txHash: hash});
+        yield put({type: preSuccess, txHash: hash});
       } else if (receipt) {
-        yield put({type: CREATE_ESCROW_SUCCEEDED, receipt: receipt});
+        const parsedPayload = cloneDeep(arguments[3]);
+        delete parsedPayload.toSend;
+        delete parsedPayload.type;
+        yield put({type: success, receipt: receipt, ...parsedPayload});
+        break;
       } else if (error) {
         throw error;
       } else {
@@ -41,68 +42,20 @@ export function *createEscrow({expiration, value, buyer}) {
     }
   } catch (error) {
     console.error(error);
-    yield put({type: CREATE_ESCROW_FAILED, error: error.message});
+    yield put({type: failed, error: error.message});
   }
 }
 
 export function *onCreateEscrow() {
-  yield takeEvery(CREATE_ESCROW, createEscrow);
-}
-
-export function *releaseEscrow({escrowId}) {
-  try {
-    const toSend = Escrow.methods.release(escrowId);
-    const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: RELEASE_ESCROW_PRE_SUCCESS, txHash: hash});
-      } else if (receipt) {
-        yield put({type: RELEASE_ESCROW_SUCCEEDED, escrowId});
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    yield put({type: RELEASE_ESCROW_FAILED, error: error.message});
-  }
+  yield takeEvery(CREATE_ESCROW, doTransaction.bind(null, CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED));
 }
 
 export function *onReleaseEscrow() {
-  yield takeEvery(RELEASE_ESCROW, releaseEscrow);
-}
-
-export function *payEscrow({escrowId}) {
-  try {
-    const toSend = Escrow.methods.pay(escrowId);
-    const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: PAY_ESCROW_PRE_SUCCESS, txHash: hash});
-      } else if (receipt) {
-        yield put({type: PAY_ESCROW_SUCCEEDED, escrowId});
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    yield put({type: PAY_ESCROW_FAILED, error: error.message});
-  }
+  yield takeEvery(RELEASE_ESCROW, doTransaction.bind(null, RELEASE_ESCROW_PRE_SUCCESS, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED));
 }
 
 export function *onPayEscrow() {
-  yield takeEvery(PAY_ESCROW, payEscrow);
+  yield takeEvery(PAY_ESCROW, doTransaction.bind(null, PAY_ESCROW_PRE_SUCCESS, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED));
 }
 
 export function *payEscrowSignature({escrowId}) {
@@ -135,90 +88,32 @@ export function *onOpenCaseSignature() {
   yield takeEvery(OPEN_CASE_SIGNATURE, openCaseSignature);
 }
 
-export function *openCase({escrowId}) {
-  try {
-    const toSend = Escrow.methods.openCase(escrowId);
-    const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: OPEN_CASE_PRE_SUCCESS, txHash: hash});
-      } else if (receipt) {
-        const escrows = yield formatEscrows([escrowId]);
-        const arbitration = escrows[0].arbitration;
-        yield put({type: OPEN_CASE_SUCCEEDED, escrowId, arbitration});
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    yield put({type: OPEN_CASE_FAILED, error: error.message});
-  }
-}
-
 export function *onOpenCase() {
-  yield takeEvery(OPEN_CASE, openCase);
+  yield takeEvery(OPEN_CASE, doTransaction.bind(null, OPEN_CASE_PRE_SUCCESS, OPEN_CASE_SUCCEEDED, OPEN_CASE_FAILED));
 }
 
-export function *cancelEscrow({escrowId}) {
+export function *getArbitrationById({escrowId}) {
   try {
-    const toSend = Escrow.methods.cancel(escrowId);
-    const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: CANCEL_ESCROW_PRE_SUCCESS, txHash: hash});
-      } else if (receipt) {
-        yield put({type: CANCEL_ESCROW_SUCCEEDED, escrowId});
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
+    const escrows = yield formatEscrows([escrowId]);
+    const arbitration = escrows[0].arbitration;
+    // FIXME adding this breaks sends a second transaction for some reason. SEND HELP
+    // yield put({type: GET_ARBITRATION_BY_ID_SUCCEEDED, escrowId, arbitration});
   } catch (error) {
     console.error(error);
-    yield put({type: CANCEL_ESCROW_FAILED, error: error.message});
+    yield put({type: GET_ARBITRATION_BY_ID_FAILED, error: error.message});
   }
+}
+
+export function *onOpenCaseSuccess() {
+  yield takeEvery(OPEN_CASE_SUCCEEDED, getArbitrationById);
 }
 
 export function *onCancelEscrow() {
-  yield takeEvery(CANCEL_ESCROW, cancelEscrow);
-}
-
-export function *rateTx({escrowId, rating}) {
-  try {
-    const toSend = Escrow.methods.rateTransaction(escrowId, rating);
-    const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    while (true) {
-      const {hash, receipt, error} = yield take(channel);
-      if (hash) {
-        yield put({type: RATE_TRANSACTION_PRE_SUCCESS, txHash: hash});
-      } else if (receipt) {
-        yield put({type: RATE_TRANSACTION_SUCCEEDED, escrowId, rating});
-      } else if (error) {
-        throw error;
-      } else {
-        break;
-      }
-    }
-  } catch (error) {
-    console.error(error);
-    yield put({type: RATE_TRANSACTION_FAILED, error: error.message});
-  }
+  yield takeEvery(CANCEL_ESCROW, doTransaction.bind(null, CANCEL_ESCROW_PRE_SUCCESS, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED));
 }
 
 export function *onRateTx() {
-  yield takeEvery(RATE_TRANSACTION, rateTx);
+  yield takeEvery(RATE_TRANSACTION,  doTransaction.bind(null, RATE_TRANSACTION_PRE_SUCCESS, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_FAILED));
 }
 
 function *formatEscrows(escrowIds) {
@@ -258,4 +153,7 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_ESCROWS, doGetEscrows);
 }
 
-export default [fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature)];
+export default [
+  fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow),
+  fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess)
+];

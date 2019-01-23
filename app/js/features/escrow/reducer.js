@@ -6,7 +6,7 @@ import {
   RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION, RATE_TRANSACTION_PRE_SUCCESS,
   PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED, PAY_ESCROW, PAY_ESCROW_PRE_SUCCESS,
   OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED, OPEN_CASE, OPEN_CASE_PRE_SUCCESS,
-  CLOSE_DIALOG
+  CLOSE_DIALOG, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
 } from './constants';
 import cloneDeep from 'clone-deep';
 
@@ -93,6 +93,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case OPEN_CASE_FAILED:
     case PAY_ESCROW_SIGNATURE_FAILED:
     case OPEN_CASE_SIGNATURE_FAILED:
+    case GET_ARBITRATION_BY_ID_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
@@ -151,12 +152,17 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     case OPEN_CASE_SUCCEEDED:
+      return {
+        ...state, ...{
+          errorGet: '',
+          loadingList: false
+        }
+      };
+    case GET_ARBITRATION_BY_ID_SUCCEEDED:
       currentEscrow.arbitration = action.arbitration;
       return {
         ...state, ...{
-          escrows,
-          errorGet: '',
-          loadingList: false
+          escrows
         }
       };
     case CANCEL_ESCROW_SUCCEEDED:
