@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Alert, Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label, FormFeedback} from 'reactstrap';
+import {Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label, FormFeedback} from 'reactstrap';
 import PropTypes from 'prop-types';
 import Datetime from 'react-datetime';
 import moment from 'moment';
@@ -7,9 +7,7 @@ import classnames from 'classnames';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isInteger, isAddress, required} from '../validators';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import TransactionHash from './TransactionHash';
+import TransactionResults from './TransactionResults';
 
 import '../../../node_modules/react-datetime/css/react-datetime.css';
 import '../../css/Form.scss';
@@ -72,12 +70,8 @@ class CreateEscrowForm extends Component {
       </CardHeader>
       <CardBody>
         <Form ref={c => { this.form = c; }}>
-          {isLoading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{t('createEscrowFrom.creating')}...</p>}
-          {txHash && <TransactionHash txHash={txHash}/>}
-          {(propsError || error) &&
-          <Alert color="danger">{t('createEscrowFrom.error')} {propsError || error}</Alert>}
-          {result &&
-          <Alert color="success">{t('createEscrowFrom.receipt')} <pre>{JSON.stringify(result, null, 2)}</pre></Alert>}
+          <TransactionResults txHash={txHash} loading={isLoading} error={propsError || error} result={result} errorText={t('createEscrowFrom.error')}
+                              loadingText={t('createEscrowFrom.creating')} resultText={t('createEscrowFrom.receipt')}/>
           <FormGroup>
             <Label for="buyer">{t('createEscrowFrom.buyer')}</Label>
             <Input type="text" name="buyer" id="buyer" placeholder="Address of the buyer" className="form-control"

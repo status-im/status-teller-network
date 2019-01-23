@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
-import {Alert, Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label} from 'reactstrap';
+import {Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isJSON, required, isEscrowPaymentSignature} from "../validators";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
-import TransactionHash from "./TransactionHash";
+import TransactionResults from "./TransactionResults";
 
 class IncludeSignatureForm extends Component {
   constructor(props) {
@@ -40,12 +38,8 @@ class IncludeSignatureForm extends Component {
       </CardHeader>
       <CardBody>
         <Form ref={c => { this.form = c; }}>
-          {loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{t('signatureForm.paying')}</p>}
-          {txHash && <TransactionHash txHash={txHash}/>}
-          {(error || this.state.error) &&
-          <Alert color="danger">Error while executing the transaction: {error || this.state.error}</Alert>}
-          {receipt &&
-          <Alert color="success">Receipt: <pre>{JSON.stringify(receipt, null, 2)}</pre></Alert>}
+          <TransactionResults txHash={txHash} loading={loading} error={error || this.state.error} result={receipt} resultText={"Receipt:"}
+                              loadingText={t('signatureForm.paying')} errorText={"Error while executing the transaction: "}/>
           <FormGroup>
             <Label for="signature">Signature</Label>
             <Input type="textarea" name="escrowValue" id="escrowValue" placeholder="{}" className="form-control"

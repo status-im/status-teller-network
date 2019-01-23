@@ -1,13 +1,11 @@
 import React from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Alert} from 'reactstrap';
+import {Card, CardBody, CardHeader, CardTitle, Table} from 'reactstrap';
 import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
 import Address from "../components/Address";
 import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
-import TransactionHash from "./TransactionHash";
+import TransactionResults from "./TransactionResults";
 
 function getArbitrationState(escrow) {
   if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
@@ -22,10 +20,8 @@ const ArbitrationList = (props) => (
       <CardTitle>Disputed escrows</CardTitle>
     </CardHeader>
     <CardBody>
-      {props.loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{props.t('arbitrationList.loading')}</p>}
-      {props.txHash && <TransactionHash txHash={props.txHash}/>}
-      {props.error &&
-      <Alert color="danger">Error: {props.error}</Alert>}
+      <TransactionResults txHash={props.txHash} loading={props.loading} error={props.error}
+                          loadingText={props.t('arbitrationList.loading')} errorText={"Error: "}/>
       {(props.escrows.length === 0) && !props.loading && <p>No Arbitration cases</p>}
       {props.escrows.length > 0 && <Table>
         <thead>
