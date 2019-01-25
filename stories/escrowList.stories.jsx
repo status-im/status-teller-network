@@ -140,6 +140,14 @@ storiesOf('EscrowList', module)
     ))
   )
   .add(
+    "List with tx hash",
+    withInfo(info)(() => (
+      <EscrowList escrows={escrows} releaseEscrow={action("release-escrow")}
+                  cancelEscrow={action("cancel-escrow")} rateTransaction={action("rate-escrow")}
+                  loading={false} error="" txHash="0xd152ad280723b7b275ff4da1eb8afa09e99077beef253a387f7bc1c61e826230"/>
+    ))
+  )
+  .add(
     "Empty list",
     withInfo(info)(() => (
       <EscrowList escrows={[]} releaseEscrow={action("release-escrow")}

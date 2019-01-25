@@ -28,6 +28,7 @@ ArbitrationContainer.propTypes = {
 const mapStateToProps = state => ({
   errorGet: arbitration.selectors.errorGet(state),
   escrowsLoading: arbitration.selectors.loading(state),
+  txHash: arbitration.selectors.txHash(state),
   escrows: arbitration.selectors.escrows(state)
 });
 

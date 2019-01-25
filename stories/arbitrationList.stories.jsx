@@ -70,6 +70,13 @@ storiesOf('ArbitrationList', module)
     ))
   )
   .add(
+    "Loading List + Hash",
+    withInfo(info)(() => (
+      <ArbitrationList escrows={escrows} resolveDispute={action("resolve-dispute")}
+                  loading={true} error={false} txHash="0xd152ad280723b7b275ff4da1eb8afa09e99077beef253a387f7bc1c61e826230"/>
+    ))
+  )
+  .add(
     "Error doing something",
     withInfo(info)(() => (
       <ArbitrationList escrows={escrows} resolveDispute={action("resolve-dispute")}

@@ -27,12 +27,13 @@ class ArbitrationResult extends Component {
     }
 
     return <FormGroup>
-      <Input type="select" name="select" id="exampleSelect" onChange={(e) => this.onChange(e)} value={this.state.decision}>
+      <Input type="select" name="select" id="exampleSelect" onChange={(e) => this.onChange(e)}
+             value={this.state.decision} disabled={this.props.disabled}>
         <option value={ARBITRATION_UNSOLVED}>Select</option>
         <option value={ARBITRATION_SOLVED_BUYER}>Release funds to buyer</option>
         <option value={ARBITRATION_SOLVED_SELLER}>Refund seller</option>
       </Input>
-      <Button color="secondary" onClick={() => this.submit()}>Solve</Button>
+      <Button color="secondary" onClick={() => this.submit()} disabled={this.props.disabled}>Solve</Button>
     </FormGroup>;
   }
 }
@@ -40,7 +41,8 @@ class ArbitrationResult extends Component {
 ArbitrationResult.propTypes = {
   escrowId: PropTypes.string,
   decision: PropTypes.number,
-  resolveDispute: PropTypes.func
+  resolveDispute: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 export default ArbitrationResult;

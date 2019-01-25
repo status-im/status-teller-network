@@ -12,7 +12,8 @@
     "buyer": "Buyer address",
     "amount": "Amount (in wei)",
     "expiration": "Expiration (must be at least in 10 minutes)",
-    "submit": "Submit"
+    "submit": "Submit",
+    "creating": "Creating"
   },
   "escrowList": {
     "title": "Escrow List",
@@ -50,7 +51,8 @@
     "rating": "Rating:",
     "buy": "Buy license",
     "alreadyOwner": "You already own a license",
-    "noRating": "No rating available yet"
+    "noRating": "No rating available yet",
+    "buying": "Buying License"
   },
   "map": {
     "loading": "Loading...",
@@ -73,5 +75,14 @@
     "isAddress": "This field needs to be a valid Ethereum address",
     "isJSON": "This field needs to be a valid JSON string",
     "isEscrowPaymentSignature": "Missing some of the needed properties. Needed are: `escrowId`, `message` and `type`"
+  },
+  "transaction": {
+    "hash": "Transaction Hash"
+  },
+  "signatureForm": {
+    "paying": "Paying using Signature..."
+  },
+  "arbitrationList": {
+    "loading": "Loading..."
   }
 }

@@ -15,6 +15,10 @@ exports[`License should render correctly 1`] = `
   <CardBody
     tag="div"
   >
+    <TransactionResults
+      errorText="Error: "
+      loadingText=""
+    />
     <BuyLicense
       t={[Function]}
     />
@@ -37,6 +41,10 @@ exports[`License should render when being license owner 1`] = `
   <CardBody
     tag="div"
   >
+    <TransactionResults
+      errorText="Error: "
+      loadingText=""
+    />
     <IsLicenseOwner
       t={[Function]}
     />

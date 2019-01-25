@@ -1,28 +1,15 @@
-/*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
-  ARBITRATION_UNSOLVED
+  RESOLVE_DISPUTE_PRE_SUCCESS
 } from './constants';
-
-export function *resolveDispute({escrowId, result}) {
-  try {
-    if(ARBITRATION_UNSOLVED === result) throw new Error("Arbitration must have a result");
-    const toSend = Escrow.methods.setArbitrationResult(escrowId, result);
-    const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount});
-    yield put({type: RESOLVE_DISPUTE_SUCCEEDED, escrowId});
-  } catch (error) {
-    console.error(error);
-    yield put({type: RESOLVE_DISPUTE_FAILED, error: error.message});
-  }
-}
+import {doTransaction} from "../utils";
 
 export function *onResolveDispute() {
-  yield takeEvery(RESOLVE_DISPUTE, resolveDispute);
+  yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
 }
 
 export function *doGetEscrows() {

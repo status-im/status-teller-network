@@ -23,29 +23,36 @@ class EscrowsContainer extends Component {
   };
 
   render() {
-    const {error, userRating, isLicenseOwner} = this.props;
+    const {error, userRating, isLicenseOwner, isCreateLoading, escrowError, escrowReceipt, escrows, releaseEscrow,
+      openCase, payEscrow, signature, payEscrowSignature, openCaseSignature, closeDialog, cancelEscrow,
+      errorGet, loadingList, rateTransaction, createdTxHash, txHashList, licenseLoading, licenseTxHash} = this.props;
+
     return <Fragment>
-      <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating} error={error}/>
+      <License buyLicense={this.buyLicense} isLicenseOwner={isLicenseOwner} userRating={userRating} error={error}
+               loading={licenseLoading} txHash={licenseTxHash}/>
 
       {isLicenseOwner &&
-      <CreateEscrowForm create={this.createEscrow} result={this.props.escrowReceipt} error={this.props.escrowError}/>}
+      <CreateEscrowForm create={this.createEscrow} result={escrowReceipt} error={escrowError}
+                        isLoading={isCreateLoading} txHash={createdTxHash}/>}
 
-      <EscrowList escrows={this.props.escrows} releaseEscrow={this.props.releaseEscrow}
-                  openCase={this.props.openCase} payEscrow={this.props.payEscrow}
-                  signature={this.props.signature}
-                  payEscrowSignature={this.props.payEscrowSignature}
-                  openCaseSignature={this.props.openCaseSignature}
-                  closeDialog={this.props.closeDialog}
-                  cancelEscrow={this.props.cancelEscrow} error={this.props.errorGet} loading={this.props.escrowsLoading}
-                  rateTransaction={this.props.rateTransaction}/>
+      <EscrowList escrows={escrows} releaseEscrow={releaseEscrow}
+                  openCase={openCase} payEscrow={payEscrow}
+                  signature={signature}
+                  payEscrowSignature={payEscrowSignature}
+                  openCaseSignature={openCaseSignature}
+                  closeDialog={closeDialog}
+                  cancelEscrow={cancelEscrow} error={errorGet} loading={loadingList}
+                  rateTransaction={rateTransaction} txHash={txHashList}/>
     </Fragment>;
   }
 }
 
 EscrowsContainer.propTypes = {
   checkLicenseOwner: PropTypes.func,
+  licenseLoading: PropTypes.bool,
   checkUserRating: PropTypes.func,
   buyLicense: PropTypes.func,
+  licenseTxHash: PropTypes.string,
   createEscrow: PropTypes.func,
   releaseEscrow: PropTypes.func,
   payEscrow: PropTypes.func,
@@ -57,8 +64,11 @@ EscrowsContainer.propTypes = {
   rateTransaction: PropTypes.func,
   getEscrows: PropTypes.func,
   escrows: PropTypes.array,
+  isCreateLoading: PropTypes.bool,
+  createdTxHash: PropTypes.string,
+  txHashList: PropTypes.string,
   signature: PropTypes.object,
-  escrowsLoading: PropTypes.bool,
+  loadingList: PropTypes.bool,
   errorGet: PropTypes.string,
   error: PropTypes.string,
   userRating: PropTypes.number,
@@ -69,12 +79,17 @@ EscrowsContainer.propTypes = {
 
 const mapStateToProps = state => ({
   isLicenseOwner: license.selectors.isLicenseOwner(state),
+  licenseLoading: license.selectors.isLoading(state),
   userRating: license.selectors.userRating(state),
   error: license.selectors.error(state),
+  licenseTxHash: license.selectors.txHash(state),
   escrowError: escrow.selectors.error(state),
+  isCreateLoading: escrow.selectors.isLoading(state),
   escrowReceipt: escrow.selectors.receipt(state),
   errorGet: escrow.selectors.errorGet(state),
-  escrowsLoading: escrow.selectors.loading(state),
+  loadingList: escrow.selectors.loadingList(state),
+  createdTxHash: escrow.selectors.txHash(state),
+  txHashList: escrow.selectors.txHashList(state),
   escrows: escrow.selectors.escrows(state),
   signature: escrow.selectors.signature(state)
 });

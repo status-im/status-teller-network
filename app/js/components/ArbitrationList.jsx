@@ -1,9 +1,11 @@
 import React from 'react';
-import {Card, CardBody, CardHeader, CardTitle, Table, Alert} from 'reactstrap';
+import {Card, CardBody, CardHeader, CardTitle, Table} from 'reactstrap';
 import PropTypes from 'prop-types';
 import ArbitrationResult from "./ArbitrationResult";
 import Address from "../components/Address";
 import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
+import {withNamespaces} from "react-i18next";
+import TransactionResults from "./TransactionResults";
 
 function getArbitrationState(escrow) {
   if(escrow.arbitration.open && escrow.arbitration.result === ARBITRATION_UNSOLVED){
@@ -18,9 +20,8 @@ const ArbitrationList = (props) => (
       <CardTitle>Disputed escrows</CardTitle>
     </CardHeader>
     <CardBody>
-      {props.loading && <p>Loading...</p>}
-      {props.error &&
-      <Alert color="danger">Error: {props.error}</Alert>}
+      <TransactionResults txHash={props.txHash} loading={props.loading} error={props.error}
+                          loadingText={props.t('arbitrationList.loading')} errorText={"Error: "}/>
       {(props.escrows.length === 0) && !props.loading && <p>No Arbitration cases</p>}
       {props.escrows.length > 0 && <Table>
         <thead>
@@ -46,7 +47,8 @@ const ArbitrationList = (props) => (
             <td>{escrow.amount}</td>
             <td>{escrow.expirationTime.toString()}</td>
             <td>
-              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute} escrowId={escrow.escrowId}/>
+              <ArbitrationResult decision={parseInt(escrow.arbitration.result, 10)} resolveDispute={props.resolveDispute}
+                                 escrowId={escrow.escrowId} disabled={props.loading}/>
             </td>
           </tr>)}
         </tbody>
@@ -57,8 +59,10 @@ const ArbitrationList = (props) => (
 ArbitrationList.propTypes = {
   escrows: PropTypes.array,
   resolveDispute: PropTypes.func,
+  t: PropTypes.func,
   loading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
+  txHash: PropTypes.string
 };
 
-export default ArbitrationList;
+export default withNamespaces()(ArbitrationList);

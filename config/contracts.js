@@ -80,11 +80,6 @@ module.exports = {
   // default environment, merges with the settings in default
   // assumed to be the intended environment by `embark run`
   development: {
-    dappConnection: [
-      "ws://localhost:8546",
-      "http://localhost:8545",
-      "$WEB3"  // uses pre existing web3 object if available (e.g in Mist)
-    ],
     deployment: {
       // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
       accounts: [

@@ -2,14 +2,19 @@ import React from 'react';
 import {Card, CardHeader, CardBody, CardTitle, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+import TransactionHash from "./TransactionHash";
+import TransactionResults from "./TransactionResults";
 
 const BuyLicense = (props) => (
-  <Button onClick={props.buyLicense}>{props.t('license.buy')}</Button>
+  <Button onClick={props.buyLicense} disabled={props.disabled}>{props.t('license.buy')}</Button>
 );
 
 BuyLicense.propTypes = {
   t: PropTypes.func,
-  buyLicense: PropTypes.func
+  buyLicense: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 const IsLicenseOwner = (props) => <p>{props.t('license.alreadyOwner')}</p>;
@@ -24,8 +29,9 @@ const License = (props) => (
       <CardTitle>{props.t('license.title')}</CardTitle>
     </CardHeader>
     <CardBody>
-      {props.error && <Alert color="danger">{props.error}</Alert>}
-      {props.isLicenseOwner ? <IsLicenseOwner t={props.t}/> : <BuyLicense buyLicense={props.buyLicense} t={props.t}/>}
+      <TransactionResults txHash={props.txHash} loading={props.loading} error={props.error}
+                          loadingText={props.t('license.buying')} errorText={"Error: "}/>
+      {props.isLicenseOwner ? <IsLicenseOwner t={props.t}/> : <BuyLicense buyLicense={props.buyLicense} t={props.t} disabled={props.loading}/>}
       {props.isLicenseOwner &&
         <p>{props.t('license.rating')} {props.userRating ? props.userRating : props.t('license.noRating')}</p>
       }
@@ -36,7 +42,9 @@ const License = (props) => (
 License.propTypes = {
   t: PropTypes.func,
   error: PropTypes.string,
+  txHash: PropTypes.string,
   isLicenseOwner: PropTypes.bool,
+  loading: PropTypes.bool,
   userRating: PropTypes.number,
   buyLicense: PropTypes.func
 };

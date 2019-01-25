@@ -18,7 +18,8 @@ describe('reducer', () => {
       })
     ).toEqual(
       {
-        licenseOwner: true
+        licenseOwner: true,
+        loading: false
       }
     );
   });

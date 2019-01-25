@@ -3,26 +3,46 @@ import License from 'Embark/contracts/License';
 import SNT from 'Embark/contracts/SNT';
 import Escrow from 'Embark/contracts/Escrow';
 
-import { fork, takeEvery, call, put } from 'redux-saga/effects';
+window.SNT = SNT;
+
+import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
   ADD_USER_RATING,
-  BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED,
+  BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED, BUY_LICENSE_PRE_SUCCESS,
   CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS, GET_LICENSE_OWNERS_SUCCCEDED,
   GET_LICENSE_OWNERS_FAILED
 } from './constants';
+import {promiseEventEmitter} from '../utils';
+import {eventChannel} from "redux-saga";
 
 export function *doBuyLicense() {
   try {
     const price = yield call(License.methods.getPrice().call);
+    const balance = yield call(SNT.methods.balanceOf(web3.eth.defaultAccount).call);
+    if (balance < price) {
+      throw new Error(`Insufficient funds to buy a License. You need to have at least ${price} SNT, but you have ${balance}`);
+    }
     const encodedCall = License.methods.buy().encodeABI();
     const toSend = SNT.methods.approveAndCall(License.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
-    yield call(toSend.send, {gasLimit: estimatedGas + 1000});
-    yield put({type: BUY_LICENSE_SUCCEEDED});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt, error} = yield take(channel);
+      if (hash) {
+        yield put({type: BUY_LICENSE_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: BUY_LICENSE_SUCCEEDED});
+      } else if (error) {
+        throw error;
+      } else {
+        break;
+      }
+    }
   } catch (error) {
     console.error(error);
-    yield put({type: BUY_LICENSE_FAILED, error});
+    yield put({type: BUY_LICENSE_FAILED, error: error.message});
   }
 }
 

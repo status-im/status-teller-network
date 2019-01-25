@@ -1,22 +1,42 @@
 import {
+  INCLUDE_SIGNATURE,
+  INCLUDE_SIGNATURE_PRE_SUCCESS,
   INCLUDE_SIGNATURE_SUCCEEDED,
   INCLUDE_SIGNATURE_FAILED
 } from './constants';
 
-const DEFAULT_STATE = {message: null, type: null, escrowId: null};
+const DEFAULT_STATE = {message: null, type: null, escrowId: null, loading: false};
 
 function reducer(state = DEFAULT_STATE, action) {
- switch (action.type) {
+  switch (action.type) {
+    case INCLUDE_SIGNATURE:
+      return {
+        ...state, ...{
+          loading: true
+        }
+      };
+    case INCLUDE_SIGNATURE_PRE_SUCCESS:
+      return {
+        ...state, ...{
+          txHash: action.txHash
+        }
+      };
     case INCLUDE_SIGNATURE_FAILED:
-      return {...state, ...{
+      return {
+        ...state, ...{
           error: action.error,
-          receipt: null
-        }};
+          receipt: null,
+          loading: false
+        }
+      };
     case INCLUDE_SIGNATURE_SUCCEEDED:
-      return {...state, ...{
+      return {
+        ...state, ...{
           receipt: action.receipt,
-          error: ''
-        }};
+          error: '',
+          loading: false
+        }
+      };
     default:
       return state;
   }
