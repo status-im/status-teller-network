@@ -15,6 +15,12 @@
     "submit": "Submit",
     "creating": "Creating"
   },
+  "fiatSelectorForm": {
+    "error": "Please select a valid FIAT currency",
+    "placeholder": "Enter currency",
+    "next": "Next",
+    "emptyLabel": "No matches found."
+  },
   "escrowList": {
     "title": "Escrow List",
     "loading": "Loading...",
