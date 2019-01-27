@@ -9,18 +9,17 @@ import {connect} from 'react-redux';
 
 class SellerFiatContainer extends Component {
   render() {
-    console.log(this.state);
     const t = this.props.t;
     return (
       <Fragment>
         <Row>
           <Col xs={12} className="my-auto">
-            <h1 className="text-center">What local currency do you want to trade with?</h1>
+            <h1 className="text-center">{t('sellerFiatContainer.title')}</h1>
           </Col>
         </Row>
         <Row>
           <Col>
-            <FiatSelectorForm onSubmit={this.props.setFiatCurrency} />
+            <FiatSelectorForm value={this.props.fiat} onSubmit={this.props.setFiatCurrency} />
           </Col>
         </Row>
       </Fragment>
@@ -30,7 +29,8 @@ class SellerFiatContainer extends Component {
 
 SellerFiatContainer.propTypes = {
   t: PropTypes.func,
-  setFiatCurrency: PropTypes.func
+  setFiatCurrency: PropTypes.func,
+  fiat: PropTypes.string
 };
 
 const mapStateToProps = state => ({

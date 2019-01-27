@@ -15,6 +15,9 @@
     "submit": "Submit",
     "creating": "Creating"
   },
+  "sellerFiatContainer": {
+    "title": "What local currency do you want to trade with?"
+  },
   "fiatSelectorForm": {
     "error": "Please select a valid FIAT currency",
     "placeholder": "Enter currency",

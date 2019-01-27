@@ -29,8 +29,12 @@ class FiatSelectorForm extends Component {
     };
   }
 
+  componentDidMount(){
+    if(this.props.value) this.setState({ fiat: this.props.value });
+  }
+
   onInputChange = (text) => {
-    const symbol = Object.keys(CURRENCY_DATA).find(key => CURRENCY_DATA[key] === text);
+    const symbol = CURRENCY_DATA.find(x => x.label === text);
     this.setState({fiat: symbol || '', error: ''});
   }
 
@@ -47,7 +51,7 @@ class FiatSelectorForm extends Component {
     if(!this.validate()) return;    
     this.setState({error: ''});
     this.props.onSubmit(this.state.fiat);  
-    this.props.history.push("/seller/crypto");
+    this.props.history.push("/seller/margin");
   };
 
   validate() {
@@ -60,8 +64,10 @@ class FiatSelectorForm extends Component {
   }
 
   render() {
-    const {t} = this.props;
-    const {error, fiat} = this.state;
+    const {t, value} = this.props;
+    const {error} = this.state;
+
+    const defaultSelectedValue = value ? [CURRENCY_DATA.find(x => x.id === value)] : [];
 
     return ( 
       <Fragment>
@@ -74,7 +80,7 @@ class FiatSelectorForm extends Component {
             onInputChange={this.onInputChange}
             submitFormOnEnter={true}
             emptyLabel={t("fiatSelectorForm.emptyLabel")}
-            value={fiat}
+            defaultSelected={defaultSelectedValue}
           />
           <FormFeedback className={classnames({'d-block': !!error})}>{error}</FormFeedback>
         </FormGroup>
@@ -88,7 +94,8 @@ FiatSelectorForm.propTypes = {
   t: PropTypes.func,
   error: PropTypes.string,
   history: PropTypes.object,
-  onSubmit: PropTypes.func
+  onSubmit: PropTypes.func,
+  value: PropTypes.string
 };
 
 export default withRouter(withNamespaces()(FiatSelectorForm));
