@@ -24,6 +24,17 @@
     "next": "Next",
     "emptyLabel": "No matches found."
   },
+  "sellerMarginContainer": {
+    "title": "What margin do you want to use for your rate?"
+  },
+  "marginSelectorForm": {
+    "margin": "Choose a percentage margin",
+    "aboveMarket": "Above market",
+    "belowMarket": "Below market",
+    "priceOrigin": "Prices come from www.cryptocompare.com",
+    "sellPrice": "Your sell price",
+    "ourFee": "Our fee"
+  },
   "escrowList": {
     "title": "Escrow List",
     "loading": "Loading...",

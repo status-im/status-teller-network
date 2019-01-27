@@ -1,5 +1,5 @@
-import { SET_FIAT, SET_TOKEN } from './constants';
+import { SET_FIAT, SET_RATE } from './constants';
 
 export const setFiatCurrency = (fiat) => ({ type: SET_FIAT, fiat });
 
-export const setToken = (token, rate) => ({ type: SET_TOKEN, token, rate });
+export const setMarginRate = (rate, isAbove) => ({ type: SET_RATE, rate, isAbove });
