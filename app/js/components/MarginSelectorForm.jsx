@@ -58,7 +58,7 @@ class MarginSelectorForm extends Component {
 
     this.form.validateAll();
     if (this.form.getChildContext()._errors.length > 0) {
-      this.setState({error: this.props.t('marginSelectForm.error')});
+      this.setState({error: this.props.t('marginSelectorForm.error')});
       return false;
     }
 
