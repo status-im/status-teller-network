@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup, FormFeedback, Label, InputGroup, InputGroupAddon} from 'reactstrap';
+import {FormGroup, Label, InputGroup, InputGroupAddon, Alert} from 'reactstrap';
 import Input from 'react-validation/build/input';
 import '../../../node_modules/react-datetime/css/react-datetime.css';
 import '../../css/Form.scss';
 import {withNamespaces} from 'react-i18next';
-import {withRouter, Link} from 'react-router-dom';
-import classnames from 'classnames';
+import {withRouter} from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import {isInteger, required} from '../validators';
 
@@ -14,76 +13,100 @@ class MarginSelectorForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fiat: '',
-      error: ''
+      error: '',
+      isAbove: true,
+      marketError: '',
+      rate: 0
     };
+  }
+
+  onRadioButtonChange = (e) => {
+    this.setState({isAbove: e.target.value === "above"});
+  }
+
+  onInputChange = (e) => {
+    this.setState({rate: e.target.value});
   }
 
   componentDidMount() {
     // Redirecting to previous step
     if(!this.props.fiat) this.props.history.push('/seller/fiat');
+
+    this.setState({
+      isAbove: this.props.margin.isAbove, 
+      rate: this.props.margin.rate
+    });
   }
 
-  submit = () => {
+  _submit(address){
     if(!this.validate()) return;    
-    this.setState({error: ''});
-    this.props.onSubmit(); 
+    this.props.onSubmit(parseInt(this.state.rate, 10), this.state.isAbove); 
+    this.props.history.push(address);
+  }
 
+  back = () => {
+    this._submit("/seller/fiat");
+  }
+
+  continue = () => {
     // TODO: redirect to next step 
-    // this.props.history.push("/seller/contact");
+    this._submit("/seller/margin");
   };
 
   validate() {
-    /*const fiatError = !this.state.fiat;
-    if (fiatError) {
-      this.setState({ error: this.props.t("fiatSelectorForm.error")});
+    this.setState({error: '', marketError: ''});
+
+    this.form.validateAll();
+    if (this.form.getChildContext()._errors.length > 0) {
+      this.setState({error: this.props.t('marginSelectForm.error')});
       return false;
-    }*/
+    }
+
+    this.setState({error: ''});
     return true;
   }
 
   render() {
     const {t, fiat} = this.props;
-    const {error} = this.state;
+    const {error, rate, isAbove} = this.state;
 
     if(!fiat) return null;
 
     return ( 
       <Form ref={c => { this.form = c; }}>
+        {error && <Alert color="danger">{error}</Alert>}
         <FormGroup>
-            <Label for="margin">{t('marginSelectorForm.margin')}</Label>
+            <Label for="rate">{t('marginSelectorForm.margin')}</Label>
             <InputGroup>
-              <Input type="text" name="margin" id="margin" placeholder="0" className="form-control"
-                   onChange={(e) => this.onBuyerChange(e)} validations={[required, isInteger]} />
-                   <InputGroupAddon addonType="append">%</InputGroupAddon>
+              <Input type="text" name="rate" id="rate" placeholder="0" className="form-control"
+                  value={rate} onChange={this.onInputChange} validations={[required, isInteger]} />
+              <InputGroupAddon addonType="append" style={{height: "calc(2.25rem + 2px)"}}>%</InputGroupAddon>
             </InputGroup>
         </FormGroup>
         <FormGroup>
           <Label check>
-            <Input type="radio" name="market" /> {t('marginSelectorForm.aboveMarket')}
+            <Input type="radio" name="market" value="above" onChange={this.onRadioButtonChange} checked={isAbove} /> {t('marginSelectorForm.aboveMarket')}
           </Label>
           <Label check>
-            <Input type="radio" name="market" /> {t('marginSelectorForm.belowMarket')}
+            <Input type="radio" name="market" value="below" onChange={this.onRadioButtonChange} checked={!isAbove} /> {t('marginSelectorForm.belowMarket')}
           </Label>
         </FormGroup>
 
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
         <div>
-          1 ETH = 1,234,567.00 {fiat}
+          1 TODO = 1,234.00 {fiat}
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
 
         <h3>{t('marginSelectorForm.ourFee')}</h3>
         <div>
-          1 SNT
+          TODO SNT
         </div>
 
-        <FormGroup>
-          <FormFeedback className={classnames({'d-block': !!error})}>{error}</FormFeedback>
-        </FormGroup>
-        <Link to="/seller/fiat">Back</Link>
-        <a onClick={this.submit}>{t("fiatSelectorForm.next")}</a>
+        <a onClick={this.back}>{t("marginSelectorForm.back")}</a>
+        <br />
+        <a onClick={this.continue}>{t("marginSelectorForm.continue")}</a>
       </Form>
     );
   }
@@ -93,6 +116,7 @@ MarginSelectorForm.propTypes = {
   t: PropTypes.func,
   error: PropTypes.string,
   history: PropTypes.object,
+  margin: PropTypes.object,
   onSubmit: PropTypes.func,
   fiat: PropTypes.string
 };

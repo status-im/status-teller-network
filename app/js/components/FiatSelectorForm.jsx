@@ -47,7 +47,7 @@ class FiatSelectorForm extends Component {
     }
   }
 
-  submit = (e) => {
+  continue = (e) => {
     e.preventDefault();
     
     if(!this.validate()) return;    
@@ -86,7 +86,7 @@ class FiatSelectorForm extends Component {
           />
           <FormFeedback className={classnames({'d-block': !!error})}>{error}</FormFeedback>
         </FormGroup>
-        <a href="#" onClick={this.submit}>{t("fiatSelectorForm.next")}</a>
+        <a href="#" onClick={this.continue}>{t("fiatSelectorForm.continue")}</a>
       </Fragment>
     );
   }

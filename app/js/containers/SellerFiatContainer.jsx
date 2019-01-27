@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col } from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
@@ -7,25 +7,20 @@ import seller from '../features/seller';
 import {connect} from 'react-redux';
 
 
-class SellerFiatContainer extends Component {
-  render() {
-    const t = this.props.t;
-    return (
-      <Fragment>
-        <Row>
-          <Col xs={12} className="my-auto">
-            <h1 className="text-center">{t('sellerFiatContainer.title')}</h1>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FiatSelectorForm value={this.props.fiat} onSubmit={this.props.setFiatCurrency} />
-          </Col>
-        </Row>
-      </Fragment>
-    );
-  }
-}
+const SellerFiatContainer = (props) => (
+<Fragment>
+  <Row>
+    <Col xs={12} className="my-auto">
+      <h1 className="text-center">{props.t('sellerFiatContainer.title')}</h1>
+    </Col>
+  </Row>
+  <Row>
+    <Col>
+      <FiatSelectorForm value={props.fiat} onSubmit={props.setFiatCurrency} />
+    </Col>
+  </Row>
+</Fragment>
+);
 
 SellerFiatContainer.propTypes = {
   t: PropTypes.func,

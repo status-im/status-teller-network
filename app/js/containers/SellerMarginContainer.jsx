@@ -4,7 +4,6 @@ import { Row, Col } from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
 import seller from '../features/seller';
 import {connect} from 'react-redux';
-import { getEthUsdPrice, hasPricesError } from '../features/prices/reducer';
 import MarginSelectorForm from '../components/MarginSelectorForm';
 
 class SellerMarginContainer extends Component {
@@ -19,12 +18,7 @@ class SellerMarginContainer extends Component {
         </Row>
         <Row>
           <Col>
-            <MarginSelectorForm fiat={this.props.fiat} onSubmit={() => { console.log("SUBMIT"); }} />
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            {this.props.ethUsd}
+            <MarginSelectorForm fiat={this.props.fiat} margin={this.props.margin} onSubmit={this.props.setMarginRate} />
           </Col>
         </Row>
       </Fragment>
@@ -34,20 +28,19 @@ class SellerMarginContainer extends Component {
 
 SellerMarginContainer.propTypes = {
   t: PropTypes.func,
-  setFiatCurrency: PropTypes.func,
-  ethUsd: PropTypes.number,
-  fiat: PropTypes.string
+  setMarginRate: PropTypes.func,
+  fiat: PropTypes.string,
+  margin: PropTypes.object 
 };
 
 const mapStateToProps = state => ({
   fiat: seller.selectors.fiat(state),
-  ethUsd: getEthUsdPrice(state),
-  hasErrors: hasPricesError(state)
+  margin: seller.selectors.margin(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setFiatCurrency: seller.actions.setFiatCurrency
+    setMarginRate: seller.actions.setMarginRate
   }
 )(withNamespaces()(SellerMarginContainer));
