@@ -2,8 +2,6 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, FormFeedback} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
-import '../../../node_modules/react-datetime/css/react-datetime.css';
-import '../../css/Form.scss';
 import {withNamespaces} from 'react-i18next';
 import {withRouter} from 'react-router-dom';
 import classnames from 'classnames';
@@ -24,13 +22,9 @@ class FiatSelectorForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fiat: '',
+      fiat: props.value || '',
       error: ''
     };
-  }
-
-  componentDidMount(){
-    if(this.props.value) this.setState({ fiat: this.props.value });
   }
 
   onInputChange = (text) => {

@@ -2,8 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Label, InputGroup, InputGroupAddon, Alert} from 'reactstrap';
 import Input from 'react-validation/build/input';
-import '../../../node_modules/react-datetime/css/react-datetime.css';
-import '../../css/Form.scss';
 import {withNamespaces} from 'react-i18next';
 import {withRouter} from 'react-router-dom';
 import Form from 'react-validation/build/form';
@@ -14,10 +12,13 @@ class MarginSelectorForm extends Component {
     super(props);
     this.state = {
       error: '',
-      isAbove: true,
       marketError: '',
-      rate: 0
+      isAbove: props.margin.isAbove,
+      rate: props.margin.rate
     };
+
+    // Redirecting to previous step
+    if(!props.fiat) this.props.history.push('/seller/fiat');
   }
 
   onRadioButtonChange = (e) => {
@@ -28,16 +29,6 @@ class MarginSelectorForm extends Component {
     this.setState({rate: e.target.value});
   }
 
-  componentDidMount() {
-    // Redirecting to previous step
-    if(!this.props.fiat) this.props.history.push('/seller/fiat');
-
-    this.setState({
-      isAbove: this.props.margin.isAbove, 
-      rate: this.props.margin.rate
-    });
-  }
-
   _submit(address){
     if(!this.validate()) return;    
     this.props.onSubmit(parseInt(this.state.rate, 10), this.state.isAbove); 
@@ -45,7 +36,7 @@ class MarginSelectorForm extends Component {
   }
 
   back = () => {
-    this._submit("/seller/fiat");
+    this.props.history.push("/seller/fiat");
   }
 
   continue = () => {

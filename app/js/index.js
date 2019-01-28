@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
+import '../css/Form.scss';
 
 import i18n from './i18n';
 
