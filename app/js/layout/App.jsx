@@ -1,10 +1,15 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
+import Wizard from '../components/Wizard';
+
 import HomeContainer from '../containers/HomeContainer';
+import BuyStartContainer from '../containers/Buy/StartContainer';
+import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
+
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
@@ -35,6 +40,11 @@ class App extends Component {
       <HashRouter>
         <Container className="h-100">
           <Route exact path="/" component={HomeContainer} />
+          <Wizard path="/buy/" steps={[
+            { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
+            { path: '/buy/payment-type', render: (wizard) => <BuyPaymentTypeContainer wizard={wizard} />}
+          ]}/>
+
           <Route path="/price" component={PriceContainer} />
           <Route path="/escrows" component={LicenseContainer} />
           <Route path="/map" component={MapContainer} />
