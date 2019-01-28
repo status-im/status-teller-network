@@ -71,7 +71,7 @@ class MarginSelectorForm extends Component {
             <InputGroup>
               <Input type="text" name="rate" id="rate" placeholder="0" className="form-control"
                   value={rate} onChange={this.onInputChange} validations={[required, isInteger]} />
-              <InputGroupAddon addonType="append" style={{height: "calc(2.25rem + 2px)"}}>%</InputGroupAddon>
+              <InputGroupAddon addonType="append">%</InputGroupAddon>
             </InputGroup>
         </FormGroup>
         <FormGroup>
