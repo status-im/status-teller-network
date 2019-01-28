@@ -5,6 +5,7 @@ import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import Wizard from '../components/Wizard';
+import Header from "../components/Header";
 
 import HomeContainer from '../containers/HomeContainer';
 // Buyer
@@ -46,6 +47,7 @@ class App extends Component {
     return (
       <HashRouter>
         <Container className="h-100">
+          <Header/>
           <Route exact path="/" component={HomeContainer} />
           <Wizard path="/buy/" steps={[
             { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
@@ -53,7 +55,7 @@ class App extends Component {
           ]}/>
           <Wizard path="/sell/" steps={[
             { path: '/sell/start', render: (wizard) => <SellerStartContainer wizard={wizard} />},
-            // { path: '/sell/location', render: (wizard) => <SellerLocationContainer wizard={wizard} />},
+            { path: '/sell/location', render: (wizard) => <SellerLocationContainer wizard={wizard} />},
             // { path: '/sell/payment-type', render: (wizard) => <SellerPaymentTypeContainer wizard={wizard} />}
           ]}/>
 

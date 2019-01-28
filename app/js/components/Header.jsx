@@ -1,8 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBullseye} from "@fortawesome/free-solid-svg-icons";
-import {Navbar, NavbarBrand, Nav, NavLink, NavItem, Collapse} from 'reactstrap';
+import {Navbar, NavbarBrand, Nav, NavLink, NavItem} from 'reactstrap';
 
 const Header = (_props) => (
   <header>
@@ -16,9 +15,5 @@ const Header = (_props) => (
     </Navbar>
   </header>
 );
-
-Header.propTypes = {
-  // goToProfile: PropTypes.func
-};
 
 export default Header;

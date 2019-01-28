@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {ButtonGroup, Button} from 'reactstrap';
+import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 
@@ -15,6 +16,7 @@ class SellerAssets extends Component {
 
   selectAsset(selectedAsset) {
     this.setState({selectedAsset});
+    this.props.selectAsset(assets[selectedAsset]);
   }
 
   render() {
@@ -39,7 +41,9 @@ class SellerAssets extends Component {
   }
 }
 
-SellerAssets.propTypes = {};
+SellerAssets.propTypes = {
+  selectAsset: PropTypes.func
+};
 
 
 export default SellerAssets;
