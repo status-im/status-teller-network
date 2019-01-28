@@ -3,21 +3,9 @@ import PropTypes from 'prop-types';
 import SellerAssets from '../../components/Seller/SellerAssets';
 
 class SellerStartContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedAsset: null
-    };
-  }
-
-  selectAsset = (selectedAsset) => {
-    this.setState({selectedAsset});
-  };
-
-  goNext = () => {
-    // Save selected asset
-    console.log('Selected', this.state.selectedAsset);
-    this.props.wizard.next();
+  selectAsset = (_selectedAsset) => {
+    // TODO Save selected asset;
+    this.props.wizard.setReady(true);
   };
 
   render() {

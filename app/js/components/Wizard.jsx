@@ -17,7 +17,8 @@ class Wizard extends Component {
 
     this.state = {
       currentStep,
-      isActive
+      isActive,
+      isReady: false
     };
   }
 
@@ -76,6 +77,10 @@ class Wizard extends Component {
       <Route key={index} path={step.path} component = {() => step.render(this)}/>
     ));
   }
+
+  setReady(isReady) {
+    this.setState({isReady});
+  }
   
   render() {
     return(
@@ -85,7 +90,7 @@ class Wizard extends Component {
           <Redirect from={this.props.path} exact to={this.props.steps[0].path} />
         </Switch>
         {this.state.isActive && <Footer next={(this.state.currentStep < this.props.steps.length - 1) ? this.next : null}
-                previous={(this.state.currentStep > 0) ? this.prev : null}/>}
+                previous={(this.state.currentStep > 0) ? this.prev : null} ready={this.state.isReady}/>}
       </Fragment>
 
     );

@@ -15,7 +15,10 @@ class SellerAssets extends Component {
   }
 
   selectAsset(selectedAsset) {
-    this.setState({selectedAsset});
+    console.log('Select???', selectedAsset);
+    console.log(this);
+    // FIXME
+    this.setState({selectedAsset: selectedAsset});
     this.props.selectAsset(assets[selectedAsset]);
   }
 
@@ -30,7 +33,7 @@ class SellerAssets extends Component {
         <ButtonGroup vertical className="asset-btns">
           {assets.map((asset, idx) => <Button active={this.state.selectedAsset === idx} color="link"
                                               key={'asset-' + idx} onClick={(_e) => this.selectAsset(idx)}>
-            {asset}
+            {asset} {this.state.selectedAsset}
             {this.state.selectedAsset === idx && <FontAwesomeIcon icon={faCheck}/>}
           </Button>)}
         </ButtonGroup>

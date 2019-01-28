@@ -14,7 +14,7 @@ import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
 
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
-// import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
+import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
 
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
@@ -55,7 +55,7 @@ class App extends Component {
           ]}/>
           <Wizard path="/sell/" steps={[
             { path: '/sell/start', render: (wizard) => <SellerStartContainer wizard={wizard} />},
-            { path: '/sell/location', render: (wizard) => <SellerLocationContainer wizard={wizard} />},
+            { path: '/sell/location', render: (wizard) => <SellerPositionContainer wizard={wizard} />},
             // { path: '/sell/payment-type', render: (wizard) => <SellerPaymentTypeContainer wizard={wizard} />}
           ]}/>
 
