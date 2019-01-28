@@ -15,6 +15,29 @@
     "submit": "Submit",
     "creating": "Creating"
   },
+  "sellerFiatContainer": {
+    "title": "What local currency do you want to trade with?"
+  },
+  "fiatSelectorForm": {
+    "error": "Please select a valid FIAT currency",
+    "placeholder": "Enter currency",
+    "continue": "Next",
+    "emptyLabel": "No matches found."
+  },
+  "sellerMarginContainer": {
+    "title": "What margin do you want to use for your rate?"
+  },
+  "marginSelectorForm": {
+    "margin": "Choose a percentage margin",
+    "error": "Please fix issues before submitting",
+    "aboveMarket": "Above market",
+    "belowMarket": "Below market",
+    "priceOrigin": "Prices come from www.cryptocompare.com",
+    "sellPrice": "Your sell price",
+    "ourFee": "Our fee",
+    "back": "Back",
+    "continue": "Confirm price"
+  },
   "escrowList": {
     "title": "Escrow List",
     "loading": "Loading...",

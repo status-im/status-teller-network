@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { HashRouter, Route } from "react-router-dom";
 import { connect } from 'react-redux';
 import { Container } from 'reactstrap';
@@ -10,6 +10,8 @@ import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
 import SignatureContainer from '../containers/SignatureContainer';
 import ArbitrationContainer from '../containers/ArbitrationContainer';
+import SellerFiatContainer from '../containers/SellerFiatContainer';
+import SellerMarginContainer from '../containers/SellerMarginContainer';
 
 import prices from '../features/prices';
 import embarkjs from '../features/embarkjs';
@@ -40,6 +42,8 @@ class App extends Component {
           <Route path="/map" component={MapContainer} />
           <Route path="/signature" component={SignatureContainer} />
           <Route path="/arbitration" component={ArbitrationContainer} />
+          <Route path="/seller/fiat" component={SellerFiatContainer} />
+          <Route path="/seller/margin" component={SellerMarginContainer} />
         </Container>
       </HashRouter>
     );
