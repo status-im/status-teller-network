@@ -1,4 +1,6 @@
-html { 
+@import "./_variables.scss";
+
+html {
   height: 100%; 
 }
 
@@ -9,4 +11,31 @@ body {
 
 body > div { 
   flex: 1; 
+}
+
+.container {
+  padding-bottom: $footer-height;
+  overflow: auto;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: $footer-height;
+
+  .btn {
+    margin: 10px;
+
+    &.next-btn {
+      position: absolute;
+      right: 0;
+    }
+
+    &.previous-btn {
+      position: absolute;
+      left: 0;
+    }
+  }
 }

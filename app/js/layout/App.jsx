@@ -7,8 +7,13 @@ import PropTypes from 'prop-types';
 import Wizard from '../components/Wizard';
 
 import HomeContainer from '../containers/HomeContainer';
+// Buyer
 import BuyStartContainer from '../containers/Buy/StartContainer';
 import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
+
+// Seller
+import SellerStartContainer from '../containers/Seller/SellerStartContainer';
+// import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
 
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
@@ -45,6 +50,11 @@ class App extends Component {
           <Wizard path="/buy/" steps={[
             { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
             { path: '/buy/payment-type', render: (wizard) => <BuyPaymentTypeContainer wizard={wizard} />}
+          ]}/>
+          <Wizard path="/sell/" steps={[
+            { path: '/sell/start', render: (wizard) => <SellerStartContainer wizard={wizard} />},
+            // { path: '/sell/location', render: (wizard) => <SellerLocationContainer wizard={wizard} />},
+            // { path: '/sell/payment-type', render: (wizard) => <SellerPaymentTypeContainer wizard={wizard} />}
           ]}/>
 
           <Route path="/price" component={PriceContainer} />
