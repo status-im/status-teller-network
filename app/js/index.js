@@ -8,6 +8,7 @@ import i18n from './i18n';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.scss';
 import '../css/Form.scss';
+import '../css/Seller.scss';
 
 import App from './layout/App';
 import history from './history';

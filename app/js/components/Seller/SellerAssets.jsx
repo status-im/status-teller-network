@@ -1,7 +1,22 @@
 import React, {Component} from 'react';
 import {ButtonGroup, Button} from 'reactstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
+
+const assets = ['ETH', 'SNT'];
 
 class SellerAssets extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedAsset: null
+    };
+  }
+
+  selectAsset(selectedAsset) {
+    this.setState({selectedAsset});
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -10,9 +25,12 @@ class SellerAssets extends Component {
 
         <h3>Assets in your Wallet</h3>
 
-        <ButtonGroup vertical>
-          <Button>ETH</Button>
-          <Button>SNT</Button>
+        <ButtonGroup vertical className="asset-btns">
+          {assets.map((asset, idx) => <Button active={this.state.selectedAsset === idx} color="link"
+                                              key={'asset-' + idx} onClick={(_e) => this.selectAsset(idx)}>
+            {asset}
+            {this.state.selectedAsset === idx && <FontAwesomeIcon icon={faCheck}/>}
+          </Button>)}
         </ButtonGroup>
 
         <p>Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer.</p>

@@ -18,6 +18,13 @@ body > div {
   overflow: auto;
 }
 
+header {
+  nav.navbar {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
 footer {
   position: absolute;
   bottom: 0;
