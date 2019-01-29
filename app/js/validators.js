@@ -20,6 +20,14 @@ export const isInteger = (value) => {
   }
 };
 
+export const isNumber = (value) => {
+  if (Number.isNaN(value)) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.isNumber')}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
 export const isAddress = (value) => {
   if (!Web3.utils.isAddress(value)) {
     return <NamespacesConsumer>

@@ -3,7 +3,7 @@ import {
   SET_MARGIN
 } from './constants';
 
-const DEFAULT_STATE = {fiat: null, rate: 0, isAbove: true};
+const DEFAULT_STATE = {fiat: null, rate: null, isAbove: true};
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {

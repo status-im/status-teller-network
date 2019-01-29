@@ -4,7 +4,6 @@
 .asset-btns {
   width: 100%;
 
-
   .btn {
     text-align: left;
     box-shadow: none !important;
@@ -16,6 +15,19 @@
       .fa-check {
         float: right;
         margin-top: 5px;
+      }
+    }
+  }
+
+  &.market-btns {
+    .btn {
+      text-align: center;
+      background-color: transparent;
+      color: $yiq-text-dark;
+
+      &.active {
+        background-color: transparent;
+        color: $primary;
       }
     }
   }
