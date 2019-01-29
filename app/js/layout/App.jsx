@@ -8,6 +8,7 @@ import Wizard from '../components/Wizard';
 import Header from "../components/Header";
 
 import HomeContainer from '../containers/HomeContainer';
+
 // Buyer
 import BuyStartContainer from '../containers/Buy/StartContainer';
 import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
@@ -15,6 +16,8 @@ import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
 import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
+
+import ProfileContainer from '../containers/ProfileContainer';
 
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
@@ -49,6 +52,7 @@ class App extends Component {
         <Container className="h-100">
           <Header/>
           <Route exact path="/" component={HomeContainer} />
+          <Route exact path="/profile" component={ProfileContainer} />
           <Wizard path="/buy/" steps={[
             { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
             { path: '/buy/payment-type', render: (wizard) => <BuyPaymentTypeContainer wizard={wizard} />}
