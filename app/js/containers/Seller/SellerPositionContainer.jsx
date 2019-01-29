@@ -1,17 +1,26 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import SellerPosition from '../../components/Seller/SellerPosition';
+import Footer from '../../components/Footer';
 
 class SellerStartContainer extends Component {
-  changeLocation = (newPos) => {
-    console.log(newPos);
-    this.props.wizard.setReady(!!newPos);
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: ''
+    };
+  }
+
+  changeLocation = (location) => {
+    this.setState({location});
+    // TODO save location when going next
   };
 
   render() {
     return (
       <Fragment>
         <SellerPosition changeLocation={(newPos) => this.changeLocation(newPos)}/>
+        {<Footer previous={this.props.wizard.prev} next={this.props.wizard.next} ready={!!this.state.location}/>}
       </Fragment>
     );
   }
