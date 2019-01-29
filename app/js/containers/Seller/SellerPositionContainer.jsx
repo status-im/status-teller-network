@@ -1,7 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import SellerPosition from '../../components/Seller/SellerPosition';
-import Footer from '../../components/Footer';
 
 class SellerStartContainer extends Component {
   constructor(props) {
@@ -13,6 +12,7 @@ class SellerStartContainer extends Component {
 
   changeLocation = (location) => {
     this.setState({location});
+    this.enableNext();
     // TODO save location when going next
   };
 
@@ -20,14 +20,14 @@ class SellerStartContainer extends Component {
     return (
       <Fragment>
         <SellerPosition changeLocation={(newPos) => this.changeLocation(newPos)} location={this.state.location}/>
-        {<Footer previous={this.props.wizard.previous} next={this.props.wizard.next} ready={!!this.state.location}/>}
       </Fragment>
     );
   }
 }
 
 SellerStartContainer.propTypes = {
-  wizard: PropTypes.object
+  wizard: PropTypes.object,
+  enableNext: PropTypes.func
 };
 
 

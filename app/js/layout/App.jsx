@@ -54,12 +54,12 @@ class App extends Component {
           <Route exact path="/" component={HomeContainer} />
           <Route exact path="/profile" component={ProfileContainer} />
           <Wizard path="/buy/" steps={[
-            { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
-            { path: '/buy/payment-type', render: (wizard) => <BuyPaymentTypeContainer wizard={wizard} />}
+            { path: '/buy/start', component: BuyStartContainer },
+            { path: '/buy/payment-type', component: BuyPaymentTypeContainer }
           ]}/>
           <Wizard path="/sell/" steps={[
-            { path: '/sell/start', render: (wizard) => <SellerStartContainer wizard={wizard} />},
-            { path: '/sell/location', render: (wizard) => <SellerPositionContainer wizard={wizard} />},
+            { path: '/sell/start', component: SellerStartContainer },
+            { path: '/sell/location', component: SellerPositionContainer },
             // { path: '/sell/payment-type', render: (wizard) => <SellerPaymentTypeContainer wizard={wizard} />}
           ]}/>
 

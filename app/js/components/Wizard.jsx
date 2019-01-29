@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 
+import withFooterHoC from '../hoc/withFooter';
+
 class Wizard extends Component {
   constructor(props) {
     super(props);
@@ -47,9 +49,9 @@ class Wizard extends Component {
   };
 
   renderSteps() {
-    return this.props.steps.map((step, index) => (
-      <Route key={index} path={step.path} component = {() => step.render(this)}/>
-    ));
+    return this.props.steps.map((step, index) => {
+      return <Route key={index} path={step.path} component={withFooterHoC(step.component, this)}/>;
+    });
   }
 
   render() {
