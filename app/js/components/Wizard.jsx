@@ -19,14 +19,18 @@ class Wizard extends Component {
     };
   }
 
-  next = () => {
+  canNext = () => {
     let currentStep = this.state.currentStep;
     const stepsLength = this.props.steps.length;
+    return currentStep < stepsLength - 1;
+  }
 
-    if (currentStep >= stepsLength - 1) {
+  next = () => {
+    if (!this.canNext()) {
       return;
     }
 
+    let currentStep = this.state.currentStep;
     currentStep = currentStep + 1;
     this.setState({
       currentStep: currentStep
@@ -34,13 +38,16 @@ class Wizard extends Component {
     this.props.history.push(this.props.steps[currentStep].path);
   };
 
+  canPrevious = () => {
+    return this.state.currentStep > 0;
+  }
+
   previous = () => {
-    let currentStep = this.state.currentStep;
-    
-    if (currentStep <= 0) {
+    if (!this.canPrevious()) {
       return;
     }
-    
+
+    let currentStep = this.state.currentStep;
     currentStep = currentStep - 1;
     this.setState({
       currentStep: currentStep

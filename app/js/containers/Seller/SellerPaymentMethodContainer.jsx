@@ -22,7 +22,7 @@ class SellerPaymentMethodContainer extends Component {
     }
     this.setState({selectedMethods});
     if (selectedMethods.length) {
-      this.props.enableNext();
+      this.props.footer.enableNext();
     }
     // TODO Save selected asset;
   };
@@ -38,7 +38,7 @@ class SellerPaymentMethodContainer extends Component {
 
 SellerPaymentMethodContainer.propTypes = {
   wizard: PropTypes.object,
-  enableNext: PropTypes.func
+  footer: PropTypes.object
 };
 
 

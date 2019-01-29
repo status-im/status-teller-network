@@ -6,14 +6,15 @@ import './withFooter.scss';
 
 const Footer = (props) => (
   <footer className="container">
-    {props.previous && <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
-    {props.next && <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>Next &gt;</Button>}
+    {props.wizard.canPrevious() && 
+      <Button onClick={props.wizard.previous} className="m-2" color="link">&lt; Previous</Button>}
+    {props.wizard.canNext() && 
+      <Button onClick={props.wizard.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>Next &gt;</Button>}
   </footer>
 );
 
 Footer.propTypes = {
-  previous: PropTypes.func,
-  next: PropTypes.func,
+  wizard: PropTypes.object,
   nextEnabled: PropTypes.bool
 };
 
@@ -30,11 +31,20 @@ const withFooterHoC = (WrappedComponent, wizard) => {
       this.setState({ nextEnabled: true });
     }
 
+    disableNext = () => {
+      this.setState({ nextEnabled: false });
+    }
+
     render() {
+      const controller = {
+        enableNext: this.enableNext,
+        disableNext: this.disableNext
+      };
       return (
         <React.Fragment>
-          <WrappedComponent wizard={wizard} enableNext={this.enableNext} />
-          <Footer next={wizard.next} nextEnabled={this.state.nextEnabled}/>
+          <WrappedComponent wizard={wizard} footer={controller} />
+          <Footer wizard={wizard}
+                  nextEnabled={this.state.nextEnabled}/>
         </React.Fragment>
       );
     }

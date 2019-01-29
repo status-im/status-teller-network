@@ -14,7 +14,7 @@ class SellerStartContainer extends Component {
 
   selectAsset = (selectedAsset) => {
     this.setState({selectedAsset});
-    this.props.enableNext();
+    this.props.footer.enableNext();
     // TODO Save selected asset;
 
   };
@@ -30,7 +30,7 @@ class SellerStartContainer extends Component {
 
 SellerStartContainer.propTypes = {
   wizard: PropTypes.object,
-  enableNext: PropTypes.func
+  footer: PropTypes.object
 };
 
 
