@@ -6,8 +6,8 @@ import {Navbar, NavbarBrand, Nav, NavLink, NavItem} from 'reactstrap';
 
 const Header = (_props) => (
   <header>
-    <Navbar expand="md">
-      <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} class="mr-2"/>TN</NavbarBrand>
+    <Navbar expand="md" className="px-0">
+      <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} className="mr-2"/>TN</NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
           <NavLink tag={Link} to="/profile/">Profile</NavLink>
