@@ -11,7 +11,7 @@ class Trades extends Component {
       <Row className="mt-4">
         <Col xs="12">
           <span className="font-weight-bold h5">My trades</span>
-          <Link to="find-offer" className="float-right">Find offer</Link>
+          <Link to="/buy" className="float-right">Find offer</Link>
         </Col>
         <Col xs="12">
           <Card body className="text-center">
