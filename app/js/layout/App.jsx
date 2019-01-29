@@ -16,6 +16,7 @@ import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
 import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
+import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
 
 import ProfileContainer from '../containers/ProfileContainer';
 
@@ -60,7 +61,7 @@ class App extends Component {
           <Wizard path="/sell/" steps={[
             { path: '/sell/start', component: SellerStartContainer },
             { path: '/sell/location', component: SellerPositionContainer },
-            // { path: '/sell/payment-type', render: (wizard) => <SellerPaymentTypeContainer wizard={wizard} />}
+            { path: '/sell/payment-methods', component: SellerPaymentMethodContainer }
           ]}/>
 
           <Route path="/price" component={PriceContainer} />
