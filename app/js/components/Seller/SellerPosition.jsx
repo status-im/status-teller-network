@@ -15,8 +15,10 @@ class SellerPosition extends Component {
 
         <Form>
           <FormGroup>
-            <Input type="text" name="location" id="location" placeholder="City, Country" onChange={(e) => this.changeLocation(e)}/>
+            <Input type="text" name="location" id="location" placeholder="City, Country"
+                   value={this.props.location} onChange={(e) => this.changeLocation(e)}/>
           </FormGroup>
+          {!this.props.location && <p className="text-info">Enter a location to move to the next page</p>}
         </Form>
       </React.Fragment>
     );
@@ -24,7 +26,8 @@ class SellerPosition extends Component {
 }
 
 SellerPosition.propTypes = {
-  changeLocation: PropTypes.func
+  changeLocation: PropTypes.func,
+  location: PropTypes.string
 };
 
 
