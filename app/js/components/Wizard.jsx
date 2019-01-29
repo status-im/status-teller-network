@@ -1,46 +1,20 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
-import Footer from "../components/Footer";
 
 class Wizard extends Component {
   constructor(props) {
     super(props);
 
-    let currentStep = this.getCurrentStep(location);
+    let currentStep = props.steps.findIndex((step) => location.hash.endsWith(step.path));
 
-    let isActive = true;
     if (currentStep === -1) {
       currentStep = 0;
-      isActive = false;
     }
 
     this.state = {
-      currentStep,
-      isActive,
-      isReady: false
+      currentStep
     };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.location !== prevProps.location) {
-      let currentStep = this.getCurrentStep(location);
-
-      let isActive = true;
-      if (currentStep === -1) {
-        currentStep = 0;
-        isActive = false;
-      }
-
-      this.setState({
-        currentStep,
-        isActive
-      });
-    }
-  }
-
-  getCurrentStep(location) {
-    return this.props.steps.findIndex((step) => location.hash.endsWith(step.path));
   }
 
   next = () => {
@@ -78,21 +52,12 @@ class Wizard extends Component {
     ));
   }
 
-  setReady(isReady) {
-    this.setState({isReady});
-  }
-  
   render() {
-    return(
-      <Fragment>
-        <Switch location={this.props.location}>
-          {this.renderSteps()}
-          <Redirect from={this.props.path} exact to={this.props.steps[0].path} />
-        </Switch>
-        {this.state.isActive && <Footer next={(this.state.currentStep < this.props.steps.length - 1) ? this.next : null}
-                previous={(this.state.currentStep > 0) ? this.prev : null} ready={this.state.isReady}/>}
-      </Fragment>
-
+    return (
+      <Switch location={this.props.location}>
+        {this.renderSteps()}
+        <Redirect from={this.props.path} exact to={this.props.steps[0].path}/>
+      </Switch>
     );
   }
 }
@@ -101,7 +66,7 @@ Wizard.propTypes = {
   location: PropTypes.object,
   path: PropTypes.string,
   history: PropTypes.object,
-  steps: PropTypes.arrayOf(PropTypes.object)
+  steps: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export default withRouter(Wizard);

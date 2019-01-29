@@ -4,22 +4,9 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 
-const assets = ['ETH', 'SNT'];
-
 class SellerAssets extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedAsset: null
-    };
-  }
-
   selectAsset(selectedAsset) {
-    console.log('Select???', selectedAsset);
-    console.log(this);
-    // FIXME
-    this.setState({selectedAsset: selectedAsset});
-    this.props.selectAsset(assets[selectedAsset]);
+    this.props.selectAsset(selectedAsset);
   }
 
   render() {
@@ -31,21 +18,24 @@ class SellerAssets extends Component {
         <h3>Assets in your Wallet</h3>
 
         <ButtonGroup vertical className="asset-btns">
-          {assets.map((asset, idx) => <Button active={this.state.selectedAsset === idx} color="link"
+          {this.props.assets.map((asset, idx) => <Button active={this.props.selectedAsset === idx} color="link"
                                               key={'asset-' + idx} onClick={(_e) => this.selectAsset(idx)}>
-            {asset} {this.state.selectedAsset}
-            {this.state.selectedAsset === idx && <FontAwesomeIcon icon={faCheck}/>}
+            {asset}
+            {this.props.selectedAsset === idx && <FontAwesomeIcon icon={faCheck}/>}
           </Button>)}
         </ButtonGroup>
 
         <p>Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer.</p>
+        {this.props.selectedAsset === null && <p className="text-info">Select an asset to move to the next page</p>}
       </React.Fragment>
     );
   }
 }
 
 SellerAssets.propTypes = {
-  selectAsset: PropTypes.func
+  selectAsset: PropTypes.func,
+  selectedAsset: PropTypes.number,
+  assets: PropTypes.array
 };
 
 
