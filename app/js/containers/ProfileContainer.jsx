@@ -1,11 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
+import { Row, Col, Card } from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import Blockies from 'react-blockies';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import { faThumbsDown, faThumbsUp, faQrcode } from "@fortawesome/free-solid-svg-icons";
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 class ProfileContainer extends Component {
   render() {
@@ -28,7 +29,7 @@ class ProfileContainer extends Component {
             <span className="font-weight-bold h5">My reputation</span>
           </Col>
           <Col xs="6" className="pr-0">
-            <Card body className="text-center">
+            <Card body className="text-center rounded-0">
               <div>
                 <span className="mr-3">0</span>
                 <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsUp}/>
@@ -36,7 +37,7 @@ class ProfileContainer extends Component {
             </Card>
           </Col>
           <Col xs="6" className="pl-0">
-            <Card body className="text-center">
+            <Card body className="text-center rounded-0">
               <div>
                 <span className="mr-3">0</span>
                 <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsDown}/>
@@ -50,8 +51,8 @@ class ProfileContainer extends Component {
             <Link to="find-offer" className="float-right">Find offer</Link>
           </Col>
           <Col xs="12">
-            <Card body>
-              hello
+            <Card body className="text-center">
+              No open trades
             </Card>
           </Col>
         </Row>
@@ -61,9 +62,8 @@ class ProfileContainer extends Component {
             <Link to="create-offer" className="float-right">Create offer</Link>
           </Col>
           <Col xs="12">
-            <Card>
-              <CardHeader> Change </CardHeader>
-              <CardBody>hello</CardBody>
+            <Card body className="text-center">
+              No open offers
             </Card>
           </Col>
         </Row>
@@ -72,9 +72,14 @@ class ProfileContainer extends Component {
             <span className="font-weight-bold h5">Status contact code</span>
             <Link to="edit-status-contract-code" className="float-right">Edit</Link>
           </Col>
-          <Col xs="12">
-            <Card body>
-              hello
+          <Col xs="10" className="pr-0">
+            <Card body className="rounded-0">
+              <span>0x98a987b987fc987f...</span>
+            </Card>
+          </Col>
+          <Col xs="2" className="pl-0">
+            <Card body className="text-center rounded-0">
+              <span><FontAwesomeIcon size="lg" icon={faQrcode}/></span>
             </Card>
           </Col>
         </Row>
