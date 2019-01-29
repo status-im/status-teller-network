@@ -19,8 +19,8 @@ class SellerStartContainer extends Component {
   render() {
     return (
       <Fragment>
-        <SellerPosition changeLocation={(newPos) => this.changeLocation(newPos)}/>
-        {<Footer previous={this.props.wizard.prev} next={this.props.wizard.next} ready={!!this.state.location}/>}
+        <SellerPosition changeLocation={(newPos) => this.changeLocation(newPos)} location={this.state.location}/>
+        {<Footer previous={this.props.wizard.previous} next={this.props.wizard.next} ready={!!this.state.location}/>}
       </Fragment>
     );
   }

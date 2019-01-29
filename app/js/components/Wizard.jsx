@@ -32,7 +32,7 @@ class Wizard extends Component {
     this.props.history.push(this.props.steps[currentStep].path);
   };
 
-  prev = () => {
+  previous = () => {
     let currentStep = this.state.currentStep;
     
     if (currentStep <= 0) {
