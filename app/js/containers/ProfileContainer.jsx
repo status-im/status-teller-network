@@ -12,7 +12,7 @@ class ProfileContainer extends Component {
       <Fragment>
         <ProfileInformation />
         <Reputation />
-        <Trades />
+        <Trades trades={[{address: 'address', name: 'Name', value: '2', status: 'open'}]}/>
         <Offers />
         <StatusContractCode />
       </Fragment>
