@@ -3,14 +3,23 @@ import PropTypes from 'prop-types';
 import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
 import { Link } from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
+import Blockies from 'react-blockies';
 
 class ProfileContainer extends Component {
   render() {
     const t = this.props.t;
     return (
       <Fragment>
-        <Row>
-          Denis
+        <Row className="my-5 text-center">
+          <Col xs="12">
+            <Blockies seed={"denis"} className="rounded-circle"/>
+          </Col>
+          <Col xs="12">
+            <h4>Denis</h4>
+          </Col>
+          <Col xs="12">
+            <p className="text-muted">0x2376423784623784632784678324</p>
+          </Col>
         </Row>
         <Row className="mt-4">
           <Col xs="12">
