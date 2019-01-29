@@ -2,8 +2,10 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
 import { Link } from "react-router-dom";
-import {withNamespaces} from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
 import Blockies from 'react-blockies';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 class ProfileContainer extends Component {
   render() {
@@ -15,7 +17,7 @@ class ProfileContainer extends Component {
             <Blockies seed={"denis"} className="rounded-circle"/>
           </Col>
           <Col xs="12">
-            <h4>Denis</h4>
+            <h4 className="font-weight-bold">Denis</h4>
           </Col>
           <Col xs="12">
             <p className="text-muted">0x2376423784623784632784678324</p>
@@ -23,17 +25,28 @@ class ProfileContainer extends Component {
         </Row>
         <Row className="mt-4">
           <Col xs="12">
-            <h5>My Reputation</h5>
+            <span className="font-weight-bold h5">My reputation</span>
           </Col>
-          <Col xs="12">
-            <Card body>
-              hello
+          <Col xs="6" className="pr-0">
+            <Card body className="text-center">
+              <div>
+                <span className="mr-3">0</span>
+                <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsUp}/>
+              </div>
+            </Card>
+          </Col>
+          <Col xs="6" className="pl-0">
+            <Card body className="text-center">
+              <div>
+                <span className="mr-3">0</span>
+                <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsDown}/>
+              </div>
             </Card>
           </Col>
         </Row>
         <Row className="mt-4">
           <Col xs="12">
-            <span className="h5">My Trades</span>
+            <span className="font-weight-bold h5">My trades</span>
             <Link to="find-offer" className="float-right">Find offer</Link>
           </Col>
           <Col xs="12">
@@ -44,7 +57,7 @@ class ProfileContainer extends Component {
         </Row>
         <Row className="mt-4">
           <Col xs="12">
-            <span className="h5">My Offers</span>
+            <span className="font-weight-bold h5">My offers</span>
             <Link to="create-offer" className="float-right">Create offer</Link>
           </Col>
           <Col xs="12">
@@ -56,7 +69,7 @@ class ProfileContainer extends Component {
         </Row>
         <Row className="mt-4">
           <Col xs="12">
-            <span className="h5">Status Contact Code</span>
+            <span className="font-weight-bold h5">Status contact code</span>
             <Link to="edit-status-contract-code" className="float-right">Edit</Link>
           </Col>
           <Col xs="12">
