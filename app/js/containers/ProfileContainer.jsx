@@ -13,7 +13,14 @@ class ProfileContainer extends Component {
         <ProfileInformation />
         <Reputation />
         <Trades trades={[{address: 'address', name: 'Name', value: '2', status: 'open'}]}/>
-        <Offers />
+        <Offers offers={[{
+          from: 'ETH',
+          to: 'EUR',
+          type: 'Selling',
+          location: 'Berlin',
+          paymentMethod: 'Credit Card',
+          rate: '1.5% above Bitfinex'
+        }]} />
         <StatusContractCode />
       </Fragment>
     );
