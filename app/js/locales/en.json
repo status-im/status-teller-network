@@ -19,7 +19,7 @@
     "title": "What local currency do you want to trade with?"
   },
   "fiatSelectorForm": {
-    "error": "Please select a valid FIAT currency",
+    "selectValid": "Select a valid currency to move to the next page",
     "placeholder": "Enter currency",
     "continue": "Next",
     "emptyLabel": "No matches found."

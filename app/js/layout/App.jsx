@@ -17,6 +17,7 @@ import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
 import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
 import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
+import SellerFiatContainer from '../containers/Seller/SellerFiatContainer';
 
 import ProfileContainer from '../containers/ProfileContainer';
 
@@ -25,7 +26,6 @@ import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
 import SignatureContainer from '../containers/SignatureContainer';
 import ArbitrationContainer from '../containers/ArbitrationContainer';
-import SellerFiatContainer from '../containers/SellerFiatContainer';
 import SellerMarginContainer from '../containers/SellerMarginContainer';
 
 import prices from '../features/prices';
@@ -61,7 +61,9 @@ class App extends Component {
           <Wizard path="/sell/" steps={[
             { path: '/sell/start', component: SellerStartContainer },
             { path: '/sell/location', component: SellerPositionContainer },
-            { path: '/sell/payment-methods', component: SellerPaymentMethodContainer }
+            { path: '/sell/payment-methods', component: SellerPaymentMethodContainer },
+            { path: '/sell/fiat-selector', component: SellerFiatContainer },
+            { path: '/sell/fiat-selector2', component: SellerFiatContainer }
           ]}/>
 
           <Route path="/price" component={PriceContainer} />
@@ -69,7 +71,6 @@ class App extends Component {
           <Route path="/map" component={MapContainer} />
           <Route path="/signature" component={SignatureContainer} />
           <Route path="/arbitration" component={ArbitrationContainer} />
-          <Route path="/seller/fiat" component={SellerFiatContainer} />
           <Route path="/seller/margin" component={SellerMarginContainer} />
         </Container>
       </HashRouter>
@@ -91,7 +92,7 @@ App.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { 
+  {
     fetchPrices: prices.actions.fetchPrices,
     init: embarkjs.actions.init
   }
