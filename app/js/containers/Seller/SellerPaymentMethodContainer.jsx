@@ -22,9 +22,11 @@ class SellerPaymentMethodContainer extends Component {
     }
     this.setState({selectedMethods});
     if (selectedMethods.length) {
+      // TODO Save selected asset;
       this.props.footer.enableNext();
+    } else {
+      this.props.footer.disableNext();
     }
-    // TODO Save selected asset;
   };
 
   render() {

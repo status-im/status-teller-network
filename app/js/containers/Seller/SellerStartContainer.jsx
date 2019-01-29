@@ -14,9 +14,12 @@ class SellerStartContainer extends Component {
 
   selectAsset = (selectedAsset) => {
     this.setState({selectedAsset});
-    this.props.footer.enableNext();
-    // TODO Save selected asset;
-
+    if (selectedAsset !== null) {
+      this.props.footer.enableNext();
+      // TODO Save selected asset;
+    } else {
+      this.props.footer.disableNext();
+    }
   };
 
   render() {

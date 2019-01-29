@@ -22,7 +22,6 @@ class FiatSelectorForm extends Component {
     const {t, value} = this.props;
 
     const defaultSelectedValue = value.id ? [value] : [];
-    console.log(defaultSelectedValue);
 
     return (
       <Fragment>

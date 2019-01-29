@@ -12,8 +12,12 @@ class SellerStartContainer extends Component {
 
   changeLocation = (location) => {
     this.setState({location});
-    this.props.footer.enableNext();
-    // TODO save location when going next
+    if (location) {
+      this.props.footer.enableNext();
+      // TODO save location when going next
+    } else {
+      this.props.footer.disableNext();
+    }
   };
 
   render() {
