@@ -1,22 +1,18 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import SellerAssets from '../../components/Seller/SellerAssets';
+import {connect} from "react-redux";
+import seller from "../../features/seller";
 
+// TODO where do we get those?
 const assets = ['ETH', 'SNT'];
 
 class SellerStartContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedAsset: null
-    };
-  }
 
   selectAsset = (selectedAsset) => {
-    this.setState({selectedAsset});
     if (selectedAsset !== null) {
+      this.props.setSelectedAsset(selectedAsset);
       this.props.footer.enableNext();
-      // TODO Save selected asset;
     } else {
       this.props.footer.disableNext();
     }
@@ -25,16 +21,25 @@ class SellerStartContainer extends Component {
   render() {
     return (
       <Fragment>
-        <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} assets={assets}/>
+        <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.props.selectedAsset} assets={assets}/>
       </Fragment>
     );
   }
 }
 
 SellerStartContainer.propTypes = {
-  wizard: PropTypes.object,
-  footer: PropTypes.object
+  footer: PropTypes.object,
+  setSelectedAsset: PropTypes.func,
+  selectedAsset: PropTypes.number
 };
 
+const mapStateToProps = state => ({
+  selectedAsset: seller.selectors.selectedAsset(state)
+});
 
-export default SellerStartContainer;
+export default connect(
+  mapStateToProps,
+  {
+    setSelectedAsset: seller.actions.setSelectedAsset
+  }
+)(SellerStartContainer);

@@ -1,7 +1,4 @@
-import {
-  SET_FIAT,
-  SET_MARGIN
-} from './constants';
+import {SET_FIAT, SET_MARGIN, SET_SELECTED_ASSET} from './constants';
 
 const DEFAULT_STATE = {fiat: null, rate: null, isAbove: true};
 
@@ -10,6 +7,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case SET_FIAT:
       return {...state, ...{
           fiat: action.fiat
+        }};
+    case SET_SELECTED_ASSET:
+      return {...state, ...{
+          selectedAsset: action.selectedAsset
         }};
     case SET_MARGIN:
         return{...state, ...{
