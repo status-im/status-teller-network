@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {FormGroup} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import {withNamespaces} from 'react-i18next';
-import {withRouter} from 'react-router-dom';
 
 class FiatSelectorForm extends Component {
   onInputChange = (text) => {
@@ -45,11 +44,9 @@ class FiatSelectorForm extends Component {
 
 FiatSelectorForm.propTypes = {
   t: PropTypes.func,
-  error: PropTypes.string,
-  history: PropTypes.object,
   value: PropTypes.object,
   currencies: PropTypes.array,
   changeFiat: PropTypes.func
 };
 
-export default withRouter(withNamespaces()(FiatSelectorForm));
+export default withNamespaces()(FiatSelectorForm);
