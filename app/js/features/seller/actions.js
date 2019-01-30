@@ -1,8 +1,10 @@
-import { SET_FIAT, SET_MARGIN, SET_SELECTED_ASSET, SET_LOCATION } from './constants';
+import { SET_FIAT, SET_MARGIN, SET_SELECTED_ASSET, SET_LOCATION, SET_PAYMENT_METHODS } from './constants';
 
 export const setFiatCurrency = (fiat) => ({ type: SET_FIAT, fiat });
 
 export const setSelectedAsset = (selectedAsset) => ({ type: SET_SELECTED_ASSET, selectedAsset });
+
+export const setPaymentMethods = (paymentMethods) => ({ type: SET_PAYMENT_METHODS, paymentMethods });
 
 export const setLocation = (location) => ({ type: SET_LOCATION, location });
 

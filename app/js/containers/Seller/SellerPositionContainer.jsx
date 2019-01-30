@@ -11,7 +11,7 @@ class SellerPositionContainer extends Component {
       location: props.location
     };
     this.validate(props.location);
-    this.props.footer.onNext(() => {
+    this.props.footer.onPageChange(() => {
       this.props.setLocation(this.state.location);
     });
   }

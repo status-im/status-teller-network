@@ -27,7 +27,7 @@ const withFooterHoC = (WrappedComponent, wizard) => {
       this.state = {
         nextEnabled: false
       };
-      this.nextSubs = [];
+      this.changeSubs = [];
     }
 
     enableNext = () => {
@@ -38,27 +38,33 @@ const withFooterHoC = (WrappedComponent, wizard) => {
       this.setState({ nextEnabled: false });
     };
 
+    change() {
+      this.changeSubs.forEach(cb => {
+        cb.call(cb);
+      });
+      this.changeSubs = [];
+    }
+
     next = () => {
+      this.change();
      wizard.next();
-     this.nextSubs.forEach(cb => {
-       cb.call(cb);
-     });
-     this.nextSubs = [];
+
     };
 
     previous = () => {
+      this.change();
      wizard.previous();
     };
 
-    onNext = (cb) => {
-      this.nextSubs.push(cb);
+    onPageChange = (cb) => {
+      this.changeSubs.push(cb);
     };
 
     render() {
       const controller = {
         enableNext: this.enableNext,
         disableNext: this.disableNext,
-        onNext: this.onNext
+        onPageChange: this.onPageChange
       };
       return (
         <React.Fragment>

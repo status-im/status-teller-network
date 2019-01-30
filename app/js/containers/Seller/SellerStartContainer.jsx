@@ -14,7 +14,7 @@ class SellerStartContainer extends Component {
       selectedAsset: props.selectedAsset
     };
     this.validate(props.selectedAsset);
-    this.props.footer.onNext(() => {
+    this.props.footer.onPageChange(() => {
       this.props.setSelectedAsset(this.state.selectedAsset);
     });
   }
