@@ -1,4 +1,4 @@
-import React, {Component}  from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import FiatSelectorForm from "../../components/Seller/FiatSelectorForm";
@@ -21,24 +21,26 @@ class SellerFiatContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fiat: props.fiat || {}
+      fiat: props.fiat
     };
+    this.validate(props.fiat);
+    this.props.footer.onPageChange(() => {
+      props.setFiatCurrency(this.state.fiat);
+    });
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.fiat !== prevProps.fiat) {
-      this.setState({fiat: this.props.fiat});
+  validate(fiat) {
+    if (!fiat) {
+      return this.props.footer.disableNext();
     }
+    this.props.footer.enableNext();
   }
 
   changeFiat = (fiat) => {
     if (!fiat) {
       fiat = {};
-      this.props.footer.disableNext();
-    } else {
-      this.props.setFiatCurrency(fiat);
-      this.props.footer.enableNext();
     }
+    this.validate(fiat);
     this.setState({fiat});
   };
 

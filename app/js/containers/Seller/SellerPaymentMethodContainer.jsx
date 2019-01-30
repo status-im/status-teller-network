@@ -13,17 +13,16 @@ class SellerPaymentMethodContainer extends Component {
       selectedMethods: props.paymentMethods
     };
     this.validate(props.paymentMethods);
-    this.props.footer.onPageChange(() => {
+    props.footer.onPageChange(() => {
       props.setPaymentMethods(this.state.selectedMethods);
     });
   }
 
   validate(selectedMethods) {
     if (selectedMethods.length) {
-      this.props.footer.enableNext();
-    } else {
-      this.props.footer.disableNext();
+      return this.props.footer.enableNext();
     }
+    this.props.footer.disableNext();
   }
 
   togglePaymentMethod = (selectedMethod) => {

@@ -10,14 +10,12 @@ class SellerMarginContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      margin: props.margin || {}
+      margin: props.margin
     };
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.margin.rate !== prevProps.margin.rate || this.props.margin.isAbove !== prevProps.margin.isAbove) {
-      this.setState({margin: this.props.margin});
-    }
+    this.validate(props.margin);
+    props.footer.onPageChange(() => {
+      props.setMarginRate(this.state.margin);
+    });
   }
 
   componentDidMount() {
@@ -26,16 +24,17 @@ class SellerMarginContainer extends Component {
     }
   }
 
+  validate(newMargin) {
+    if (newMargin.hasOwnProperty('rate')) {
+      return this.props.footer.enableNext();
+    }
+    this.props.footer.disableNext();
+  }
+
   onMarginChange = (margin) => {
     const newMargin = Object.assign({}, this.state.margin, margin);
-    console.log(newMargin, margin);
+    this.validate(newMargin);
     this.setState({margin: newMargin});
-    if (newMargin.hasOwnProperty('rate')) {
-      this.props.setMarginRate(newMargin);
-      this.props.footer.enableNext();
-    } else {
-      this.props.footer.disableNext();
-    }
   };
 
   render() {
@@ -43,7 +42,8 @@ class SellerMarginContainer extends Component {
       return <p><FontAwesomeIcon icon={faSpinner} className="loading"/>Loading...</p>;
     }
 
-    return (<MarginSelectorForm fiat={this.props.fiat} margin={this.state.margin} onMarginChange={this.onMarginChange}/>);
+    return (
+      <MarginSelectorForm fiat={this.props.fiat} margin={this.state.margin} onMarginChange={this.onMarginChange}/>);
   }
 }
 
