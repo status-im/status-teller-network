@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProfileInformation should render correctly 1`] = `
+<Row
+  className="my-5 text-center"
+  tag="div"
+>
+  <Col
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
+    xs="12"
+  >
+    <Identicon
+      className="rounded-circle"
+      seed="denis"
+    />
+  </Col>
+  <Col
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
+    xs="12"
+  >
+    <h4
+      className="font-weight-bold"
+    >
+      Denis
+    </h4>
+  </Col>
+  <Col
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
+    xs="12"
+  >
+    <p
+      className="text-muted"
+    >
+      0x2376423784623784632784678324
+    </p>
+  </Col>
+</Row>
+`;
