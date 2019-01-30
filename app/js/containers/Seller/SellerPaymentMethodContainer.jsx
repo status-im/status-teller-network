@@ -53,7 +53,6 @@ SellerPaymentMethodContainer.propTypes = {
   setPaymentMethods: PropTypes.func
 };
 
-
 const mapStateToProps = state => ({
   paymentMethods: seller.selectors.paymentMethods(state)
 });

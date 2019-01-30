@@ -30,7 +30,7 @@ class SellerFiatContainer extends Component {
   }
 
   validate(fiat) {
-    if (!fiat) {
+    if (!fiat.id) {
       return this.props.footer.disableNext();
     }
     this.props.footer.enableNext();

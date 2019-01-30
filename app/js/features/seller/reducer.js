@@ -1,4 +1,4 @@
-import {SET_FIAT, SET_MARGIN, SET_SELECTED_ASSET, SET_LOCATION, SET_PAYMENT_METHODS} from './constants';
+import {SET_FIAT, SET_MARGIN, SET_SELECTED_ASSET, SET_LOCATION, SET_PAYMENT_METHODS, SET_CONTACT} from './constants';
 
 const DEFAULT_STATE = {fiat: null, rate: null, isAbove: true, location: ''};
 
@@ -24,6 +24,11 @@ function reducer(state = DEFAULT_STATE, action) {
         return{...state, ...{
           rate: action.rate,
           isAbove: action.isAbove
+        }};
+    case SET_CONTACT:
+        return{...state, ...{
+            nickname: action.nickname,
+            contactCode: action.contactCode
         }};
     default:
       return state;

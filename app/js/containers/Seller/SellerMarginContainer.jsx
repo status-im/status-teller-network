@@ -25,7 +25,8 @@ class SellerMarginContainer extends Component {
   }
 
   validate(newMargin) {
-    if (newMargin.hasOwnProperty('rate')) {
+    console.log(newMargin);
+    if (newMargin.rate || newMargin.rate === 0) {
       return this.props.footer.enableNext();
     }
     this.props.footer.disableNext();
