@@ -23,7 +23,7 @@ class Wizard extends Component {
     let currentStep = this.state.currentStep;
     const stepsLength = this.props.steps.length;
     return currentStep < stepsLength - 1;
-  }
+  };
 
   next = () => {
     if (!this.canNext()) {
@@ -40,7 +40,7 @@ class Wizard extends Component {
 
   canPrevious = () => {
     return this.state.currentStep > 0;
-  }
+  };
 
   previous = () => {
     if (!this.canPrevious()) {

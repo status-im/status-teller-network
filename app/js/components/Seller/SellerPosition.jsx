@@ -16,7 +16,7 @@ class SellerPosition extends Component {
         <Form>
           <FormGroup>
             <Input type="text" name="location" id="location" placeholder="City, Country"
-                   value={this.props.location} onChange={(e) => this.changeLocation(e)}/>
+                   value={this.props.location || ''} onChange={(e) => this.changeLocation(e)}/>
           </FormGroup>
           {!this.props.location && <p className="text-info">Enter a location to move to the next page</p>}
         </Form>

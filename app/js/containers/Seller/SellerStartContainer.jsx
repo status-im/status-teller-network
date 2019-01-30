@@ -8,20 +8,34 @@ import seller from "../../features/seller";
 const assets = ['ETH', 'SNT'];
 
 class SellerStartContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedAsset: props.selectedAsset
+    };
+    this.validate(props.selectedAsset);
+    this.props.footer.onNext(() => {
+      this.props.setSelectedAsset(this.state.selectedAsset);
+    });
+  }
 
-  selectAsset = (selectedAsset) => {
+  validate(selectedAsset) {
     if (selectedAsset !== null) {
-      this.props.setSelectedAsset(selectedAsset);
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();
     }
+  }
+
+  selectAsset = (selectedAsset) => {
+    this.setState({selectedAsset});
+    this.validate();
   };
 
   render() {
     return (
       <Fragment>
-        <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.props.selectedAsset} assets={assets}/>
+        <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} assets={assets}/>
       </Fragment>
     );
   }
