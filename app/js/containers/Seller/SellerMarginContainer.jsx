@@ -16,7 +16,6 @@ class SellerMarginContainer extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.margin.rate !== prevProps.margin.rate || this.props.margin.isAbove !== prevProps.margin.isAbove) {
-      console.log('Updateing', this.props.margin);
       this.setState({margin: this.props.margin});
     }
   }

@@ -19,6 +19,7 @@ import SellerPositionContainer from '../containers/Seller/SellerPositionContaine
 import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
 import SellerFiatContainer from '../containers/Seller/SellerFiatContainer';
 import SellerMarginContainer from '../containers/Seller/SellerMarginContainer';
+import SellerContactContainer from '../containers/Seller/SellerContactContainer';
 
 import ProfileContainer from '../containers/ProfileContainer';
 
@@ -63,7 +64,8 @@ class App extends Component {
             { path: '/sell/location', component: SellerPositionContainer },
             { path: '/sell/payment-methods', component: SellerPaymentMethodContainer },
             { path: '/sell/fiat-selector', component: SellerFiatContainer },
-            { path: '/sell/margin', component: SellerMarginContainer }
+            { path: '/sell/margin', component: SellerMarginContainer },
+            { path: '/sell/contact', component: SellerContactContainer }
           ]}/>
 
           <Route path="/price" component={PriceContainer} />
