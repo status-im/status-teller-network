@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import PropTypes from 'prop-types';
 import ProfileInformation from '../components/ProfileInformation';
 import Reputation from '../components/Reputation';
 import Trades from '../components/Trades';

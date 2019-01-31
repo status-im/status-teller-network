@@ -7,7 +7,6 @@ import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
 
 class Reputation extends Component {
   render() {
-    const t = this.props.t;
     return (
       <Row className="mt-4">
         <Col xs="12">

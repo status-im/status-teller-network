@@ -10,8 +10,8 @@ import Header from "../components/Header";
 import HomeContainer from '../containers/HomeContainer';
 
 // Buyer
-import BuyStartContainer from '../containers/Buy/StartContainer';
-import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
+import BuyStartContainer from '../containers/Buyer/OfferListContainer';
+import BuyPaymentTypeContainer from '../containers/Buyer/PaymentTypeContainer';
 
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
