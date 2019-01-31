@@ -1,3 +1,6 @@
+$search-field-height: 38px;
+$autocomplete-height: 157px;
+
 .map-container {
   height: 88%;
   position: absolute;
@@ -7,9 +10,14 @@
 
   .map-search-form {
     position: absolute;
-    bottom: 7px;
-    left: 10px;
-    right: 60px;
+    bottom: 7px !important;
+    left: 10px !important;
+    right: 60px !important;
+    top: auto !important;
+
+    input {
+      height: $search-field-height;
+    }
 
     .search-icon {
       position: absolute;
@@ -17,4 +25,9 @@
       top: 10px;
     }
   }
+}
+
+.pac-container {
+  height: $autocomplete-height;
+  margin-top: - ($autocomplete-height + $search-field-height);
 }

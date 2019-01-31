@@ -1,11 +1,11 @@
+/*global google*/
 import React, {Component, Fragment} from 'react';
 import {compose, withProps} from "recompose";
 import {GoogleMap, Marker, withGoogleMap, withScriptjs} from "react-google-maps";
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
-import {Form, FormGroup, Input} from 'reactstrap';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch, faSpinner} from "@fortawesome/free-solid-svg-icons";
+import SearchBox from "react-google-maps/lib/components/places/SearchBox";
+import SearchBar from './SearchBar';
 
 import CustomInfoWindow from './CustomInfoWindow';
 import dot from '../../images/Ellipse.png';
@@ -26,9 +26,17 @@ const fakeData = [
 export class Map extends Component {
   constructor(props) {
     super(props);
+    const pos = Object.assign({}, props.coords);
     this.state = {
-      activeMarkers: {}
+      activeMarkers: {},
+      center: {lat: pos.latitude, lng: pos.longitude}
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.coords !== prevProps.coords) {
+      this.setState({center: {lat: this.props.coords.latitude, lng: this.props.coords.longitude}});
+    }
   }
 
   onMarkerClick(markerIndex) {
@@ -60,43 +68,74 @@ export class Map extends Component {
     return (Math.random() < 0.5 ? -1 : 1) * Math.random() * seed;
   }
 
+  onPlacesChanged = () => {
+    const places = this.searchBox.getPlaces();
+    const bounds = new google.maps.LatLngBounds();
+
+    places.forEach(place => {
+      if (place.geometry.viewport) {
+        bounds.union(place.geometry.viewport);
+      } else {
+        bounds.extend(place.geometry.location);
+      }
+    });
+    const nextMarkers = places.map(place => ({
+      position: place.geometry.location
+    }));
+
+    // TODO load new offers
+    const newCenter = {lat: nextMarkers[0].position.lat(), lng: nextMarkers[0].position.lng()};
+    this.generateFakeData(newCenter);
+    this.setState({
+      center: newCenter
+    });
+  };
+
+  generateFakeData(center) {
+    fakeData.forEach(fake => {
+      fake.lat = center.lat + this.getRandomNum(0.01);
+      fake.lng = center.lng + this.getRandomNum(0.01);
+    });
+  }
+
   render() {
-    let {coords, error, t} = this.props;
+    let {error, t} = this.props;
+    let {center} = this.state;
     if (error && error.indexOf('denied') > -1) {
-      coords = {
-        latitude: 45.492611,
-        longitude: -73.617959
+      center = {
+        lat: 45.492611,
+        lng: -73.617959
       };
       error = t('map.denied');
     } else if (error) {
       return (<p>{error}</p>);
     }
 
-    if (!coords) {
+    if (!center || !center.lat) {
       return t('map.loading');
     }
 
     // TODO remove this when we have actual data
     if (!fakeData[0].lat) {
-      fakeData.forEach(fake => {
-        fake.lat = coords.latitude + this.getRandomNum(0.01);
-        fake.lng = coords.longitude + this.getRandomNum(0.01);
-      });
+      this.generateFakeData(center);
     }
 
     return (<Fragment>
         {error && <p>{error}</p>}
-        <Form className="map-search-form">
-          <FormGroup>
-            <Input type="text" name="map-search" placeholder="Enter a city or ZIP code"/>
-            <FontAwesomeIcon className="search-icon" icon={faSearch}/>
-          </FormGroup>
-        </Form>
         <GoogleMap
           defaultZoom={14}
-          defaultCenter={{lat: coords.latitude, lng: coords.longitude}}
+          center={this.state.center}
           options={{mapTypeControl: false, streetViewControl: false}}
         >
+          <SearchBox
+            onPlacesChanged={this.onPlacesChanged}
+            ref={ref => {
+              this.searchBox = ref;
+            }}
+            controlPosition={google.maps.ControlPosition.BOTTOM_LEFT}
+          >
+            <SearchBar className="map-search-form" placeholder="Enter a city or ZIP code"/>
+          </SearchBox>
           {fakeData.map(fake => {
             return (<Marker
               key={`marker-${fake.address}`}
