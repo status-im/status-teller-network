@@ -11,16 +11,16 @@ import CustomInfoWindow from './CustomInfoWindow';
 import dot from '../../images/Ellipse.png';
 
 const fakeData = [
-  {name: 'Bob', address: '0xb8d851486d1c953e31a44374aca11151d49b8bb3'},
-  {name: 'Alice', address: '0xf6d5c6d500cac10ee7e6efb5c1b479cfb789950a'},
-  {name: 'Roger', address: '0xf09324e7a1e2821c2f7a4a47675f9cf0b1a5eb7f'},
-  {name: 'Gerard', address: '0xfbaf82a227dcebd2f9334496658801f63299ba24'},
-  {name: 'Dick', address: '0x774b5341944deac70199a4750556223cb008949b'},
-  {name: 'Patricia', address: '0x4801428dad07e7c2401d033d195116011fc4e400'},
-  {name: 'Magda', address: '0xcf08befbc01a5b02ea09d840797d6b4565d4d535'},
-  {name: 'Ginette', address: '0x1a2f3b98e434c02363f3dac3174af93c1d690914'},
-  {name: 'Dillard', address: '0x4a17f35f0a9927fb4141aa91cbbc72c1b31598de'},
-  {name: 'Memphis', address: '0xdf18cb4f2005bc52f94e9bd6c31f7b0c6394e2c2'}
+  {name: 'Bob', address: '0xb8d851486d1c953e31a44374aca11151d49b8bb3', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: true},
+  {name: 'Alice', address: '0xf6d5c6d500cac10ee7e6efb5c1b479cfb789950a', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: false},
+  {name: 'Roger', address: '0xf09324e7a1e2821c2f7a4a47675f9cf0b1a5eb7f', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: true},
+  {name: 'Gerard', address: '0xfbaf82a227dcebd2f9334496658801f63299ba24', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: true},
+  {name: 'Dick', address: '0x774b5341944deac70199a4750556223cb008949b', assets: ['ETH', 'DAI'], isPositiveRating: true},
+  {name: 'Patricia', address: '0x4801428dad07e7c2401d033d195116011fc4e400', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: false},
+  {name: 'Magda', address: '0xcf08befbc01a5b02ea09d840797d6b4565d4d535', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: true},
+  {name: 'Ginette', address: '0x1a2f3b98e434c02363f3dac3174af93c1d690914', assets: ['ETH', 'SNT'], isPositiveRating: false},
+  {name: 'Dillard', address: '0x4a17f35f0a9927fb4141aa91cbbc72c1b31598de', assets: ['SNT', 'DAI'], isPositiveRating: true},
+  {name: 'Memphis', address: '0xdf18cb4f2005bc52f94e9bd6c31f7b0c6394e2c2', assets: ['ETH', 'SNT', 'DAI'], isPositiveRating: true}
 ];
 
 export class Map extends Component {
@@ -99,7 +99,7 @@ export class Map extends Component {
   }
 
   render() {
-    let {error, t} = this.props;
+    let {error, t, goToProfile} = this.props;
     let {center} = this.state;
     if (error && error.indexOf('denied') > -1) {
       center = {
@@ -143,8 +143,9 @@ export class Map extends Component {
               position={{lat: fake.lat, lng: fake.lng}}
               icon={dot}
             >{this.state.activeMarkers[fake.address] &&
-            <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name}
-                              address={fake.address}/>}
+            <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name} assets={fake.assets}
+                              address={fake.address} onClick={() => goToProfile(fake.address)}
+                              isPositiveRating={fake.isPositiveRating}/>}
             </Marker>);
           })}
         </GoogleMap>
@@ -155,6 +156,7 @@ export class Map extends Component {
 
 Map.propTypes = {
   t: PropTypes.func,
+  goToProfile: PropTypes.func,
   coords: PropTypes.object,
   error: PropTypes.string,
   google: PropTypes.object

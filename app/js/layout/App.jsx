@@ -55,9 +55,7 @@ class App extends Component {
           <Route exact path="/" component={HomeContainer}/>
           <Route exact path="/profile" component={ProfileContainer}/>
           <Route exact path="/buy/start" component={BuyStartContainer}/>
-          <Wizard path="/buy/" steps={[
-            {path: '/buy/map', component: MapContainer}
-          ]}/>
+          <Route exact path="/buy/map" component={MapContainer}/>
           <Wizard path="/sell/" steps={[
             {path: '/sell/start', component: SellerStartContainer},
             {path: '/sell/location', component: SellerPositionContainer},

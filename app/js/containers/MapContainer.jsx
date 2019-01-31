@@ -3,6 +3,7 @@ import Map from '../components/Map';
 import license from "../features/license";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
+import {withRouter} from "react-router-dom";
 
 class MapContainer extends Component {
   constructor(props) {
@@ -11,10 +12,6 @@ class MapContainer extends Component {
       coords: null,
       error: null
     };
-
-    if (this.props.footer) {
-      this.props.footer.hide();
-    }
 
     navigator.geolocation.getCurrentPosition(pos => {
       this.setState({coords: pos.coords});
@@ -27,10 +24,14 @@ class MapContainer extends Component {
     this.props.getLicenseOwners();
   }
 
+  goToProfile = (address) => {
+    this.props.history.push(`/buy/profile/${address}`);
+  };
+
   render() {
     const {error, coords} = this.state;
     return (
-      <Map error={error} coords={coords}/>
+      <Map error={error} coords={coords} goToProfile={this.goToProfile}/>
     );
   }
 }
@@ -39,7 +40,7 @@ MapContainer.propTypes = {
   getLicenseOwners: PropTypes.func,
   licenseOwners: PropTypes.array,
   licenseOwnersError: PropTypes.string,
-  footer: PropTypes.object
+  history: PropTypes.object,
 };
 
 const mapStateToProps = state => ({
@@ -52,4 +53,4 @@ export default connect(
   {
     getLicenseOwners: license.actions.getLicenseOwners
   }
-)(MapContainer);
+)(withRouter(MapContainer));
