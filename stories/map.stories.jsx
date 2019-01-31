@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from "@storybook/addon-info";
 
-import Map, { Map as MapWrapped } from '../app/js/components/Map';
+import Map, { Map as MapWrapped } from '../app/js/components/Buyer/Map';
 
 const info = {inline: true, propTables: [MapWrapped]};
 
