@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, NavLink, Button } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 

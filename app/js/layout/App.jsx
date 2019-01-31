@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { HashRouter, Route } from "react-router-dom";
-import { connect } from 'react-redux';
-import { Container } from 'reactstrap';
+import React, {Component} from 'react';
+import {HashRouter, Route} from "react-router-dom";
+import {connect} from 'react-redux';
+import {Container} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import Wizard from '../components/Wizard';
@@ -11,7 +11,7 @@ import HomeContainer from '../containers/HomeContainer';
 
 // Buyer
 import BuyStartContainer from '../containers/Buyer/OfferListContainer';
-import BuyPaymentTypeContainer from '../containers/Buyer/PaymentTypeContainer';
+import MapContainer from '../containers/MapContainer';
 
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
@@ -25,7 +25,6 @@ import ProfileContainer from '../containers/ProfileContainer';
 
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
-import MapContainer from '../containers/MapContainer';
 import SignatureContainer from '../containers/SignatureContainer';
 import ArbitrationContainer from '../containers/ArbitrationContainer';
 
@@ -53,26 +52,26 @@ class App extends Component {
       <HashRouter>
         <Container>
           <Header/>
-          <Route exact path="/" component={HomeContainer} />
-          <Route exact path="/profile" component={ProfileContainer} />
+          <Route exact path="/" component={HomeContainer}/>
+          <Route exact path="/profile" component={ProfileContainer}/>
+          <Route exact path="/buy/start" component={BuyStartContainer}/>
           <Wizard path="/buy/" steps={[
-            { path: '/buy/start', component: BuyStartContainer },
-            { path: '/buy/payment-type', component: BuyPaymentTypeContainer }
+            {path: '/buy/map', component: MapContainer}
           ]}/>
           <Wizard path="/sell/" steps={[
-            { path: '/sell/start', component: SellerStartContainer },
-            { path: '/sell/location', component: SellerPositionContainer },
-            { path: '/sell/payment-methods', component: SellerPaymentMethodContainer },
-            { path: '/sell/fiat-selector', component: SellerFiatContainer },
-            { path: '/sell/margin', component: SellerMarginContainer },
-            { path: '/sell/contact', component: SellerContactContainer }
+            {path: '/sell/start', component: SellerStartContainer},
+            {path: '/sell/location', component: SellerPositionContainer},
+            {path: '/sell/payment-methods', component: SellerPaymentMethodContainer},
+            {path: '/sell/fiat-selector', component: SellerFiatContainer},
+            {path: '/sell/margin', component: SellerMarginContainer},
+            {path: '/sell/contact', component: SellerContactContainer}
           ]}/>
 
-          <Route path="/price" component={PriceContainer} />
-          <Route path="/escrows" component={LicenseContainer} />
-          <Route path="/map" component={MapContainer} />
-          <Route path="/signature" component={SignatureContainer} />
-          <Route path="/arbitration" component={ArbitrationContainer} />
+          <Route path="/price" component={PriceContainer}/>
+          <Route path="/escrows" component={LicenseContainer}/>
+          <Route path="/map" component={MapContainer}/>
+          <Route path="/signature" component={SignatureContainer}/>
+          <Route path="/arbitration" component={ArbitrationContainer}/>
         </Container>
       </HashRouter>
     );

@@ -1,9 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Map from '../components/Map';
 import license from "../features/license";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
-import SellerList from "../components/SellerList";
 
 class MapContainer extends Component {
   constructor(props) {
@@ -27,11 +26,7 @@ class MapContainer extends Component {
   render() {
     const {error, coords} = this.state;
     return (
-      <Fragment>
-        <h1>Map</h1>
-        <Map error={error} coords={coords}/>
-        <SellerList licenseOwners={this.props.licenseOwners} licenseOwnersError={this.props.licenseOwnersError}/>
-      </Fragment>
+      <Map error={error} coords={coords}/>
     );
   }
 }

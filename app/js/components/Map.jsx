@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
 
 import CustomInfoWindow from './CustomInfoWindow';
-import unknownImage from '../../images/unknown.png';
+import dot from '../../images/Ellipse.png';
 
 const fakeData = [
   {name: 'Bob', address: '0xb8d851486d1c953e31a44374aca11151d49b8bb3'},
@@ -86,13 +86,14 @@ export class Map extends Component {
       <GoogleMap
         defaultZoom={14}
         defaultCenter={{lat: coords.latitude, lng: coords.longitude}}
+        options={{mapTypeControl:false, streetViewControl: false}}
       >
         {fakeData.map(fake => {
           return (<Marker
             key={`marker-${fake.address}`}
             onClick={() => this.onMarkerClick(fake.address)}
             position={{lat: fake.lat, lng: fake.lng}}
-            icon={unknownImage}
+            icon={dot}
           >{this.state.activeMarkers[fake.address] &&
           <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name}
                             address={fake.address}/>}
@@ -114,7 +115,7 @@ export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyALAskxuamVIKbyUiw6CxgfVTk6YM2wYu8&v=3.exp&libraries=geometry,drawing,places",
     loadingElement: <div style={{height: `100%`}}/>,
-    containerElement: <div style={{height: `400px`}}/>,
+    containerElement: <div className="map-container"/>,
     mapElement: <div style={{height: `100%`}}/>
   }),
   withScriptjs,

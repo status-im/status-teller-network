@@ -3,6 +3,7 @@ import {Button} from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import OfferListing from '../../components/OfferListing';
+import {Link} from "react-router-dom";
 
 const IN_PERSON_DATA = [
   {assets: ['ETH', 'SNT'], seller: 'Bob', location: 'Maniwaukee', nbTrades: 5, isPositiveRating: true},
@@ -26,7 +27,7 @@ class OfferList extends Component {
         <p>ADD A FILTER HERE</p>
         <h4 className="clearfix mt-2">
           Cash (in person)
-          <Button color="link" className="float-right">On Map <FontAwesomeIcon icon={faArrowRight}/></Button>
+          <Button tag={Link} color="link" className="float-right" to="/buy/map">On Map <FontAwesomeIcon icon={faArrowRight}/></Button>
         </h4>
         {IN_PERSON_DATA.map((data, idx) => <OfferListing key={'listing-' + idx} assets={data.assets}
                                                          seller={data.seller} location={data.location}
