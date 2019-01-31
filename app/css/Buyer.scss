@@ -4,4 +4,17 @@
   left: 0;
   right: 0;
   bottom: 0;
+
+  .map-search-form {
+    position: absolute;
+    bottom: 7px;
+    left: 10px;
+    right: 60px;
+
+    .search-icon {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
+  }
 }

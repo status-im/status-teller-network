@@ -2,7 +2,10 @@ import React, {Component, Fragment} from 'react';
 import {compose, withProps} from "recompose";
 import {GoogleMap, Marker, withGoogleMap, withScriptjs} from "react-google-maps";
 import PropTypes from 'prop-types';
-import { withNamespaces } from 'react-i18next';
+import {withNamespaces} from 'react-i18next';
+import {Form, FormGroup, Input} from 'reactstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch, faSpinner} from "@fortawesome/free-solid-svg-icons";
 
 import CustomInfoWindow from './CustomInfoWindow';
 import dot from '../../images/Ellipse.png';
@@ -54,7 +57,7 @@ export class Map extends Component {
   }
 
   getRandomNum(seed = 1) {
-    return  (Math.random() < 0.5 ? -1 : 1) * Math.random() * seed;
+    return (Math.random() < 0.5 ? -1 : 1) * Math.random() * seed;
   }
 
   render() {
@@ -82,25 +85,32 @@ export class Map extends Component {
     }
 
     return (<Fragment>
-      {error && <p>{error}</p>}
-      <GoogleMap
-        defaultZoom={14}
-        defaultCenter={{lat: coords.latitude, lng: coords.longitude}}
-        options={{mapTypeControl:false, streetViewControl: false}}
-      >
-        {fakeData.map(fake => {
-          return (<Marker
-            key={`marker-${fake.address}`}
-            onClick={() => this.onMarkerClick(fake.address)}
-            position={{lat: fake.lat, lng: fake.lng}}
-            icon={dot}
-          >{this.state.activeMarkers[fake.address] &&
-          <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name}
-                            address={fake.address}/>}
-          </Marker>);
-        })}
-      </GoogleMap>
-    </Fragment>);
+        {error && <p>{error}</p>}
+        <Form className="map-search-form">
+          <FormGroup>
+            <Input type="text" name="map-search" placeholder="Enter a city or ZIP code"/>
+            <FontAwesomeIcon className="search-icon" icon={faSearch}/>
+          </FormGroup>
+        </Form>
+        <GoogleMap
+          defaultZoom={14}
+          defaultCenter={{lat: coords.latitude, lng: coords.longitude}}
+          options={{mapTypeControl: false, streetViewControl: false}}
+        >
+          {fakeData.map(fake => {
+            return (<Marker
+              key={`marker-${fake.address}`}
+              onClick={() => this.onMarkerClick(fake.address)}
+              position={{lat: fake.lat, lng: fake.lng}}
+              icon={dot}
+            >{this.state.activeMarkers[fake.address] &&
+            <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name}
+                              address={fake.address}/>}
+            </Marker>);
+          })}
+        </GoogleMap>
+      </Fragment>
+    );
   }
 }
 

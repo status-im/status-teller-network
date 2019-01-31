@@ -12,6 +12,10 @@ class MapContainer extends Component {
       error: null
     };
 
+    if (this.props.footer) {
+      this.props.footer.hide();
+    }
+
     navigator.geolocation.getCurrentPosition(pos => {
       this.setState({coords: pos.coords});
     }, err => {
@@ -34,7 +38,8 @@ class MapContainer extends Component {
 MapContainer.propTypes = {
   getLicenseOwners: PropTypes.func,
   licenseOwners: PropTypes.array,
-  licenseOwnersError: PropTypes.string
+  licenseOwnersError: PropTypes.string,
+  footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
