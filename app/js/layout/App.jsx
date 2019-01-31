@@ -51,7 +51,7 @@ class App extends Component {
 
     return (
       <HashRouter>
-        <Container className="h-100">
+        <Container>
           <Header/>
           <Route exact path="/" component={HomeContainer} />
           <Route exact path="/profile" component={ProfileContainer} />

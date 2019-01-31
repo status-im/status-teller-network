@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {FormGroup, Label} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
@@ -15,7 +15,7 @@ class SellerContact extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Fragment>
         <h2>Your name and how to contact you</h2>
         <p>What would be the best way for the buyer to contact you</p>
 
@@ -32,7 +32,7 @@ class SellerContact extends Component {
           </FormGroup>
         {(!this.props.nickname || !this.props.contactCode) && <p className="text-info">Enter a location to move to the next page</p>}
         </Form>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

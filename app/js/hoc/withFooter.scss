@@ -1,14 +1,19 @@
 $footer-height: 58px;
 
 .container {
+  position: relative;
   padding-bottom: $footer-height;
-}
+  min-height: 100%;
 
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: $footer-height;
-  background-color: rgba(255, 255, 255, 0.5);
+  .wizard-container {
+    max-width: 640px;
+
+    .footer {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: $footer-height;
+    }
+  }
 }

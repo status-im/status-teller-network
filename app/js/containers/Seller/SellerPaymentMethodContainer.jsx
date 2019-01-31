@@ -39,9 +39,8 @@ class SellerPaymentMethodContainer extends Component {
 
   render() {
     return (
-      <Fragment>
-        <SellerPaymentMethod methods={methods} togglePaymentMethod={this.togglePaymentMethod} selectedMethods={this.state.selectedMethods}/>
-      </Fragment>
+      <SellerPaymentMethod methods={methods} togglePaymentMethod={this.togglePaymentMethod}
+                           selectedMethods={this.state.selectedMethods}/>
     );
   }
 }

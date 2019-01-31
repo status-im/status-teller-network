@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import SellerAssets from '../../components/Seller/SellerAssets';
 import {connect} from "react-redux";
@@ -20,7 +20,7 @@ class SellerStartContainer extends Component {
   }
 
   validate(selectedAsset) {
-    if (selectedAsset !== null) {
+    if (selectedAsset || selectedAsset === 0) {
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();
@@ -29,15 +29,11 @@ class SellerStartContainer extends Component {
 
   selectAsset = (selectedAsset) => {
     this.setState({selectedAsset});
-    this.validate();
+    this.validate(selectedAsset);
   };
 
   render() {
-    return (
-      <Fragment>
-        <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} assets={assets}/>
-      </Fragment>
-    );
+    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} assets={assets}/>);
   }
 }
 

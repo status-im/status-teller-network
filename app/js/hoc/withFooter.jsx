@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
 
 import './withFooter.scss';
 
 const Footer = (props) => (
-  <footer className="container">
+  <footer className="footer">
     {props.wizard.canPrevious() &&
-      <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
+    <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
     {props.wizard.canNext() &&
-      <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>Next &gt;</Button>}
+    <Button onClick={props.next} className="float-right m-2" color="link"
+            disabled={!props.nextEnabled}>Next &gt;</Button>}
   </footer>
 );
 
@@ -31,11 +32,11 @@ const withFooterHoC = (WrappedComponent, wizard) => {
     }
 
     enableNext = () => {
-      this.setState({ nextEnabled: true });
+      this.setState({nextEnabled: true});
     };
 
     disableNext = () => {
-      this.setState({ nextEnabled: false });
+      this.setState({nextEnabled: false});
     };
 
     change() {
@@ -47,13 +48,13 @@ const withFooterHoC = (WrappedComponent, wizard) => {
 
     next = () => {
       this.change();
-     wizard.next();
+      wizard.next();
 
     };
 
     previous = () => {
       this.change();
-     wizard.previous();
+      wizard.previous();
     };
 
     onPageChange = (cb) => {
@@ -67,11 +68,11 @@ const withFooterHoC = (WrappedComponent, wizard) => {
         onPageChange: this.onPageChange
       };
       return (
-        <React.Fragment>
-          <WrappedComponent wizard={wizard} footer={controller} />
+        <div className="wizard-container">
+          <WrappedComponent wizard={wizard} footer={controller}/>
           <Footer wizard={wizard} next={this.next} previous={this.previous}
                   nextEnabled={this.state.nextEnabled}/>
-        </React.Fragment>
+        </div>
       );
     }
   }

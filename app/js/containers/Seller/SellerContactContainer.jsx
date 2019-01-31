@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import SellerContact from '../../components/Seller/SellerContact';
 import seller from "../../features/seller";
@@ -37,10 +37,8 @@ class SellerContactContainer extends Component {
 
   render() {
     return (
-      <Fragment>
-        <SellerContact contactCode={this.state.contactCode} nickname={this.state.nickname}
-                       changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
-      </Fragment>
+      <SellerContact contactCode={this.state.contactCode} nickname={this.state.nickname}
+                     changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
     );
   }
 }
