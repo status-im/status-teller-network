@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 import {Row, Col, Button} from 'reactstrap';
 
 const SellerOfferList = ({asset, min, max, fiat}) => (
@@ -11,7 +12,7 @@ const SellerOfferList = ({asset, min, max, fiat}) => (
       <p className="text-muted">Min: {min}{fiat} -  Max: {max}{fiat}</p>
     </Col>
     <Col xs="4" className="v-align-center">
-      <Button color="primary" className="w-100">Buy</Button>
+      <Button tag={Link} color="primary" className="w-100" to={`/buy/offer/address/offer-id`}>Buy</Button>
     </Col>
   </Row>
 );
