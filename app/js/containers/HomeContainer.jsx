@@ -9,11 +9,6 @@ class HomeContainer extends Component {
     const t = this.props.t;
     return (
       <Fragment>
-        <Row>
-          <Col>
-            <NavLink className="float-right" tag={Link} to="/login">{t('home.login')}</NavLink>
-          </Col>
-        </Row>
         <Row className="h-75">
           <Col xs={12} className="my-auto">
             <h1 className="text-center">{t('home.welcome')}</h1>

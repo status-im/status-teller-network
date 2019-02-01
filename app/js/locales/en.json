@@ -19,7 +19,7 @@
     "title": "What local currency do you want to trade with?"
   },
   "fiatSelectorForm": {
-    "error": "Please select a valid FIAT currency",
+    "selectValid": "Select a valid currency to move to the next page",
     "placeholder": "Enter currency",
     "continue": "Next",
     "emptyLabel": "No matches found."
@@ -29,7 +29,7 @@
   },
   "marginSelectorForm": {
     "margin": "Choose a percentage margin",
-    "error": "Please fix issues before submitting",
+    "enterMargin": "Enter a margin to move to the next page",
     "aboveMarket": "Above market",
     "belowMarket": "Below market",
     "priceOrigin": "Prices come from www.cryptocompare.com",
@@ -95,6 +95,7 @@
   "validators": {
     "required": "This field is required",
     "isInteger": "This field needs to be an integer",
+    "isNumber": "This field needs to be an number",
     "isAddress": "This field needs to be a valid Ethereum address",
     "isJSON": "This field needs to be a valid JSON string",
     "isEscrowPaymentSignature": "Missing some of the needed properties. Needed are: `escrowId`, `message` and `type`"

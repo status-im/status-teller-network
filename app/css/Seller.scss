@@ -1,0 +1,34 @@
+@import "../../node_modules/bootstrap/scss/functions";
+@import "../../node_modules/bootstrap/scss/variables";
+
+.asset-btns {
+  width: 100%;
+
+  .btn {
+    text-align: left;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    color: $yiq-text-dark;
+    font-size: 1.2em;
+
+    &.active {
+      .fa-check {
+        float: right;
+        margin-top: 5px;
+      }
+    }
+  }
+
+  &.market-btns {
+    .btn {
+      text-align: center;
+      background-color: transparent;
+      color: $yiq-text-dark;
+
+      &.active {
+        background-color: transparent;
+        color: $primary;
+      }
+    }
+  }
+}

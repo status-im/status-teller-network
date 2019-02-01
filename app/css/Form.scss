@@ -17,3 +17,18 @@
 .input-group-append {
   height: calc(2.25rem + 2px);
 }
+
+.prepend {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.append {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.full-width-input.input-group > div:first-child {
+  flex: 1 1 auto;
+  width: 1%;
+}

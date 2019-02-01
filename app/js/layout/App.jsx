@@ -5,18 +5,29 @@ import { Container } from 'reactstrap';
 import PropTypes from 'prop-types';
 
 import Wizard from '../components/Wizard';
+import Header from "../components/Header";
 
 import HomeContainer from '../containers/HomeContainer';
+
+// Buyer
 import BuyStartContainer from '../containers/Buy/StartContainer';
 import BuyPaymentTypeContainer from '../containers/Buy/PaymentTypeContainer';
+
+// Seller
+import SellerStartContainer from '../containers/Seller/SellerStartContainer';
+import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
+import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
+import SellerFiatContainer from '../containers/Seller/SellerFiatContainer';
+import SellerMarginContainer from '../containers/Seller/SellerMarginContainer';
+import SellerContactContainer from '../containers/Seller/SellerContactContainer';
+
+import ProfileContainer from '../containers/ProfileContainer';
 
 import PriceContainer from '../containers/PriceContainer';
 import LicenseContainer from '../containers/EscrowsContainer';
 import MapContainer from '../containers/MapContainer';
 import SignatureContainer from '../containers/SignatureContainer';
 import ArbitrationContainer from '../containers/ArbitrationContainer';
-import SellerFiatContainer from '../containers/SellerFiatContainer';
-import SellerMarginContainer from '../containers/SellerMarginContainer';
 
 import prices from '../features/prices';
 import embarkjs from '../features/embarkjs';
@@ -40,11 +51,21 @@ class App extends Component {
 
     return (
       <HashRouter>
-        <Container className="h-100">
+        <Container>
+          <Header/>
           <Route exact path="/" component={HomeContainer} />
+          <Route exact path="/profile" component={ProfileContainer} />
           <Wizard path="/buy/" steps={[
-            { path: '/buy/start', render: (wizard) => <BuyStartContainer wizard={wizard} />},
-            { path: '/buy/payment-type', render: (wizard) => <BuyPaymentTypeContainer wizard={wizard} />}
+            { path: '/buy/start', component: BuyStartContainer },
+            { path: '/buy/payment-type', component: BuyPaymentTypeContainer }
+          ]}/>
+          <Wizard path="/sell/" steps={[
+            { path: '/sell/start', component: SellerStartContainer },
+            { path: '/sell/location', component: SellerPositionContainer },
+            { path: '/sell/payment-methods', component: SellerPaymentMethodContainer },
+            { path: '/sell/fiat-selector', component: SellerFiatContainer },
+            { path: '/sell/margin', component: SellerMarginContainer },
+            { path: '/sell/contact', component: SellerContactContainer }
           ]}/>
 
           <Route path="/price" component={PriceContainer} />
@@ -52,8 +73,6 @@ class App extends Component {
           <Route path="/map" component={MapContainer} />
           <Route path="/signature" component={SignatureContainer} />
           <Route path="/arbitration" component={ArbitrationContainer} />
-          <Route path="/seller/fiat" component={SellerFiatContainer} />
-          <Route path="/seller/margin" component={SellerMarginContainer} />
         </Container>
       </HashRouter>
     );
@@ -74,7 +93,7 @@ App.propTypes = {
 
 export default connect(
   mapStateToProps,
-  { 
+  {
     fetchPrices: prices.actions.fetchPrices,
     init: embarkjs.actions.init
   }

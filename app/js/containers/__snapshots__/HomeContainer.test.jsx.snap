@@ -3,28 +3,6 @@
 exports[`License should render correctly 1`] = `
 <Fragment>
   <Row
-    tag="div"
-  >
-    <Col
-      tag="div"
-      widths={
-        Array [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl",
-        ]
-      }
-    >
-      <NavLink
-        className="float-right"
-        tag={[Function]}
-        to="/login"
-      />
-    </Col>
-  </Row>
-  <Row
     className="h-75"
     tag="div"
   >
