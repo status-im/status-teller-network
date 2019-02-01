@@ -39,3 +39,13 @@ $autocomplete-height: 157px;
   height: $autocomplete-height;
   margin-top: - ($autocomplete-height + $search-field-height);
 }
+
+.seller-profile {
+  .map-container {
+    position: relative;
+    height: 130px;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+}

@@ -137,8 +137,8 @@ export class Map extends Component {
   }
 
   render() {
-    let {goToProfile} = this.props;
-    let {center} = this.state;
+    let {goToProfile, markerOnly} = this.props;
+    let {center, activeMarkers} = this.state;
 
     // TODO remove this when we have actual data
     if (!fakeData[0].lat) {
@@ -148,10 +148,10 @@ export class Map extends Component {
     return (
       <GoogleMap
         defaultZoom={14}
-        center={this.state.center}
+        center={center}
         options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}
       >
-        <SearchBox
+        {!markerOnly && <SearchBox
           onPlacesChanged={this.onPlacesChanged}
           ref={ref => {
             this.searchBox = ref;
@@ -159,17 +159,17 @@ export class Map extends Component {
           controlPosition={google.maps.ControlPosition.BOTTOM_LEFT}
         >
           <SearchBar className="map-search-form" placeholder="Enter a city or ZIP code"/>
-        </SearchBox>
+        </SearchBox>}
         {fakeData.map(fake => {
           return (<Marker
-            key={`marker-${fake.address}`}
-            onClick={() => this.onMarkerClick(fake.address)}
-            position={{lat: fake.lat, lng: fake.lng}}
-            icon={dot}
-          >{this.state.activeMarkers[fake.address] &&
-          <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name} assets={fake.assets}
-                            address={fake.address} onClick={() => goToProfile(fake.address)}
-                            isPositiveRating={fake.isPositiveRating}/>}
+          key={`marker-${fake.address}`}
+          onClick={() => this.onMarkerClick(fake.address)}
+          position={{lat: fake.lat, lng: fake.lng}}
+          icon={dot}
+          >{activeMarkers[fake.address] && !markerOnly &&
+        <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name} assets={fake.assets}
+                          address={fake.address} onClick={() => goToProfile(fake.address)}
+                          isPositiveRating={fake.isPositiveRating}/>}
           </Marker>);
         })}
       </GoogleMap>);
@@ -180,7 +180,8 @@ Map.propTypes = {
   t: PropTypes.func,
   goToProfile: PropTypes.func,
   coords: PropTypes.object.isRequired,
-  google: PropTypes.object
+  google: PropTypes.object,
+  markerOnly: PropTypes.bool
 };
 
 export default compose(
