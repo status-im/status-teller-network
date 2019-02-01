@@ -5,6 +5,10 @@ html {
 body {
   height: 100%;
   display: flex;
+
+  p {
+    font-size: 15px;
+  }
 }
 
 body > div {

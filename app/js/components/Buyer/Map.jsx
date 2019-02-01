@@ -149,7 +149,7 @@ export class Map extends Component {
       <GoogleMap
         defaultZoom={14}
         center={this.state.center}
-        options={{mapTypeControl: false, streetViewControl: false}}
+        options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}
       >
         <SearchBox
           onPlacesChanged={this.onPlacesChanged}

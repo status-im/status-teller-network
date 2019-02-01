@@ -12,6 +12,7 @@ import HomeContainer from '../containers/HomeContainer';
 // Buyer
 import BuyStartContainer from '../containers/Buyer/OfferListContainer';
 import MapContainer from '../containers/Buyer/MapContainer';
+import SellerProfileContainer from '../containers/Buyer/SellerProfileContainer';
 
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
@@ -56,7 +57,7 @@ class App extends Component {
           <Route exact path="/profile" component={ProfileContainer}/>
           <Route exact path="/buy" component={BuyStartContainer}/>
           <Route exact path="/buy/map" component={MapContainer}/>
-          <Route exact path="/buy/profile/:address" component={ProfileContainer}/>
+          <Route exact path="/buy/profile/:address" component={SellerProfileContainer}/>
           <Wizard path="/sell/" steps={[
             {path: '/sell/start', component: SellerStartContainer},
             {path: '/sell/location', component: SellerPositionContainer},
