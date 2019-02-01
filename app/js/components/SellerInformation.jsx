@@ -13,8 +13,8 @@ const ProfileInformation = ({address, name, isPositiveRating, nbTrades, type}) =
       <h4 className="font-weight-bold">{name}</h4>
       <p className="text-muted">{type}</p>
     </Col>
-    <Col xs="5" className="m-auto align-middle">
-      <p className="text-muted  m-auto align-middle">{nbTrades} trades &bull; <RatingIcon isPositiveRating={isPositiveRating}/></p>
+    <Col xs="5" className="v-align-center">
+      <p className="text-muted">{nbTrades} trades &bull; <RatingIcon isPositiveRating={isPositiveRating}/></p>
     </Col>
   </Row>
 );
