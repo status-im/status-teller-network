@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SellerAssets should render correctly 1`] = `
+<Fragment>
+  <h2>
+    Assets
+  </h2>
+  <p>
+    What assets are you going to sell
+  </p>
+  <h3>
+    Assets in your Wallet
+  </h3>
+  <ButtonGroup
+    className="asset-btns"
+    role="group"
+    tag="div"
+    vertical={true}
+  />
+  <p>
+    Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer.
+  </p>
+</Fragment>
+`;

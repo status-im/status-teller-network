@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MarginSelectorForm should render correctly 1`] = `
+<Form(t)>
+  <h2 />
+  <FormGroup
+    tag="div"
+  >
+    <Label
+      for="margin"
+      tag="label"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    />
+    <InputGroup
+      className="full-width-input"
+      tag="div"
+    >
+      <Control(s)
+        className="form-control prepend"
+        id="margin"
+        name="margin"
+        onChange={[Function]}
+        placeholder="0"
+        type="number"
+        validations={
+          Array [
+            [Function],
+            [Function],
+          ]
+        }
+      />
+      <InputGroupAddon
+        addonType="append"
+        tag="div"
+      >
+        <InputGroupText
+          tag="span"
+        >
+          %
+        </InputGroupText>
+      </InputGroupAddon>
+    </InputGroup>
+  </FormGroup>
+  <FormGroup
+    tag="div"
+  >
+    <ButtonGroup
+      className="asset-btns market-btns"
+      role="group"
+      tag="div"
+    >
+      <Button
+        color="secondary"
+        onClick={[Function]}
+        tag="button"
+      />
+      <Button
+        active={true}
+        color="secondary"
+        onClick={[Function]}
+        tag="button"
+      />
+    </ButtonGroup>
+  </FormGroup>
+  <h3 />
+  <div>
+    1 TODO = 1,234.00 
+  </div>
+  <small />
+  <h3 />
+  <div>
+    TODO SNT
+  </div>
+  <p
+    className="text-info"
+  />
+</Form(t)>
+`;
