@@ -5,6 +5,20 @@ html {
 body {
   height: 100%;
   display: flex;
+
+  p {
+    font-size: 15px;
+  }
+
+  .v-align-center {
+    margin: auto;
+    vertical-align: middle;
+
+    >* {
+      margin: auto;
+      vertical-align: middle;
+    }
+  }
 }
 
 body > div {

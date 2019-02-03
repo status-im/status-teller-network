@@ -4,21 +4,24 @@ import {Button} from 'reactstrap';
 
 import './withFooter.scss';
 
-const Footer = (props) => (
-  <footer className="footer">
+const Footer = (props) => {
+  if (!props.visible) {
+    return null;
+  }
+  return (<footer className="footer">
     {props.wizard.canPrevious() &&
     <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
     {props.wizard.canNext() &&
-    <Button onClick={props.next} className="float-right m-2" color="link"
-            disabled={!props.nextEnabled}>Next &gt;</Button>}
-  </footer>
-);
+    <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>Next &gt;</Button>}
+  </footer>);
+};
 
 Footer.propTypes = {
   wizard: PropTypes.object,
   nextEnabled: PropTypes.bool,
   previous: PropTypes.func,
-  next: PropTypes.func
+  next: PropTypes.func,
+  visible: PropTypes.bool
 };
 
 const withFooterHoC = (WrappedComponent, wizard) => {
@@ -26,7 +29,8 @@ const withFooterHoC = (WrappedComponent, wizard) => {
     constructor(props) {
       super(props);
       this.state = {
-        nextEnabled: false
+        nextEnabled: false,
+        visible: true
       };
       this.changeSubs = [];
     }
@@ -37,6 +41,14 @@ const withFooterHoC = (WrappedComponent, wizard) => {
 
     disableNext = () => {
       this.setState({nextEnabled: false});
+    };
+
+    hide = () => {
+      this.setState({ visible: false });
+    };
+
+    show = () => {
+      this.setState({ visible: true });
     };
 
     change() {
@@ -65,13 +77,15 @@ const withFooterHoC = (WrappedComponent, wizard) => {
       const controller = {
         enableNext: this.enableNext,
         disableNext: this.disableNext,
-        onPageChange: this.onPageChange
+        onPageChange: this.onPageChange,
+        show: this.show,
+        hide: this.hide
       };
       return (
         <div className="wizard-container">
           <WrappedComponent wizard={wizard} footer={controller}/>
           <Footer wizard={wizard} next={this.next} previous={this.previous}
-                  nextEnabled={this.state.nextEnabled}/>
+                  nextEnabled={this.state.nextEnabled} visible={this.state.visible}/>
         </div>
       );
     }

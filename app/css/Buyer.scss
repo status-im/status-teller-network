@@ -1,0 +1,49 @@
+$search-field-height: 38px;
+$autocomplete-height: 157px;
+
+.map-container {
+  height: 88%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .map-search-form {
+    position: absolute;
+    bottom: 7px !important;
+    left: 10px !important;
+    right: 60px !important;
+    top: auto !important;
+
+    input {
+      height: $search-field-height;
+    }
+
+    .search-icon {
+      top: 10px;
+    }
+  }
+
+  .gm-style-iw {
+    text-align: center;
+
+    .btn {
+      width: 100%;
+    }
+  }
+}
+
+.pac-container {
+  height: $autocomplete-height;
+  margin-top: - ($autocomplete-height + $search-field-height);
+}
+
+.seller-profile {
+  .map-container {
+    position: relative;
+    height: 130px;
+    margin-top: 16px;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+}

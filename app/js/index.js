@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.scss';
 import '../css/Form.scss';
 import '../css/Seller.scss';
+import '../css/Buyer.scss';
 
 import App from './layout/App';
 import history from './history';
