@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FiatSelectorForm should render correctly 1`] = `
+<Fragment>
+  <h2 />
+  <FormGroup
+    tag="div"
+  >
+    <TypeaheadContainer(WrappedTypeahead)
+      a11yNumResults={[Function]}
+      a11yNumSelected={[Function]}
+      align="justify"
+      allowNew={false}
+      autoFocus={false}
+      bodyContainer={false}
+      caseSensitive={false}
+      clearButton={false}
+      defaultInputValue=""
+      defaultOpen={false}
+      defaultSelected={Array []}
+      disabled={false}
+      dropup={false}
+      emptyLabel=""
+      filterBy={Array []}
+      flip={false}
+      highlightOnlyResult={false}
+      ignoreDiacritics={true}
+      inputProps={Object {}}
+      isInvalid={false}
+      isLoading={false}
+      isValid={false}
+      labelKey="label"
+      maxResults={100}
+      minLength={0}
+      multiple={false}
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onInputChange={[Function]}
+      onKeyDown={[Function]}
+      onPaginate={[Function]}
+      options={Array []}
+      paginate={true}
+      paginationText="Display additional results..."
+      placeholder=""
+      selectHintOnEnter={false}
+      submitFormOnEnter={true}
+    />
+    <p
+      className="text-info"
+    />
+  </FormGroup>
+</Fragment>
+`;

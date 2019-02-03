@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SellerContact should render correctly 1`] = `
+<Fragment>
+  <h2>
+    Your name and how to contact you
+  </h2>
+  <p>
+    What would be the best way for the buyer to contact you
+  </p>
+  <Form(t)>
+    <FormGroup
+      tag="div"
+    >
+      <Label
+        for="nickname"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Nickname
+      </Label>
+      <Control(s)
+        className="form-control"
+        id="nickname"
+        name="nickname"
+        onChange={[Function]}
+        type="text"
+        validations={
+          Array [
+            [Function],
+          ]
+        }
+        value="nickname"
+      />
+    </FormGroup>
+    <FormGroup
+      tag="div"
+    >
+      <Label
+        for="contactCode"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Status contact code or Status ENS name
+      </Label>
+      <Control(s)
+        className="form-control"
+        id="contactCode"
+        name="contactCode"
+        onChange={[Function]}
+        type="text"
+        validations={
+          Array [
+            [Function],
+          ]
+        }
+      />
+    </FormGroup>
+    <p
+      className="text-info"
+    >
+      Enter a location to move to the next page
+    </p>
+  </Form(t)>
+</Fragment>
+`;
