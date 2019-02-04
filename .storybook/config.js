@@ -23,4 +23,7 @@ function loadStories() {
 configure(loadStories, module);
 
 import 'bootstrap/dist/css/bootstrap.css';
+
+// TODO: Move to dedicated component
+import '../app/css/Form.scss';
 import '../app/js/i18n';
