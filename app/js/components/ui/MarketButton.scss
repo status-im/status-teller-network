@@ -1,0 +1,9 @@
+@import "../../../../node_modules/bootstrap/scss/functions";
+@import "../../../../node_modules/bootstrap/scss/variables";
+
+.market-button {
+  &.active {
+    background-color: transparent !important;
+    color: $primary !important;
+  }
+}
