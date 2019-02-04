@@ -9,6 +9,7 @@ import SearchBar from '../SearchBar';
 
 import CustomInfoWindow from '../CustomInfoWindow';
 import dot from '../../../images/Ellipse.png';
+import './Map.scss';
 
 const fakeData = [
   {
