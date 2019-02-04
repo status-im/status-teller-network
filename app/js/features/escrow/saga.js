@@ -13,7 +13,7 @@ import {
   OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE, OPEN_CASE_PRE_SUCCESS,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
-  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
+  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED
 } from './constants';
 
 export function *onCreateEscrow() {
@@ -64,9 +64,9 @@ export function *onOpenCase() {
 
 export function *getArbitrationById({escrowId}) {
   try {
-    const escrows = yield formatEscrows([escrowId]);
-    const arbitration = escrows[0].arbitration;
+    yield formatEscrows([escrowId]);
     // FIXME adding this breaks sends a second transaction for some reason. SEND HELP
+    // const arbitration = escrows[0].arbitration;
     // yield put({type: GET_ARBITRATION_BY_ID_SUCCEEDED, escrowId, arbitration});
   } catch (error) {
     console.error(error);
