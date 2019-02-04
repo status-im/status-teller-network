@@ -1,13 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`License should render correctly 1`] = `
-<Fragment>
+<div
+  className="home"
+>
   <Row
-    className="h-75"
+    className="home-headline"
     tag="div"
   >
     <Col
-      className="my-auto"
       tag="div"
       widths={
         Array [
@@ -26,7 +27,7 @@ exports[`License should render correctly 1`] = `
     </Col>
   </Row>
   <Row
-    className="mt-5"
+    className="home--footer"
     tag="div"
   >
     <Col
@@ -70,5 +71,5 @@ exports[`License should render correctly 1`] = `
       />
     </Col>
   </Row>
-</Fragment>
+</div>
 `;
