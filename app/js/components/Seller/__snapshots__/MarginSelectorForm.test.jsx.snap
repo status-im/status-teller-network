@@ -53,20 +53,16 @@ exports[`MarginSelectorForm should render correctly 1`] = `
     tag="div"
   >
     <ButtonGroup
-      className="asset-btns market-btns"
+      className="d-flex"
       role="group"
       tag="div"
     >
-      <Button
-        color="secondary"
+      <MarketButton
         onClick={[Function]}
-        tag="button"
       />
-      <Button
+      <MarketButton
         active={true}
-        color="secondary"
         onClick={[Function]}
-        tag="button"
       />
     </ButtonGroup>
   </FormGroup>

@@ -12,7 +12,7 @@ exports[`SellerAssets should render correctly 1`] = `
     Assets in your Wallet
   </h3>
   <ButtonGroup
-    className="asset-btns"
+    className="w-100"
     role="group"
     tag="div"
     vertical={true}
