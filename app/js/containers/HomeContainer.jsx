@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
@@ -16,6 +16,7 @@ class HomeContainer extends Component {
             <h1 className="text-center">{t('home.welcome')}</h1>
           </Col>
         </Row>
+
         <Row className="home--footer">
           <Col xs={6}>
             <Button tag={Link} color="info" block to="/buy">{t('home.buy')}</Button>
