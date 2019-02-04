@@ -1,4 +1,5 @@
 $search-field-height: 38px;
+$autocomplete-height: 157px;
 
 .map-component {
   height: 88%;
@@ -31,3 +32,8 @@ $search-field-height: 38px;
     }
   }
 }
+
+.pac-container {
+  height: $autocomplete-height;
+  margin-top: - ($autocomplete-height + $search-field-height);
+}  
