@@ -5,6 +5,7 @@ import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
 import {isNumber, required} from '../../validators';
+import MarketButton from '../ui/MarketButton';
 
 const ABOVE = 1;
 const BELOW = -1;
@@ -33,13 +34,13 @@ class MarginSelectorForm extends Component {
             </InputGroup>
         </FormGroup>
         <FormGroup>
-          <ButtonGroup className="asset-btns market-btns">
-            <Button onClick={() => this.changeAboveOrBelow(ABOVE)} active={margin.isAbove}>
+          <ButtonGroup className="d-flex">
+            <MarketButton onClick={() => this.changeAboveOrBelow(ABOVE)} active={margin.isAbove}>
               {t('marginSelectorForm.aboveMarket')}
-            </Button>
-            <Button onClick={() => this.changeAboveOrBelow(BELOW)} active={!margin.isAbove}>
+            </MarketButton>
+            <MarketButton onClick={() => this.changeAboveOrBelow(BELOW)} active={!margin.isAbove}>
               {t('marginSelectorForm.belowMarket')}
-            </Button>
+            </MarketButton>
           </ButtonGroup>
         </FormGroup>
 
