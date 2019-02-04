@@ -5,6 +5,8 @@ import Map from '../../components/Buyer/Map';
 import StatusContractCode from '../../components/StatusContractCode';
 import PropTypes from 'prop-types';
 
+import './SellerProfileContainer.scss';
+
 const FAKE_OFFERS = [
   {asset: 'ETH', min: 200, max: 600, fiat: '$'},
   {asset: 'SNT', min: 200, max: 600, fiat: '$'},
@@ -19,7 +21,7 @@ class ProfileContainer extends Component {
   }
   render() {
     return (
-      <div className="seller-profile">
+      <div className="seller-profile-container">
         <SellerInformation name="Roger" isPositiveRating={true} nbTrades={32} type="Collectibles" address={this.address} />
         <Map coords={{latitude: 45.492611, longitude: -73.617959}} markerOnly={true}/>
         <p className="text-muted mt-2 mb-0">Saalestraße 39A,</p>

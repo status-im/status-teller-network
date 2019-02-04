@@ -188,7 +188,7 @@ export default compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?key=AIzaSyALAskxuamVIKbyUiw6CxgfVTk6YM2wYu8&v=3.exp&libraries=geometry,drawing,places",
     loadingElement: <div style={{height: `100%`}}/>,
-    containerElement: <div className="map-container"/>,
+    containerElement: <div className="map-component"/>,
     mapElement: <div style={{height: `100%`}}/>
   }),
   withScriptjs,
