@@ -1,16 +1,42 @@
 pragma solidity ^0.5.0;
 
+import "./License.sol";
+import "../common/Ownable.sol";
+
 /**
 * @title SellerStore
 * @dev Store Seller metadata
 */
-contract SellerStore {
+contract SellerStore is Ownable {
 
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
 
-    event Added(uint256 id);
-    event Updated(uint256 id);
+    event Added(
+        address owner,
+        uint256 id,
+        address asset,
+        address statusContractCode,
+        string location,
+        string currency,
+        string username,
+        PaymenMethods[] paymentMethods,
+        MarketType marketType,
+        uint8 margin
+    );
+
+    event Updated(
+        address owner,
+        uint256 id,
+        address asset,
+        address statusContractCode,
+        string location,
+        string currency,
+        string username,
+        PaymenMethods[] paymentMethods,
+        MarketType marketType,
+        uint8 margin
+    );
 
     struct Seller {
         address asset;
@@ -23,8 +49,17 @@ contract SellerStore {
         uint8 margin;
     }
 
+    address public license;
     Seller[] public sellers;
     mapping(address => mapping (uint256 => bool)) public ownerToSellers;
+
+    constructor(address _license) public {
+        license = _license;
+    }
+
+    function setLicense(address _license) public onlyOwner {
+        license = _license;
+    }
 
     /**
     * @dev Add a seller to the list
@@ -47,6 +82,7 @@ contract SellerStore {
         MarketType _marketType,
         uint8 _margin
     ) public {
+        require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
         Seller memory seller = Seller(
             _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
@@ -54,7 +90,7 @@ contract SellerStore {
         uint256 id = sellers.push(seller) - 1;
         ownerToSellers[msg.sender][id] = true;
 
-        emit Added(id);
+        emit Added(msg.sender, id, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**
@@ -91,7 +127,7 @@ contract SellerStore {
         sellers[_id].marketType = _marketType;
         sellers[_id].margin = _margin;
 
-        emit Updated(_id);
+        emit Updated(msg.sender, _id, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**
