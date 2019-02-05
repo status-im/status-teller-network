@@ -14,7 +14,7 @@ contract SellerStore is Ownable {
 
     event Added(
         address owner,
-        uint256 id,
+        uint256 offerId,
         address asset,
         address statusContractCode,
         string location,
@@ -39,19 +39,27 @@ contract SellerStore is Ownable {
     );
 
     struct Seller {
-        address asset;
         address statusContractCode;
         string location;
-        string currency;
         string username;
+    }
+
+    struct Offer {
+        address asset;
+        string currency;
+        uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
-        uint8 margin;
     }
 
     address public license;
     Seller[] public sellers;
-    mapping(address => mapping (uint256 => bool)) public ownerToSellers;
+    Offer[] public offers;
+    mapping(address => bool) public sellerWhitelist;
+    mapping(address => uint256) public addressToSeller;
+
+    mapping(address => mapping (uint256 => bool)) public offerWhitelist;
+    mapping(address => uint256[]) public addressToOffers;
 
     constructor(address _license) public {
         license = _license;
@@ -62,7 +70,7 @@ contract SellerStore is Ownable {
     }
 
     /**
-    * @dev Add a seller to the list
+    * @dev Add a new offer with a new seller if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
     * @param _statusContractCode The address of the status contract
     * @param _location The location on earth
@@ -84,13 +92,24 @@ contract SellerStore is Ownable {
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
-        Seller memory seller = Seller(
-            _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
-        );
-        uint256 id = sellers.push(seller) - 1;
-        ownerToSellers[msg.sender][id] = true;
 
-        emit Added(msg.sender, id, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        if (!sellerWhitelist[msg.sender]) {
+            Seller memory seller = Seller(_statusContractCode, _location, _username);
+            uint256 sellerId = sellers.push(seller) - 1;
+            addressToSeller[msg.sender] = sellerId;
+            sellerWhitelist[msg.sender] = true;
+        } else {
+            sellers[addressToSeller[msg.sender]].statusContractCode = _statusContractCode;
+            sellers[addressToSeller[msg.sender]].location = _location;
+            sellers[addressToSeller[msg.sender]].username = _username;
+        }
+        
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType);
+        uint256 offerId = offers.push(offer) - 1;
+        offerWhitelist[msg.sender][offerId] = true;
+        addressToOffers[msg.sender].push(offerId);
+
+        emit Added(msg.sender, offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**
@@ -105,7 +124,7 @@ contract SellerStore is Ownable {
     * @param _margin The margin for the seller from 0 to 100
     */
     function update(
-        uint256 _id,
+        uint256 _offerId,
         address _asset,
         address _statusContractCode,
         string memory _location,
@@ -115,26 +134,35 @@ contract SellerStore is Ownable {
         MarketType _marketType,
         uint8 _margin
     ) public {
-        require(ownerToSellers[msg.sender][_id], "Seller owner do not match");
+        require(sellerWhitelist[msg.sender], "Seller do not exists");
+        require(offerWhitelist[msg.sender][_offerId], "Offer do not exists");
         require(_margin <= 100, "Margin too high");
 
-        sellers[_id].asset = _asset;
-        sellers[_id].statusContractCode = _statusContractCode;
-        sellers[_id].location = _location;
-        sellers[_id].currency = _currency;
-        sellers[_id].username = _username;
-        sellers[_id].paymentMethods = _paymentMethods;
-        sellers[_id].marketType = _marketType;
-        sellers[_id].margin = _margin;
+        sellers[addressToSeller[msg.sender]].statusContractCode = _statusContractCode;
+        sellers[addressToSeller[msg.sender]].location = _location;
+        sellers[addressToSeller[msg.sender]].username = _username;
+        
+        offers[_offerId].asset = _asset;
+        offers[_offerId].currency = _currency;
+        offers[_offerId].paymentMethods = _paymentMethods;
+        offers[_offerId].marketType = _marketType;
+        offers[_offerId].margin = _margin;
 
-        emit Updated(msg.sender, _id, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        emit Updated(msg.sender, _offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**
     * @dev Get the size of the sellers
     */
-    function size() public view returns (uint256) {
+    function sellersSize() public view returns (uint256) {
         return sellers.length;
+    }
+
+    /**
+    * @dev Get the size of the offers
+    */
+    function offersSize() public view returns (uint256) {
+        return offers.length;
     }
 
     /**
