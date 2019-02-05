@@ -99,9 +99,10 @@ contract SellerStore is Ownable {
             addressToSeller[msg.sender] = sellerId;
             sellerWhitelist[msg.sender] = true;
         } else {
-            sellers[addressToSeller[msg.sender]].statusContractCode = _statusContractCode;
-            sellers[addressToSeller[msg.sender]].location = _location;
-            sellers[addressToSeller[msg.sender]].username = _username;
+            Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
+            tmpSeller.statusContractCode = _statusContractCode;
+            tmpSeller.location = _location;
+            tmpSeller.username = _username;
         }
         
         Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType);
@@ -138,9 +139,10 @@ contract SellerStore is Ownable {
         require(offerWhitelist[msg.sender][_offerId], "Offer do not exists");
         require(_margin <= 100, "Margin too high");
 
-        sellers[addressToSeller[msg.sender]].statusContractCode = _statusContractCode;
-        sellers[addressToSeller[msg.sender]].location = _location;
-        sellers[addressToSeller[msg.sender]].username = _username;
+        Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
+        tmpSeller.statusContractCode = _statusContractCode;
+        tmpSeller.location = _location;
+        tmpSeller.username = _username;
         
         offers[_offerId].asset = _asset;
         offers[_offerId].currency = _currency;

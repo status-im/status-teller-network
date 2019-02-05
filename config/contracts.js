@@ -73,6 +73,9 @@ module.exports = {
           "STT",
           true
         ]
+      },
+      "SellerStore": {
+        args: ["$License"]
       }
     }
   },
