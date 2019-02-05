@@ -6,6 +6,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 
 import 'bootstrap/dist/css/bootstrap.css';
+import '../css/fonts/Inter/inter.css';
 import './index.scss';
 import '../css/Form.scss';
 

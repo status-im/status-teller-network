@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SellerContact from '../../components/Seller/SellerContact';
+import ContactForm from '../../components/ContactForm';
 import seller from "../../features/seller";
 import {connect} from "react-redux";
 
@@ -11,34 +11,24 @@ class SellerContactContainer extends Component {
       nickname: props.nickname,
       contactCode: props.contactCode
     };
-    this.validate(props.nickname, props.contactCode);
+    props.footer.enableNext();
     props.footer.onPageChange(() => {
       props.setContact({nickname: this.state.nickname, contactCode: this.state.contactCode});
     });
   }
 
-  validate(nickname, contactCode) {
-    if (contactCode && nickname) {
-      this.props.footer.enableNext();
-    } else {
-      this.props.footer.disableNext();
-    }
-  }
-
   changeContactCode = (contactCode) => {
-    this.validate(this.state.nickname, contactCode);
     this.setState({contactCode});
   };
 
   changeNickname = (nickname) => {
-    this.validate(this.state.contactCode, nickname);
     this.setState({nickname});
   };
 
   render() {
     return (
-      <SellerContact contactCode={this.state.contactCode} nickname={this.state.nickname}
-                     changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
+      <ContactForm contactCode={this.state.contactCode} nickname={this.state.nickname}
+                   changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
     );
   }
 }

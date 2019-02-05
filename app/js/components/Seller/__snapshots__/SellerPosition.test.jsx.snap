@@ -8,6 +8,11 @@ exports[`SellerPosition should render correctly 1`] = `
   <p>
     What location do you want to display
   </p>
+  <p
+    className="text-muted"
+  >
+    This position will be displayed to buyers. You can choose to be precise or not.
+  </p>
   <Form
     tag="form"
   >

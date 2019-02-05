@@ -28,6 +28,38 @@ export const isNumber = (value) => {
   }
 };
 
+export const lowerThan = (max, value) => {
+  if (value >= max) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.lowerThan', {max})}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+export const lowerEqThan = (max, value) => {
+  if (value > max) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.lowerEqThan', {max})}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+export const higherThan = (min, value) => {
+  if (value <= min) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.higherThan', {min})}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+export const higherEqThan = (min, value) => {
+  if (value < min) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.higherEqThan', {min})}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
 export const isAddress = (value) => {
   if (!Web3.utils.isAddress(value)) {
     return <NamespacesConsumer>
