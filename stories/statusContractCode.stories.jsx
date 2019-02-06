@@ -9,7 +9,7 @@ storiesOf('StatusContractCode', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <StatusContractCode />
+      <StatusContractCode value="0xlsakjd123123" />
     ))
   );
 

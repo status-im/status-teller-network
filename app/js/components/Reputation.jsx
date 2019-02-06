@@ -10,12 +10,12 @@ class Reputation extends Component {
     return (
       <Row className="mt-4">
         <Col xs="12">
-          <span className="font-weight-bold h5">My reputation</span>
+          <span className="font-weight-bold h5">{this.props.t('reputation.title')}</span>
         </Col>
         <Col xs="6" className="pr-0">
           <Card body className="text-center rounded-0">
             <div>
-              <span className="mr-3">0</span>
+              <span className="mr-3">{this.props.reputation.upCount}</span>
               <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsUp}/>
             </div>
           </Card>
@@ -23,7 +23,7 @@ class Reputation extends Component {
         <Col xs="6" className="pl-0">
           <Card body className="text-center rounded-0">
             <div>
-              <span className="mr-3">0</span>
+              <span className="mr-3">{this.props.reputation.downCount}</span>
               <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsDown}/>
             </div>
           </Card>
@@ -34,7 +34,8 @@ class Reputation extends Component {
 }
 
 Reputation.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
+  reputation: PropTypes.object
 };
 
 export default withNamespaces()(Reputation);

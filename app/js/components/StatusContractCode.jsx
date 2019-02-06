@@ -12,12 +12,12 @@ class StatusContractCode extends Component {
     return (
       <Row className="mt-4">
         <Col xs="12">
-          <span className="font-weight-bold h5">Status contact code</span>
-          <Link to="edit-status-contract-code" className="float-right">Edit</Link>
+          <span className="font-weight-bold h5">{t('statusContractCode.title')}</span>
+          <Link to="edit-status-contract-code" className="float-right">{t('statusContractCode.edit')}</Link>
         </Col>
         <Col xs="10" className="pr-0">
           <Card body className="rounded-0">
-            <span>0x98a987b987fc987f...</span>
+            <span>{this.props.value}</span>
           </Card>
         </Col>
         <Col xs="2" className="pl-0">
@@ -31,7 +31,8 @@ class StatusContractCode extends Component {
 }
 
 StatusContractCode.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
+  value: PropTypes.string
 };
 
 export default withNamespaces()(StatusContractCode);

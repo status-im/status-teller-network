@@ -20,9 +20,7 @@ exports[`Trades should render correctly 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      My reputation
-    </span>
+    />
   </Col>
   <Col
     className="pr-0"
@@ -47,7 +45,7 @@ exports[`Trades should render correctly 1`] = `
         <span
           className="mr-3"
         >
-          0
+          1
         </span>
         <FontAwesomeIcon
           border={false}
@@ -105,7 +103,7 @@ exports[`Trades should render correctly 1`] = `
         <span
           className="mr-3"
         >
-          0
+          2
         </span>
         <FontAwesomeIcon
           border={false}

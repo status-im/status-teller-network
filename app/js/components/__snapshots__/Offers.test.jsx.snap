@@ -20,16 +20,12 @@ exports[`Offers should render correctly 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      My offers
-    </span>
+    />
     <Link
       className="float-right"
       replace={false}
       to="/sell"
-    >
-      Create offer
-    </Link>
+    />
   </Col>
   <Col
     tag="div"
@@ -124,9 +120,7 @@ exports[`Offers should render correctly 1`] = `
           <dl
             className="col-6"
           >
-            <dt>
-              Type
-            </dt>
+            <dt />
             <dd>
               Selling
             </dd>
@@ -134,9 +128,7 @@ exports[`Offers should render correctly 1`] = `
           <dl
             className="col-6"
           >
-            <dt>
-              Payment method
-            </dt>
+            <dt />
             <dd>
               Credit Card
             </dd>
@@ -148,9 +140,7 @@ exports[`Offers should render correctly 1`] = `
           <dl
             className="col-6"
           >
-            <dt>
-              Location
-            </dt>
+            <dt />
             <dd>
               Berlin
             </dd>
@@ -158,9 +148,7 @@ exports[`Offers should render correctly 1`] = `
           <dl
             className="col-6"
           >
-            <dt>
-              Rate
-            </dt>
+            <dt />
             <dd>
               1.5% above Bitfinex
             </dd>
@@ -192,16 +180,12 @@ exports[`Offers should render when empty 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      My offers
-    </span>
+    />
     <Link
       className="float-right"
       replace={false}
       to="/sell"
-    >
-      Create offer
-    </Link>
+    />
   </Col>
   <Col
     tag="div"
@@ -220,9 +204,7 @@ exports[`Offers should render when empty 1`] = `
       body={true}
       className="text-center"
       tag="div"
-    >
-      No open offers
-    </Card>
+    />
   </Col>
 </Row>
 `;

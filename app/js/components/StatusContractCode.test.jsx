@@ -5,7 +5,7 @@ import StatusContractCode from "./StatusContractCode";
 
 describe('StatusContractCodeades', () => {
   it('should render correctly', () => {
-    const component = shallow(<StatusContractCode />);
+    const component = shallow(<StatusContractCode value={"0xkajshdhkjashd"} />);
   
     expect(component).toMatchSnapshot();
   });

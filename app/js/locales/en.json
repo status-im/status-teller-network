@@ -87,10 +87,17 @@
   "rating": {
     "label": "Rating:"
   },
+  "reputation": {
+    "title": "My reputation"
+  },
   "sellerList": {
     "title": "ETH Sellers",
     "address": "Address:",
     "error": "Error getting seller list:"
+  },
+  "statusContractCode": {
+    "title": "Status contact code",
+    "edit": "Edit"
   },
   "validators": {
     "required": "This field is required",
@@ -102,6 +109,20 @@
   },
   "transaction": {
     "hash": "Transaction Hash"
+  },
+  "trades": {
+    "title": "My trades",
+    "find": "Find offer",
+    "noOpen": "No open trades"
+  },
+  "offers": {
+    "title": "My offers",
+    "create": "Create offer",
+    "noOpen": "No open offers",
+    "type": "Type",
+    "paymentMethods": "Payment methods",
+    "Location": "Location",
+    "rate": "Rate"
   },
   "signatureForm": {
     "paying": "Paying using Signature..."

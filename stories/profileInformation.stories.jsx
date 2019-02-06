@@ -9,7 +9,7 @@ storiesOf('ProfileInformation', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <ProfileInformation />
+      <ProfileInformation address={"0x123123123"} username={"Eric"}/>
     ))
   );
 

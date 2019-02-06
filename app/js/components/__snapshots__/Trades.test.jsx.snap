@@ -20,16 +20,12 @@ exports[`Trades should render correctly 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      My trades
-    </span>
+    />
     <Link
       className="float-right"
       replace={false}
       to="/buy"
-    >
-      Find offer
-    </Link>
+    />
   </Col>
   <Col
     tag="div"
@@ -133,16 +129,12 @@ exports[`Trades should render when empty 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      My trades
-    </span>
+    />
     <Link
       className="float-right"
       replace={false}
       to="/buy"
-    >
-      Find offer
-    </Link>
+    />
   </Col>
   <Col
     tag="div"
@@ -161,9 +153,7 @@ exports[`Trades should render when empty 1`] = `
       body={true}
       className="text-center"
       tag="div"
-    >
-      No open trades
-    </Card>
+    />
   </Col>
 </Row>
 `;

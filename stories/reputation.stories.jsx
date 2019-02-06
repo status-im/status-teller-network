@@ -9,7 +9,7 @@ storiesOf('Reputation', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <Reputation />
+      <Reputation reputation={{upCount: 1, downCount: 2}} />
     ))
   );
 
