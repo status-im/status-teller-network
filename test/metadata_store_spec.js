@@ -90,22 +90,4 @@ contract("MetadataStore", function () {
     assert.strictEqual(offer.currency, 'EUR');
   });
 
-  it("should allow to rate a seller", async function () {
-    await MetadataStore.methods.rate(accounts[1], 0).send();
-    const ratesSize = await MetadataStore.methods.ratesSize(accounts[1]).call();
-    assert.strictEqual(ratesSize, '1');
-
-    const rate = await MetadataStore.methods.rates(accounts[1], 0).call();
-    assert.strictEqual(rate.from, accounts[0]);
-    assert.strictEqual(rate.value, '0');
-  });
-
-  it("should not allow to rate yourself", async function () {
-    try {
-      await MetadataStore.methods.rate(accounts[0], 0).send();
-    } catch(error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Cannot rate yourself");
-    }
-  });
-
 });
