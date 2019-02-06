@@ -12,7 +12,6 @@ contract MetadataStore is Ownable {
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
     enum OfferStatus {Open}
-    enum RateValue {Zero, One, Two, Three, Four}
 
     event Added(
         address owner,
@@ -41,8 +40,6 @@ contract MetadataStore is Ownable {
         uint8 margin
     );
 
-    event Rated(address to, address from, RateValue value);
-
     struct Seller {
         address statusContractCode;
         string location;
@@ -58,17 +55,10 @@ contract MetadataStore is Ownable {
         OfferStatus status;
     }
 
-    struct Rate {
-        address from;
-        RateValue value;
-    }
-
     address public license;
     Seller[] public sellers;
     Offer[] public offers;
 
-    mapping(address => Rate[]) public rates;
-    
     mapping(address => bool) public sellerWhitelist;
     mapping(address => uint256) public addressToSeller;
 
@@ -170,20 +160,6 @@ contract MetadataStore is Ownable {
     }
 
     /**
-    * @dev Rate a seller from 0 to 4
-    * @param _to The address to rate
-    * @param _value The rate value
-    */
-    function rate(address _to, RateValue _value) public {
-        require(_to != msg.sender, "Cannot rate yourself");
-
-        Rate memory rate = Rate(msg.sender, _value);
-        rates[_to].push(rate);
-
-        emit Rated(_to, msg.sender, _value);
-    }
-
-    /**
     * @dev Get the size of the sellers
     */
     function sellersSize() public view returns (uint256) {
@@ -195,13 +171,6 @@ contract MetadataStore is Ownable {
     */
     function offersSize() public view returns (uint256) {
         return offers.length;
-    }
-
-    /**
-    * @dev Get the size of the rates for a specific seller
-    */
-    function ratesSize(address _seller) public view returns (uint256) {
-        return rates[_seller].length;
     }
 
     /**
