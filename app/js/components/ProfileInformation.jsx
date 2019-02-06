@@ -8,13 +8,13 @@ class ProfileInformation extends Component {
     return (
       <Row className="my-5 text-center">
         <Col xs="12">
-          <Blockies seed={"denis"} className="rounded-circle"/>
+          <Blockies seed={this.props.address} className="rounded-circle"/>
         </Col>
         <Col xs="12">
-          <h4 className="font-weight-bold">Denis</h4>
+          <h4 className="font-weight-bold">{this.props.username}</h4>
         </Col>
         <Col xs="12">
-          <p className="text-muted">0x2376423784623784632784678324</p>
+          <p className="text-muted">{this.props.address}</p>
         </Col>
       </Row>
     );
@@ -22,6 +22,8 @@ class ProfileInformation extends Component {
 }
 
 ProfileInformation.propTypes = {
+  address: PropTypes.string,
+  username: PropTypes.string
 };
 
 export default ProfileInformation;

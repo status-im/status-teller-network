@@ -9,8 +9,8 @@ class ProfileContainer extends Component {
   render() {
     return (
       <Fragment>
-        <ProfileInformation />
-        <Reputation />
+        <ProfileInformation address={"0x123123123"} username={"Eric"} />
+        <Reputation reputation={{upCount: 1, downCount: 2}}/>
         <Trades trades={[{address: 'address', name: 'Name', value: '2', status: 'open'}]}/>
         <Offers offers={
           [
@@ -24,7 +24,7 @@ class ProfileContainer extends Component {
             }
           ]
         } />
-        <StatusContractCode />
+        <StatusContractCode value={"0x12323213123"} />
       </Fragment>
     );
   }

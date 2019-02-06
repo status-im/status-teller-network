@@ -28,10 +28,10 @@ class Trades extends Component {
     );
   }
 
-  renderEmpty() {
+  renderEmpty(t) {
     return (
       <Card body className="text-center">
-        No open trades
+        {t('trades.noOpen')}
       </Card>
     );
   }
@@ -41,11 +41,11 @@ class Trades extends Component {
     return (
       <Row className="mt-4">
         <Col xs="12">
-          <span className="font-weight-bold h5">My trades</span>
-          <Link to="/buy" className="float-right">Find offer</Link>
+          <span className="font-weight-bold h5">{t('trades.title')}</span>
+          <Link to="/buy" className="float-right">{t('trades.find')}</Link>
         </Col>
         <Col xs="12">
-          {this.props.trades.length === 0 ? this.renderEmpty() : this.renderTrades()}
+          {this.props.trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
         </Col>
       </Row>
     );

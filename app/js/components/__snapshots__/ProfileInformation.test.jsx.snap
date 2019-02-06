@@ -20,7 +20,7 @@ exports[`ProfileInformation should render correctly 1`] = `
   >
     <Identicon
       className="rounded-circle"
-      seed="denis"
+      seed="0x123123123"
     />
   </Col>
   <Col
@@ -39,7 +39,7 @@ exports[`ProfileInformation should render correctly 1`] = `
     <h4
       className="font-weight-bold"
     >
-      Denis
+      Eric
     </h4>
   </Col>
   <Col
@@ -58,7 +58,7 @@ exports[`ProfileInformation should render correctly 1`] = `
     <p
       className="text-muted"
     >
-      0x2376423784623784632784678324
+      0x123123123
     </p>
   </Col>
 </Row>

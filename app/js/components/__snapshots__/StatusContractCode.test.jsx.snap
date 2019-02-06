@@ -20,16 +20,12 @@ exports[`StatusContractCodeades should render correctly 1`] = `
   >
     <span
       className="font-weight-bold h5"
-    >
-      Status contact code
-    </span>
+    />
     <Link
       className="float-right"
       replace={false}
       to="edit-status-contract-code"
-    >
-      Edit
-    </Link>
+    />
   </Col>
   <Col
     className="pr-0"
@@ -51,7 +47,7 @@ exports[`StatusContractCodeades should render correctly 1`] = `
       tag="div"
     >
       <span>
-        0x98a987b987fc987f...
+        0xkajshdhkjashd
       </span>
     </Card>
   </Col>
