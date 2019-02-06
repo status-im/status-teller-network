@@ -4,13 +4,15 @@ import "./License.sol";
 import "../common/Ownable.sol";
 
 /**
-* @title SellerStore
-* @dev Store Seller metadata
+* @title MetadataStore
+* @dev Metadata store
 */
-contract SellerStore is Ownable {
+contract MetadataStore is Ownable {
 
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
+    enum OfferStatus {Open}
+    enum RateValue {Zero, One, Two, Three, Four}
 
     event Added(
         address owner,
@@ -22,7 +24,8 @@ contract SellerStore is Ownable {
         string username,
         PaymenMethods[] paymentMethods,
         MarketType marketType,
-        uint8 margin
+        uint8 margin,
+        OfferStatus status
     );
 
     event Updated(
@@ -38,6 +41,8 @@ contract SellerStore is Ownable {
         uint8 margin
     );
 
+    event Rated(address to, address from, RateValue value);
+
     struct Seller {
         address statusContractCode;
         string location;
@@ -50,11 +55,20 @@ contract SellerStore is Ownable {
         uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
+        OfferStatus status;
+    }
+
+    struct Rate {
+        address from;
+        RateValue value;
     }
 
     address public license;
     Seller[] public sellers;
     Offer[] public offers;
+
+    mapping(address => Rate[]) public rates;
+    
     mapping(address => bool) public sellerWhitelist;
     mapping(address => uint256) public addressToSeller;
 
@@ -105,12 +119,14 @@ contract SellerStore is Ownable {
             tmpSeller.username = _username;
         }
         
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType);
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, OfferStatus.Open);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
-        emit Added(msg.sender, offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        emit Added(
+            msg.sender, offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin, OfferStatus.Open
+        );
     }
 
     /**
@@ -154,6 +170,20 @@ contract SellerStore is Ownable {
     }
 
     /**
+    * @dev Rate a seller from 0 to 4
+    * @param _to The address to rate
+    * @param _value The rate value
+    */
+    function rate(address _to, RateValue _value) public {
+        require(_to != msg.sender, "Cannot rate yourself");
+
+        Rate memory rate = Rate(msg.sender, _value);
+        rates[_to].push(rate);
+
+        emit Rated(_to, msg.sender, _value);
+    }
+
+    /**
     * @dev Get the size of the sellers
     */
     function sellersSize() public view returns (uint256) {
@@ -165,6 +195,13 @@ contract SellerStore is Ownable {
     */
     function offersSize() public view returns (uint256) {
         return offers.length;
+    }
+
+    /**
+    * @dev Get the size of the rates for a specific seller
+    */
+    function ratesSize(address _seller) public view returns (uint256) {
+        return rates[_seller].length;
     }
 
     /**
