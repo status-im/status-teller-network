@@ -152,7 +152,7 @@ contract MetadataStore is Ownable {
         uint8 _margin
     ) public {
         require(sellerWhitelist[msg.sender], "Seller does not exist");
-        require(offerWhitelist[msg.sender][_offerId], "Offer do not exists");
+        require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
         require(_margin <= 100, "Margin too high");
 
         Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
