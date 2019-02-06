@@ -74,7 +74,7 @@ module.exports = {
           true
         ]
       },
-      "SellerStore": {
+      "MetadataStore": {
         args: ["$License"]
       }
     }
