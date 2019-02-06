@@ -151,7 +151,7 @@ contract MetadataStore is Ownable {
         MarketType _marketType,
         uint8 _margin
     ) public {
-        require(sellerWhitelist[msg.sender], "Seller do not exists");
+        require(sellerWhitelist[msg.sender], "Seller does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer do not exists");
         require(_margin <= 100, "Margin too high");
 
