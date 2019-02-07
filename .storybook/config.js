@@ -4,15 +4,15 @@ import { action } from '@storybook/addon-actions';
 import { Router } from 'react-router'
 import createMemoryHistory from 'history/createMemoryHistory'
 
-const history = createMemoryHistory()
+const history = createMemoryHistory();
 
-history.push = action('history.push')
-history.replace = action('history.replace')
-history.go = action('history.go')
-history.goBack = action('history.goBack')
-history.goForward = action('history.goForward')
+history.push = action('history.push');
+history.replace = action('history.replace');
+history.go = action('history.go');
+history.goBack = action('history.goBack');
+history.goForward = action('history.goForward');
 
-addDecorator(story => <Router history={history}>{story()}</Router>)
+addDecorator(story => <Router history={history}>{story()}</Router>);
 
 const req = require.context("../stories", true, /.stories.jsx$/);
 
@@ -23,7 +23,9 @@ function loadStories() {
 configure(loadStories, module);
 
 import 'bootstrap/dist/css/bootstrap.css';
+import '../app/css/fonts/Inter/inter.css';
 
 // TODO: Move to dedicated component
+import '../app/js/index.scss';
 import '../app/css/Form.scss';
 import '../app/js/i18n';

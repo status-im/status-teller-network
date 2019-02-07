@@ -10,10 +10,12 @@ import Header from "../components/Header";
 import HomeContainer from '../containers/HomeContainer';
 
 // Buyer
-import BuyStartContainer from '../containers/Buyer/OfferListContainer';
+import OfferListContainer from '../containers/Buyer/OfferListContainer';
+import BankOfferListContainer from '../containers/Buyer/BankOfferListContainer';
 import MapContainer from '../containers/Buyer/MapContainer';
 import SellerProfileContainer from '../containers/Buyer/SellerProfileContainer';
 import OfferTradeContainer from '../containers/Buyer/OfferTradeContainer';
+import BuyerContactContainer from '../containers/Buyer/BuyerContactContainer';
 
 // Seller
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
@@ -56,10 +58,14 @@ class App extends Component {
           <Header/>
           <Route exact path="/" component={HomeContainer}/>
           <Route exact path="/profile" component={ProfileContainer}/>
-          <Route exact path="/buy" component={BuyStartContainer}/>
+          <Route exact path="/buy" component={OfferListContainer}/>
           <Route exact path="/buy/map" component={MapContainer}/>
+          <Route exact path="/buy/list" component={BankOfferListContainer}/>
           <Route exact path="/buy/profile/:address" component={SellerProfileContainer}/>
-          <Route exact path="/buy/offer/:address/:offerId" component={OfferTradeContainer}/>
+          <Wizard path="/buy/contact" steps={[
+            {path: '/buy/contactForm', component: BuyerContactContainer},
+            {path: '/buy/offer', component: OfferTradeContainer}
+          ]}/>
           <Wizard path="/sell/" steps={[
             {path: '/sell/start', component: SellerStartContainer},
             {path: '/sell/location', component: SellerPositionContainer},

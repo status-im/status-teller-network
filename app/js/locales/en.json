@@ -103,6 +103,10 @@
     "required": "This field is required",
     "isInteger": "This field needs to be an integer",
     "isNumber": "This field needs to be an number",
+    "lowerThan": "This field needs to be lower than {{max}}",
+    "lowerEqThan": "This field needs to be lower or equal than {{max}}",
+    "higherThan": "This field needs to be higher than {{min}}",
+    "higherEqThan": "This field needs to be higher or equal than {{min}}",
     "isAddress": "This field needs to be a valid Ethereum address",
     "isJSON": "This field needs to be a valid JSON string",
     "isEscrowPaymentSignature": "Missing some of the needed properties. Needed are: `escrowId`, `message` and `type`"
@@ -129,5 +133,19 @@
   },
   "arbitrationList": {
     "loading": "Loading..."
+  },
+  "buyer": {
+    "offerList": {
+      "bankTransfer": "Bank/card transfer",
+      "foundOffers": "We found {{count}} offer",
+      "foundOffers_plural": "We found {{count}} offers"
+    },
+    "offerTrade": {
+      "enterBefore": "Enter a fiat or asset quantity before submitting. Make sure the fiat amount is between the limits above."
+    }
+  },
+  "contactForm": {
+    "yourName": "Your name and how to contact you",
+    "bestWay": "What would be the best way to contact you"
   }
 }

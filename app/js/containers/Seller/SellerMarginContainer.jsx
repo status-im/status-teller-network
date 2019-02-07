@@ -25,7 +25,6 @@ class SellerMarginContainer extends Component {
   }
 
   validate(newMargin) {
-    console.log(newMargin);
     if (newMargin.rate || newMargin.rate === 0) {
       return this.props.footer.enableNext();
     }

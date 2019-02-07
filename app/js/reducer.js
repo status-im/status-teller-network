@@ -10,6 +10,7 @@ import embarkjs from './features/embarkjs';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
 import seller from './features/seller';
+import buyer from './features/buyer';
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
@@ -19,7 +20,8 @@ const rootReducer = combineReducers({
   escrow: escrow.reducer,
   signature: signature.reducer,
   arbitration: arbitration.reducer,
-  seller: seller.reducer
+  seller: seller.reducer,
+  buyer: buyer.reducer
 });
 
 export default rootReducer;

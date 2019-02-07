@@ -2,12 +2,8 @@
 
 exports[`SellerContact should render correctly 1`] = `
 <Fragment>
-  <h2>
-    Your name and how to contact you
-  </h2>
-  <p>
-    What would be the best way for the buyer to contact you
-  </p>
+  <h2 />
+  <p />
   <Form(t)>
     <FormGroup
       tag="div"
@@ -72,11 +68,6 @@ exports[`SellerContact should render correctly 1`] = `
         }
       />
     </FormGroup>
-    <p
-      className="text-info"
-    >
-      Enter a location to move to the next page
-    </p>
   </Form(t)>
 </Fragment>
 `;
