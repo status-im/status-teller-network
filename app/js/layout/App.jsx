@@ -18,6 +18,7 @@ import OfferTradeContainer from '../containers/Buyer/OfferTradeContainer';
 import BuyerContactContainer from '../containers/Buyer/BuyerContactContainer';
 
 // Seller
+import SellerLicenseContainer from '../containers/Seller/SellerLicenseContainer';
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
 import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
 import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
@@ -67,6 +68,7 @@ class App extends Component {
             {path: '/buy/offer', component: OfferTradeContainer}
           ]}/>
           <Wizard path="/sell/" steps={[
+            {path: '/sell/license', component: SellerLicenseContainer},
             {path: '/sell/start', component: SellerStartContainer},
             {path: '/sell/location', component: SellerPositionContainer},
             {path: '/sell/payment-methods', component: SellerPaymentMethodContainer},
