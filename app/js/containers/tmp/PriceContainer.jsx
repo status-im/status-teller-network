@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getEthUsdPrice, getSntUsdPrice, hasPricesError } from '../features/prices/reducer';
 import { withNamespaces } from 'react-i18next';
+import Price from '../../components/tmp/Price';
 
-import Price from '../components/Price';
+import { getEthUsdPrice, getSntUsdPrice, hasPricesError } from '../../features/prices/reducer';
 
 const PriceContainer = ({ ethUsd, sntUsd, hasErrors, t }) => (
   <div>

@@ -67,7 +67,7 @@ exports[`License should render correctly 1`] = `
         block={true}
         color="info"
         tag={[Function]}
-        to="/sell"
+        to="/license"
       />
     </Col>
   </Row>

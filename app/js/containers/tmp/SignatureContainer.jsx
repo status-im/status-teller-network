@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import IncludeSignatureForm from '../components/IncludeSignatureForm';
 import PropTypes from 'prop-types';
-import signature from '../features/signature';
+import IncludeSignatureForm from '../../components/tmp/IncludeSignatureForm';
+import signature from '../../features/signature';
 
 class SignatureContainer extends Component {
   includeSignature = (signature) => {

@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
-import Address from '../app/js/components/Address';
+import Address from '../app/js/components/tmp/Address';
 
 storiesOf('Address', module)
   .addDecorator(withKnobs)

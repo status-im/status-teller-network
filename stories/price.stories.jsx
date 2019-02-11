@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, number } from '@storybook/addon-knobs';
 import { withInfo } from "@storybook/addon-info";
 
-import Price from '../app/js/components/Price';
+import Price from '../app/js/components/tmp/Price';
 
 const stories = storiesOf('Price', module);
 

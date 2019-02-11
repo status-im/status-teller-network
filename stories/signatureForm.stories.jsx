@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import IncludeSignatureForm from '../app/js/components/IncludeSignatureForm';
+import IncludeSignatureForm from '../app/js/components/tmp/IncludeSignatureForm';
 
 const info = {inline: true, propTables: [IncludeSignatureForm.WrappedComponent]};
 

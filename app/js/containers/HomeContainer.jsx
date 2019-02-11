@@ -22,7 +22,7 @@ class HomeContainer extends Component {
             <Button tag={Link} color="info" block to="/buy">{t('home.buy')}</Button>
           </Col>
           <Col xs={6}>
-            <Button tag={Link} color="info" block to="/sell">{t('home.sell')}</Button>
+            <Button tag={Link} color="info" block to="/license">{t('home.sell')}</Button>
           </Col>
         </Row>
       </div>

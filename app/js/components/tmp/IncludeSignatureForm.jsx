@@ -3,8 +3,8 @@ import {Button, Card, CardBody, CardHeader, CardTitle, FormGroup, Label} from 'r
 import PropTypes from 'prop-types';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import {isJSON, required, isEscrowPaymentSignature} from "../validators";
 import {withNamespaces} from "react-i18next";
+import {isJSON, required, isEscrowPaymentSignature} from "../../validators";
 import TransactionResults from "./TransactionResults";
 
 class IncludeSignatureForm extends Component {
