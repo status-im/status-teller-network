@@ -6,7 +6,7 @@ import {action} from '@storybook/addon-actions';
 import cloneDeep from 'clone-deep';
 import moment from 'moment';
 
-import EscrowList from '../app/js/components/EscrowList';
+import EscrowList from '../app/js/components/tmp/EscrowList';
 
 global.web3 = {
   eth: {

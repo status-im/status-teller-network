@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 import Datetime from 'react-datetime';
 import moment from 'moment';
 import classnames from 'classnames';
+import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import {isInteger, isAddress, required} from '../validators';
+import {isInteger, isAddress, required} from '../../validators';
 import TransactionResults from './TransactionResults';
 
-import '../../../node_modules/react-datetime/css/react-datetime.css';
-import '../../css/Form.scss';
-import {withNamespaces} from 'react-i18next';
+import '../../../../node_modules/react-datetime/css/react-datetime.css';
+import '../../../css/Form.scss';
 
 class CreateEscrowForm extends Component {
   constructor(props) {

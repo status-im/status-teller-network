@@ -18,7 +18,6 @@ import OfferTradeContainer from '../containers/Buyer/OfferTradeContainer';
 import BuyerContactContainer from '../containers/Buyer/BuyerContactContainer';
 
 // Seller
-import SellerLicenseContainer from '../containers/Seller/SellerLicenseContainer';
 import SellerStartContainer from '../containers/Seller/SellerStartContainer';
 import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
 import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
@@ -27,11 +26,12 @@ import SellerMarginContainer from '../containers/Seller/SellerMarginContainer';
 import SellerContactContainer from '../containers/Seller/SellerContactContainer';
 
 import ProfileContainer from '../containers/ProfileContainer';
+import LicenseContainer from '../containers/LicenseContainer';
 
-import PriceContainer from '../containers/PriceContainer';
-import LicenseContainer from '../containers/EscrowsContainer';
-import SignatureContainer from '../containers/SignatureContainer';
-import ArbitrationContainer from '../containers/ArbitrationContainer';
+import EscrowsContainer from '../containers/tmp/EscrowsContainer';
+import PriceContainer from '../containers/tmp/PriceContainer';
+import SignatureContainer from '../containers/tmp/SignatureContainer';
+import ArbitrationContainer from '../containers/tmp/ArbitrationContainer';
 
 import prices from '../features/prices';
 import embarkjs from '../features/embarkjs';
@@ -67,8 +67,9 @@ class App extends Component {
             {path: '/buy/contactForm', component: BuyerContactContainer},
             {path: '/buy/offer', component: OfferTradeContainer}
           ]}/>
+
+          <Route exact path="/license" component={LicenseContainer}/>
           <Wizard path="/sell/" steps={[
-            {path: '/sell/license', component: SellerLicenseContainer},
             {path: '/sell/start', component: SellerStartContainer},
             {path: '/sell/location', component: SellerPositionContainer},
             {path: '/sell/payment-methods', component: SellerPaymentMethodContainer},
@@ -77,11 +78,11 @@ class App extends Component {
             {path: '/sell/contact', component: SellerContactContainer}
           ]}/>
 
-          <Route path="/price" component={PriceContainer}/>
-          <Route path="/escrows" component={LicenseContainer}/>
-          <Route path="/map" component={MapContainer}/>
-          <Route path="/signature" component={SignatureContainer}/>
-          <Route path="/arbitration" component={ArbitrationContainer}/>
+          <Route path="/tmp/price" component={PriceContainer}/>
+          <Route path="/tmp/escrows" component={EscrowsContainer}/>
+          <Route path="/tmp/map" component={MapContainer}/>
+          <Route path="/tmp/signature" component={SignatureContainer}/>
+          <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
         </Container>
       </HashRouter>
     );

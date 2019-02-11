@@ -5,7 +5,7 @@ import { withKnobs, number } from '@storybook/addon-knobs';
 import { withInfo } from "@storybook/addon-info";
 import { action } from '@storybook/addon-actions';
 
-import License from '../app/js/components/License';
+import License from '../app/js/components/tmp/License';
 
 const info = {inline: true, propTables: [License.WrappedComponent]};
 

@@ -1,11 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux';
-import license from '../features/license';
-import escrow from '../features/escrow';
-import License from '../components/License';
-import CreateEscrowForm from '../components/CreateEscrowForm';
 import PropTypes from 'prop-types';
-import EscrowList from "../components/EscrowList";
+
+import EscrowList from "../../components/tmp/EscrowList";
+import CreateEscrowForm from '../../components/tmp/CreateEscrowForm';
+import License from '../../components/tmp/License';
+import license from '../../features/license';
+import escrow from '../../features/escrow';
 
 class EscrowsContainer extends Component {
   componentDidMount() {

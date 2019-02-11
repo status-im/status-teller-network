@@ -1,10 +1,10 @@
 import React from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table} from 'reactstrap';
 import PropTypes from 'prop-types';
-import ArbitrationResult from "./ArbitrationResult";
-import Address from "../components/Address";
-import {ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
 import {withNamespaces} from "react-i18next";
+import {ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
+import ArbitrationResult from "./ArbitrationResult";
+import Address from "./Address";
 import TransactionResults from "./TransactionResults";
 
 function getArbitrationState(escrow) {

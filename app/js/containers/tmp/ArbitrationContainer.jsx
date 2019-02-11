@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import arbitration from '../features/arbitration';
 import PropTypes from 'prop-types';
-import ArbitrationList from "../components/ArbitrationList";
+
+import ArbitrationList from "../../components/tmp/ArbitrationList";
+import arbitration from '../../features/arbitration';
 
 class ArbitrationContainer extends Component {
   componentDidMount() {

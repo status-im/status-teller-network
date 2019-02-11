@@ -2,10 +2,10 @@
 import React, {Fragment} from 'react';
 import {Card, CardBody, CardHeader, CardTitle, Table, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {getEscrowState, escrowStates} from "../features/escrow/helpers";
-import {SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE} from "../features/escrow/constants";
-import Rating from "./Rating";
 import {withNamespaces} from 'react-i18next';
+import {getEscrowState, escrowStates} from "../../features/escrow/helpers";
+import {SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE} from "../../features/escrow/constants";
+import Rating from "./Rating";
 import SignatureDialog from "./SignatureDialog";
 import TransactionResults from "./TransactionResults";
 

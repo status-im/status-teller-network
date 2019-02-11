@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, FormGroup, Input} from "reactstrap";
 import PropTypes from 'prop-types';
-import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../features/arbitration/constants";
+import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
 
 class ArbitrationResult extends Component {
   constructor(props) {

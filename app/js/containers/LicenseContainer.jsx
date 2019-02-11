@@ -1,23 +1,17 @@
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import license from "../../features/license";
-import balances from "../../features/balances";
-import embarkjs from '../../features/embarkjs';
+import license from "../features/license";
+import balances from "../features/balances";
+import embarkjs from "../features/embarkjs";
 
-import SellerBuyLicense from '../../components/Seller/SellerBuyLicense';
-import SellerLicenseInfo from '../../components/Seller/SellerLicenseInfo';
-import YourSNTBalance from '../../components/YourSNTBalance';
+import SellerBuyLicense from '../components/Seller/SellerBuyLicense';
+import SellerLicenseInfo from '../components/Seller/SellerLicenseInfo';
+import YourSNTBalance from '../components/YourSNTBalance';
 
-class SellerLicenseContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      
-    };
-  }
-
+class LicenseContainer extends Component {
   componentDidMount() {
     this.props.loadSNTBalance(this.props.address);
     this.props.checkLicenseOwner();
@@ -25,7 +19,7 @@ class SellerLicenseContainer extends Component {
 
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
-      return this.props.wizard.next();
+      return this.props.history.push('/sell');
     }
   }
 
@@ -44,7 +38,8 @@ class SellerLicenseContainer extends Component {
   }
 }
 
-SellerLicenseContainer.propTypes = {
+LicenseContainer.propTypes = {
+  history: PropTypes.object,
   address: PropTypes.string,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
@@ -60,7 +55,7 @@ const mapStateToProps = state => {
     address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     sntBalance: balances.selectors.getSNTBalance(state, address)
-  }
+  };
 };
 
 export default connect(
@@ -70,4 +65,4 @@ export default connect(
     buyLicense: license.actions.buyLicense,
     checkLicenseOwner: license.actions.checkLicenseOwner
   }
-)(SellerLicenseContainer);
+)(withRouter(LicenseContainer));
