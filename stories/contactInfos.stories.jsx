@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import ContactForm from '../../app/js/components/ContactForm';
+import ContactForm from '../app/js/components/ContactForm';
 import {action} from "@storybook/addon-actions";
 
 storiesOf('Seller contact infos', module)

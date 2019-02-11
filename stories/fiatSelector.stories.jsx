@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import FiatSelectorForm from '../../app/js/components/Seller/FiatSelectorForm';
+import FiatSelectorForm from '../app/js/components/Seller/FiatSelectorForm';
 import {action} from "@storybook/addon-actions";
 
 const CURRENCY_DATA = [

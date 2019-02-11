@@ -13,6 +13,7 @@ import escrow from './features/escrow';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
+import balances from './features/balances';
 
 function *root() {
   yield all([
@@ -22,7 +23,8 @@ function *root() {
     ...escrow.saga,
     ...signature.saga,
     ...arbitration.saga,
-    ...metadata.saga
+    ...metadata.saga,
+    ...balances.saga
   ]);
 }
 

@@ -147,5 +147,16 @@
   "contactForm": {
     "yourName": "Your name and how to contact you",
     "bestWay": "What would be the best way to contact you"
+  },
+  "sellerLicenseInfo": {
+    "title": "Value propositions/info about a seller license",
+    "fee": "1 SNT fee for every transaction",
+    "stake": "Stake 10 SNT to obtain the selling license"
+  },
+  "yourSNTBalance": {
+    "label": "Your balance"
+  },
+  "sellerBuyLicense": {
+    "button": "Buy license"
   }
 }

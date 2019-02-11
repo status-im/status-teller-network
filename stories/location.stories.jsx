@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import SellerPosition from '../../app/js/components/Seller/SellerPosition';
+import SellerPosition from '../app/js/components/Seller/SellerPosition';
 import {action} from "@storybook/addon-actions";
 
 storiesOf('Location', module)

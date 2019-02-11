@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`YourSNTBalance should render correctly 1`] = `
+<Row
+  className="mt-5"
+  tag="div"
+>
+  <Col
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
+    xs="12"
+  >
+    <span
+      className="font-weight-bold h5"
+    />
+  </Col>
+  <Col
+    className="pr-0"
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
+    xs="12"
+  >
+    <Card
+      body={true}
+      className="rounded-0"
+      tag="div"
+    >
+      <span>
+        10
+         SNT
+      </span>
+    </Card>
+  </Col>
+</Row>
+`;
