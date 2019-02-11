@@ -12,6 +12,7 @@ import embarkjs from './features/embarkjs';
 import escrow from './features/escrow';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
+import metadata from './features/metadata';
 
 function *root() {
   yield all([
@@ -20,7 +21,8 @@ function *root() {
     ...embarkjs.saga,
     ...escrow.saga,
     ...signature.saga,
-    ...arbitration.saga
+    ...arbitration.saga,
+    ...metadata.saga
   ]);
 }
 

@@ -174,6 +174,14 @@ contract MetadataStore is Ownable {
     }
 
     /**
+    * @dev Get all the offer ids of the address in params
+    * @param _address Address of the offers
+    */
+    function getOfferIds(address _address) public view returns (uint256[] memory) {
+        return addressToOffers[_address];
+    }
+
+    /**
     * @dev Fallback function
     */
     function() external {

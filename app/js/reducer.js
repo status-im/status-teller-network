@@ -11,6 +11,7 @@ import signature from './features/signature';
 import arbitration from './features/arbitration';
 import seller from './features/seller';
 import buyer from './features/buyer';
+import metadata from './features/metadata';
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
@@ -21,7 +22,8 @@ const rootReducer = combineReducers({
   signature: signature.reducer,
   arbitration: arbitration.reducer,
   seller: seller.reducer,
-  buyer: buyer.reducer
+  buyer: buyer.reducer,
+  metadata: metadata.reducer
 });
 
 export default rootReducer;
