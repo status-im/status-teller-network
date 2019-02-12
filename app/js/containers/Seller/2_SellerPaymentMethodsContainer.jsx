@@ -47,7 +47,6 @@ class SellerPaymentMethodsContainer extends Component {
 }
 
 SellerPaymentMethodsContainer.propTypes = {
-  wizard: PropTypes.object,
   footer: PropTypes.object,
   seller: PropTypes.object,
   setPaymentMethods: PropTypes.func

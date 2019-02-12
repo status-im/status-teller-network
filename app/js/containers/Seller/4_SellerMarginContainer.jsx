@@ -11,41 +11,48 @@ class SellerMarginContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      margin: props.seller.margin
-
+      margin: props.seller.margin,
+      marketType: props.seller.marketType
     };
     this.validate(props.seller.margin);
     props.footer.onPageChange(() => {
-      props.setMargin(this.state.margin);
+      props.setMargin(this.state.margin, this.state.marketType);
     });
   }
 
   componentDidMount() {
-    if (!this.props.seller.fiat || !this.props.fiat.id) {
+    if (!this.props.seller.currency) {
       this.props.wizard.previous();
     }
   }
 
-  validate(newMargin) {
-    if (newMargin.rate || newMargin.rate === 0) {
+  validate(margin) {
+    if (margin || margin === 0) {
       return this.props.footer.enableNext();
     }
     this.props.footer.disableNext();
   }
 
-  onMarginChange = (margin) => {
-    const newMargin = Object.assign({}, this.state.margin, margin);
-    this.validate(newMargin);
-    this.setState({margin: newMargin});
+  marginChange = (margin) => {
+    this.validate(margin);
+    this.setState({margin});
+  };
+
+  marginChange = (marketTypeChange) => {
+    this.setState({marketTypeChange});
   };
 
   render() {
-    if (!this.props.fiat || !this.props.fiat.id) {
+    if (!this.props.seller.currency) {
       return <p><FontAwesomeIcon icon={faSpinner} className="loading"/>Loading...</p>;
     }
 
     return (
-      <MarginSelectorForm fiat={this.props.fiat} margin={this.state.margin} onMarginChange={this.onMarginChange}/>);
+      <MarginSelectorForm currency={this.props.seller.currency}
+                          margin={this.state.margin}
+                          marginChange={this.marginChange}
+                          marketType={this.marketType}
+                          marketTypeChange={this.marketTypeChange}/>);
   }
 }
 

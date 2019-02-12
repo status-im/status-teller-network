@@ -20,18 +20,20 @@ class SellerContactContainer extends Component {
     });
   }
 
-  changeContactCode = (statusContractCode) => {
+  changeStatusContractCode = (statusContractCode) => {
     this.setState({statusContractCode});
   };
 
-  changeNickname = (username) => {
+  changeUsename = (username) => {
     this.setState({username});
   };
 
   render() {
     return (
-      <ContactForm contactCode={this.state.contactCode} nickname={this.state.nickname}
-                   changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
+      <ContactForm statusContractCode={this.state.statusContractCode} 
+                   username={this.state.username}
+                   changeStatusContractCode={this.changeStatusContractCode}
+                   changeUsername={this.changeUsername}/>
     );
   }
 }

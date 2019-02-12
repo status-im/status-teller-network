@@ -22,32 +22,33 @@ class SellerCurrencyContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fiat: props.seller.currency
+      currency: props.seller.currency
     };
     this.validate(props.seller.currency);
     this.props.footer.onPageChange(() => {
-      props.setCurrency(this.state.fiat);
+      props.setCurrency(this.state.currency);
     });
   }
 
-  validate(fiat) {
-    if (!fiat.id) {
+  validate(currency) {
+    if (!currency) {
       return this.props.footer.disableNext();
     }
     this.props.footer.enableNext();
   }
 
-  changeFiat = (currency) => {
+  changeCurrency= (currency) => {
     if (!currency) {
-      currency = {};
+      currency = '';
     }
     this.validate(currency);
     this.setState({currency});
   };
 
   render() {
-    return (<FiatSelectorForm value={this.state.fiat} currencies={CURRENCY_DATA}
-                              changeFiat={this.changeFiat}/>);
+    return (<FiatSelectorForm value={this.state.currency}
+                              currencies={CURRENCY_DATA}
+                              changeCurrency={this.changeCurrency}/>);
   }
 }
 
