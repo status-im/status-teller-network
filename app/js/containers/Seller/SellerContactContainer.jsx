@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ContactForm from '../../components/ContactForm';
 import seller from "../../features/seller";
 import {connect} from "react-redux";
+import { __metadata } from 'tslib';
 
 class SellerContactContainer extends Component {
   constructor(props) {
@@ -14,6 +15,7 @@ class SellerContactContainer extends Component {
     props.footer.enableNext();
     props.footer.onPageChange(() => {
       props.setContact({nickname: this.state.nickname, contactCode: this.state.contactCode});
+      props.addSeller();
     });
   }
 
@@ -37,7 +39,8 @@ SellerContactContainer.propTypes = {
   footer: PropTypes.object,
   setContact: PropTypes.func,
   nickname: PropTypes.string,
-  contactCode: PropTypes.string
+  contactCode: PropTypes.string,
+  addSeller: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -48,6 +51,7 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   {
-    setContact: seller.actions.setContact
+    setContact: seller.actions.setContact,
+    addSeller: metadata.actions.addSeller
   }
 )(SellerContactContainer);
