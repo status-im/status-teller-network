@@ -4,29 +4,28 @@ import {connect} from "react-redux";
 
 import ContactForm from '../../components/ContactForm';
 import newSeller from "../../features/newSeller";
-
 import metadata from "../../features/metadata";
 
 class SellerContactContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nickname: props.nickname,
-      contactCode: props.contactCode
+      username: props.seller.username,
+      statusContractCode: props.seller.statusContractCode
     };
     props.footer.enableNext();
     props.footer.onPageChange(() => {
-      props.setContact({nickname: this.state.nickname, contactCode: this.state.contactCode});
-      props.addSeller(seller);
+      props.setContactInfo({username: this.state.username, statusContractCode: this.state.statusContractCode});
+      props.addSeller(this.props.seller);
     });
   }
 
-  changeContactCode = (contactCode) => {
-    this.setState({contactCode});
+  changeContactCode = (statusContractCode) => {
+    this.setState({statusContractCode});
   };
 
-  changeNickname = (nickname) => {
-    this.setState({nickname});
+  changeNickname = (username) => {
+    this.setState({username});
   };
 
   render() {
@@ -39,20 +38,19 @@ class SellerContactContainer extends Component {
 
 SellerContactContainer.propTypes = {
   footer: PropTypes.object,
-  setContact: PropTypes.func,
-  nickname: PropTypes.string,
-  contactCode: PropTypes.string,
+  setContactInfo: PropTypes.func,
+  seller: PropTypes.object,
   addSeller: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.seller(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setContact: seller.actions.setContact,
+    setContactInfo: newSeller.actions.setContactInfo,
     addSeller: metadata.actions.addSeller
   }
 )(SellerContactContainer);

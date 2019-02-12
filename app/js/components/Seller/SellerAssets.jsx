@@ -21,7 +21,7 @@ class SellerAssets extends Component {
             <CheckButton active={this.props.selectedAsset === this.props.availableAssets[name]} 
                          key={`asset-${name}`} 
                          onClick={(_e) => this.selectAsset(this.props.availableAssets[name])}>
-              {asset}
+              {name}
             </CheckButton>
           ))}
         </ButtonGroup>
@@ -36,8 +36,8 @@ class SellerAssets extends Component {
 
 SellerAssets.propTypes = {
   selectAsset: PropTypes.func,
-  selectedAsset: PropTypes.number,
-  availableAssets: PropTypes.array
+  selectedAsset: PropTypes.string,
+  availableAssets: PropTypes.object
 };
 
 

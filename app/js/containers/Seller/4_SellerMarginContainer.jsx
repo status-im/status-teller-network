@@ -11,16 +11,17 @@ class SellerMarginContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      margin: props.margin
+      margin: props.seller.margin
+
     };
-    this.validate(props.margin);
+    this.validate(props.seller.margin);
     props.footer.onPageChange(() => {
-      props.setMarginRate(this.state.margin);
+      props.setMargin(this.state.margin);
     });
   }
 
   componentDidMount() {
-    if (!this.props.fiat || !this.props.fiat.id) {
+    if (!this.props.seller.fiat || !this.props.fiat.id) {
       this.props.wizard.previous();
     }
   }
@@ -57,7 +58,7 @@ SellerMarginContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.seller(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(

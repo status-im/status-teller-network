@@ -46,7 +46,7 @@ SellerLocationContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.seller(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(
