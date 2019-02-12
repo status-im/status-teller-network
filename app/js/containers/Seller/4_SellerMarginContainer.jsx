@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import seller from '../../features/seller';
 import {connect} from 'react-redux';
-import MarginSelectorForm from '../../components/Seller/MarginSelectorForm';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
+
+import MarginSelectorForm from '../../components/Seller/MarginSelectorForm';
+import newSeller from "../../features/newSeller";
 
 class SellerMarginContainer extends Component {
   constructor(props) {
@@ -49,21 +50,19 @@ class SellerMarginContainer extends Component {
 
 SellerMarginContainer.propTypes = {
   t: PropTypes.func,
-  setMarginRate: PropTypes.func,
-  fiat: PropTypes.object,
-  margin: PropTypes.object,
+  setMargin: PropTypes.func,
+  seller: PropTypes.object,
   wizard: PropTypes.object,
   footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  fiat: seller.selectors.fiat(state),
-  margin: seller.selectors.margin(state)
+  seller: newSeller.selectors.seller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setMarginRate: seller.actions.setMarginRate
+    setMargin: newSeller.actions.setMargin
   }
 )(SellerMarginContainer);

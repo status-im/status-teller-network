@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import ContactForm from '../../components/ContactForm';
-import seller from "../../features/seller";
+import newSeller from "../../features/newSeller";
+
 import metadata from "../../features/metadata";
 
 class SellerContactContainer extends Component {
@@ -45,8 +46,7 @@ SellerContactContainer.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  contactCode: seller.selectors.contactCode(state),
-  nickname: seller.selectors.nickname(state)
+  seller: newSeller.selectors.seller(state)
 });
 
 export default connect(

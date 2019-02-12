@@ -1,8 +1,9 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
-import seller from "../../features/seller";
 import {connect} from "react-redux";
+
+import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
+import newSeller from "../../features/newSeller";
 
 const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 
@@ -10,9 +11,9 @@ class SellerPaymentMethodsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMethods: props.paymentMethods
+      selectedMethods: props.seller.paymentMethods
     };
-    this.validate(props.paymentMethods);
+    this.validate(props.seller.paymentMethods);
     props.footer.onPageChange(() => {
       props.setPaymentMethods(this.state.selectedMethods);
     });
@@ -48,17 +49,17 @@ class SellerPaymentMethodsContainer extends Component {
 SellerPaymentMethodsContainer.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
-  paymentMethods: PropTypes.array,
+  seller: PropTypes.object,
   setPaymentMethods: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  paymentMethods: seller.selectors.paymentMethods(state)
+  seller: newSeller.selectors.seller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setPaymentMethods: seller.actions.setPaymentMethods
+    setPaymentMethods: newSeller.actions.setPaymentMethods
   }
 )(SellerPaymentMethodsContainer);

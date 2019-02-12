@@ -1,26 +1,27 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SellerAssets from '../../components/Seller/SellerAssets';
+import SNT from 'Embark/contracts/SNT';
 import {connect} from "react-redux";
-import seller from "../../features/seller";
 
-// TODO where do we get those?
-const assets = ['ETH', 'SNT'];
+import newSeller from "../../features/newSeller";
+import SellerAssets from '../../components/Seller/SellerAssets';
+
+const availableAssets = {'ETH': '0x0', 'SNT': SNT.address};
 
 class SellerAssetContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedAsset: props.selectedAsset
+      selectedAsset: props.seller.asset
     };
-    this.validate(props.selectedAsset);
+    this.validate(props.seller.asset);
     this.props.footer.onPageChange(() => {
-      this.props.setSelectedAsset(this.state.selectedAsset);
+      this.props.setAsset(this.state.selectedAsset);
     });
   }
 
-  validate(selectedAsset) {
-    if (selectedAsset || selectedAsset === 0) {
+  validate() {
+    if (this.props.seller.asset) {
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();
@@ -33,23 +34,23 @@ class SellerAssetContainer extends Component {
   };
 
   render() {
-    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} assets={assets}/>);
+    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} availableAssets={availableAssets}/>);
   }
 }
 
 SellerAssetContainer.propTypes = {
   footer: PropTypes.object,
-  setSelectedAsset: PropTypes.func,
-  selectedAsset: PropTypes.number
+  setAsset: PropTypes.func,
+  seller: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  selectedAsset: seller.selectors.selectedAsset(state)
+  seller: newSeller.selectors.seller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setSelectedAsset: seller.actions.setSelectedAsset
+    setAsset: newSeller.actions.setAsset
   }
 )(SellerAssetContainer);
