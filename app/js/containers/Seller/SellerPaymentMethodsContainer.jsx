@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
 const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 
-class SellerPaymentMethodContainer extends Component {
+class SellerPaymentMethodsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +45,7 @@ class SellerPaymentMethodContainer extends Component {
   }
 }
 
-SellerPaymentMethodContainer.propTypes = {
+SellerPaymentMethodsContainer.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
   paymentMethods: PropTypes.array,
@@ -61,4 +61,4 @@ export default connect(
   {
     setPaymentMethods: seller.actions.setPaymentMethods
   }
-)(SellerPaymentMethodContainer);
+)(SellerPaymentMethodsContainer);

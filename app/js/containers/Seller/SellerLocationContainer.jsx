@@ -4,7 +4,7 @@ import SellerPosition from '../../components/Seller/SellerPosition';
 import {connect} from "react-redux";
 import seller from "../../features/seller";
 
-class SellerPositionContainer extends Component {
+class SellerLocationContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +38,7 @@ class SellerPositionContainer extends Component {
   }
 }
 
-SellerPositionContainer.propTypes = {
+SellerLocationContainer.propTypes = {
   location: PropTypes.string,
   setLocation: PropTypes.func,
   footer: PropTypes.object
@@ -53,4 +53,4 @@ export default connect(
   {
     setLocation: seller.actions.setLocation
   }
-)(SellerPositionContainer);
+)(SellerLocationContainer);

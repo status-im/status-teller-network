@@ -16,7 +16,7 @@ class SellerContactContainer extends Component {
     props.footer.enableNext();
     props.footer.onPageChange(() => {
       props.setContact({nickname: this.state.nickname, contactCode: this.state.contactCode});
-      props.addSeller();
+      props.addSeller(seller);
     });
   }
 

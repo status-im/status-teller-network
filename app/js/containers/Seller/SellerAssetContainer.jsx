@@ -7,7 +7,7 @@ import seller from "../../features/seller";
 // TODO where do we get those?
 const assets = ['ETH', 'SNT'];
 
-class SellerStartContainer extends Component {
+class SellerAssetContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ class SellerStartContainer extends Component {
   }
 }
 
-SellerStartContainer.propTypes = {
+SellerAssetContainer.propTypes = {
   footer: PropTypes.object,
   setSelectedAsset: PropTypes.func,
   selectedAsset: PropTypes.number
@@ -52,4 +52,4 @@ export default connect(
   {
     setSelectedAsset: seller.actions.setSelectedAsset
   }
-)(SellerStartContainer);
+)(SellerAssetContainer);
