@@ -20,8 +20,8 @@ class SellerAssetContainer extends Component {
     });
   }
 
-  validate() {
-    if (this.props.seller.asset) {
+  validate(asset) {
+    if (asset) {
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();
