@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {connect} from "react-redux";
+
 import ContactForm from '../../components/ContactForm';
 import seller from "../../features/seller";
-import {connect} from "react-redux";
-import { __metadata } from 'tslib';
+import metadata from "../../features/metadata";
 
 class SellerContactContainer extends Component {
   constructor(props) {

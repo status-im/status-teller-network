@@ -25,7 +25,7 @@ Footer.propTypes = {
 };
 
 const withFooterHoC = (WrappedComponent, wizard) => {
-  class HOC extends Component {
+  class FooterHoC extends Component {
     constructor(props) {
       super(props);
       this.state = {
@@ -91,7 +91,7 @@ const withFooterHoC = (WrappedComponent, wizard) => {
     }
   }
 
-  return HOC;
+  return FooterHoC;
 };
 
 export default withFooterHoC;
