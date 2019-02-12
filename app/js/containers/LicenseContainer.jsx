@@ -7,8 +7,8 @@ import license from "../features/license";
 import balances from "../features/balances";
 import embarkjs from "../features/embarkjs";
 
-import SellerBuyLicense from '../components/Seller/SellerBuyLicense';
-import SellerLicenseInfo from '../components/Seller/SellerLicenseInfo';
+import LicenseInfo from '../components/License/LicenseInfo';
+import LicenseBuy from '../components/License/LicenseBuy';
 import YourSNTBalance from '../components/YourSNTBalance';
 
 class LicenseContainer extends Component {
@@ -30,9 +30,9 @@ class LicenseContainer extends Component {
   render() {
     return (
       <React.Fragment>
-        <SellerLicenseInfo />
+        <LicenseInfo />
         <YourSNTBalance value={this.props.sntBalance}/>
-        <SellerBuyLicense onClick={this.buyLicense} disabled={this.props.sntBalance === 0}/>
+        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntBalance === 0}/>
       </React.Fragment>
     );
   }

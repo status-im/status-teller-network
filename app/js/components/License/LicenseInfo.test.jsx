@@ -1,11 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import SellerLicenseInfo from "./SellerLicenseInfo";
+import LicenseInfo from "./LicenseInfo";
 
-describe('SellerLicenseInfo', () => {
+describe('LicenseInfo', () => {
   it('should render correctly', () => {
-    const component = shallow(<SellerLicenseInfo/>);
+    const component = shallow(<LicenseInfo/>);
   
     expect(component).toMatchSnapshot();
   });

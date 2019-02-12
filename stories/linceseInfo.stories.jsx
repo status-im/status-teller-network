@@ -3,12 +3,12 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import SellerLicenseInfo from '../app/js/components/Seller/SellerLicenseInfo';
+import LicenseInfo from '../app/js/components/License/LicenseInfo';
 
-storiesOf('SellerLicenseInfo', module)
+storiesOf('LicenseInfo', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <SellerLicenseInfo />
+      <LicenseInfo />
     ))
   );

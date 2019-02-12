@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SellerLicenseInfo should render correctly 1`] = `
+exports[`LicenseInfo should render correctly 1`] = `
 <div
   className="mt-5 mb-5"
 >
