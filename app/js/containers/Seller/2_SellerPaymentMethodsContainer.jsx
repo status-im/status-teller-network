@@ -11,12 +11,21 @@ class SellerPaymentMethodsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMethods: props.seller.paymentMethods
+      selectedMethods: props.seller.paymentMethods,
+      ready: false
     };
     this.validate(props.seller.paymentMethods);
     props.footer.onPageChange(() => {
       props.setPaymentMethods(this.state.selectedMethods);
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.seller.location) {
+      this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
+    }
   }
 
   validate(selectedMethods) {
@@ -39,6 +48,10 @@ class SellerPaymentMethodsContainer extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
+    }
+
     return (
       <SellerPaymentMethod methods={methods} togglePaymentMethod={this.togglePaymentMethod}
                            selectedMethods={this.state.selectedMethods}/>
@@ -47,6 +60,7 @@ class SellerPaymentMethodsContainer extends Component {
 }
 
 SellerPaymentMethodsContainer.propTypes = {
+  wizard: PropTypes.object,
   footer: PropTypes.object,
   seller: PropTypes.object,
   setPaymentMethods: PropTypes.func

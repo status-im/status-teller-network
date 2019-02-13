@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import {connect} from 'react-redux';
@@ -22,12 +22,21 @@ class SellerCurrencyContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currency: props.seller.currency
+      currency: props.seller.currency,
+      ready: false
     };
     this.validate(props.seller.currency);
     this.props.footer.onPageChange(() => {
       props.setCurrency(this.state.currency);
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.seller.paymentMethods.length) {
+      this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
+    }
   }
 
   validate(currency) {
@@ -46,6 +55,10 @@ class SellerCurrencyContainer extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
+    }
+
     return (<FiatSelectorForm value={this.state.currency}
                               currencies={CURRENCY_DATA}
                               changeCurrency={this.changeCurrency}/>);
@@ -54,6 +67,7 @@ class SellerCurrencyContainer extends Component {
 
 SellerCurrencyContainer.propTypes = {
   t: PropTypes.func,
+  wizard: PropTypes.object,
   setCurrency: PropTypes.func,
   seller: PropTypes.object,
   footer: PropTypes.object

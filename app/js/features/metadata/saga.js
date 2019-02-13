@@ -2,8 +2,8 @@ import MetadataStore from 'Embark/contracts/MetadataStore';
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
   LOAD, LOAD_SELLER, LOAD_SELLER_FAILED, LOAD_SELLER_SUCCEEDED,
-  LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_SELLER,
-  ADD_SELLER_FAILED, ADD_SELLER_SUCCEEDED, ADD_SELLER_PRE_SUCCESS
+  LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
+  ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS
 } from './constants';
 
 import {doTransaction} from '../utils';
@@ -53,8 +53,8 @@ export function *onLoad() {
   yield takeEvery(LOAD, load);
 }
 
-export function *onAddSeller() {
-  yield takeEvery(ADD_SELLER, doTransaction.bind(null, ADD_SELLER_PRE_SUCCESS, ADD_SELLER_SUCCEEDED, ADD_SELLER_FAILED));
+export function *onAddOffer() {
+  yield takeEvery(ADD_OFFER, doTransaction.bind(null, ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED));
 }
 
-export default [fork(onLoad), fork(onLoadSeller), fork(onLoadOffers), fork(onAddSeller)];
+export default [fork(onLoad), fork(onLoadSeller), fork(onLoadOffers), fork(onAddOffer)];

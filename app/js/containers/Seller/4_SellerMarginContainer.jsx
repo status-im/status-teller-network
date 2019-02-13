@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -12,7 +12,8 @@ class SellerMarginContainer extends Component {
     super(props);
     this.state = {
       margin: props.seller.margin,
-      marketType: props.seller.marketType
+      marketType: props.seller.marketType,
+      ready: false
     };
     this.validate(props.seller.margin);
     props.footer.onPageChange(() => {
@@ -23,6 +24,8 @@ class SellerMarginContainer extends Component {
   componentDidMount() {
     if (!this.props.seller.currency) {
       this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
     }
   }
 
@@ -44,8 +47,8 @@ class SellerMarginContainer extends Component {
   };
 
   render() {
-    if (!this.props.seller.currency) {
-      return <p><FontAwesomeIcon icon={faSpinner} className="loading"/>Loading...</p>;
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
     }
 
     return (

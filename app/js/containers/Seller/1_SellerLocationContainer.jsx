@@ -9,12 +9,21 @@ class SellerLocationContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: props.seller.location
+      location: props.seller.location,
+      ready: false
     };
-    this.validate();
+    this.validate(props.seller.location);
     this.props.footer.onPageChange(() => {
       this.props.setLocation(this.state.location);
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.seller.asset) {
+      this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
+    }
   }
 
   validate(location) {
@@ -31,6 +40,9 @@ class SellerLocationContainer extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
+    }
     return (
       <Fragment>
         <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>
@@ -40,6 +52,7 @@ class SellerLocationContainer extends Component {
 }
 
 SellerLocationContainer.propTypes = {
+  wizard: PropTypes.object,
   seller: PropTypes.object,
   setLocation: PropTypes.func,
   footer: PropTypes.object

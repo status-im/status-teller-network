@@ -59,7 +59,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
       tag="div"
     >
       <MarketButton
-        active={false}
+        active={true}
         onClick={[Function]}
       />
       <MarketButton
