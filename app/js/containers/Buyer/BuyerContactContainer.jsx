@@ -25,10 +25,13 @@ class SellerContactContainer extends Component {
     this.setState({nickname});
   };
 
+
   render() {
     return (
-      <ContactForm contactCode={this.state.contactCode} nickname={this.state.nickname}
-                   changeContactCode={this.changeContactCode} changeNickname={this.changeNickname}/>
+      <ContactForm statusContactCode={this.state.contactCode} 
+                   username={this.state.nickname}
+                   changeStatusContactCode={this.changeContactCode}
+                   changeUsername={this.changeNickname}/>
     );
   }
 }

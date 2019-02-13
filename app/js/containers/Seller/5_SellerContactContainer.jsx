@@ -20,7 +20,7 @@ class SellerContactContainer extends Component {
     });
   }
 
-  changestatusContactCode = (statusContactCode) => {
+  changeStatusContactCode = (statusContactCode) => {
     this.setState({statusContactCode});
   };
 
@@ -32,7 +32,7 @@ class SellerContactContainer extends Component {
     return (
       <ContactForm statusContactCode={this.state.statusContactCode} 
                    username={this.state.username}
-                   changestatusContactCode={this.changestatusContactCode}
+                   changeStatusContactCode={this.changeStatusContactCode}
                    changeUsername={this.changeUsername}/>
     );
   }

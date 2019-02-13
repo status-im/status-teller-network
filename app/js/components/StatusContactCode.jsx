@@ -6,7 +6,7 @@ import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 
-class statusContactCode extends Component {
+class StatusContactCode extends Component {
   render() {
     const t = this.props.t;
     return (
@@ -30,9 +30,9 @@ class statusContactCode extends Component {
   }
 }
 
-statusContactCode.propTypes = {
+StatusContactCode.propTypes = {
   t: PropTypes.func,
   value: PropTypes.string
 };
 
-export default withNamespaces()(statusContactCode);
+export default withNamespaces()(StatusContactCode);

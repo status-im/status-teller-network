@@ -33,7 +33,7 @@ class ContactForm extends Component {
                    id="contactCode"
                    value={statusContactCode}
                    className="form-control"
-                   onChange={(e) => this.props.changestatusContactCode(e.target.value)}
+                   onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
                    validations={[required]}/>
           </FormGroup>
         </Form>
@@ -45,7 +45,7 @@ class ContactForm extends Component {
 ContactForm.propTypes = {
   t: PropTypes.func,
   changeUsername: PropTypes.func,
-  changestatusContactCode: PropTypes.func,
+  changeStatusContactCode: PropTypes.func,
   username: PropTypes.string,
   statusContactCode: PropTypes.string
 };

@@ -49,8 +49,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case SET_CONTACT_INFO:
       return {
         ...state,
-        username: action.nickname,
-        statusContactCode: action.contactCode
+        username: action.username,
+        statusContactCode: action.statusContactCode
       };
     default:
       return state;
