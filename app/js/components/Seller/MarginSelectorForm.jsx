@@ -7,8 +7,8 @@ import Form from 'react-validation/build/form';
 import {isNumber, required} from '../../validators';
 import MarketButton from '../ui/MarketButton';
 
-const ABOVE = 1;
-const BELOW = -1;
+const ABOVE = 0;
+const BELOW = 1;
 
 class MarginSelectorForm extends Component {
 
@@ -27,17 +27,17 @@ class MarginSelectorForm extends Component {
                      placeholder="0"
                      className="form-control prepend"
                      value={margin}
-                     onChange={(e) => this.marginChange(e.target.value)}
+                     onChange={(e) => this.props.marginChange(e.target.value)}
                      validations={[required, isNumber]} />
               <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
             </InputGroup>
         </FormGroup>
         <FormGroup>
           <ButtonGroup className="d-flex">
-            <MarketButton onClick={() => this.marketTypeChange(0)} active={marketType === 0}>
+            <MarketButton onClick={() => this.props.marketTypeChange(ABOVE)} active={marketType === ABOVE}>
               {t('marginSelectorForm.aboveMarket')}
             </MarketButton>
-            <MarketButton onClick={() => this.marketTypeChange(1)} active={marketType === 1}>
+            <MarketButton onClick={() => this.props.marketTypeChange(BELOW)} active={marketType === BELOW}>
               {t('marginSelectorForm.belowMarket')}
             </MarketButton>
           </ButtonGroup>

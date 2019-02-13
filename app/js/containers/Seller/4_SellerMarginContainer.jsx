@@ -34,12 +34,13 @@ class SellerMarginContainer extends Component {
   }
 
   marginChange = (margin) => {
+    margin = parseInt(margin, 10);
     this.validate(margin);
     this.setState({margin});
   };
 
-  marginChange = (marketTypeChange) => {
-    this.setState({marketTypeChange});
+  marketTypeChange = (marketType) => {
+    this.setState({marketType});
   };
 
   render() {

@@ -7,7 +7,10 @@ import {withNamespaces} from 'react-i18next';
 class FiatSelectorForm extends Component {
   onInputChange = (text) => {
     const symbol = this.props.currencies.find(x => x.label === text);
-    this.props.changeCurrency(symbol.id);
+    if (symbol) {
+      this.props.changeCurrency(symbol.id);
+    }
+    
   };
 
   onChange = (items) => {
@@ -19,8 +22,11 @@ class FiatSelectorForm extends Component {
 
   render() {
     const {t, value} = this.props;
-
-    const defaultSelectedValue = value ? [value] : [];
+    let defaultSelectedValue = [];
+    if (value) {
+      const currency = this.props.currencies.find(x => x.id === value);
+      defaultSelectedValue.push(currency);
+    }
 
     return (
       <Fragment>
