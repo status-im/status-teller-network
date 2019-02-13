@@ -74,8 +74,8 @@ class App extends Component {
             {path: '/sell/location', component: SellerLocationContainer},
             {path: '/sell/payment-methods', component: SellerPaymentMethodsContainer},
             {path: '/sell/currency', component: SellerCurrencyContainer},
-            {path: '/sell/margin', component: SellerMarginContainer},
-            {path: '/sell/contact', component: SellerContactContainer}
+            {path: '/sell/margin', component: SellerMarginContainer, nextLabel: 'Confirm price'},
+            {path: '/sell/contact', component: SellerContactContainer, nextLabel: 'Post the offer'}}
           ]}/>
 
           <Route path="/tmp/price" component={PriceContainer}/>

@@ -61,7 +61,7 @@ class Wizard extends Component {
 
   renderSteps() {
     return this.props.steps.map((step, index) => {
-      return <Route key={index} path={step.path} component={withFooterHoC(step.component, this)}/>;
+      return <Route key={index} path={step.path} component={withFooterHoC(step.component, step.nextLabel, this)}/>;
     });
   }
 
