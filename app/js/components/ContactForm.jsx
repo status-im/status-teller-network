@@ -7,14 +7,6 @@ import PropTypes from 'prop-types';
 import {required} from "../validators";
 
 class ContactForm extends Component {
-  changeUsername(e) {
-    this.props.changeUsername(e.target.value);
-  }
-
-  changeStatusContractCode(e) {
-    this.props.changeStatusContractCode(e.target.value);
-  }
-
   render() {
     const {t, username, statusContractCode} = this.props;
 
@@ -26,13 +18,23 @@ class ContactForm extends Component {
         <Form>
           <FormGroup>
             <Label for="nickname">Nickname</Label>
-            <Input type="text" name="nickname" id="nickname" value={username} className="form-control"
-                   onChange={(e) => this.changeUsername(e)} validations={[required]}/>
+            <Input type="text"
+                   name="nickname"
+                   id="nickname"
+                   value={username}
+                   className="form-control"
+                   onChange={(e) => this.props.changeUsername(e.target.value)}
+                   validations={[required]}/>
           </FormGroup>
           <FormGroup>
             <Label for="contactCode">Status contact code or Status ENS name</Label>
-            <Input type="text" name="contactCode" id="contactCode" value={statusContractCode}
-                   className="form-control" onChange={(e) => this.changeStatusContractCode(e)} validations={[required]}/>
+            <Input type="text"
+                   name="contactCode"
+                   id="contactCode"
+                   value={statusContractCode}
+                   className="form-control"
+                   onChange={(e) => this.props.changeStatusContractCode(e.target.value)}
+                   validations={[required]}/>
           </FormGroup>
         </Form>
       </Fragment>

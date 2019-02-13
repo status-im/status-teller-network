@@ -5,5 +5,14 @@ export const load = (address) => ({ type: LOAD, address });
 
 export const addSeller = (seller) => ({ 
   type: ADD_SELLER, 
-  toSend: MetadataStore.methods.add(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 101)
+  toSend: MetadataStore.methods.add(
+    seller.asset,
+    seller.statusContractCode,
+    seller.location,
+    seller.currency,
+    seller.username,
+    seller.paymentMethods,
+    seller.marketType,
+    seller.margin
+  )
 });

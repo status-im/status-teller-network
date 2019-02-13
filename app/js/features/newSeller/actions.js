@@ -4,5 +4,5 @@ export const setAsset = (asset) => ({type: SET_ASSET, asset});
 export const setLocation = (location) => ({type: SET_LOCATION, location});
 export const setPaymentMethods = (paymentMethods) => ({type: SET_PAYMENT_METHODS, paymentMethods});
 export const setCurrency = (currency) => ({type: SET_CURENCY, currency});
-export const setMargin = ({marketType, margin}) => ({type: SET_MARGIN, marketType, margin});
-export const setContactinfo = ({username, statusContractCode}) => ({type: SET_CONTACT_INFO, username, statusContractCode});
+export const setMargin = (margin, marketType) => ({type: SET_MARGIN, marketType, margin});
+export const setContactInfo = ({username, statusContractCode}) => ({type: SET_CONTACT_INFO, username, statusContractCode});

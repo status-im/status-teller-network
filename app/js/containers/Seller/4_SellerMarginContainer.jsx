@@ -52,7 +52,7 @@ class SellerMarginContainer extends Component {
       <MarginSelectorForm currency={this.props.seller.currency}
                           margin={this.state.margin}
                           marginChange={this.marginChange}
-                          marketType={this.marketType}
+                          marketType={this.state.marketType}
                           marketTypeChange={this.marketTypeChange}/>);
   }
 }

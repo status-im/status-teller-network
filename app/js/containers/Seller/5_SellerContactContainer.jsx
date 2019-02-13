@@ -24,7 +24,7 @@ class SellerContactContainer extends Component {
     this.setState({statusContractCode});
   };
 
-  changeUsename = (username) => {
+  changeUsername = (username) => {
     this.setState({username});
   };
 
