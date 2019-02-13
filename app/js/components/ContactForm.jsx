@@ -8,7 +8,7 @@ import {required} from "../validators";
 
 class ContactForm extends Component {
   render() {
-    const {t, username, statusContractCode} = this.props;
+    const {t, username, statusContactCode} = this.props;
 
     return (
       <Fragment>
@@ -31,9 +31,9 @@ class ContactForm extends Component {
             <Input type="text"
                    name="contactCode"
                    id="contactCode"
-                   value={statusContractCode}
+                   value={statusContactCode}
                    className="form-control"
-                   onChange={(e) => this.props.changeStatusContractCode(e.target.value)}
+                   onChange={(e) => this.props.changestatusContactCode(e.target.value)}
                    validations={[required]}/>
           </FormGroup>
         </Form>
@@ -45,9 +45,9 @@ class ContactForm extends Component {
 ContactForm.propTypes = {
   t: PropTypes.func,
   changeUsername: PropTypes.func,
-  changeStatusContractCode: PropTypes.func,
+  changestatusContactCode: PropTypes.func,
   username: PropTypes.string,
-  statusContractCode: PropTypes.string
+  statusContactCode: PropTypes.string
 };
 
 

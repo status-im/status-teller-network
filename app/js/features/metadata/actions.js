@@ -7,7 +7,7 @@ export const addSeller = (seller) => ({
   type: ADD_SELLER, 
   toSend: MetadataStore.methods.add(
     seller.asset,
-    seller.statusContractCode,
+    seller.statusContactCode,
     seller.location,
     seller.currency,
     seller.username,

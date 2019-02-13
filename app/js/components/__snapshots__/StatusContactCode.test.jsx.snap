@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StatusContractCodeades should render correctly 1`] = `
+exports[`statusContactCodeades should render correctly 1`] = `
 <Row
   className="mt-4"
   tag="div"

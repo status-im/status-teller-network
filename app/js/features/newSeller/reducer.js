@@ -9,7 +9,7 @@ import {
 
 const DEFAULT_STATE = {
   asset: '',
-  statusContractCode: '',
+  statusContactCode: '',
   location: '',
   currency: '',
   username: '',
@@ -50,7 +50,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.nickname,
-        statusContractCode: action.contactCode
+        statusContactCode: action.contactCode
       };
     default:
       return state;

@@ -5,4 +5,4 @@ export const setLocation = (location) => ({type: SET_LOCATION, location});
 export const setPaymentMethods = (paymentMethods) => ({type: SET_PAYMENT_METHODS, paymentMethods});
 export const setCurrency = (currency) => ({type: SET_CURENCY, currency});
 export const setMargin = (margin, marketType) => ({type: SET_MARGIN, marketType, margin});
-export const setContactInfo = ({username, statusContractCode}) => ({type: SET_CONTACT_INFO, username, statusContractCode});
+export const setContactInfo = ({username, statusContactCode}) => ({type: SET_CONTACT_INFO, username, statusContactCode});

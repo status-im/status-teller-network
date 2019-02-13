@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SellerInformation from '../../components/SellerInformation';
 import SellerOfferList from '../../components/Buyer/SellerOfferList';
 import Map from '../../components/Buyer/Map';
-import StatusContractCode from '../../components/StatusContractCode';
+import statusContactCode from '../../components/statusContactCode';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import buyer from "../../features/buyer";
@@ -37,7 +37,7 @@ class ProfileContainer extends Component {
         <p className="text-muted mt-2 mb-0">Saalestraße 39A,</p>
         <p className="text-muted">12055 Berlin</p>
         <SellerOfferList offers={FAKE_OFFERS} onClick={this.offerClick}/>
-        <StatusContractCode />
+        <statusContactCode />
       </div>
     );
   }

@@ -3,13 +3,13 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import StatusContractCode from '../app/js/components/StatusContractCode';
+import statusContactCode from '../app/js/components/statusContactCode';
 
-storiesOf('StatusContractCode', module)
+storiesOf('statusContactCode', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <StatusContractCode value="0xlsakjd123123" />
+      <statusContactCode value="0xlsakjd123123" />
     ))
   );
 

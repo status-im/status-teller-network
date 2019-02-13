@@ -11,17 +11,17 @@ class SellerContactContainer extends Component {
     super(props);
     this.state = {
       username: props.seller.username,
-      statusContractCode: props.seller.statusContractCode
+      statusContactCode: props.seller.statusContactCode
     };
     props.footer.enableNext();
     props.footer.onPageChange(() => {
-      props.setContactInfo({username: this.state.username, statusContractCode: this.state.statusContractCode});
-      props.addSeller({...this.props.seller, username: this.state.username, statusContractCode: this.state.statusContractCode});
+      props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
+      props.addSeller({...this.props.seller, username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
   }
 
-  changeStatusContractCode = (statusContractCode) => {
-    this.setState({statusContractCode});
+  changestatusContactCode = (statusContactCode) => {
+    this.setState({statusContactCode});
   };
 
   changeUsername = (username) => {
@@ -30,9 +30,9 @@ class SellerContactContainer extends Component {
 
   render() {
     return (
-      <ContactForm statusContractCode={this.state.statusContractCode} 
+      <ContactForm statusContactCode={this.state.statusContactCode} 
                    username={this.state.username}
-                   changeStatusContractCode={this.changeStatusContractCode}
+                   changestatusContactCode={this.changestatusContactCode}
                    changeUsername={this.changeUsername}/>
     );
   }

@@ -95,7 +95,7 @@
     "address": "Address:",
     "error": "Error getting seller list:"
   },
-  "statusContractCode": {
+  "statusContactCode": {
     "title": "Status contact code",
     "edit": "Edit"
   },
