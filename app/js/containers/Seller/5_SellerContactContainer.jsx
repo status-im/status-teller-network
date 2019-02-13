@@ -16,7 +16,7 @@ class SellerContactContainer extends Component {
     props.footer.enableNext();
     props.footer.onPageChange(() => {
       props.setContactInfo({username: this.state.username, statusContractCode: this.state.statusContractCode});
-      props.addSeller(this.props.seller);
+      props.addSeller({...this.props.seller, username: this.state.username, statusContractCode: this.state.statusContractCode});
     });
   }
 
