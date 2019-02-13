@@ -3,12 +3,13 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import SellerLicenseInfo from '../app/js/components/Seller/SellerLicenseInfo';
+import StatusContactCode from '../app/js/components/StatusContactCode';
 
-storiesOf('SellerLicenseInfo', module)
+storiesOf('StatusContactCode', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <SellerLicenseInfo />
+      <StatusContactCode value="0xlsakjd123123" />
     ))
   );
+

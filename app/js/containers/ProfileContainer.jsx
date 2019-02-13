@@ -9,7 +9,7 @@ import ProfileInformation from '../components/ProfileInformation';
 import Reputation from '../components/Reputation';
 import Trades from '../components/Trades';
 import Offers from '../components/Offers';
-import StatusContractCode from '../components/StatusContractCode';
+import StatusContactCode from '../components/StatusContactCode';
 
 class ProfileContainer extends Component {
   componentDidMount() {
@@ -23,8 +23,8 @@ class ProfileContainer extends Component {
         <ProfileInformation address={profile.address} username={profile.username} />
         <Reputation reputation={profile.reputation}/>
         <Trades trades={profile.trades}/>
-        <Offers offers={profile.offers} />
-        <StatusContractCode value={profile.statusContractCode} />
+        <Offers offers={profile.offers} location={profile.location} />
+        <StatusContactCode value={profile.statusContactCode} />
       </Fragment>
     );
   }

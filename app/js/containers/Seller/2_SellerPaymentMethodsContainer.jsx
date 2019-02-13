@@ -1,21 +1,31 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
-import seller from "../../features/seller";
 import {connect} from "react-redux";
+
+import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
+import newSeller from "../../features/newSeller";
 
 const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 
-class SellerPaymentMethodContainer extends Component {
+class SellerPaymentMethodsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedMethods: props.paymentMethods
+      selectedMethods: props.seller.paymentMethods,
+      ready: false
     };
-    this.validate(props.paymentMethods);
+    this.validate(props.seller.paymentMethods);
     props.footer.onPageChange(() => {
       props.setPaymentMethods(this.state.selectedMethods);
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.seller.location) {
+      this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
+    }
   }
 
   validate(selectedMethods) {
@@ -38,6 +48,10 @@ class SellerPaymentMethodContainer extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
+    }
+
     return (
       <SellerPaymentMethod methods={methods} togglePaymentMethod={this.togglePaymentMethod}
                            selectedMethods={this.state.selectedMethods}/>
@@ -45,20 +59,20 @@ class SellerPaymentMethodContainer extends Component {
   }
 }
 
-SellerPaymentMethodContainer.propTypes = {
+SellerPaymentMethodsContainer.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
-  paymentMethods: PropTypes.array,
+  seller: PropTypes.object,
   setPaymentMethods: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  paymentMethods: seller.selectors.paymentMethods(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setPaymentMethods: seller.actions.setPaymentMethods
+    setPaymentMethods: newSeller.actions.setPaymentMethods
   }
-)(SellerPaymentMethodContainer);
+)(SellerPaymentMethodsContainer);

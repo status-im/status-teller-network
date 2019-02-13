@@ -9,15 +9,14 @@ storiesOf('Offers', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <Offers offers={
+      <Offers location="London" offers={
         [
           {
-            from: 'ETH',
-            to: 'EUR',
-            type: 'Selling',
-            location: 'Berlin',
-            paymentMethod: 'Credit Card',
-            rate: '1.5% above Bitfinex'
+            asset: '0x0',
+            currency: 'EUR',
+            paymentMethods: ['Credit Card'],
+            margin: 1,
+            marketType: 1
           }
         ]
       } />

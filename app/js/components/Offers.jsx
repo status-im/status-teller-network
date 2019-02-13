@@ -11,30 +11,30 @@ class Offers extends Component {
     return this.props.offers.map((offer, index) => (
       <Card key={index} className="mb-2">
         <CardHeader>
-          {offer.from}
+          {offer.asset}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
           <FontAwesomeIcon icon={faEuroSign} className="mr-1"/>
-          {offer.to}
+          {offer.currency}
         </CardHeader>
         <CardBody>
           <Row>
             <dl className="col-6">
               <dt>{t('offers.type')}</dt>
-              <dd>{offer.type}</dd>
+              <dd></dd>
             </dl>
             <dl className="col-6">
               <dt>{t('offers.paymentMethods')}</dt>
-              <dd>{offer.paymentMethod}</dd>
+              <dd>{offer.paymentMethods}</dd>
             </dl>
           </Row>
           <Row>
             <dl className="col-6">
               <dt>{t('offers.location')}</dt>
-              <dd>{offer.location}</dd>
+              <dd>{this.props.location}</dd>
             </dl>
             <dl className="col-6">
               <dt>{t('offers.rate')}</dt>
-              <dd>{offer.rate}</dd>
+              <dd>{offer.margin} - {offer.marketType}</dd>
             </dl>
           </Row>
         </CardBody>
@@ -68,6 +68,7 @@ class Offers extends Component {
 
 Offers.propTypes = {
   t: PropTypes.func,
+  location: PropTypes.string,
   offers: PropTypes.array
 };
 

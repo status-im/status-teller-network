@@ -6,14 +6,14 @@ import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode } from "@fortawesome/free-solid-svg-icons";
 
-class StatusContractCode extends Component {
+class StatusContactCode extends Component {
   render() {
     const t = this.props.t;
     return (
       <Row className="mt-4">
         <Col xs="12">
-          <span className="font-weight-bold h5">{t('statusContractCode.title')}</span>
-          <Link to="edit-status-contract-code" className="float-right">{t('statusContractCode.edit')}</Link>
+          <span className="font-weight-bold h5">{t('statusContactCode.title')}</span>
+          <Link to="edit-status-contract-code" className="float-right">{t('statusContactCode.edit')}</Link>
         </Col>
         <Col xs="10" className="pr-0">
           <Card body className="rounded-0">
@@ -30,9 +30,9 @@ class StatusContractCode extends Component {
   }
 }
 
-StatusContractCode.propTypes = {
+StatusContactCode.propTypes = {
   t: PropTypes.func,
   value: PropTypes.string
 };
 
-export default withNamespaces()(StatusContractCode);
+export default withNamespaces()(StatusContactCode);

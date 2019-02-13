@@ -17,7 +17,7 @@ contract MetadataStore is Ownable {
         address owner,
         uint256 offerId,
         address asset,
-        address statusContractCode,
+        address statusContactCode,
         string location,
         string currency,
         string username,
@@ -31,7 +31,7 @@ contract MetadataStore is Ownable {
         address owner,
         uint256 id,
         address asset,
-        address statusContractCode,
+        address statusContactCode,
         string location,
         string currency,
         string username,
@@ -41,7 +41,7 @@ contract MetadataStore is Ownable {
     );
 
     struct Seller {
-        address statusContractCode;
+        address statusContactCode;
         string location;
         string username;
     }
@@ -76,7 +76,7 @@ contract MetadataStore is Ownable {
     /**
     * @dev Add a new offer with a new seller if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContractCode The address of the status contract
+    * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
     * @param _currency The currency the seller want to receive (USD, EUR...)
     * @param _username The username of the seller
@@ -86,7 +86,7 @@ contract MetadataStore is Ownable {
     */
     function add(
         address _asset,
-        address _statusContractCode,
+        address _statusContactCode,
         string memory _location,
         string memory _currency,
         string memory _username,
@@ -98,13 +98,13 @@ contract MetadataStore is Ownable {
         require(_margin <= 100, "Margin too high");
 
         if (!sellerWhitelist[msg.sender]) {
-            Seller memory seller = Seller(_statusContractCode, _location, _username);
+            Seller memory seller = Seller(_statusContactCode, _location, _username);
             uint256 sellerId = sellers.push(seller) - 1;
             addressToSeller[msg.sender] = sellerId;
             sellerWhitelist[msg.sender] = true;
         } else {
             Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
-            tmpSeller.statusContractCode = _statusContractCode;
+            tmpSeller.statusContactCode = _statusContactCode;
             tmpSeller.location = _location;
             tmpSeller.username = _username;
         }
@@ -115,14 +115,14 @@ contract MetadataStore is Ownable {
         addressToOffers[msg.sender].push(offerId);
 
         emit Added(
-            msg.sender, offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin, OfferStatus.Open
+            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin, OfferStatus.Open
         );
     }
 
     /**
     * @dev Update the seller
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContractCode The address of the status contract
+    * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
     * @param _currency The currency the seller want to receive (USD, EUR...)
     * @param _username The username of the seller
@@ -133,7 +133,7 @@ contract MetadataStore is Ownable {
     function update(
         uint256 _offerId,
         address _asset,
-        address _statusContractCode,
+        address _statusContactCode,
         string memory _location,
         string memory _currency,
         string memory _username,
@@ -146,7 +146,7 @@ contract MetadataStore is Ownable {
         require(_margin <= 100, "Margin too high");
 
         Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
-        tmpSeller.statusContractCode = _statusContractCode;
+        tmpSeller.statusContactCode = _statusContactCode;
         tmpSeller.location = _location;
         tmpSeller.username = _username;
         
@@ -156,7 +156,7 @@ contract MetadataStore is Ownable {
         offers[_offerId].marketType = _marketType;
         offers[_offerId].margin = _margin;
 
-        emit Updated(msg.sender, _offerId, _asset, _statusContractCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        emit Updated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**

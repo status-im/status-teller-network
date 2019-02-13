@@ -9,7 +9,7 @@ import escrow from './features/escrow';
 import embarkjs from './features/embarkjs';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
-import seller from './features/seller';
+import newSeller from './features/newSeller';
 import buyer from './features/buyer';
 import metadata from './features/metadata';
 import balances from './features/balances';
@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
   escrow: escrow.reducer,
   signature: signature.reducer,
   arbitration: arbitration.reducer,
-  seller: seller.reducer,
+  newSeller: newSeller.reducer,
   buyer: buyer.reducer,
   metadata: metadata.reducer,
   balances: balances.reducer

@@ -22,11 +22,15 @@ class Wizard extends Component {
   canNext = () => {
     let currentStep = this.state.currentStep;
     const stepsLength = this.props.steps.length;
-    return currentStep < stepsLength - 1;
+    return currentStep <= stepsLength - 1;
   };
 
+  lastStep() {
+    return this.state.currentStep === this.props.steps.length - 1;
+  }
+
   next = () => {
-    if (!this.canNext()) {
+    if (!this.canNext() || this.lastStep()) {
       return;
     }
 

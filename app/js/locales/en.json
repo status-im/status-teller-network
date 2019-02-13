@@ -95,7 +95,7 @@
     "address": "Address:",
     "error": "Error getting seller list:"
   },
-  "statusContractCode": {
+  "statusContactCode": {
     "title": "Status contact code",
     "edit": "Edit"
   },
@@ -125,7 +125,7 @@
     "noOpen": "No open offers",
     "type": "Type",
     "paymentMethods": "Payment methods",
-    "Location": "Location",
+    "location": "Location",
     "rate": "Rate"
   },
   "signatureForm": {

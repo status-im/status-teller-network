@@ -5,7 +5,7 @@ import FiatSelectorForm from "./FiatSelectorForm";
 
 describe('FiatSelectorForm', () => {
   it('should render correctly', () => {
-    const component = shallow(<FiatSelectorForm value={{}} 
+    const component = shallow(<FiatSelectorForm value={""} 
                                                 currencies={[]}
                                                 changeFiat={() => undefined}/>);
   

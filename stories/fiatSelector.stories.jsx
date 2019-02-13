@@ -19,12 +19,12 @@ storiesOf('Fiat selector', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <FiatSelectorForm changeFiat={action('change-fiat')} currencies={CURRENCY_DATA} value={{}}/>
+      <FiatSelectorForm changeCurrency={action('change-currency')} currencies={CURRENCY_DATA} value={""}/>
     ))
   )
   .add(
     "Selected",
     withInfo({inline: true})(() => (
-      <FiatSelectorForm changeFiat={action('change-fiat')} currencies={CURRENCY_DATA} value={CURRENCY_DATA[1]}/>
+      <FiatSelectorForm changeCurrency={action('change-currency')} currencies={CURRENCY_DATA} value={CURRENCY_DATA[1].id}/>
     ))
   );

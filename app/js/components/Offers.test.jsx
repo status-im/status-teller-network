@@ -5,15 +5,14 @@ import Offers from "./Offers";
 
 describe('Offers', () => {
   it('should render correctly', () => {
-    const component = shallow(<Offers offers={
+    const component = shallow(<Offers location="London" offers={
       [
         {
-          from: 'ETH',
-          to: 'EUR',
-          type: 'Selling',
-          location: 'Berlin',
-          paymentMethod: 'Credit Card',
-          rate: '1.5% above Bitfinex'
+          asset: '0x0',
+          currency: 'EUR',
+          paymentMethods: ['Credit Card'],
+          margin: 1,
+          marketType: 1
         }
       ]
     } />);

@@ -1,19 +1,29 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import SellerPosition from '../../components/Seller/SellerPosition';
 import {connect} from "react-redux";
-import seller from "../../features/seller";
 
-class SellerPositionContainer extends Component {
+import SellerPosition from '../../components/Seller/SellerPosition';
+import newSeller from "../../features/newSeller";
+
+class SellerLocationContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: props.location
+      location: props.seller.location,
+      ready: false
     };
-    this.validate(props.location);
+    this.validate(props.seller.location);
     this.props.footer.onPageChange(() => {
       this.props.setLocation(this.state.location);
     });
+  }
+
+  componentDidMount() {
+    if (!this.props.seller.asset) {
+      this.props.wizard.previous();
+    } else {
+      this.setState({ready: true});
+    }
   }
 
   validate(location) {
@@ -30,6 +40,9 @@ class SellerPositionContainer extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Fragment></Fragment>;
+    }
     return (
       <Fragment>
         <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>
@@ -38,19 +51,20 @@ class SellerPositionContainer extends Component {
   }
 }
 
-SellerPositionContainer.propTypes = {
-  location: PropTypes.string,
+SellerLocationContainer.propTypes = {
+  wizard: PropTypes.object,
+  seller: PropTypes.object,
   setLocation: PropTypes.func,
   footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  location: seller.selectors.location(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setLocation: seller.actions.setLocation
+    setLocation: newSeller.actions.setLocation
   }
-)(SellerPositionContainer);
+)(SellerLocationContainer);

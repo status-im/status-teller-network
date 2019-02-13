@@ -7,20 +7,26 @@ import {withNamespaces} from 'react-i18next';
 class FiatSelectorForm extends Component {
   onInputChange = (text) => {
     const symbol = this.props.currencies.find(x => x.label === text);
-    this.props.changeFiat(symbol);
+    if (symbol) {
+      this.props.changeCurrency(symbol.id);
+    }
+    
   };
 
   onChange = (items) => {
     if(items.length){
       const item = items[0];
-      this.props.changeFiat(item);
+      this.props.changeCurrency(item.id);
     }
   };
 
   render() {
     const {t, value} = this.props;
-
-    const defaultSelectedValue = value.id ? [value] : [];
+    let defaultSelectedValue = [];
+    if (value) {
+      const currency = this.props.currencies.find(x => x.id === value);
+      defaultSelectedValue.push(currency);
+    }
 
     return (
       <Fragment>
@@ -35,7 +41,7 @@ class FiatSelectorForm extends Component {
             emptyLabel={t("fiatSelectorForm.emptyLabel")}
             defaultSelected={defaultSelectedValue}
           />
-          {!this.props.value.id && <p className="text-info">{t("fiatSelectorForm.selectValid")}</p>}
+          {!this.props.value && <p className="text-info">{t("fiatSelectorForm.selectValid")}</p>}
         </FormGroup>
       </Fragment>
     );
@@ -44,9 +50,9 @@ class FiatSelectorForm extends Component {
 
 FiatSelectorForm.propTypes = {
   t: PropTypes.func,
-  value: PropTypes.object,
+  value: PropTypes.string,
   currencies: PropTypes.array,
-  changeFiat: PropTypes.func
+  changeCurrency: PropTypes.func
 };
 
 export default withNamespaces()(FiatSelectorForm);

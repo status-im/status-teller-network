@@ -1,8 +1,12 @@
 import MetadataStore from 'Embark/contracts/MetadataStore';
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
-  LOAD, LOAD_SELLER, LOAD_SELLER_FAILED, LOAD_SELLER_SUCCEEDED, LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS
+  LOAD, LOAD_SELLER, LOAD_SELLER_FAILED, LOAD_SELLER_SUCCEEDED,
+  LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
+  ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS
 } from './constants';
+
+import {doTransaction} from '../utils';
 
 export function *loadSeller({address}) {
   try {
@@ -24,10 +28,9 @@ export function *onLoadSeller() {
 }
 
 export function *loadOffers({address}) {
-  
   try {
     const offerIds = yield MetadataStore.methods.getOfferIds(address).call();
-    const offers = yield all(offerIds.map((id) => MetadataStore.methods.sellers(id).call()));
+    const offers = yield all(offerIds.map((id) => MetadataStore.methods.offers(id).call()));
     yield put({type: LOAD_OFFERS_SUCCEEDED, offers: offers, address: address});
   } catch (error) {
     console.error(error);
@@ -50,4 +53,8 @@ export function *onLoad() {
   yield takeEvery(LOAD, load);
 }
 
-export default [fork(onLoad), fork(onLoadSeller), fork(onLoadOffers)];
+export function *onAddOffer() {
+  yield takeEvery(ADD_OFFER, doTransaction.bind(null, ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED));
+}
+
+export default [fork(onLoad), fork(onLoadSeller), fork(onLoadOffers), fork(onAddOffer)];

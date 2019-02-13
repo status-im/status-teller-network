@@ -48,7 +48,7 @@ exports[`Offers should render correctly 1`] = `
       <CardHeader
         tag="div"
       >
-        ETH
+        0x0
         <FontAwesomeIcon
           border={false}
           className="mx-4"
@@ -121,9 +121,7 @@ exports[`Offers should render correctly 1`] = `
             className="col-6"
           >
             <dt />
-            <dd>
-              Selling
-            </dd>
+            <dd />
           </dl>
           <dl
             className="col-6"
@@ -142,7 +140,7 @@ exports[`Offers should render correctly 1`] = `
           >
             <dt />
             <dd>
-              Berlin
+              London
             </dd>
           </dl>
           <dl
@@ -150,7 +148,9 @@ exports[`Offers should render correctly 1`] = `
           >
             <dt />
             <dd>
-              1.5% above Bitfinex
+              1
+               - 
+              1
             </dd>
           </dl>
         </Row>

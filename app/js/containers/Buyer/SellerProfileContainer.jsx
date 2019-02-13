@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SellerInformation from '../../components/SellerInformation';
 import SellerOfferList from '../../components/Buyer/SellerOfferList';
 import Map from '../../components/Buyer/Map';
-import StatusContractCode from '../../components/StatusContractCode';
+import StatusContactCode from '../../components/StatusContactCode';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import buyer from "../../features/buyer";
@@ -24,7 +24,6 @@ class ProfileContainer extends Component {
   }
 
   offerClick = (offerId) => {
-    console.log('Gogogo', offerId);
     this.props.setOffer(offerId);
     this.props.history.push('/buy/contact');
   };
@@ -37,7 +36,7 @@ class ProfileContainer extends Component {
         <p className="text-muted mt-2 mb-0">Saalestraße 39A,</p>
         <p className="text-muted">12055 Berlin</p>
         <SellerOfferList offers={FAKE_OFFERS} onClick={this.offerClick}/>
-        <StatusContractCode />
+        <StatusContactCode />
       </div>
     );
   }

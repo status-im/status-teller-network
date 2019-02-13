@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SellerBuyLicense should render correctly when disabled 1`] = `
+exports[`LicenseBuy should render correctly when disabled 1`] = `
 <Row
   className="mt-5"
   tag="div"
@@ -29,7 +29,7 @@ exports[`SellerBuyLicense should render correctly when disabled 1`] = `
 </Row>
 `;
 
-exports[`SellerBuyLicense should render correctly when enabled 1`] = `
+exports[`LicenseBuy should render correctly when enabled 1`] = `
 <Row
   className="mt-5"
   tag="div"

@@ -3,7 +3,7 @@ import {Row, Col, Card, CardBody} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 
-class SellerLicenseInfo extends Component {
+class LicenseInfo extends Component {
   render() {
     const t = this.props.t;
     return (
@@ -30,8 +30,8 @@ class SellerLicenseInfo extends Component {
   }
 }
 
-SellerLicenseInfo.propTypes = {
+LicenseInfo.propTypes = {
   t: PropTypes.func
 };
 
-export default withNamespaces()(SellerLicenseInfo);
+export default withNamespaces()(LicenseInfo);

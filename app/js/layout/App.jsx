@@ -18,12 +18,12 @@ import OfferTradeContainer from '../containers/Buyer/OfferTradeContainer';
 import BuyerContactContainer from '../containers/Buyer/BuyerContactContainer';
 
 // Seller
-import SellerStartContainer from '../containers/Seller/SellerStartContainer';
-import SellerPositionContainer from '../containers/Seller/SellerPositionContainer';
-import SellerPaymentMethodContainer from '../containers/Seller/SellerPaymentMethodContainer';
-import SellerFiatContainer from '../containers/Seller/SellerFiatContainer';
-import SellerMarginContainer from '../containers/Seller/SellerMarginContainer';
-import SellerContactContainer from '../containers/Seller/SellerContactContainer';
+import SellerAssetContainer from '../containers/Seller/0_SellerAssetContainer';
+import SellerLocationContainer from '../containers/Seller/1_SellerLocationContainer';
+import SellerPaymentMethodsContainer from '../containers/Seller/2_SellerPaymentMethodsContainer';
+import SellerCurrencyContainer from '../containers/Seller/3_SellerCurrencyContainer';
+import SellerMarginContainer from '../containers/Seller/4_SellerMarginContainer';
+import SellerContactContainer from '../containers/Seller/5_SellerContactContainer';
 
 import ProfileContainer from '../containers/ProfileContainer';
 import LicenseContainer from '../containers/LicenseContainer';
@@ -70,10 +70,10 @@ class App extends Component {
 
           <Route exact path="/license" component={LicenseContainer}/>
           <Wizard path="/sell/" steps={[
-            {path: '/sell/start', component: SellerStartContainer},
-            {path: '/sell/location', component: SellerPositionContainer},
-            {path: '/sell/payment-methods', component: SellerPaymentMethodContainer},
-            {path: '/sell/fiat-selector', component: SellerFiatContainer},
+            {path: '/sell/asset', component: SellerAssetContainer},
+            {path: '/sell/location', component: SellerLocationContainer},
+            {path: '/sell/payment-methods', component: SellerPaymentMethodsContainer},
+            {path: '/sell/currency', component: SellerCurrencyContainer},
             {path: '/sell/margin', component: SellerMarginContainer},
             {path: '/sell/contact', component: SellerContactContainer}
           ]}/>

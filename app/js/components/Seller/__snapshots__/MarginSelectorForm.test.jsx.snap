@@ -36,6 +36,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
             [Function],
           ]
         }
+        value={0}
       />
       <InputGroupAddon
         addonType="append"
@@ -58,10 +59,11 @@ exports[`MarginSelectorForm should render correctly 1`] = `
       tag="div"
     >
       <MarketButton
+        active={true}
         onClick={[Function]}
       />
       <MarketButton
-        active={true}
+        active={false}
         onClick={[Function]}
       />
     </ButtonGroup>
@@ -75,8 +77,5 @@ exports[`MarginSelectorForm should render correctly 1`] = `
   <div>
     TODO SNT
   </div>
-  <p
-    className="text-info"
-  />
 </Form(t)>
 `;

@@ -17,9 +17,11 @@ class SellerAssets extends Component {
         <h3>Assets in your Wallet</h3>
 
         <ButtonGroup vertical className="w-100">
-          {this.props.assets.map((asset, idx) => (
-            <CheckButton active={this.props.selectedAsset === idx} key={'asset-' + idx} onClick={(_e) => this.selectAsset(idx)}>
-              {asset}
+          {Object.keys(this.props.availableAssets).map((name) => (
+            <CheckButton active={this.props.selectedAsset === this.props.availableAssets[name]} 
+                         key={`asset-${name}`} 
+                         onClick={(_e) => this.selectAsset(this.props.availableAssets[name])}>
+              {name}
             </CheckButton>
           ))}
         </ButtonGroup>
@@ -34,8 +36,8 @@ class SellerAssets extends Component {
 
 SellerAssets.propTypes = {
   selectAsset: PropTypes.func,
-  selectedAsset: PropTypes.number,
-  assets: PropTypes.array
+  selectedAsset: PropTypes.string,
+  availableAssets: PropTypes.object
 };
 
 
