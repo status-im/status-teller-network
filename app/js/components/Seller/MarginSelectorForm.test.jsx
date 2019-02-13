@@ -5,7 +5,11 @@ import MarginSelectorForm from "./MarginSelectorForm";
 
 describe('MarginSelectorForm', () => {
   it('should render correctly', () => {
-    const component = shallow(<MarginSelectorForm margin={{}} fiat={{}} onMarginChange={() => undefined}/>);
+    const component = shallow(<MarginSelectorForm margin={0}
+                                                  margin={0}
+                                                  currency={""}
+                                                  onMarketTypeChange={() => undefined}
+                                                  onMarginChange={() => undefined}/>);
   
     expect(component).toMatchSnapshot();
   });

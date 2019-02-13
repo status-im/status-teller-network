@@ -76,7 +76,7 @@ contract MetadataStore is Ownable {
     /**
     * @dev Add a new offer with a new seller if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContactCode The address of the status contract
+    * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
     * @param _currency The currency the seller want to receive (USD, EUR...)
     * @param _username The username of the seller
@@ -122,7 +122,7 @@ contract MetadataStore is Ownable {
     /**
     * @dev Update the seller
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContactCode The address of the status contract
+    * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
     * @param _currency The currency the seller want to receive (USD, EUR...)
     * @param _username The username of the seller

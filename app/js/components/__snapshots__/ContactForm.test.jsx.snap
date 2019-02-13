@@ -34,7 +34,6 @@ exports[`SellerContact should render correctly 1`] = `
             [Function],
           ]
         }
-        value="nickname"
       />
     </FormGroup>
     <FormGroup

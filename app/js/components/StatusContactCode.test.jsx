@@ -1,11 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import statusContactCode from "./statusContactCode";
+import StatusContactCode from "./StatusContactCode";
 
-describe('statusContactCodeades', () => {
+describe('StatusContactCode', () => {
   it('should render correctly', () => {
-    const component = shallow(<statusContactCode value={"0xkajshdhkjashd"} />);
+    const component = shallow(<StatusContactCode value={"0xkajshdhkjashd"} />);
   
     expect(component).toMatchSnapshot();
   });
