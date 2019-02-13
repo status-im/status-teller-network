@@ -23,7 +23,7 @@ class ProfileContainer extends Component {
         <ProfileInformation address={profile.address} username={profile.username} />
         <Reputation reputation={profile.reputation}/>
         <Trades trades={profile.trades}/>
-        <Offers offers={profile.offers} />
+        <Offers offers={profile.offers} location={profile.location} />
         <StatusContactCode value={profile.statusContactCode} />
       </Fragment>
     );

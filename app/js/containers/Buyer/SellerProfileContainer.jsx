@@ -24,7 +24,6 @@ class ProfileContainer extends Component {
   }
 
   offerClick = (offerId) => {
-    console.log('Gogogo', offerId);
     this.props.setOffer(offerId);
     this.props.history.push('/buy/contact');
   };

@@ -125,7 +125,7 @@
     "noOpen": "No open offers",
     "type": "Type",
     "paymentMethods": "Payment methods",
-    "Location": "Location",
+    "location": "Location",
     "rate": "Rate"
   },
   "signatureForm": {
