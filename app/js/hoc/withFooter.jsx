@@ -12,11 +12,16 @@ const Footer = (props) => {
     {props.wizard.canPrevious() &&
     <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
     {props.wizard.canNext() &&
-    <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>Next &gt;</Button>}
+    <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>{props.nextLabel} &gt;</Button>}
   </footer>);
 };
 
+Footer.defaultProps = {
+  nextLabel: 'Next'
+};
+
 Footer.propTypes = {
+  nextLabel: PropTypes.string,
   wizard: PropTypes.object,
   nextEnabled: PropTypes.bool,
   previous: PropTypes.func,
@@ -24,7 +29,7 @@ Footer.propTypes = {
   visible: PropTypes.bool
 };
 
-const withFooterHoC = (WrappedComponent, wizard) => {
+const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
   class FooterHoC extends Component {
     constructor(props) {
       super(props);
@@ -84,8 +89,12 @@ const withFooterHoC = (WrappedComponent, wizard) => {
       return (
         <div className="wizard-container">
           <WrappedComponent wizard={wizard} footer={controller}/>
-          <Footer wizard={wizard} next={this.next} previous={this.previous}
-                  nextEnabled={this.state.nextEnabled} visible={this.state.visible}/>
+          <Footer wizard={wizard}
+                  next={this.next}
+                  previous={this.previous}
+                  nextEnabled={this.state.nextEnabled}
+                  nextLabel={nextLabel}
+                  visible={this.state.visible}/>
         </div>
       );
     }
