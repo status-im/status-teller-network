@@ -40,7 +40,7 @@ class SellerContactContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Loading/>;
+      return <Loading page/>;
     }
 
     return (

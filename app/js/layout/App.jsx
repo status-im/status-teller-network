@@ -58,7 +58,7 @@ class App extends Component {
 
   render() {
     if (!this.props.isReady) {
-      return <Loading/>;
+      return <Loading initial/>;
     }
 
     return (

@@ -42,7 +42,7 @@ class SellerLocationContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Loading/>;
+      return <Loading page/>;
     }
 
     return <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>;

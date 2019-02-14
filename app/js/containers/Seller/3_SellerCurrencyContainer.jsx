@@ -57,7 +57,7 @@ class SellerCurrencyContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Loading/>;
+      return <Loading page/>;
     }
 
     return (<FiatSelectorForm value={this.state.currency}
