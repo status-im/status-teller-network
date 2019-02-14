@@ -1,8 +1,9 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import ContactForm from '../../components/ContactForm';
+import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 import metadata from "../../features/metadata";
 
@@ -39,7 +40,7 @@ class SellerContactContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Fragment></Fragment>;
+      return <Loading/>;
     }
 
     return (

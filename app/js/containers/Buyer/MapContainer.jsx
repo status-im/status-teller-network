@@ -46,7 +46,7 @@ class MapContainer extends Component {
     }
 
     if (!coords || !coords.latitude) {
-      return <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{t('map.loading')}</p>;
+      return <p><FontAwesomeIcon icon={faSpinner} spin/>{t('map.loading')}</p>;
     }
 
     return (

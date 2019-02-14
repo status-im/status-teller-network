@@ -1,8 +1,9 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
+import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 
 const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
@@ -49,7 +50,7 @@ class SellerPaymentMethodsContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Fragment></Fragment>;
+      return <Loading/>;
     }
 
     return (

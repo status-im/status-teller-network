@@ -5,15 +5,6 @@
   border-color: $danger;
 }
 
-@keyframes spinner {
-  to {transform: rotate(360deg);}
-}
-
-.loading{
-  animation: spinner 1s linear infinite;
-  margin-right: 8px;
-}
-
 .input-group-append {
   height: calc(2.25rem + 2px);
 }
