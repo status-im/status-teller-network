@@ -15,7 +15,7 @@ import YourSNTBalance from '../components/YourSNTBalance';
 class LicenseContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = { buying: false };
+    this.state = { isBuying: false };
   }
 
   componentDidMount() {
@@ -25,18 +25,18 @@ class LicenseContainer extends Component {
 
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
-      this.setState({buying: false})
+      this.setState({isBuying: false});
       return this.props.history.push('/sell');
     }
   }
 
   buyLicense = () => {
-    this.setState({buying: true});
+    this.setState({isBuying: true});
     this.props.buyLicense();
   };
 
   render() {
-    if (this.state.buying) {
+    if (this.state.isBuying) {
       return <Loading mining/>;
     }
 

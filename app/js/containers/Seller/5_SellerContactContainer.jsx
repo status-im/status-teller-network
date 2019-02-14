@@ -13,14 +13,19 @@ class SellerContactContainer extends Component {
     this.state = {
       username: props.seller.username,
       statusContactCode: props.seller.statusContactCode,
-      ready: false
+      ready: false,
+      isAddingOffer: false
     };
-    props.footer.enableNext();
+    this.validate(props.seller.username, props.seller.statusContactCode);
     props.footer.onPageChange(() => {
       props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
+    });
+    props.footer.onNext(() => {
+      this.setState({isAddingOffer: true});
       props.addOffer({...this.props.seller, username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
   }
+
 
   componentDidMount() {
     if (!this.props.seller.margin || this.props.seller.margin === 0) {
@@ -30,17 +35,30 @@ class SellerContactContainer extends Component {
     }
   }
 
+  validate(username, statusContactCode) {
+    if (username && statusContactCode) {
+      return this.props.footer.enableNext();
+    }
+    this.props.footer.disableNext();
+  }
+
   changeStatusContactCode = (statusContactCode) => {
+    this.validate(this.state.username, statusContactCode);
     this.setState({statusContactCode});
   };
 
   changeUsername = (username) => {
+    this.validate(username, this.state.statusContactCode);
     this.setState({username});
   };
 
   render() {
     if (!this.state.ready) {
       return <Loading page/>;
+    }
+
+    if (this.state.isAddingOffer) {
+      return <Loading mining/>;
     }
 
     return (
