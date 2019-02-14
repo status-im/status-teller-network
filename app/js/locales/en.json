@@ -151,7 +151,7 @@
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",
     "fee": "1 SNT fee for every transaction",
-    "stake": "Stake 10 SNT to obtain the selling license"
+    "stake": "Stake {{price}} SNT to obtain the selling license"
   },
   "yourSNTBalance": {
     "label": "Your balance"

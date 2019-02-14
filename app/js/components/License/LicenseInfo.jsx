@@ -22,7 +22,7 @@ class LicenseInfo extends Component {
 
         <Card color="primary" className="mt-5 py-4">
           <CardBody className="text-center">
-            {t('sellerLicenseInfo.stake')}
+            {t('sellerLicenseInfo.stake', {price: this.props.price})}
           </CardBody>
         </Card>
       </div>
@@ -31,7 +31,8 @@ class LicenseInfo extends Component {
 }
 
 LicenseInfo.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
+  price: PropTypes.number
 };
 
 export default withNamespaces()(LicenseInfo);
