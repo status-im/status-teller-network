@@ -1,3 +1,11 @@
 .check-button {
   text-decoration: none !important;
+  font-size: 15px;
+
+  .large {
+    font-size: 17px;
+  }
+  .small {
+    font-size: 13px;
+  }
 }

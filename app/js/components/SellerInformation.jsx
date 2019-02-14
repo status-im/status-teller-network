@@ -2,29 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import Blockies from 'react-blockies';
-import RatingIcon from './RatingIcon';
+import Reputation from "./Reputation.jsx";
 
-const ProfileInformation = ({address, name, isPositiveRating, nbTrades, type}) => (
-  <Row className="border-bottom border-top pt-2">
-    <Col xs="3">
-      <Blockies seed={address} className="rounded-circle" scale={8}/>
+const SellerInformation = ({address, name, reputation}) => (
+  <Row className="border rounded py-4 m-0 text-center shadow-sm">
+    <Col xs="12">
+      <Blockies seed={address} className="rounded-circle border" scale={8}/>
     </Col>
-    <Col xs="4">
+    <Col xs="12">
       <h4 className="font-weight-bold">{name}</h4>
-      <p className="text-muted">{type}</p>
     </Col>
-    <Col xs="5" className="v-align-center">
-      <p className="text-muted">{nbTrades} trades &bull; <RatingIcon isPositiveRating={isPositiveRating}/></p>
+    <Col xs="12">
+      <p className="text-muted">{address}</p>
+    </Col>
+    <Col xs="12">
+      <Reputation reputation={reputation}/>
     </Col>
   </Row>
 );
 
-ProfileInformation.propTypes = {
+SellerInformation.propTypes = {
   address: PropTypes.string,
   name: PropTypes.string,
-  isPositiveRating: PropTypes.bool,
-  nbTrades: PropTypes.number,
-  type: PropTypes.string
+  reputation: PropTypes.object
 };
 
-export default ProfileInformation;
+export default SellerInformation;

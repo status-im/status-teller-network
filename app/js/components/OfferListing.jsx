@@ -1,25 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
-import RatingIcon from './RatingIcon';
 import {Link} from "react-router-dom";
 import Blockies from "react-blockies";
+import Reputation from './Reputation';
 
-const OfferListing = ({positiveRatings, negativeRating, nbTrades, seller, assets, location, address = '0x0'}) => (
+const OfferListing = ({positiveRatings, negativeRating, nbTrades, seller, assets, location, address = '0x353db7d7ad524f77afdd0720b3808b0645bfcfc3'}) => (
   <Row className="offer-listing rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/buy/profile/${address}`}>
     <Col className="p-0">
-      <Row>
-        <Col xs={2}><Blockies seed={address} className="rounded-circle" scale={6}/></Col>
+      <Row className="mb-2">
+        <Col xs={2}><Blockies seed={address} className="rounded-circle" scale={5}/></Col>
         <Col xs={5}>
           <p className="seller-name m-0 font-weight-bold">{seller}</p>
-          <p className="text-secondary m-0">{location}</p>
+          <p className="text-dark m-0">{location}</p>
         </Col>
-        <Col xs={5} className="text-right">
-          <p className="text-secondary m-0 text-right">{nbTrades} trades</p>
-          <span className="rating-container">
-            <span className="bg-secondary py-1 px-2 mr-1">{positiveRatings} <RatingIcon isPositiveRating={true}/></span>
-            <span className="bg-secondary py-1 px-2">{negativeRating} <RatingIcon isPositiveRating={false}/></span>
-          </span>
+        <Col xs={5} className="text-right rating-col">
+          <p className="text-dark m-0 text-right mb-1">{nbTrades} trades</p>
+          <Reputation reputation={{upCount: positiveRatings, downCount: negativeRating}} size="s"/>
         </Col>
       </Row>
       <Row>

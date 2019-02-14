@@ -1,159 +1,177 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Trades should render correctly 1`] = `
-<Row
-  className="mt-4"
-  tag="div"
+<div
+  className="mt-3"
 >
-  <Col
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
+  <div>
+    <h3
+      className="d-inline-block"
+    />
     <span
-      className="font-weight-bold h5"
-    />
-    <Link
       className="float-right"
-      replace={false}
-      to="/buy"
-    />
-  </Col>
-  <Col
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
-    <Card
-      body={true}
-      className="py-0"
-      tag="div"
     >
-      <div
-        className="d-flex my-1"
-        key="0"
+      <Link
+        className="float-right"
+        replace={false}
+        to="/buy"
       >
-        <span
-          className="flex-fill align-self-center"
-        >
-          <Identicon
-            className="align-middle rounded-circle"
-            seed="address"
-          />
-          <span
-            className="ml-2"
-          >
-            Name
-          </span>
-        </span>
-        <span
-          className="flex-fill align-self-center"
-        >
-          2
-           ETH
-        </span>
-        <span
-          className="flex-fill align-self-center text-right text-success"
-        >
-          <FontAwesomeIcon
-            border={false}
-            className="mr-2"
-            fixedWidth={false}
-            flip={null}
-            icon={
-              Object {
-                "icon": Array [
-                  512,
-                  512,
-                  Array [],
-                  "f111",
-                  "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z",
-                ],
-                "iconName": "circle",
-                "prefix": "fas",
-              }
+         
+        <FontAwesomeIcon
+          border={false}
+          className=""
+          fixedWidth={false}
+          flip={null}
+          icon={
+            Object {
+              "icon": Array [
+                448,
+                512,
+                Array [],
+                "f061",
+                "M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z",
+              ],
+              "iconName": "arrow-right",
+              "prefix": "fas",
             }
-            inverse={false}
-            listItem={false}
-            mask={null}
-            pull={null}
-            pulse={false}
-            rotation={null}
-            size={null}
-            spin={false}
-            symbol={false}
-            title=""
-            transform={null}
-          />
-          open
+          }
+          inverse={false}
+          listItem={false}
+          mask={null}
+          pull={null}
+          pulse={false}
+          rotation={null}
+          size={null}
+          spin={false}
+          symbol={false}
+          title=""
+          transform={null}
+        />
+      </Link>
+    </span>
+  </div>
+  <Card
+    body={true}
+    className="py-2 px-3 shadow-sm"
+    tag="div"
+  >
+    <div
+      className="d-flex my-1"
+      key="0"
+    >
+      <span
+        className="flex-fill align-self-center"
+      >
+        <Identicon
+          className="align-middle rounded-circle"
+          seed="address"
+        />
+        <span
+          className="ml-2"
+        >
+          Name
         </span>
-      </div>
-    </Card>
-  </Col>
-</Row>
+      </span>
+      <span
+        className="flex-fill align-self-center"
+      >
+        2
+         ETH
+      </span>
+      <span
+        className="flex-fill align-self-center text-right text-success"
+      >
+        <FontAwesomeIcon
+          border={false}
+          className="mr-2"
+          fixedWidth={false}
+          flip={null}
+          icon={
+            Object {
+              "icon": Array [
+                512,
+                512,
+                Array [],
+                "f111",
+                "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z",
+              ],
+              "iconName": "circle",
+              "prefix": "fas",
+            }
+          }
+          inverse={false}
+          listItem={false}
+          mask={null}
+          pull={null}
+          pulse={false}
+          rotation={null}
+          size={null}
+          spin={false}
+          symbol={false}
+          title=""
+          transform={null}
+        />
+        open
+      </span>
+    </div>
+  </Card>
+</div>
 `;
 
 exports[`Trades should render when empty 1`] = `
-<Row
-  className="mt-4"
-  tag="div"
+<div
+  className="mt-3"
 >
-  <Col
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
+  <div>
+    <h3
+      className="d-inline-block"
+    />
     <span
-      className="font-weight-bold h5"
-    />
-    <Link
       className="float-right"
-      replace={false}
-      to="/buy"
-    />
-  </Col>
-  <Col
+    >
+      <Link
+        className="float-right"
+        replace={false}
+        to="/buy"
+      >
+         
+        <FontAwesomeIcon
+          border={false}
+          className=""
+          fixedWidth={false}
+          flip={null}
+          icon={
+            Object {
+              "icon": Array [
+                448,
+                512,
+                Array [],
+                "f061",
+                "M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z",
+              ],
+              "iconName": "arrow-right",
+              "prefix": "fas",
+            }
+          }
+          inverse={false}
+          listItem={false}
+          mask={null}
+          pull={null}
+          pulse={false}
+          rotation={null}
+          size={null}
+          spin={false}
+          symbol={false}
+          title=""
+          transform={null}
+        />
+      </Link>
+    </span>
+  </div>
+  <Card
+    body={true}
+    className="text-center"
     tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
-    <Card
-      body={true}
-      className="text-center"
-      tag="div"
-    />
-  </Col>
-</Row>
+  />
+</div>
 `;

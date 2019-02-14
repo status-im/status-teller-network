@@ -77,7 +77,7 @@ class SorterFilter extends Component {
       <FilterMenu open={this.state.open} close={this.toggleMenu}/>
       <div className="sorter-select font-weight-bold px-3 py-2 bg-secondary rounded v-align-center my-3"
            onClick={this.toggleMenu}>
-        <span className="sort-icon bg-dark text-white rounded-circle d-inline-block text-center p-2 mr-2">
+        <span className="sort-icon text-white rounded-circle d-inline-block text-center p-2 mr-2">
           <FontAwesomeIcon icon={faSortAmountDown}/>
         </span> Sort and filter <span className="float-right pt-1"><FontAwesomeIcon size="2x"
                                                                                     icon={faAngleDown}/></span>

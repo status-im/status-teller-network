@@ -5,8 +5,7 @@ import { connect } from 'react-redux';
 import metadata from '../features/metadata';
 import embarkjs from '../features/embarkjs';
 
-import ProfileInformation from '../components/ProfileInformation';
-import Reputation from '../components/Reputation';
+import SellerInformation from '../components/SellerInformation';
 import Trades from '../components/Trades';
 import Offers from '../components/Offers';
 import StatusContactCode from '../components/StatusContactCode';
@@ -20,8 +19,7 @@ class ProfileContainer extends Component {
     const profile = this.props.profile;
     return (
       <Fragment>
-        <ProfileInformation address={profile.address} username={profile.username} />
-        <Reputation reputation={profile.reputation}/>
+        <SellerInformation reputation={profile.reputation} address={profile.address} name={profile.username}/>
         <Trades trades={profile.trades}/>
         <Offers offers={profile.offers} location={profile.location} />
         <StatusContactCode value={profile.statusContactCode} />

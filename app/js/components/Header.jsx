@@ -5,10 +5,12 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBullseye} from "@fortawesome/free-solid-svg-icons";
 import {Navbar, NavbarBrand, Nav, NavLink, NavItem} from 'reactstrap';
 
+import "./Header.scss";
+
 const Header = ({profile}) => (
   <header>
     <Navbar expand="md" className="px-0">
-      <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} className="mr-2"/>TN</NavbarBrand>
+      <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} className="mr-2"/><span className="text-body text-logo">TN</span></NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
           {profile.username && <NavLink tag={Link} to="/profile/">Profile</NavLink>}

@@ -5,8 +5,8 @@ import SellerAssets from "./SellerAssets";
 
 describe('SellerAssets', () => {
   it('should render correctly', () => {
-    const component = shallow(<SellerAssets selectAsset={() => undefined} selectedAsset={""} availableAssets={{}}/>);
-  
+    const component = shallow(<SellerAssets selectAsset={() => undefined} selectedAsset={""} availableAssets={[]}/>);
+
     expect(component).toMatchSnapshot();
   });
 });

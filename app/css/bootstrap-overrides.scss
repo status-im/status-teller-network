@@ -1,0 +1,81 @@
+@import "variable-overrides";
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+.btn-primary {
+  background-color: $btn-bg-color;
+  border-color: $btn-bg-color;
+  color: $primary;
+}
+
+p {
+  margin-bottom: 24px;
+  font-size: 15px;
+}
+
+h2, .h2 {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+h3, .h3 {
+  font-size: 17px;
+  font-weight: bold;
+}
+
+$input-height: 52px;
+$input-padding-custom: 17px;
+
+.form-control {
+  font-size: 15px;
+  background-color: $secondary;
+  border-color: $secondary;
+  color: $dark;
+  padding: 0 $input-padding-custom;
+  height: $input-height;
+  border-radius: 8px;
+
+  &.prepend {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.white-input {
+  .form-control, .input-group-append, .input-group-text {
+    background-color: white !important;
+  }
+
+  .input-group-text {
+    border: 1px solid $secondary !important;
+  }
+}
+
+.input-group {
+  .input-group-append {
+    height: $input-height;
+
+    .input-group-text {
+      width: 60px;
+      text-align: center;
+      display: inline-block;
+      padding: 0;
+      line-height: $input-height;
+      border: 0;
+      border-left: 1px solid white;
+      background-color: $secondary;
+    }
+  }
+}
+
+$input-icon-height: 20px;
+.input-icon {
+  position: absolute;
+  right: 15px;
+  height: $input-icon-height;
+  bottom: ($input-height / 2) - ($input-icon-height / 2);
+}
+
+.rounded {
+  border-radius: 8px !important;
+}
+

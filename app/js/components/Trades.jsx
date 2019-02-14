@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card } from 'reactstrap';
-import { Link } from "react-router-dom";
-import { withNamespaces } from 'react-i18next';
+import {Card} from 'reactstrap';
+import {Link} from "react-router-dom";
+import {withNamespaces} from 'react-i18next';
 import Blockies from 'react-blockies';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCircle, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 class Trades extends Component {
   renderTrades() {
     return (
-      <Card body className="py-0">
+      <Card body className="py-2 px-3 shadow-sm">
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
             <span className="flex-fill align-self-center">
@@ -28,7 +28,8 @@ class Trades extends Component {
     );
   }
 
-  renderEmpty(t) {
+  renderEmpty() {
+    const {t} = this.props;
     return (
       <Card body className="text-center">
         {t('trades.noOpen')}
@@ -37,17 +38,17 @@ class Trades extends Component {
   }
 
   render() {
-    const t = this.props.t;
+    const {t, trades} = this.props;
     return (
-      <Row className="mt-4">
-        <Col xs="12">
-          <span className="font-weight-bold h5">{t('trades.title')}</span>
-          <Link to="/buy" className="float-right">{t('trades.find')}</Link>
-        </Col>
-        <Col xs="12">
-          {this.props.trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
-        </Col>
-      </Row>
+      <div className="mt-3">
+        <div>
+          <h3 className="d-inline-block">{t('trades.title')}</h3>
+          <span className="float-right">
+            <Link to="/buy" className="float-right">{t('trades.find')} <FontAwesomeIcon icon={faArrowRight}/></Link>
+          </span>
+        </div>
+        {trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
+      </div>
     );
   }
 }

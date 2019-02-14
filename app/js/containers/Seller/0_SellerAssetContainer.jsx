@@ -5,8 +5,10 @@ import {connect} from "react-redux";
 
 import newSeller from "../../features/newSeller";
 import SellerAssets from '../../components/Seller/SellerAssets';
+import ETH from "../../../images/ethereum.png";
+import SNTIcon from "../../../images/status.png";
 
-const availableAssets = {'ETH': '0x0', 'SNT': SNT.address};
+const availableAssets = [{name: 'ETH', icon: ETH, address: '0x0'}, {name: 'SNT', icon: SNTIcon, address: SNT.address}];
 
 class SellerAssetContainer extends Component {
   constructor(props) {

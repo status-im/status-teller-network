@@ -32,7 +32,7 @@ class FiatSelectorForm extends Component {
       <Fragment>
         <h2>{t('sellerFiatContainer.title')}</h2>
         <FormGroup>
-          <Typeahead
+          <Typeahead className="my-3"
             onChange={this.onChange}
             options={this.props.currencies}
             placeholder={t("fiatSelectorForm.placeholder")}

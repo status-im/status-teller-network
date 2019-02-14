@@ -1,0 +1,33 @@
+.reputation-container {
+  .left-rating, .right-rating {
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
+    font-size: 15px;
+    margin: 0 1px;
+    width: 70px;
+    height: 40px;
+    display: inline-block;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  .left-rating {
+    border-radius: 32px 0 0 32px;
+  }
+
+  &.small {
+    .left-rating, .right-rating {
+      font-size: 13px;
+      width: 55px;
+      height: 24px;
+      line-height: 22px;
+      border-top-right-radius: 15px;
+      border-bottom-right-radius: 15px;
+    }
+
+    &.left-rating {
+      border-radius: 15px 0 0 15px;
+    }
+  }
+
+}

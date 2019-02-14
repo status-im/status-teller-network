@@ -38,7 +38,9 @@ class SellerMarginContainer extends Component {
   marginChange = (margin) => {
     margin = parseInt(margin, 10);
     this.validate(margin);
-    this.setState({margin});
+    if (!isNaN(margin)) {
+      this.setState({margin});
+    }
   };
 
   marketTypeChange = (marketType) => {

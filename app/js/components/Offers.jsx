@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap';
+import { Row, Card, CardHeader, CardBody } from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight, faEuroSign } from "@fortawesome/free-solid-svg-icons";
 
 class Offers extends Component {
-  renderOffers(t) {
-    return this.props.offers.map((offer, index) => (
-      <Card key={index} className="mb-2">
+  renderOffers() {
+    const {t, offers} = this.props;
+    return offers.map((offer, index) => (
+      <Card key={index} className="mb-2 shadow-sm">
         <CardHeader>
           {offer.asset}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
@@ -42,7 +43,8 @@ class Offers extends Component {
     ));
   }
 
-  renderEmpty(t) {
+  renderEmpty() {
+    const {t} = this.props;
     return (
       <Card body className="text-center">
         {t('offers.noOpen')}
@@ -51,17 +53,17 @@ class Offers extends Component {
   }
 
   render() {
-    const t = this.props.t;
+    const {t, offers} = this.props;
     return (
-      <Row className="mt-4">
-        <Col xs="12">
-          <span className="font-weight-bold h5">{t('offers.title')}</span>
-          <Link to="/sell" className="float-right">{t('offers.create')}</Link>
-        </Col>
-        <Col xs="12">
-          {this.props.offers.length === 0 ? this.renderEmpty(t) : this.renderOffers(t)}
-        </Col>
-      </Row>
+      <div className="mt-3">
+        <div>
+          <h3 className="d-inline-block">{t('offers.title')}</h3>
+          <span className="float-right">
+            <Link to="/buy" className="float-right">{t('offers.create')} <FontAwesomeIcon icon={faArrowRight}/></Link>
+          </span>
+        </div>
+        {offers.length === 0 ? this.renderEmpty() : this.renderOffers()}
+      </div>
     );
   }
 }

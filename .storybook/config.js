@@ -22,8 +22,8 @@ function loadStories() {
 
 configure(loadStories, module);
 
-import 'bootstrap/dist/css/bootstrap.css';
 import '../app/css/fonts/Inter/inter.css';
+import '../app/css/bootstrap-overrides.scss';
 
 // TODO: Move to dedicated component
 import '../app/js/index.scss';

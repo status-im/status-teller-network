@@ -1,41 +1,27 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card } from 'reactstrap';
-import { withNamespaces } from 'react-i18next';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faThumbsDown, faThumbsUp } from "@fortawesome/free-solid-svg-icons";
+import {withNamespaces} from 'react-i18next';
+import RatingIcon from "./RatingIcon";
+import classnames from "classnames";
 
-class Reputation extends Component {
-  render() {
-    return (
-      <Row className="mt-4">
-        <Col xs="12">
-          <span className="font-weight-bold h5">{this.props.t('reputation.title')}</span>
-        </Col>
-        <Col xs="6" className="pr-0">
-          <Card body className="text-center rounded-0">
-            <div>
-              <span className="mr-3">{this.props.reputation.upCount}</span>
-              <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsUp}/>
-            </div>
-          </Card>
-        </Col>
-        <Col xs="6" className="pl-0">
-          <Card body className="text-center rounded-0">
-            <div>
-              <span className="mr-3">{this.props.reputation.downCount}</span>
-              <FontAwesomeIcon className="text-warning" size="lg" icon={faThumbsDown}/>
-            </div>
-          </Card>
-        </Col>
-      </Row>
-    );
-  }
-}
+import './Reputation.scss';
+
+const Reputation = ({reputation, size}) => (
+  <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
+    <span className="left-rating bg-secondary">
+      {reputation.upCount} <RatingIcon isPositiveRating={true}/>
+    </span>
+    <span className="right-rating bg-secondary">
+      {reputation.downCount} <RatingIcon isPositiveRating={false}/>
+    </span>
+  </span>
+);
 
 Reputation.propTypes = {
   t: PropTypes.func,
-  reputation: PropTypes.object
+  reputation: PropTypes.object,
+  size: PropTypes.string
+
 };
 
 export default withNamespaces()(Reputation);
