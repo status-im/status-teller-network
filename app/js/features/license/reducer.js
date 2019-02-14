@@ -2,12 +2,13 @@ import {
   BUY_LICENSE_FAILED, BUY_LICENSE, BUY_LICENSE_PRE_SUCCESS,
   BUY_LICENSE_SUCCEEDED, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER,
   CHECK_LICENSE_OWNER_SUCCEEDED, USER_RATING_FAILED,
-  USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED
+  USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
 } from './constants';
 
 const DEFAULT_STATE = {
   licenseOwner: false,
-  userRating: 0
+  userRating: 0,
+  price: Number.MAX_SAFE_INTEGER
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -27,6 +28,11 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, 
         licenseOwner: true,
         loading: false
+      };
+    case LOAD_PRICE_SUCCEEDED:
+      return {
+        ...state,
+        price: action.price
       };
     case CHECK_LICENSE_OWNER:
       return {

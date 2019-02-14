@@ -21,6 +21,7 @@ class LicenseContainer extends Component {
   componentDidMount() {
     this.props.loadSNTBalance(this.props.address);
     this.props.checkLicenseOwner();
+    this.props.loadLicensePrice();
   }
 
   componentDidUpdate() {
@@ -42,9 +43,9 @@ class LicenseContainer extends Component {
 
     return (
       <React.Fragment>
-        <LicenseInfo />
+        <LicenseInfo price={this.props.licensePrice} />
         <YourSNTBalance value={this.props.sntBalance}/>
-        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntBalance === 0}/>
+        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntBalance < this.props.licensePrice}/>
       </React.Fragment>
     );
   }
@@ -58,7 +59,9 @@ LicenseContainer.propTypes = {
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   loadSNTBalance: PropTypes.func,
-  sntBalance: PropTypes.number
+  sntBalance: PropTypes.number,
+  licensePrice: PropTypes.number,
+  loadLicensePrice: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -66,7 +69,8 @@ const mapStateToProps = state => {
   return {
     address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
-    sntBalance: balances.selectors.getSNTBalance(state, address)
+    sntBalance: balances.selectors.getSNTBalance(state, address),
+    licensePrice: license.selectors.getLicensePrice(state)
   };
 };
 
@@ -75,6 +79,7 @@ export default connect(
   {
     loadSNTBalance: balances.actions.loadSNTBalance,
     buyLicense: license.actions.buyLicense,
-    checkLicenseOwner: license.actions.checkLicenseOwner
+    checkLicenseOwner: license.actions.checkLicenseOwner,
+    loadLicensePrice: license.actions.loadPrice
   }
 )(withRouter(LicenseContainer));

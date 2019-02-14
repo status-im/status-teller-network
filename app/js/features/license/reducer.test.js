@@ -6,7 +6,8 @@ describe('reducer', () => {
     expect(reducer(undefined, {})).toEqual(
       {
         licenseOwner: false,
-        userRating: 0
+        userRating: 0,
+        price: Number.MAX_SAFE_INTEGER
       }
     );
   });

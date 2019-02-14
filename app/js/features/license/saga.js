@@ -11,7 +11,10 @@ import {
   BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED, BUY_LICENSE_PRE_SUCCESS,
   CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS, GET_LICENSE_OWNERS_SUCCCEDED,
-  GET_LICENSE_OWNERS_FAILED
+  GET_LICENSE_OWNERS_FAILED,
+  LOAD_PRICE,
+  LOAD_PRICE_SUCCEEDED,
+  LOAD_PRICE_FAILED
 } from './constants';
 import {promiseEventEmitter} from '../utils';
 import {eventChannel} from "redux-saga";
@@ -48,6 +51,20 @@ export function *doBuyLicense() {
 
 export function *onBuyLicense() {
   yield takeEvery(BUY_LICENSE, doBuyLicense);
+}
+
+export function *loadPrice() {
+  try {
+    const price = yield call(License.methods.getPrice().call);
+    yield put({type: LOAD_PRICE_SUCCEEDED, price: parseInt(price, 10)});
+  } catch (error) {
+    console.error(error);
+    yield put({type: LOAD_PRICE_FAILED, error: error.message});
+  }
+}
+
+export function *onLoadPrice() {
+  yield takeEvery(LOAD_PRICE, loadPrice);
 }
 
 export function *doCheckLicenseOwner() {
@@ -112,4 +129,11 @@ export function *onAddUserRating() {
   yield takeEvery(ADD_USER_RATING, addRating);
 }
 
-export default [fork(onBuyLicense), fork(onCheckLicenseOwner), fork(onUserRating), fork(onAddUserRating), fork(onGetLicenseOwners)];
+export default [
+  fork(onBuyLicense),
+  fork(onLoadPrice),
+  fork(onCheckLicenseOwner),
+  fork(onUserRating), 
+  fork(onAddUserRating),
+  fork(onGetLicenseOwners)
+];
