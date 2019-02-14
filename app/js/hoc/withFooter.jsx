@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 
 import './withFooter.scss';
 
@@ -10,9 +12,10 @@ const Footer = (props) => {
   }
   return (<footer className="footer">
     {props.wizard.canPrevious() &&
-    <Button onClick={props.previous} className="m-2" color="link">&lt; Previous</Button>}
+    <Button onClick={props.previous} className="m-2" color="link"><FontAwesomeIcon icon={faAngleLeft}/> Previous</Button>}
     {props.wizard.canNext() &&
-    <Button onClick={props.next} className="float-right m-2" color="link" disabled={!props.nextEnabled}>{props.nextLabel} &gt;</Button>}
+    <Button onClick={props.next} className="float-right m-2" color="link"
+            disabled={!props.nextEnabled}>{props.nextLabel} <FontAwesomeIcon icon={faAngleRight}/></Button>}
   </footer>);
 };
 
@@ -50,11 +53,11 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
     };
 
     hide = () => {
-      this.setState({ visible: false });
+      this.setState({visible: false});
     };
 
     show = () => {
-      this.setState({ visible: true });
+      this.setState({visible: true});
     };
 
     executeChanges() {

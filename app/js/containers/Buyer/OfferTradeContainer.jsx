@@ -50,6 +50,9 @@ class OfferTradeContainer extends Component {
     assetQty = parseFloat(assetQty);
     const fiatQty = assetQty * FAKE_ETH_PRICE;
     this.validate(fiatQty, assetQty);
+    if (isNaN(fiatQty)) {
+      return;
+    }
     this.setState({assetQty, fiatQty});
   };
 
@@ -57,6 +60,9 @@ class OfferTradeContainer extends Component {
     fiatQty = parseFloat(fiatQty);
     const assetQty = fiatQty / FAKE_ETH_PRICE;
     this.validate(fiatQty, assetQty);
+    if (isNaN(assetQty)) {
+      return;
+    }
     this.setState({fiatQty, assetQty});
   };
 

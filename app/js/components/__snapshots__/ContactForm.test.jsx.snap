@@ -9,6 +9,7 @@ exports[`SellerContact should render correctly 1`] = `
       tag="div"
     >
       <Label
+        className="text-dark"
         for="nickname"
         tag="label"
         widths={
@@ -21,7 +22,7 @@ exports[`SellerContact should render correctly 1`] = `
           ]
         }
       >
-        Nickname
+        Set nickname
       </Label>
       <Control(s)
         className="form-control"
@@ -40,6 +41,7 @@ exports[`SellerContact should render correctly 1`] = `
       tag="div"
     >
       <Label
+        className="text-dark"
         for="contactCode"
         tag="label"
         widths={
@@ -66,6 +68,13 @@ exports[`SellerContact should render correctly 1`] = `
           ]
         }
       />
+      <Button
+        className="input-icon p-0"
+        color="link"
+        tag="button"
+      >
+        Give access
+      </Button>
     </FormGroup>
   </Form(t)>
 </Fragment>

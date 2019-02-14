@@ -5,8 +5,8 @@ import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 
-import 'bootstrap/dist/css/bootstrap.css';
 import '../css/fonts/Inter/inter.css';
+import '../css/bootstrap-overrides.scss';
 import './index.scss';
 import '../css/Form.scss';
 

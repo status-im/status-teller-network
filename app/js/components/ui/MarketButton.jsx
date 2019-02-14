@@ -5,7 +5,7 @@ import { Button } from 'reactstrap';
 import "./MarketButton.scss";
 
 const MarketButton = ({children, onClick, active}) => (
-  <Button outline color="dark" className="market-button text-center" size="lg" onClick={onClick} active={active}>
+  <Button className="market-button text-center" size="lg" onClick={onClick} active={active}>
     {children}
   </Button>
 );

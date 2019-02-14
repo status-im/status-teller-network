@@ -69,12 +69,16 @@ exports[`MarginSelectorForm should render correctly 1`] = `
     </ButtonGroup>
   </FormGroup>
   <h3 />
-  <div>
+  <div
+    className="border rounded p-3"
+  >
     1 TODO = 1,234.00 
   </div>
   <small />
   <h3 />
-  <div>
+  <div
+    className="border rounded p-3"
+  >
     TODO SNT
   </div>
 </Form(t)>

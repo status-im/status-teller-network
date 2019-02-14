@@ -17,16 +17,16 @@ class SellerAssets extends Component {
         <h3>Assets in your Wallet</h3>
 
         <ButtonGroup vertical className="w-100">
-          {Object.keys(this.props.availableAssets).map((name) => (
-            <CheckButton active={this.props.selectedAsset === this.props.availableAssets[name]} 
-                         key={`asset-${name}`} 
-                         onClick={(_e) => this.selectAsset(this.props.availableAssets[name])}>
-              {name}
+          {this.props.availableAssets.map((asset) => (
+            <CheckButton active={this.props.selectedAsset === asset.address}
+                         key={`asset-${asset.name}`} size="l"
+                         onClick={(_e) => this.selectAsset(asset.address)}>
+              <img src={asset.icon} alt={asset.name + ' icon'} className="mr-3"/> {asset.name}
             </CheckButton>
           ))}
         </ButtonGroup>
 
-        <p>Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer.</p>
+        <p className="text-muted">Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer.</p>
         {!this.props.selectedAsset && this.props.selectedAsset !== 0 &&
           <p className="text-info">Select an asset to move to the next page</p>}
       </React.Fragment>
@@ -37,7 +37,7 @@ class SellerAssets extends Component {
 SellerAssets.propTypes = {
   selectAsset: PropTypes.func,
   selectedAsset: PropTypes.string,
-  availableAssets: PropTypes.object
+  availableAssets: PropTypes.array
 };
 
 

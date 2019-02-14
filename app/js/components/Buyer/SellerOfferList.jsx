@@ -5,9 +5,9 @@ import SellerOffer from './SellerOffer';
 
 const SellerOfferList = ({offers, onClick}) => (
   <Row>
-    <Col xs="12" className="mt-3">
-      <h3>Selling</h3>
-      <div className="border-top">
+    <Col xs="12" className="mt-2">
+      <h3>Offers</h3>
+      <div>
         {offers.map((offer, idx) => <SellerOffer key={'offer-' + idx} fiat={offer.fiat} asset={offer.asset}
                                                  max={offer.max} min={offer.min} onClick={() => onClick(idx)}/>)}
       </div>

@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {FormGroup, Label} from 'reactstrap';
+import {FormGroup, Label, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {withNamespaces} from "react-i18next";
@@ -17,7 +17,7 @@ class ContactForm extends Component {
 
         <Form>
           <FormGroup>
-            <Label for="nickname">Nickname</Label>
+            <Label for="nickname" className="text-dark">Set nickname</Label>
             <Input type="text"
                    name="nickname"
                    id="nickname"
@@ -27,7 +27,7 @@ class ContactForm extends Component {
                    validations={[required]}/>
           </FormGroup>
           <FormGroup>
-            <Label for="contactCode">Status contact code or Status ENS name</Label>
+            <Label for="contactCode" className="text-dark">Status contact code or Status ENS name</Label>
             <Input type="text"
                    name="contactCode"
                    id="contactCode"
@@ -35,6 +35,7 @@ class ContactForm extends Component {
                    className="form-control"
                    onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
                    validations={[required]}/>
+            <Button className="input-icon p-0" color="link">Give access</Button>
           </FormGroup>
         </Form>
       </Fragment>

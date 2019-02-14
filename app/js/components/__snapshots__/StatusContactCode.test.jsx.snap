@@ -1,76 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StatusContactCode should render correctly 1`] = `
-<Row
-  className="mt-4"
+<FormGroup
+  className="mt-3"
   tag="div"
 >
-  <Col
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
+  <div>
+    <h3
+      className="d-inline-block"
+    />
     <span
-      className="font-weight-bold h5"
-    />
-    <Link
       className="float-right"
-      replace={false}
-      to="edit-status-contract-code"
+    >
+      <Link
+        className="float-right"
+        replace={false}
+        to="edit-status-contract-code"
+      />
+    </span>
+  </div>
+  <InputGroup
+    className="full-width-input white-input"
+    tag="div"
+  >
+    <Input
+      className="prepend"
+      defaultValue="0xkajshdhkjashd"
+      disabled={true}
+      name="contactCode"
+      type="text"
     />
-  </Col>
-  <Col
-    className="pr-0"
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="10"
-  >
-    <Card
-      body={true}
-      className="rounded-0"
+    <InputGroupAddon
+      addonType="append"
       tag="div"
     >
-      <span>
-        0xkajshdhkjashd
-      </span>
-    </Card>
-  </Col>
-  <Col
-    className="pl-0"
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="2"
-  >
-    <Card
-      body={true}
-      className="text-center rounded-0"
-      tag="div"
-    >
-      <span>
+      <InputGroupText
+        tag="span"
+      >
         <FontAwesomeIcon
           border={false}
           className=""
@@ -101,8 +67,8 @@ exports[`StatusContactCode should render correctly 1`] = `
           title=""
           transform={null}
         />
-      </span>
-    </Card>
-  </Col>
-</Row>
+      </InputGroupText>
+    </InputGroupAddon>
+  </InputGroup>
+</FormGroup>
 `;

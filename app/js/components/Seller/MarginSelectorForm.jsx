@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, Button, InputGroupText} from 'reactstrap';
+import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, InputGroupText} from 'reactstrap';
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
@@ -44,17 +44,17 @@ class MarginSelectorForm extends Component {
         </FormGroup>
 
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
-        <div>
+        <div className="border rounded p-3">
           1 TODO = 1,234.00 {currency}
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
         <h3>{t('marginSelectorForm.ourFee')}</h3>
-        <div>
+        <div className="border rounded p-3">
           TODO SNT
         </div>
 
-        {!this.props.margin && this.props.margin !== 0 && <p className="text-info">{t('marginSelectorForm.enterMargin')}</p>}
+        {!this.props.margin && this.props.margin !== 0 && <p className="text-info mt-3">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
     );
   }

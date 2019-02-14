@@ -2,18 +2,21 @@ import React, { Component } from 'react';
 import SellerInformation from '../../components/SellerInformation';
 import SellerOfferList from '../../components/Buyer/SellerOfferList';
 import Map from '../../components/Buyer/Map';
-import StatusContactCode from '../../components/StatusContactCode';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import buyer from "../../features/buyer";
 import {withRouter} from "react-router-dom";
 
+import ETH from "../../../images/ethereum.png";
+import SNT from "../../../images/status.png";
+import ZRX from "../../../images/ZRX.png";
+
 import './SellerProfileContainer.scss';
 
 const FAKE_OFFERS = [
-  {asset: 'ETH', min: 200, max: 600, fiat: '$'},
-  {asset: 'SNT', min: 200, max: 600, fiat: '$'},
-  {asset: 'DAI', min: 200, max: 600, fiat: '$'}
+  {asset: {name: 'SNT', icon: ETH}, min: 200, max: 600, fiat: '$'},
+  {asset: {name: 'ETH', icon: SNT}, min: 200, max: 600, fiat: '$'},
+  {asset: {name: 'ZRX', icon: ZRX}, min: 200, max: 600, fiat: '$'}
 ];
 
 class ProfileContainer extends Component {
@@ -31,12 +34,11 @@ class ProfileContainer extends Component {
   render() {
     return (
       <div className="seller-profile-container">
-        <SellerInformation name="Roger" isPositiveRating={true} nbTrades={32} type="Collectibles" address={this.address} />
+        <SellerInformation name="Roger" reputation={{upCount: 442, downCount: 32}} address={this.address} />
+        <h3 className="mt-3">Location</h3>
         <Map coords={{latitude: 45.492611, longitude: -73.617959}} markerOnly={true}/>
-        <p className="text-muted mt-2 mb-0">Saalestraße 39A,</p>
-        <p className="text-muted">12055 Berlin</p>
+        <p className="text-muted mt-2">Saalestraße 39A, 12055 Berlin</p>
         <SellerOfferList offers={FAKE_OFFERS} onClick={this.offerClick}/>
-        <StatusContactCode />
       </div>
     );
   }

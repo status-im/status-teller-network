@@ -14,7 +14,7 @@ class SellerPaymentMethod extends Component {
       <React.Fragment>
         <h2>Payment methods that you want to accept</h2>
 
-        <ButtonGroup vertical className="w-100">
+        <ButtonGroup vertical className="w-100 mt-3">
           {this.props.methods.map((asset, idx) => (
             <CheckButton active={this.props.selectedMethods.indexOf(idx) > -1}
                          key={'asset-' + idx}
