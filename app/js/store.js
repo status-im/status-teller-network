@@ -2,6 +2,8 @@ import { applyMiddleware, compose, createStore } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
 import history from './history';
 import rootReducer from './reducer';
@@ -14,6 +16,12 @@ import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
 import balances from './features/balances';
+
+const persistConfig = {
+  key: 'teller-network-store',
+  storage,
+  blacklist: ['embarkjs']
+};
 
 function *root() {
   yield all([
@@ -33,7 +41,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
 
 const store = createStore(
-  connectRouter(history)(rootReducer),
+  connectRouter(history)(persistReducer(persistConfig, rootReducer)),
   composeEnhancers(
     applyMiddleware(
       routerMiddleware(history),
@@ -43,5 +51,6 @@ const store = createStore(
 );
 
 sagaMiddleware.run(root);
+const persistor = persistStore(store);
 
-export default store;
+export { store, persistor };
