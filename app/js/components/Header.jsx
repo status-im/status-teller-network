@@ -11,7 +11,7 @@ const Header = ({profile}) => (
       <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} className="mr-2"/>TN</NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {profile.address && <NavLink tag={Link} to="/profile/">Profile</NavLink>}
+          {profile.username && <NavLink tag={Link} to="/profile/">Profile</NavLink>}
         </NavItem>
       </Nav>
     </Navbar>

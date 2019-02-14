@@ -1,4 +1,4 @@
-import { LOAD, ADD_OFFER } from './constants';
+import { LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS } from './constants';
 import MetadataStore from 'Embark/contracts/MetadataStore';
 
 export const load = (address) => ({ type: LOAD, address });
@@ -15,4 +15,8 @@ export const addOffer = (seller) => ({
     seller.marketType,
     seller.margin
   )
+});
+
+export const resetAddOfferStatus = () => ({
+  type: RESET_ADD_OFFER_STATUS
 });

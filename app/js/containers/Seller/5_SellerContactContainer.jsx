@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
@@ -13,25 +14,29 @@ class SellerContactContainer extends Component {
     this.state = {
       username: props.seller.username,
       statusContactCode: props.seller.statusContactCode,
-      ready: false,
-      isAddingOffer: false
+      ready: false
     };
     this.validate(props.seller.username, props.seller.statusContactCode);
     props.footer.onPageChange(() => {
       props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
     props.footer.onNext(() => {
-      this.setState({isAddingOffer: true});
       props.addOffer({...this.props.seller, username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
   }
-
 
   componentDidMount() {
     if (!this.props.seller.margin || this.props.seller.margin === 0) {
       this.props.wizard.previous();
     } else {
       this.setState({ready: true});
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.addOfferStatus === 'success') {
+      this.props.history.push('/profile');
+      this.props.resetAddOfferStatus();
     }
   }
 
@@ -57,35 +62,45 @@ class SellerContactContainer extends Component {
       return <Loading page/>;
     }
 
-    if (this.state.isAddingOffer) {
+    if (this.props.addOfferStatus === 'pending') {
       return <Loading mining/>;
     }
+    
+    if (this.props.addOfferStatus === 'none') {
+      return (
+        <ContactForm statusContactCode={this.state.statusContactCode} 
+                     username={this.state.username}
+                     changeStatusContactCode={this.changeStatusContactCode}
+                     changeUsername={this.changeUsername}/>
+      );
+    }
 
-    return (
-      <ContactForm statusContactCode={this.state.statusContactCode} 
-                   username={this.state.username}
-                   changeStatusContactCode={this.changeStatusContactCode}
-                   changeUsername={this.changeUsername}/>
-    );
+    return <React.Fragment></React.Fragment>;
+    
   }
 }
 
 SellerContactContainer.propTypes = {
+  history: PropTypes.object,
   footer: PropTypes.object,
   wizard: PropTypes.object,
   setContactInfo: PropTypes.func,
   seller: PropTypes.object,
-  addOffer: PropTypes.func
+  addOffer: PropTypes.func,
+  resetAddOfferStatus: PropTypes.func,
+  addOfferStatus: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state)
+  seller: newSeller.selectors.getNewSeller(state),
+  addOfferStatus: metadata.selectors.getAddOfferStatus(state)
 });
 
 export default connect(
   mapStateToProps,
   {
     setContactInfo: newSeller.actions.setContactInfo,
-    addOffer: metadata.actions.addOffer
+    addOffer: metadata.actions.addOffer,
+    resetAddOfferStatus: metadata.actions.resetAddOfferStatus
   }
-)(SellerContactContainer);
+)(withRouter(SellerContactContainer));
