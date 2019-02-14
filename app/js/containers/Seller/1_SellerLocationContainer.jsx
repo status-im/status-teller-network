@@ -1,8 +1,9 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import SellerPosition from '../../components/Seller/SellerPosition';
+import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 
 class SellerLocationContainer extends Component {
@@ -41,13 +42,10 @@ class SellerLocationContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Fragment></Fragment>;
+      return <Loading page/>;
     }
-    return (
-      <Fragment>
-        <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>
-      </Fragment>
-    );
+
+    return <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>;
   }
 }
 

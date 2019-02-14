@@ -38,6 +38,7 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
         visible: true
       };
       this.changeSubs = [];
+      this.nextSubs = [];
     }
 
     enableNext = () => {
@@ -56,21 +57,27 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
       this.setState({ visible: true });
     };
 
-    change() {
+    executeChanges() {
       this.changeSubs.forEach(cb => {
         cb.call(cb);
       });
       this.changeSubs = [];
     }
 
+    executeNexts() {
+      this.nextSubs.forEach(cb => cb());
+      this.nextSubs = [];
+    }
+
     next = () => {
-      this.change();
+      this.executeChanges();
+      this.executeNexts();
       wizard.next();
 
     };
 
     previous = () => {
-      this.change();
+      this.executeChanges();
       wizard.previous();
     };
 
@@ -78,11 +85,16 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
       this.changeSubs.push(cb);
     };
 
+    onNext = (cb) => {
+      this.nextSubs.push(cb);
+    }
+
     render() {
       const controller = {
         enableNext: this.enableNext,
         disableNext: this.disableNext,
         onPageChange: this.onPageChange,
+        onNext: this.onNext,
         show: this.show,
         hide: this.hide
       };

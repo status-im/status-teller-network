@@ -1,12 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
-import {withNamespaces} from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
+
+import license from "../features/license";
 
 import "./HomeContainer.scss";
 
 class HomeContainer extends Component {
+  componentDidMount() {
+    this.props.checkLicenseOwner();
+  }
+
+  sellUrl(){
+    return this.props.isLicenseOwner ? '/sell' : '/license';
+  }
+
   render() {
     const t = this.props.t;
     return (
@@ -22,7 +33,7 @@ class HomeContainer extends Component {
             <Button tag={Link} color="info" block to="/buy">{t('home.buy')}</Button>
           </Col>
           <Col xs={6}>
-            <Button tag={Link} color="info" block to="/license">{t('home.sell')}</Button>
+            <Button tag={Link} color="info" block to={this.sellUrl()}>{t('home.sell')}</Button>
           </Col>
         </Row>
       </div>
@@ -31,7 +42,18 @@ class HomeContainer extends Component {
 }
 
 HomeContainer.propTypes = {
-  t: PropTypes.func
+  t: PropTypes.func,
+  checkLicenseOwner: PropTypes.func,
+  isLicenseOwner: PropTypes.bool
 };
 
-export default withNamespaces()(HomeContainer);
+const mapStateToProps = state => ({
+  isLicenseOwner: license.selectors.isLicenseOwner(state)
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    checkLicenseOwner: license.actions.checkLicenseOwner
+  }
+)(withNamespaces()(HomeContainer));

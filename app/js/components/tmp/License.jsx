@@ -2,9 +2,6 @@ import React from 'react';
 import {Card, CardHeader, CardBody, CardTitle, Button, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
-import TransactionHash from "./TransactionHash";
 import TransactionResults from "./TransactionResults";
 
 const BuyLicense = (props) => (

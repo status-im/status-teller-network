@@ -7,7 +7,7 @@ import TransactionHash from "./TransactionHash";
 
 const TransactionResults = ({error, txHash, loading, loadingText, result, resultText, errorText}) => (
   <Fragment>
-    {loading && <p><FontAwesomeIcon icon={faSpinner} className="loading"/>{loadingText || 'Loading'}...</p>}
+    {loading && <p><FontAwesomeIcon icon={faSpinner} spin/>{loadingText || 'Loading'}...</p>}
     {txHash && <TransactionHash txHash={txHash}/>}
     {error &&
     <Alert color="danger">{errorText || ''} {error}</Alert>}

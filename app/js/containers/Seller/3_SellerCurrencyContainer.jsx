@@ -1,9 +1,10 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import {connect} from 'react-redux';
 
 import FiatSelectorForm from "../../components/Seller/FiatSelectorForm";
+import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 
 // TODO: where will this FIAT currency list come from?
@@ -56,7 +57,7 @@ class SellerCurrencyContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Fragment></Fragment>;
+      return <Loading page/>;
     }
 
     return (<FiatSelectorForm value={this.state.currency}

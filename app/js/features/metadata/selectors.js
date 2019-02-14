@@ -7,3 +7,7 @@ export const getProfile = (state, address) => {
     reputation: {}
   };
 };
+
+export const getAddOfferStatus = (state) => {
+  return state.metadata.addOfferStatus;
+};

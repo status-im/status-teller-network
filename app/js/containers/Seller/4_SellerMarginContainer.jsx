@@ -1,10 +1,9 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 
 import MarginSelectorForm from '../../components/Seller/MarginSelectorForm';
+import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 
 class SellerMarginContainer extends Component {
@@ -48,7 +47,7 @@ class SellerMarginContainer extends Component {
 
   render() {
     if (!this.state.ready) {
-      return <Fragment></Fragment>;
+      return <Loading page/>;
     }
 
     return (

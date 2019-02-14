@@ -9,9 +9,15 @@ import embarkjs from "../features/embarkjs";
 
 import LicenseInfo from '../components/License/LicenseInfo';
 import LicenseBuy from '../components/License/LicenseBuy';
+import Loading from '../components/ui/Loading';
 import YourSNTBalance from '../components/YourSNTBalance';
 
 class LicenseContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isBuying: false };
+  }
+
   componentDidMount() {
     this.props.loadSNTBalance(this.props.address);
     this.props.checkLicenseOwner();
@@ -19,15 +25,21 @@ class LicenseContainer extends Component {
 
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
+      this.setState({isBuying: false});
       return this.props.history.push('/sell');
     }
   }
 
   buyLicense = () => {
+    this.setState({isBuying: true});
     this.props.buyLicense();
   };
 
   render() {
+    if (this.state.isBuying) {
+      return <Loading mining/>;
+    }
+
     return (
       <React.Fragment>
         <LicenseInfo />
