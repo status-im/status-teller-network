@@ -22,10 +22,15 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, addOfferStatus: States.pending
       };
-    case ADD_OFFER_SUCCEEDED:
+    case ADD_OFFER_SUCCEEDED: {
+      const newOffers = state.offers[action.receipt.from.toLowerCase()].concat([action.offer]);
       return {
-        ...state, addOfferStatus: States.success
+        ...state,
+        addOfferStatus: States.success,
+        users: {...state.users, [action.receipt.from.toLowerCase()]: action.user},
+        offers: {...state.offers, [action.receipt.from.toLowerCase()]: newOffers}
       };
+    }
     case ADD_OFFER_FAILED:
       return {
         ...state, addOfferStatus: States.fail
@@ -40,7 +45,9 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case UPDATE_USER_SUCCEEDED: {
       return {
-        ...state, updateUserStatus: States.success, users: {...state.users, [action.receipt.from.toLowerCase()]: action.user}
+        ...state,
+        updateUserStatus: States.success,
+        users: {...state.users, [action.receipt.from.toLowerCase()]: action.user}
       };
     }
     case UPDATE_USER_FAILED:

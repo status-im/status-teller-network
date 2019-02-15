@@ -5,6 +5,18 @@ export const load = (address) => ({ type: LOAD, address });
 
 export const addOffer = (seller) => ({
   type: ADD_OFFER,
+  user: {
+    statusContactCode: seller.statusContactCode,
+    location: seller.location,
+    username: seller.username
+  },
+  offer: {
+    asset: seller.asset,
+    currency: seller.currency,
+    paymentMethods: seller.paymentMethods,
+    marketType: seller.marketType,
+    margin: seller.margin
+  },
   toSend: MetadataStore.methods.addOffer(
     seller.asset,
     seller.statusContactCode,
