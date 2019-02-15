@@ -1,7 +1,7 @@
 import { CREATE_ESCROW, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW, RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE,
   OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG } from './constants';
 import Escrow from 'Embark/contracts/Escrow';
-const zeroAddress = '0x0000000000000000000000000000000000000000';
+import { zeroAddress } from '../../utils/address';
 
 export const createEscrow = (buyer, value, expiration) => ({ type: CREATE_ESCROW, value, toSend: Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration)});
 

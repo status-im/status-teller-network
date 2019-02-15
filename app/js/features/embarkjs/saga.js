@@ -9,7 +9,7 @@ import { onReady } from '../../services/embarkjs';
 export function *doInit() {
   try {
     yield call(onReady);
-    const networkId = call(web3.eth.net.getId);
+    const networkId = yield call(web3.eth.net.getId);
     yield put({type: EMBARKJS_INIT_SUCCEEDED, networkId});
   } catch (error) {
     yield put({type: EMBARKJS_INIT_FAILED, error});

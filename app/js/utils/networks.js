@@ -1,3 +1,16 @@
+import SNT from 'Embark/contracts/SNT';
+import { zeroAddress } from './address';
+
+function importAll(r) {
+  let images = {};
+  r.keys().map((item) => {
+    images[item.replace('./', '')] = r(item);
+  });
+  return images;
+}
+
+export const TokenImages = importAll(require.context('../../images/tokens', false, /\.(png)$/));
+
 export const Networks = {
   1: 'mainnet',
   3: 'ropsten',
@@ -5,8 +18,14 @@ export const Networks = {
   1337: 'private'
 };
 
-export const tokens = {
+export const Tokens = {
   'mainnet': [
+    {
+      symbol: 'ETH',
+      name: 'ETH',
+      address: zeroAddress,
+      decimals: 18
+    },
     {
       symbol: 'DAI',
       name: 'DAI',
@@ -562,44 +581,26 @@ export const tokens = {
   ],
   'private': [
     {
-      name: "Status Test Token",
-      symbol: 'STT',
-      decimals: 18,
-      address: "0xc55cF4B03948D7EBc8b9E8BAD92643703811d162"
+      symbol: 'ETH',
+      name: 'ETH',
+      address: zeroAddress,
+      decimals: 18
     },
     {
-      name: "Handy Test Token",
-      symbol: 'HND',
-      decimals: 0,
-      address: "0xdee43a267e8726efd60c2e7d5b81552dcd4fa35c"
-    },
-    {
-      name: "Lucky Test Token",
-      symbol: 'LXS',
-      decimals: 2,
-      address: "0x703d7dc0bc8e314d65436adf985dda51e09ad43b"
-    },
-    {
-      name: "Adi Test Token",
-      symbol: 'ADI',
-      decimals: 7,
-      address: "0xe639e24346d646e927f323558e6e0031bfc93581"
-    },
-    {
-      name: "Wagner Test Token",
-      symbol: 'WGN',
-      decimals: 10,
-      address: "0x2e7cd05f437eb256f363417fd8f920e2efa77540"
-    },
-    {
-      name: "Modest Test Token",
-      symbol: 'MDS',
-      decimals: 18,
-      address: "0x57cc9b83730e6d22b224e9dc3e370967b44a2de0"
+      symbol: 'SNT',
+      name: "Status Network Token",
+      address: SNT.address,
+      decimals: 18
     }
   ],
 
   'rinkeby': [
+    {
+      symbol: 'ETH',
+      name: 'ETH',
+      address: zeroAddress,
+      decimals: 18
+    },
     {
       name: "Moksha Coin",
       symbol: 'MOKSHA',

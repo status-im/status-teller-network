@@ -1,7 +1,7 @@
-export const getSNTBalance = (state, address) => {
-  if (!state.balances[address]) {
-    return 0;
-  }
+export const getTokensWithPositiveBalance = (state) => {
+  return Object.values(state.balances).filter((token) => token.balance > 0);
+};
 
-  return state.balances[address].snt || 0;
+export const getTokenBySymbol = (state, symbol) => {
+  return state.balances[symbol];
 };
