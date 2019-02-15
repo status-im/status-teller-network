@@ -16,7 +16,7 @@ import {
   LOAD_PRICE_SUCCEEDED,
   LOAD_PRICE_FAILED
 } from './constants';
-import {promiseEventEmitter} from '../utils';
+import {promiseEventEmitter} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
 
 export function *doBuyLicense() {

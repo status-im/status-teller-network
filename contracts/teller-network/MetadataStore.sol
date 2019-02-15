@@ -13,7 +13,7 @@ contract MetadataStore is Ownable {
     enum MarketType {Above, Below}
     enum OfferStatus {Open}
 
-    event Added(
+    event OfferAdded(
         address owner,
         uint256 offerId,
         address asset,
@@ -27,7 +27,7 @@ contract MetadataStore is Ownable {
         OfferStatus status
     );
 
-    event Updated(
+    event OfferUpdated(
         address owner,
         uint256 id,
         address asset,
@@ -40,7 +40,14 @@ contract MetadataStore is Ownable {
         uint8 margin
     );
 
-    struct Seller {
+    event UserUpdated(
+        address owner,
+        address statusContactCode,
+        string location,
+        string username
+    );
+
+    struct User {
         address statusContactCode;
         string location;
         string username;
@@ -56,11 +63,11 @@ contract MetadataStore is Ownable {
     }
 
     address public license;
-    Seller[] public sellers;
+    User[] public users;
     Offer[] public offers;
 
-    mapping(address => bool) public sellerWhitelist;
-    mapping(address => uint256) public addressToSeller;
+    mapping(address => bool) public userWhitelist;
+    mapping(address => uint256) public addressToUser;
 
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
     mapping(address => uint256[]) public addressToOffers;
@@ -74,17 +81,17 @@ contract MetadataStore is Ownable {
     }
 
     /**
-    * @dev Add a new offer with a new seller if needed to the list
+    * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
     * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
-    * @param _currency The currency the seller want to receive (USD, EUR...)
-    * @param _username The username of the seller
-    * @param _paymentMethods The list of the payment methods the seller accept
+    * @param _currency The currency the user want to receive (USD, EUR...)
+    * @param _username The username of the user
+    * @param _paymentMethods The list of the payment methods the user accept
     * @param _marketType Above or Below
-    * @param _margin The margin for the seller from 0 to 100
+    * @param _margin The margin for the user from 0 to 100
     */
-    function add(
+    function addOffer(
         address _asset,
         address _statusContactCode,
         string memory _location,
@@ -97,16 +104,16 @@ contract MetadataStore is Ownable {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
 
-        if (!sellerWhitelist[msg.sender]) {
-            Seller memory seller = Seller(_statusContactCode, _location, _username);
-            uint256 sellerId = sellers.push(seller) - 1;
-            addressToSeller[msg.sender] = sellerId;
-            sellerWhitelist[msg.sender] = true;
+        if (!userWhitelist[msg.sender]) {
+            User memory user = User(_statusContactCode, _location, _username);
+            uint256 userId = users.push(user) - 1;
+            addressToUser[msg.sender] = userId;
+            userWhitelist[msg.sender] = true;
         } else {
-            Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
-            tmpSeller.statusContactCode = _statusContactCode;
-            tmpSeller.location = _location;
-            tmpSeller.username = _username;
+            User storage tmpUser = users[addressToUser[msg.sender]];
+            tmpUser.statusContactCode = _statusContactCode;
+            tmpUser.location = _location;
+            tmpUser.username = _username;
         }
         
         Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, OfferStatus.Open);
@@ -114,23 +121,44 @@ contract MetadataStore is Ownable {
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
-        emit Added(
+        emit OfferAdded(
             msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin, OfferStatus.Open
         );
     }
 
     /**
-    * @dev Update the seller
+    * @dev Update the user
+    * @param _statusContactCode The address of the status contact code
+    * @param _location The location on earth
+    * @param _username The username of the user
+    */
+    function updateUser(
+        address _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        require(userWhitelist[msg.sender], "User does not exist");
+
+        User storage tmpUser = users[addressToUser[msg.sender]];
+        tmpUser.statusContactCode = _statusContactCode;
+        tmpUser.location = _location;
+        tmpUser.username = _username;
+
+        emit UserUpdated(msg.sender, _statusContactCode, _location, _username);
+    }
+
+    /**
+    * @dev Update the user and offer
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
     * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
-    * @param _currency The currency the seller want to receive (USD, EUR...)
-    * @param _username The username of the seller
-    * @param _paymentMethods The list of the payment methods the seller accept
+    * @param _currency The currency the user want to receive (USD, EUR...)
+    * @param _username The username of the user
+    * @param _paymentMethods The list of the payment methods the user accept
     * @param _marketType Above or Below
-    * @param _margin The margin for the seller from 0 to 100
+    * @param _margin The margin for the user from 0 to 100
     */
-    function update(
+    function updateOffer(
         uint256 _offerId,
         address _asset,
         address _statusContactCode,
@@ -141,14 +169,14 @@ contract MetadataStore is Ownable {
         MarketType _marketType,
         uint8 _margin
     ) public {
-        require(sellerWhitelist[msg.sender], "Seller does not exist");
+        require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
         require(_margin <= 100, "Margin too high");
 
-        Seller storage tmpSeller = sellers[addressToSeller[msg.sender]];
-        tmpSeller.statusContactCode = _statusContactCode;
-        tmpSeller.location = _location;
-        tmpSeller.username = _username;
+        User storage tmpUser = users[addressToUser[msg.sender]];
+        tmpUser.statusContactCode = _statusContactCode;
+        tmpUser.location = _location;
+        tmpUser.username = _username;
         
         offers[_offerId].asset = _asset;
         offers[_offerId].currency = _currency;
@@ -156,14 +184,14 @@ contract MetadataStore is Ownable {
         offers[_offerId].marketType = _marketType;
         offers[_offerId].margin = _margin;
 
-        emit Updated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        emit OfferUpdated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
     }
 
     /**
-    * @dev Get the size of the sellers
+    * @dev Get the size of the users
     */
-    function sellersSize() public view returns (uint256) {
-        return sellers.length;
+    function usersSize() public view returns (uint256) {
+        return users.length;
     }
 
     /**

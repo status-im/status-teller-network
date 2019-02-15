@@ -4,7 +4,7 @@ import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, InputGroupTe
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import {isNumber, required} from '../../validators';
+import {isNumber, required, lowerThan} from '../../validators';
 import MarketButton from '../ui/MarketButton';
 
 const ABOVE = 0;
@@ -28,7 +28,7 @@ class MarginSelectorForm extends Component {
                      className="form-control prepend"
                      value={margin}
                      onChange={(e) => this.props.marginChange(e.target.value)}
-                     validations={[required, isNumber]} />
+                     validations={[required, isNumber, lowerThan.bind(null, 100)]} />
               <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
             </InputGroup>
         </FormGroup>

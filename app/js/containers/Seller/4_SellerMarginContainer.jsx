@@ -29,7 +29,7 @@ class SellerMarginContainer extends Component {
   }
 
   validate(margin) {
-    if (margin || margin === 0) {
+    if ((margin || margin === 0) && margin < 100) {
       return this.props.footer.enableNext();
     }
     this.props.footer.disableNext();
@@ -37,10 +37,11 @@ class SellerMarginContainer extends Component {
 
   marginChange = (margin) => {
     margin = parseInt(margin, 10);
-    this.validate(margin);
-    if (!isNaN(margin)) {
-      this.setState({margin});
+    if (isNaN(margin)) {
+      margin = '';
     }
+    this.validate(margin);
+    this.setState({margin});
   };
 
   marketTypeChange = (marketType) => {

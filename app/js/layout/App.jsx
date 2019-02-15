@@ -9,6 +9,9 @@ import Header from "../components/Header";
 import Loading from "../components/ui/Loading";
 
 import HomeContainer from '../containers/HomeContainer';
+import ProfileContainer from '../containers/ProfileContainer';
+import EditProfileContainer from '../containers/EditProfileContainer';
+import LicenseContainer from '../containers/LicenseContainer';
 
 // Buyer
 import OfferListContainer from '../containers/Buyer/OfferListContainer';
@@ -26,9 +29,7 @@ import SellerCurrencyContainer from '../containers/Seller/3_SellerCurrencyContai
 import SellerMarginContainer from '../containers/Seller/4_SellerMarginContainer';
 import SellerContactContainer from '../containers/Seller/5_SellerContactContainer';
 
-import ProfileContainer from '../containers/ProfileContainer';
-import LicenseContainer from '../containers/LicenseContainer';
-
+// Tmp
 import EscrowsContainer from '../containers/tmp/EscrowsContainer';
 import PriceContainer from '../containers/tmp/PriceContainer';
 import SignatureContainer from '../containers/tmp/SignatureContainer';
@@ -67,6 +68,10 @@ class App extends Component {
           <Header profile={this.props.profile}/>
           <Route exact path="/" component={HomeContainer}/>
           <Route exact path="/profile" component={ProfileContainer}/>
+          <Route exact path="/profile/edit" component={EditProfileContainer}/>
+          <Route exact path="/license" component={LicenseContainer}/>
+
+
           <Route exact path="/buy" component={OfferListContainer}/>
           <Route exact path="/buy/map" component={MapContainer}/>
           <Route exact path="/buy/list" component={BankOfferListContainer}/>
@@ -76,7 +81,6 @@ class App extends Component {
             {path: '/buy/offer', component: OfferTradeContainer}
           ]}/>
 
-          <Route exact path="/license" component={LicenseContainer}/>
           <Wizard path="/sell/" steps={[
             {path: '/sell/asset', component: SellerAssetContainer},
             {path: '/sell/location', component: SellerLocationContainer},

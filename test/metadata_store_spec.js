@@ -43,51 +43,60 @@ contract("MetadataStore", function () {
     await SNT.methods.generateTokens(accounts[0], 1000).send();
   });
 
-  it("should not allow to add new seller when not license owner", async function () {
+  it("should not allow to add new user when not license owner", async function () {
     try {
-      await MetadataStore.methods.add(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
+      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
     } catch(error) {
-      const sellersSize = await MetadataStore.methods.sellersSize().call();
-      assert.strictEqual(sellersSize, '0');
+      const usersSize = await MetadataStore.methods.usersSize().call();
+      assert.strictEqual(usersSize, '0');
     }
   });
 
-  it("should allow to add new seller and offer when license owner", async function () {
+  it("should allow to add new user and offer when license owner", async function () {
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send();
-    await MetadataStore.methods.add(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
-    const sellersSize = await MetadataStore.methods.sellersSize().call();
-    assert.strictEqual(sellersSize, '1');
+    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
+    const usersSize = await MetadataStore.methods.usersSize().call();
+    assert.strictEqual(usersSize, '1');
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');
   });
 
-  it("should allow to add new offer only when already a seller", async function () {
-    await MetadataStore.methods.add(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1).send();
-    const sellersSize = await MetadataStore.methods.sellersSize().call();
-    assert.strictEqual(sellersSize, '1');
+  it("should allow to add new offer only when already a user", async function () {
+    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1).send();
+    const usersSize = await MetadataStore.methods.usersSize().call();
+    assert.strictEqual(usersSize, '1');
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '2');
   });
 
   it("should not allow to add new offer when margin is more than 100", async function () {
     try {
-      await MetadataStore.methods.add(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 101).send();
+      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 101).send();
     } catch(error) {
-      const sellersSize = await MetadataStore.methods.sellersSize().call();
-      assert.strictEqual(sellersSize, '1');
+      const usersSize = await MetadataStore.methods.usersSize().call();
+      assert.strictEqual(usersSize, '1');
     }
   });
 
-  it("should allow to update a seller and offer", async function () {
-    await MetadataStore.methods.update(0, SNT.address, License.address, "Paris", "EUR", "Iuri", [0], 0, 1).send();
-    const sellersSize = await MetadataStore.methods.sellersSize().call();
-    assert.strictEqual(sellersSize, '1');
-    const seller = await MetadataStore.methods.sellers(0).call();
-    assert.strictEqual(seller.location, 'Paris');
+  it("should allow to update a user and offer", async function () {
+    await MetadataStore.methods.updateOffer(0, SNT.address, License.address, "Paris", "EUR", "Iuri", [0], 0, 1).send();
+    const usersSize = await MetadataStore.methods.usersSize().call();
+    assert.strictEqual(usersSize, '1');
+    const user = await MetadataStore.methods.users(0).call();
+    assert.strictEqual(user.location, 'Paris');
 
     const offer = await MetadataStore.methods.offers(0).call();
     assert.strictEqual(offer.currency, 'EUR');
+  });
+
+  it("should allow to update a user", async function () {
+    await MetadataStore.methods.updateUser(SNT.address, "Montreal", "Anthony").send();
+    const usersSize = await MetadataStore.methods.usersSize().call();
+    assert.strictEqual(usersSize, '1');
+    const user = await MetadataStore.methods.users(0).call();
+    assert.strictEqual(user.location, 'Montreal');
+    assert.strictEqual(user.username, 'Anthony');
   });
 
 });

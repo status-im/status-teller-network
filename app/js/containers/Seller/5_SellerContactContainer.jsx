@@ -7,6 +7,7 @@ import ContactForm from '../../components/ContactForm';
 import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 import metadata from "../../features/metadata";
+import { States } from '../../utils/transaction';
 
 class SellerContactContainer extends Component {
   constructor(props) {
@@ -34,7 +35,7 @@ class SellerContactContainer extends Component {
   }
 
   componentDidUpdate() {
-    if (this.props.addOfferStatus === 'success') {
+    if (this.props.addOfferStatus === States.success) {
       this.props.history.push('/profile');
       this.props.resetAddOfferStatus();
     }
@@ -62,11 +63,11 @@ class SellerContactContainer extends Component {
       return <Loading page/>;
     }
 
-    if (this.props.addOfferStatus === 'pending') {
+    if (this.props.addOfferStatus === States.pending) {
       return <Loading mining/>;
     }
     
-    if (this.props.addOfferStatus === 'none') {
+    if (this.props.addOfferStatus === States.none) {
       return (
         <ContactForm statusContactCode={this.state.statusContactCode} 
                      username={this.state.username}
