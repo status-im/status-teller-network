@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import UpdateUser from "./LicenseBuy";
+import UpdateUser from "./UpdateUser";
 
 describe('UpdateUser', () => {
   it('should render correctly when disabled', () => {
