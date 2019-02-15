@@ -6,7 +6,7 @@ import {
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_PRE_SUCCESS
 } from './constants';
-import {doTransaction} from "../utils";
+import {doTransaction} from "../../utils/saga";
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));

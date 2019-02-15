@@ -13,7 +13,7 @@ const StatusContactCode = ({t, value}) => (
         {t('statusContactCode.title')}
       </h3>
       <span className="float-right">
-        <Link to="edit-status-contract-code" className="float-right">{t('statusContractCode.edit')}</Link>
+        <Link to="/profile/edit" className="float-right">{t('statusContactCode.edit')}</Link>
       </span>
     </div>
     <InputGroup className="full-width-input white-input">

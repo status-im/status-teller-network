@@ -2,7 +2,7 @@
 import Escrow from 'Embark/contracts/Escrow';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
-import {doTransaction} from '../utils';
+import {doTransaction} from '../../utils/saga';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,

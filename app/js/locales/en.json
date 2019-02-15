@@ -159,6 +159,9 @@
   "sellerBuyLicense": {
     "button": "Buy license"
   },
+  "updateUser": {
+    "button": "Update"
+  },
   "loading": {
     "mining": "Waiting for the confirmation from miners",
     "initial": "The best and most convenient way to buy and sell crypto",
