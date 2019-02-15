@@ -3,10 +3,15 @@
 import {
   EMBARKJS_INIT_SUCCEEDED
 } from './constants';
+import { Networks } from '../../utils/networks';
 
 const DEFAULT_STATE = {
   ready: false,
-  address: ''
+  address: '',
+  network: {
+    id: 0,
+    name: ''
+  }
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -14,7 +19,11 @@ function reducer(state = DEFAULT_STATE, action) {
     case EMBARKJS_INIT_SUCCEEDED:
       return {
         ready: true,
-        address: web3.eth.defaultAccount
+        address: web3.eth.defaultAccount,
+        network: {
+          id: action.networkId,
+          name: Networks[action.networkId]
+        }
       };
     default:
       return state;
