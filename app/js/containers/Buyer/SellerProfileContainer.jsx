@@ -7,9 +7,9 @@ import {connect} from "react-redux";
 import buyer from "../../features/buyer";
 import {withRouter} from "react-router-dom";
 
-import ETH from "../../../images/ethereum.png";
-import SNT from "../../../images/status.png";
-import ZRX from "../../../images/ZRX.png";
+import ETH from "../../../images/tokens/ETH.png";
+import SNT from "../../../images/tokens/SNT.png";
+import ZRX from "../../../images/tokens/ZRX.png";
 
 import './SellerProfileContainer.scss';
 

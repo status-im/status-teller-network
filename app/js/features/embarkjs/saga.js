@@ -1,3 +1,5 @@
+/*global web3*/
+
 import { fork, takeEvery, call, put } from 'redux-saga/effects';
 import { 
   EMBARKJS_INIT, EMBARKJS_INIT_FAILED, EMBARKJS_INIT_SUCCEEDED
@@ -7,7 +9,8 @@ import { onReady } from '../../services/embarkjs';
 export function *doInit() {
   try {
     yield call(onReady);
-    yield put({type: EMBARKJS_INIT_SUCCEEDED});
+    const networkId = yield call(web3.eth.net.getId);
+    yield put({type: EMBARKJS_INIT_SUCCEEDED, networkId});
   } catch (error) {
     yield put({type: EMBARKJS_INIT_FAILED, error});
   }

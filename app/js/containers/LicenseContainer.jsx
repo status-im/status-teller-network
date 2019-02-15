@@ -5,7 +5,6 @@ import {connect} from "react-redux";
 
 import license from "../features/license";
 import balances from "../features/balances";
-import embarkjs from "../features/embarkjs";
 
 import LicenseInfo from '../components/License/LicenseInfo';
 import LicenseBuy from '../components/License/LicenseBuy';
@@ -19,7 +18,6 @@ class LicenseContainer extends Component {
   }
 
   componentDidMount() {
-    this.props.loadSNTBalance(this.props.address);
     this.props.checkLicenseOwner();
     this.props.loadLicensePrice();
   }
@@ -44,8 +42,8 @@ class LicenseContainer extends Component {
     return (
       <React.Fragment>
         <LicenseInfo price={this.props.licensePrice} />
-        <YourSNTBalance value={this.props.sntBalance}/>
-        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntBalance < this.props.licensePrice}/>
+        <YourSNTBalance value={this.props.sntToken.balance}/>
+        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntToken.balance < this.props.licensePrice}/>
       </React.Fragment>
     );
   }
@@ -53,23 +51,19 @@ class LicenseContainer extends Component {
 
 LicenseContainer.propTypes = {
   history: PropTypes.object,
-  address: PropTypes.string,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
-  loadSNTBalance: PropTypes.func,
-  sntBalance: PropTypes.number,
+  sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func
 };
 
 const mapStateToProps = state => {
-  const address = embarkjs.selectors.getAddress(state) || '';
   return {
-    address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
-    sntBalance: balances.selectors.getSNTBalance(state, address),
+    sntToken: balances.selectors.getTokenBySymbol(state, 'SNT'),
     licensePrice: license.selectors.getLicensePrice(state)
   };
 };
@@ -77,7 +71,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    loadSNTBalance: balances.actions.loadSNTBalance,
     buyLicense: license.actions.buyLicense,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     loadLicensePrice: license.actions.loadPrice

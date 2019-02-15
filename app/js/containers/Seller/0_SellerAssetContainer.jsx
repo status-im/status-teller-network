@@ -1,17 +1,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import SNT from 'Embark/contracts/SNT';
+
 import {connect} from "react-redux";
 
+import balances from "../../features/balances";
 import newSeller from "../../features/newSeller";
 import SellerAssets from '../../components/Seller/SellerAssets';
-import ETH from "../../../images/ethereum.png";
-import SNTIcon from "../../../images/status.png";
-
-const availableAssets = [
-  {name: 'ETH', icon: ETH, address: '0x0000000000000000000000000000000000000000'},
-  {name: 'SNT', icon: SNTIcon, address: SNT.address}
-];
 
 class SellerAssetContainer extends Component {
   constructor(props) {
@@ -39,18 +33,20 @@ class SellerAssetContainer extends Component {
   };
 
   render() {
-    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} availableAssets={availableAssets}/>);
+    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset} availableAssets={this.props.tokens}/>);
   }
 }
 
 SellerAssetContainer.propTypes = {
   footer: PropTypes.object,
   setAsset: PropTypes.func,
-  seller: PropTypes.object
+  seller: PropTypes.object,
+  tokens: PropTypes.array
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state)
+  seller: newSeller.selectors.getNewSeller(state),
+  tokens: balances.selectors.getTokensWithPositiveBalance(state)
 });
 
 export default connect(
