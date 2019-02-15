@@ -1,3 +1,3 @@
-import { LOAD_SNT_BALANCE } from './constants';
+import { UPDATE_BALANCES } from './constants';
 
-export const loadSNTBalance = (address) => ({ type: LOAD_SNT_BALANCE, address });
+export const update = (tokens, address) => ({ type: UPDATE_BALANCES, tokens, address });

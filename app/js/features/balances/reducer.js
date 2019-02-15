@@ -1,17 +1,16 @@
 import {
-  LOAD_SNT_BALANCE_SUCCEEDED
+  UPDATE_BALANCE_SUCCEEDED
 } from './constants';
-import Web3 from 'web3';
+import { fromTokenDecimals } from '../../utils/numbers';
 
-const DEFAULT_STATE = {
-};
+const DEFAULT_STATE = {};
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case LOAD_SNT_BALANCE_SUCCEEDED: {
-      const snt = Web3.utils.fromWei(action.value);
+    case UPDATE_BALANCE_SUCCEEDED: {
+      const balance = fromTokenDecimals(action.value, action.token.decimals);
       return {
-        ...state, [action.address]: { ...action.address, snt: parseInt(snt, 10) }
+        ...state, [action.token.symbol]: {...action.token, balance}
       };
     }
     default:

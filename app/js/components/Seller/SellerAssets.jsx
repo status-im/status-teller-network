@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {ButtonGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 import CheckButton from '../ui/CheckButton';
+import {TokenImages} from '../../utils/networks';
 
 class SellerAssets extends Component {
   selectAsset(selectedAsset) {
@@ -21,7 +22,10 @@ class SellerAssets extends Component {
             <CheckButton active={this.props.selectedAsset === asset.address}
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
-              <img src={asset.icon} alt={asset.name + ' icon'} className="mr-3"/> {asset.name}
+              <img src={TokenImages[`${asset.symbol}.png`]} alt={asset.name + ' icon'} className="mr-3"/>
+              {asset.name} 
+              <br/>
+              <span className="ml-5 text-muted">{asset.balance}</span>
             </CheckButton>
           ))}
         </ButtonGroup>
