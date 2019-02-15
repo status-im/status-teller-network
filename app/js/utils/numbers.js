@@ -16,3 +16,4 @@ export const fromTokenDecimals = (value, decimals) => {
   const dec = padLeft(value.mod(pow).toString(10), decimals).replace(/0+$/, '');
   return int.toString(10) + (dec !== "" ? "." + dec : "");
 };
+

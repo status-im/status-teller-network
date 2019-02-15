@@ -613,4 +613,5 @@ export const Tokens = {
       address: "0x93bb0afbd0627bbd3a6c72bc318341d3a22e254a"
     }
   ]
-}
+};
+
