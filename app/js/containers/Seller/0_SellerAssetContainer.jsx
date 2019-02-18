@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {connect} from "react-redux";
 
-import balances from "../../features/balances";
+import network from "../../features/network";
 import newSeller from "../../features/newSeller";
 import SellerAssets from '../../components/Seller/SellerAssets';
 
@@ -17,6 +17,10 @@ class SellerAssetContainer extends Component {
     this.props.footer.onPageChange(() => {
       this.props.setAsset(this.state.selectedAsset);
     });
+  }
+
+  componentDidMount() {
+    this.props.updateBalances();
   }
 
   validate(asset) {
@@ -40,18 +44,20 @@ class SellerAssetContainer extends Component {
 SellerAssetContainer.propTypes = {
   footer: PropTypes.object,
   setAsset: PropTypes.func,
+  updateBalances: PropTypes.func,
   seller: PropTypes.object,
   tokens: PropTypes.array
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
-  tokens: balances.selectors.getTokensWithPositiveBalance(state)
+  tokens: network.selectors.getTokensWithPositiveBalance(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setAsset: newSeller.actions.setAsset
+    setAsset: newSeller.actions.setAsset,
+    updateBalances: network.actions.updateBalances
   }
 )(SellerAssetContainer);

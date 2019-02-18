@@ -1,5 +1,10 @@
 export const getProfile = (state, address) => {
   const lAddress = address.toLowerCase();
+  
+  if (!state.metadata.users[lAddress]) {
+    return null;
+  }
+
   return {
     address: lAddress,
     ...state.metadata.users[lAddress],

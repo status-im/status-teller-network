@@ -23,7 +23,7 @@ class YourSNTBalance extends Component {
 
 YourSNTBalance.propTypes = {
   t: PropTypes.func,
-  value: PropTypes.number
+  value: PropTypes.string
 };
 
 export default withNamespaces()(YourSNTBalance);

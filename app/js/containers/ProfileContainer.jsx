@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import metadata from '../features/metadata';
-import embarkjs from '../features/embarkjs';
+import network from '../features/network';
 
 import SellerInformation from '../components/SellerInformation';
 import Trades from '../components/Trades';
@@ -35,7 +35,7 @@ ProfileContainer.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const address = embarkjs.selectors.getAddress(state) || '';
+  const address = network.selectors.getAddress(state) || '';
   return {
     address,
     profile: metadata.selectors.getProfile(state, address)

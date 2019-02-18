@@ -2,7 +2,7 @@ import React from 'react';
 
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
-import { withKnobs, number } from '@storybook/addon-knobs';
+import { withKnobs, string } from '@storybook/addon-knobs';
 
 import YourSNTBalance from '../app/js/components/YourSNTBalance';
 
@@ -11,6 +11,6 @@ storiesOf('YourSNTBalance', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <YourSNTBalance value={number('value', 10)}/>
+      <YourSNTBalance value={string('value', 10)}/>
     ))
   );

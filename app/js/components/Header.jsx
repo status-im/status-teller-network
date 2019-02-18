@@ -13,7 +13,7 @@ const Header = ({profile}) => (
       <NavbarBrand tag={Link} to="/"><FontAwesomeIcon icon={faBullseye} className="mr-2"/><span className="text-body text-logo">TN</span></NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {profile.username && <NavLink tag={Link} to="/profile/">Profile</NavLink>}
+          {profile && <NavLink tag={Link} to="/profile/">Profile</NavLink>}
         </NavItem>
       </Nav>
     </Navbar>

@@ -4,12 +4,14 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import license from "../features/license";
-import balances from "../features/balances";
+import network from "../features/network";
 
 import LicenseInfo from '../components/License/LicenseInfo';
 import LicenseBuy from '../components/License/LicenseBuy';
 import Loading from '../components/ui/Loading';
 import YourSNTBalance from '../components/YourSNTBalance';
+
+const LICENSE_TOKEN_SYMBOL = 'SNT';
 
 class LicenseContainer extends Component {
   constructor(props) {
@@ -20,6 +22,7 @@ class LicenseContainer extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
     this.props.loadLicensePrice();
+    this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
   }
 
   componentDidUpdate() {
@@ -57,13 +60,14 @@ LicenseContainer.propTypes = {
   isLicenseOwner: PropTypes.bool,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
-  loadLicensePrice: PropTypes.func
+  loadLicensePrice: PropTypes.func,
+  updateBalance: PropTypes.func
 };
 
 const mapStateToProps = state => {
   return {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
-    sntToken: balances.selectors.getTokenBySymbol(state, 'SNT'),
+    sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: license.selectors.getLicensePrice(state)
   };
 };
@@ -73,6 +77,7 @@ export default connect(
   {
     buyLicense: license.actions.buyLicense,
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    loadLicensePrice: license.actions.loadPrice
+    loadLicensePrice: license.actions.loadPrice,
+    updateBalance: network.actions.updateBalance
   }
 )(withRouter(LicenseContainer));
