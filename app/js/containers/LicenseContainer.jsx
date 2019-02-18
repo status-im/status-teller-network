@@ -20,6 +20,10 @@ class LicenseContainer extends Component {
   }
 
   componentDidMount() {
+    if (this.props.isLicenseOwner) {
+      return this.props.history.push('/sell');
+    }
+
     this.props.checkLicenseOwner();
     this.props.loadLicensePrice();
     this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
