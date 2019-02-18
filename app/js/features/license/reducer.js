@@ -4,6 +4,7 @@ import {
   CHECK_LICENSE_OWNER_SUCCEEDED, USER_RATING_FAILED,
   USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
 } from './constants';
+import { fromTokenDecimals } from '../../utils/numbers';
 
 const DEFAULT_STATE = {
   licenseOwner: false,
@@ -32,7 +33,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case LOAD_PRICE_SUCCEEDED:
       return {
         ...state,
-        price: action.price
+        price: fromTokenDecimals(action.price, 18)
       };
     case CHECK_LICENSE_OWNER:
       return {

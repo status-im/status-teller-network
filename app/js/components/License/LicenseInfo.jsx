@@ -32,7 +32,7 @@ class LicenseInfo extends Component {
 
 LicenseInfo.propTypes = {
   t: PropTypes.func,
-  price: PropTypes.number
+  price: PropTypes.string
 };
 
 export default withNamespaces()(LicenseInfo);

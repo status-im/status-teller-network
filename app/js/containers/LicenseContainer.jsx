@@ -41,6 +41,10 @@ class LicenseContainer extends Component {
     this.props.buyLicense();
   };
 
+  enoughBalance() {
+    return parseInt(this.props.sntToken.balance, 10) >= parseInt(this.props.licensePrice, 10);
+  }
+
   render() {
     if (this.state.isBuying) {
       return <Loading mining/>;
@@ -50,7 +54,7 @@ class LicenseContainer extends Component {
       <React.Fragment>
         <LicenseInfo price={this.props.licensePrice} />
         <YourSNTBalance value={this.props.sntToken.balance}/>
-        <LicenseBuy onClick={this.buyLicense} disabled={this.props.sntToken.balance < this.props.licensePrice}/>
+        <LicenseBuy onClick={this.buyLicense} disabled={!this.enoughBalance()}/>
       </React.Fragment>
     );
   }
@@ -63,7 +67,7 @@ LicenseContainer.propTypes = {
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   sntToken: PropTypes.object,
-  licensePrice: PropTypes.number,
+  licensePrice: PropTypes.string,
   loadLicensePrice: PropTypes.func,
   updateBalance: PropTypes.func
 };
