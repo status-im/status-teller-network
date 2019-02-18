@@ -36,9 +36,8 @@ import SignatureContainer from '../containers/tmp/SignatureContainer';
 import ArbitrationContainer from '../containers/tmp/ArbitrationContainer';
 
 import prices from '../features/prices';
-import embarkjs from '../features/embarkjs';
+import network from '../features/network';
 import metadata from '../features/metadata';
-import balances from '../features/balances';
 
 const relevantPairs = {
   from: ['ETH', 'SNT'],
@@ -55,7 +54,6 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       this.props.loadProfile(this.props.address);
-      this.props.updateBalances(this.props.tokens, this.props.address);
     }
   }
 
@@ -104,11 +102,10 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const address = embarkjs.selectors.getAddress(state) || '';
+  const address = network.selectors.getAddress(state) || '';
   return {
     address,
-    isReady: embarkjs.selectors.isReady(state),
-    tokens: embarkjs.selectors.getTokens(state),
+    isReady: network.selectors.isReady(state),
     profile: metadata.selectors.getProfile(state, address)
   };
 };
@@ -119,17 +116,14 @@ App.propTypes = {
   isReady: PropTypes.bool,
   address: PropTypes.string,
   profile: PropTypes.object,
-  loadProfile: PropTypes.func,
-  tokens: PropTypes.array,
-  updateBalances: PropTypes.func
+  loadProfile: PropTypes.func
 };
 
 export default connect(
   mapStateToProps,
   {
     fetchPrices: prices.actions.fetchPrices,
-    init: embarkjs.actions.init,
-    loadProfile: metadata.actions.load,
-    updateBalances: balances.actions.update
+    init: network.actions.init,
+    loadProfile: metadata.actions.load
   }
 )(App);

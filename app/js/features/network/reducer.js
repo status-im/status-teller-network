@@ -1,9 +1,10 @@
 /*global web3*/
 
 import {
-  EMBARKJS_INIT_SUCCEEDED
+  INIT_SUCCEEDED, UPDATE_BALANCE_SUCCEEDED
 } from './constants';
 import { Networks, Tokens } from '../../utils/networks';
+import { fromTokenDecimals } from '../../utils/numbers';
 
 const DEFAULT_STATE = {
   ready: false,
@@ -12,13 +13,17 @@ const DEFAULT_STATE = {
     id: 0,
     name: ''
   },
-  tokens: []
+  tokens: {}
 };
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case EMBARKJS_INIT_SUCCEEDED: {
+    case INIT_SUCCEEDED: {
       const name = Networks[action.networkId];
+      const tokens = Tokens[name].reduce((acc, token) => {
+        acc[token.symbol] = token;
+        return acc;
+      }, {});
       return {
         ready: true,
         address: web3.eth.defaultAccount,
@@ -26,7 +31,13 @@ function reducer(state = DEFAULT_STATE, action) {
           id: action.networkId,
           name
         },
-        tokens: Tokens[name]
+        tokens
+      };
+    }
+    case UPDATE_BALANCE_SUCCEEDED: {
+      const balance = fromTokenDecimals(action.value, action.token.decimals);
+      return {
+        ...state, tokens: { ...state.tokens, [action.token.symbol]: {...action.token, balance} }
       };
     }
     default:

@@ -10,29 +10,27 @@ import rootReducer from './reducer';
 
 import prices from './features/prices';
 import license from './features/license';
-import embarkjs from './features/embarkjs';
+import network from './features/network';
 import escrow from './features/escrow';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
-import balances from './features/balances';
 
 const persistConfig = {
   key: 'teller-network-store',
   storage,
-  blacklist: ['embarkjs']
+  blacklist: ['network']
 };
 
 function *root() {
   yield all([
     ...prices.saga,
     ...license.saga,
-    ...embarkjs.saga,
+    ...network.saga,
     ...escrow.saga,
     ...signature.saga,
     ...arbitration.saga,
-    ...metadata.saga,
-    ...balances.saga
+    ...metadata.saga
   ]);
 }
 

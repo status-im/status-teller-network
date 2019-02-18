@@ -3,7 +3,7 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import embarkjs from "../features/embarkjs";
+import network from "../features/network";
 import metadata from "../features/metadata";
 
 import Loading from '../components/ui/Loading';
@@ -82,7 +82,7 @@ EditProfileContainer.propTypes = {
 };
 
 const mapStateToProps = state => {
-  const address = embarkjs.selectors.getAddress(state) || '';
+  const address = network.selectors.getAddress(state) || '';
   return {
     address,
     profile: metadata.selectors.getProfile(state, address),
