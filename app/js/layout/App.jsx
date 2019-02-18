@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {HashRouter, Route} from "react-router-dom";
+import {HashRouter, Route, Redirect, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import {Container} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -38,6 +38,7 @@ import ArbitrationContainer from '../containers/tmp/ArbitrationContainer';
 import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
+import license from "../features/license";
 
 const relevantPairs = {
   from: ['ETH', 'SNT'],
@@ -54,6 +55,7 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       this.props.loadProfile(this.props.address);
+      this.props.checkLicenseOwner();
     }
   }
 
@@ -66,35 +68,41 @@ class App extends Component {
       <HashRouter>
         <Container>
           <Header profile={this.props.profile}/>
-          <Route exact path="/" component={HomeContainer}/>
-          <Route exact path="/profile" component={ProfileContainer}/>
-          <Route exact path="/profile/edit" component={EditProfileContainer}/>
-          <Route exact path="/license" component={LicenseContainer}/>
+          <Switch>
+            <Route exact path="/" component={HomeContainer}/>
+            <Route exact path="/profile" component={ProfileContainer}/>
+            <Route exact path="/profile/edit" component={EditProfileContainer}/>
+            <Route exact path="/license" component={LicenseContainer}/>
 
 
-          <Route exact path="/buy" component={OfferListContainer}/>
-          <Route exact path="/buy/map" component={MapContainer}/>
-          <Route exact path="/buy/list" component={BankOfferListContainer}/>
-          <Route exact path="/buy/profile/:address" component={SellerProfileContainer}/>
-          <Wizard path="/buy/contact" steps={[
-            {path: '/buy/contactForm', component: BuyerContactContainer},
-            {path: '/buy/offer', component: OfferTradeContainer}
-          ]}/>
+            <Route exact path="/buy" component={OfferListContainer}/>
+            <Route exact path="/buy/map" component={MapContainer}/>
+            <Route exact path="/buy/list" component={BankOfferListContainer}/>
+            <Route exact path="/buy/profile/:address" component={SellerProfileContainer}/>
+            <Wizard path="/buy/contact" steps={[
+              {path: '/buy/contactForm', component: BuyerContactContainer},
+              {path: '/buy/offer', component: OfferTradeContainer}
+            ]}/>
 
-          <Wizard path="/sell/" steps={[
-            {path: '/sell/asset', component: SellerAssetContainer},
-            {path: '/sell/location', component: SellerLocationContainer},
-            {path: '/sell/payment-methods', component: SellerPaymentMethodsContainer},
-            {path: '/sell/currency', component: SellerCurrencyContainer},
-            {path: '/sell/margin', component: SellerMarginContainer, nextLabel: 'Confirm price'},
-            {path: '/sell/contact', component: SellerContactContainer, nextLabel: 'Post the offer'}
-          ]}/>
+            {this.props.isLicenseOwner &&
+              <Wizard path="/sell/" steps={[
+                {path: '/sell/asset', component: SellerAssetContainer},
+                {path: '/sell/location', component: SellerLocationContainer},
+                {path: '/sell/payment-methods', component: SellerPaymentMethodsContainer},
+                {path: '/sell/currency', component: SellerCurrencyContainer},
+                {path: '/sell/margin', component: SellerMarginContainer, nextLabel: 'Confirm price'},
+                {path: '/sell/contact', component: SellerContactContainer, nextLabel: 'Post the offer'}
+              ]}/>
+            }
 
-          <Route path="/tmp/price" component={PriceContainer}/>
-          <Route path="/tmp/escrows" component={EscrowsContainer}/>
-          <Route path="/tmp/map" component={MapContainer}/>
-          <Route path="/tmp/signature" component={SignatureContainer}/>
-          <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
+            <Route path="/tmp/price" component={PriceContainer}/>
+            <Route path="/tmp/escrows" component={EscrowsContainer}/>
+            <Route path="/tmp/map" component={MapContainer}/>
+            <Route path="/tmp/signature" component={SignatureContainer}/>
+            <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
+
+            <Redirect to="/"/>
+          </Switch>
         </Container>
       </HashRouter>
     );
@@ -105,6 +113,7 @@ const mapStateToProps = (state) => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
+    isLicenseOwner: license.selectors.isLicenseOwner(state),
     isReady: network.selectors.isReady(state),
     profile: metadata.selectors.getProfile(state, address)
   };
@@ -116,7 +125,9 @@ App.propTypes = {
   isReady: PropTypes.bool,
   address: PropTypes.string,
   profile: PropTypes.object,
-  loadProfile: PropTypes.func
+  loadProfile: PropTypes.func,
+  checkLicenseOwner: PropTypes.func,
+  isLicenseOwner: PropTypes.bool
 };
 
 export default connect(
@@ -124,6 +135,7 @@ export default connect(
   {
     fetchPrices: prices.actions.fetchPrices,
     init: network.actions.init,
-    loadProfile: metadata.actions.load
+    loadProfile: metadata.actions.load,
+    checkLicenseOwner: license.actions.checkLicenseOwner
   }
 )(App);
