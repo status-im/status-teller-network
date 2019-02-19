@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Offers from '../app/js/components/Offers';
+import Offers from '../app/js/components/Profile/Offers';
 
 storiesOf('Offers', module)
   .add(
@@ -14,9 +14,8 @@ storiesOf('Offers', module)
           {
             asset: '0x0',
             currency: 'EUR',
-            paymentMethods: ['Credit Card'],
-            margin: 1,
-            marketType: 1
+            paymentMethodsForHuman: ['Credit Card'],
+            rate: '1% Above Bitfinex'
           }
         ]
       } />

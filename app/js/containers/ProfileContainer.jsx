@@ -6,8 +6,8 @@ import metadata from '../features/metadata';
 import network from '../features/network';
 
 import SellerInformation from '../components/SellerInformation';
-import Trades from '../components/Trades';
-import Offers from '../components/Offers';
+import Trades from '../components/Profile/Trades';
+import Offers from '../components/Profile/Offers';
 import StatusContactCode from '../components/StatusContactCode';
 
 class ProfileContainer extends Component {
