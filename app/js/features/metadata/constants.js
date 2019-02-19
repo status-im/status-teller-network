@@ -1,3 +1,4 @@
+// Action
 export const LOAD = 'METADATA/LOAD';
 export const LOAD_USER = 'METADATA/LOAD_USER';
 export const LOAD_USER_SUCCEEDED = 'METADATA/LOAD_USER/SUCCEEDED';
@@ -17,3 +18,7 @@ export const UPDATE_USER = 'METADATA/UPDATE_USER';
 export const UPDATE_USER_SUCCEEDED = 'METADATA/UPDATE_USER/SUCCEEDED';
 export const UPDATE_USER_FAILED = 'METADATA/UPDATE_USER/FAILED';
 export const UPDATE_USER_PRE_SUCCESS = 'METADATA/UPDATE_USER/PRE_SUCCESS';
+
+// Mapping
+export const PAYMENT_METHODS = ['Cash (In person)', 'Bank Transfer', 'International wire'];
+export const MARKET_TYPES = ['Above', 'Below'];
