@@ -29,9 +29,17 @@ export function *onLoadUser() {
 
 export function *loadOffers({address}) {
   try {
-    const offerIds = yield MetadataStore.methods.getOfferIds(address).call();
+    let offerIds = [];
+
+    if (address) {
+      offerIds = yield MetadataStore.methods.getOfferIds(address).call();
+    } else {
+      const size = yield MetadataStore.methods.offersSize().call();
+      offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
+    }
+
     const offers = yield all(offerIds.map((id) => MetadataStore.methods.offer(id).call()));
-    yield put({type: LOAD_OFFERS_SUCCEEDED, offers, address});
+    yield put({type: LOAD_OFFERS_SUCCEEDED, offers});
   } catch (error) {
     console.error(error);
     yield put({type: LOAD_OFFERS_FAILED, error: error.message});

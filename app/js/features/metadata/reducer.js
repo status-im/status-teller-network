@@ -67,10 +67,15 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, users: {...state.users, [action.address.toLowerCase()]: action.user}
       };
-    case LOAD_OFFERS_SUCCEEDED:
+    case LOAD_OFFERS_SUCCEEDED: {
+      const newOffers = action.offers.reduce((acc, offer) => {
+        acc[offer.owner] = offerForHuman(offer);
+        return acc;
+      }, {});
       return {
-        ...state, offers: {...state.offers, [action.address.toLowerCase()]: action.offers.map((offer) => offerForHuman(offer))}
+        ...state, offers: {...state.offers, ...newOffers}
       };
+    }
     default:
       return state;
   }
