@@ -13,7 +13,11 @@ const BELOW = 1;
 class MarginSelectorForm extends Component {
 
   render() {
-    const {t, currency, margin, marketType} = this.props;
+    const {t, currency, margin, marketType, token, prices} = this.props;
+
+    const basePrice = prices[token.symbol][currency];
+    const marginPrice = (margin || 0) / 100 * basePrice;
+    const calcPrice = basePrice + (marketType === ABOVE ? marginPrice : -marginPrice);
 
     return (
       <Form ref={c => { this.form = c; }}>
@@ -45,7 +49,7 @@ class MarginSelectorForm extends Component {
 
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
         <div className="border rounded p-3">
-          1 TODO = 1,234.00 {currency}
+          1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
@@ -62,6 +66,8 @@ class MarginSelectorForm extends Component {
 
 MarginSelectorForm.propTypes = {
   t: PropTypes.func,
+  token: PropTypes.object,
+  prices: PropTypes.object,
   margin: PropTypes.number,
   marketType: PropTypes.number,
   currency: PropTypes.string,

@@ -21,4 +21,5 @@ export default reducer;
 
 export const getEthUsdPrice = state => state.prices.ETH && state.prices.ETH.USD;
 export const getSntUsdPrice = state => state.prices.SNT && state.prices.SNT.USD;
+export const getPrices = state => state.prices;
 export const hasPricesError = state => !!state.prices.error;
