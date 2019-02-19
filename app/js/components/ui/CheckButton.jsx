@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import {faCircle as faCircleReg} from "@fortawesome/free-regular-svg-icons";
 import classnames from 'classnames';
 
 import "./CheckButton.scss";
@@ -13,9 +14,8 @@ const CheckButton = ({children, active, onClick, size}) => (
     small: size === 's'
   })} size="lg" color="link" block active={active} onClick={onClick}>
     {children}
-    {active &&
-    <FontAwesomeIcon className="float-right text-primary" icon={faCheck}/>
-    }
+    <FontAwesomeIcon className={classnames("float-right", {"text-primary": active, "text-secondary": !active})}
+                     icon={active ? faCircleReg : faCircle}/>
   </Button>
 );
 
