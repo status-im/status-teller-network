@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Trades from '../app/js/components/Trades';
+import Trades from '../app/js/components/Profile/Trades';
 
 storiesOf('Trades', module)
   .add(
