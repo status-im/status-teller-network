@@ -11,7 +11,6 @@ contract MetadataStore is Ownable {
 
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
-    enum OfferStatus {Open}
 
     event OfferAdded(
         address owner,
@@ -23,8 +22,7 @@ contract MetadataStore is Ownable {
         string username,
         PaymenMethods[] paymentMethods,
         MarketType marketType,
-        uint8 margin,
-        OfferStatus status
+        uint8 margin
     );
 
     event OfferUpdated(
@@ -38,6 +36,11 @@ contract MetadataStore is Ownable {
         PaymenMethods[] paymentMethods,
         MarketType marketType,
         uint8 margin
+    );
+
+    event OfferRemoved(
+        address owner,
+        uint256 offerId
     );
 
     event UserUpdated(
@@ -59,7 +62,6 @@ contract MetadataStore is Ownable {
         uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
-        OfferStatus status;
     }
 
     address public license;
@@ -116,13 +118,13 @@ contract MetadataStore is Ownable {
             tmpUser.username = _username;
         }
         
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, OfferStatus.Open);
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin, OfferStatus.Open
+            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
         );
     }
 
@@ -185,6 +187,21 @@ contract MetadataStore is Ownable {
         offers[_offerId].margin = _margin;
 
         emit OfferUpdated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+    }
+
+    /**
+    * @notice Remove user offer
+    * @param _offerId Id of the offer to remove
+    */
+    function removeOffer(
+        uint256 _offerId
+    ) public {
+        require(userWhitelist[msg.sender], "User does not exist");
+        require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
+
+        delete offers[_offerId];
+        offerWhitelist[msg.sender][_offerId] = false;
+        emit OfferRemoved(msg.sender, _offerId);
     }
 
     /**

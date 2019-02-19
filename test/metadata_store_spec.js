@@ -1,4 +1,4 @@
-/*global contract, config, it, assert, web3, before*/
+/*global contract, config, it, assert, before*/
 
 const TestUtils = require("../utils/testUtils");
 
@@ -97,6 +97,18 @@ contract("MetadataStore", function () {
     const user = await MetadataStore.methods.users(0).call();
     assert.strictEqual(user.location, 'Montreal');
     assert.strictEqual(user.username, 'Anthony');
+  });
+
+  it("should allow to delete an offer", async function () {
+    const receipt = await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1).send();
+    const offerAdded = receipt.events.OfferAdded;
+    const offerId = offerAdded.returnValues.offerId;
+
+    const receipt2 = await MetadataStore.methods.removeOffer(offerId).send();
+    const offerRemoved = receipt2.events.OfferRemoved;
+    assert(!!offerRemoved, "OfferRemoved() not triggered");
+    assert.equal(offerRemoved.returnValues.owner, accounts[0], "Invalid seller");
+    assert.equal(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
   });
 
 });
