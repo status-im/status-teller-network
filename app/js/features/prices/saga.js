@@ -19,7 +19,7 @@ export function *onFetchPrices() {
 }
 
 
-function *fetchPricesPeriodically() {
+function *fetchAllTokenPrices() {
   const requestChan = yield actionChannel(PRICE_INTERVAL);
   while (true) {
     yield take(requestChan);
@@ -37,4 +37,4 @@ function *fetchPricesPeriodically() {
   }
 }
 
-export default [fork(onFetchPrices), fork(fetchPricesPeriodically)];
+export default [fork(onFetchPrices), fork(fetchAllTokenPrices)];
