@@ -31,7 +31,7 @@ class SellerMarginContainer extends Component {
     }
 
     this.props.fetchPrices({
-      from: [this._getSymbol()],
+      from: [this.props.token.symbol],
       to: [this.props.seller.currency]
     });
   }
@@ -56,18 +56,13 @@ class SellerMarginContainer extends Component {
     this.setState({marketType});
   };
 
-  _getSymbol(){
-    return Object.keys(this.props.tokens)
-                 .find(token => this.props.tokens[token].address === this.props.seller.asset);
-  }
-
   render() {
     if (!this.state.ready) {
       return <Loading page/>;
     }
 
     return (
-      <MarginSelectorForm token={this.props.tokens[this._getSymbol()]}
+      <MarginSelectorForm token={this.props.token}
                           prices={this.props.prices}
                           currency={this.props.seller.currency}
                           margin={this.state.margin}
@@ -83,14 +78,14 @@ SellerMarginContainer.propTypes = {
   fetchPrices: PropTypes.func,
   setMargin: PropTypes.func,
   seller: PropTypes.object,
-  tokens: PropTypes.object,
+  token: PropTypes.object,
   wizard: PropTypes.object,
   footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
-  tokens: network.selectors.getTokens(state),
+  token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
   prices: prices.selectors.getPrices(state)
 });
 
