@@ -26,7 +26,7 @@ const OfferTrade = ({address, name, min, max, fiat, asset, onClick, assetQty, fi
                  placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)}/>
           <span className="input-icon">{asset}</span>
         </FormGroup>
-        {disabled && <p className="text-info">{t('buyer.offerTrade.enterBefore')}</p>}
+        {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
         <Button color="primary" className="px-4" onClick={onClick} disabled={disabled}>Open trade</Button>
       </Form>
     </Col>

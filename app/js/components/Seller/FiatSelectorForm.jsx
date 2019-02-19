@@ -10,7 +10,7 @@ class FiatSelectorForm extends Component {
     if (symbol) {
       this.props.changeCurrency(symbol.id);
     }
-    
+
   };
 
   onChange = (items) => {
@@ -41,7 +41,7 @@ class FiatSelectorForm extends Component {
             emptyLabel={t("fiatSelectorForm.emptyLabel")}
             defaultSelected={defaultSelectedValue}
           />
-          {!this.props.value && <p className="text-info">{t("fiatSelectorForm.selectValid")}</p>}
+          {!this.props.value && <p className="text-muted">{t("fiatSelectorForm.selectValid")}</p>}
         </FormGroup>
       </Fragment>
     );

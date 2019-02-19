@@ -29,7 +29,7 @@ exports[`SellerPosition should render correctly 1`] = `
       />
     </FormGroup>
     <p
-      className="text-info"
+      className="text-muted"
     >
       Enter a location to move to the next page
     </p>

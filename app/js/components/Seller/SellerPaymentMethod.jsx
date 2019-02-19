@@ -24,7 +24,7 @@ class SellerPaymentMethod extends Component {
           ))}
         </ButtonGroup>
 
-        {this.props.selectedMethods.length === 0 && <p className="text-info">Select one or more payment method to move to the next page</p>}
+        {this.props.selectedMethods.length === 0 && <p className="text-muted">Select one or more payment method to move to the next page</p>}
       </React.Fragment>
     );
   }
