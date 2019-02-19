@@ -21,3 +21,7 @@ export const getAddOfferStatus = (state) => {
 export const getUpdateUserStatus = (state) => {
   return state.metadata.updateUserStatus;
 };
+
+export const getOffers = (state) => {
+  return Object.values(state.metadata.offers) || [];
+}
