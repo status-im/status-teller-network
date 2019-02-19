@@ -29,11 +29,6 @@ class SellerMarginContainer extends Component {
     } else {
       this.setState({ready: true});
     }
-
-    this.props.fetchPrices({
-      from: [this.props.token.symbol],
-      to: [this.props.seller.currency]
-    });
   }
 
   validate(margin) {
@@ -75,7 +70,6 @@ class SellerMarginContainer extends Component {
 SellerMarginContainer.propTypes = {
   t: PropTypes.func,
   prices: PropTypes.object,
-  fetchPrices: PropTypes.func,
   setMargin: PropTypes.func,
   seller: PropTypes.object,
   token: PropTypes.object,
@@ -92,7 +86,6 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   {
-    setMargin: newSeller.actions.setMargin,
-    fetchPrices: prices.actions.fetchPrices
+    setMargin: newSeller.actions.setMargin
   }
 )(SellerMarginContainer);
