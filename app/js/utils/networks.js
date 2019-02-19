@@ -589,7 +589,7 @@ export const Tokens = {
     {
       symbol: 'SNT',
       name: "Status Network Token",
-      address: SNT.address,
+      address: SNT.address.toLowerCase(),
       decimals: 18
     }
   ],

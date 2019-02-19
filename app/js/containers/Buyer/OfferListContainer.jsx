@@ -29,26 +29,14 @@ class OfferListContainer extends Component {
           <Button tag={Link} color="link" className="float-right" to="/buy/map">On Map <FontAwesomeIcon
             icon={faArrowRight}/></Button>
         </h4>
-        {this.props.offers.map((data, idx) => <OfferListing key={'listing-' + idx}
-                                                            assets={[data.asset]}
-                                                            owner={data.owner}
-                                                            location={data.location}
-                                                            nbTrades={data.nbTrades}
-                                                            positiveRatings={data.positiveRatings}
-                                                            negativeRating={data.negativeRatings}/>)}
+        {this.props.offers.map((offer, idx) => <OfferListing key={'listing-' + idx} offer={offer}/>)}
 
         <h4 className="mt-5 clearfix">
           Bank/card transfer
           <Button tag={Link} color="link" className="float-right" to="/buy/list">See all <FontAwesomeIcon
             icon={faArrowRight}/></Button>
         </h4>
-        {this.props.offers.map((data, idx) => <OfferListing key={'listing-' + idx}
-                                                            assets={[data.asset]}
-                                                            owner={data.owner}
-                                                            location={data.location}
-                                                            nbTrades={data.nbTrades}
-                                                            positiveRatings={data.positiveRatings}
-                                                            negativeRating={data.negativeRatings}/>)}
+        {this.props.offers.map((offer, idx) => <OfferListing key={'listing-' + idx} offer={offer}/>)}
       </React.Fragment>
     );
   }
@@ -61,7 +49,7 @@ OfferListContainer.propTypes = {
 
 const mapStateToProps = state => {
   return {
-    offers: metadata.selectors.getOffers(state)
+    offers: metadata.selectors.getOffersWithUser(state)
   };
 };
 

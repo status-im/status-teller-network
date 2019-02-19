@@ -9,6 +9,9 @@ describe('Offers', () => {
       [
         {
           asset: '0x0',
+          token: {
+            symbol: 'ETH'
+          },
           currency: 'EUR',
           paymentMethods: ['Credit Card'],
           margin: 1,
