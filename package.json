@@ -53,6 +53,7 @@
     "ethereumjs-util": "^6.0.0",
     "i18next": "^13.1.2",
     "i18next-browser-languagedetector": "^2.2.4",
+    "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "number-to-bn": "^1.7.0",
     "react": "^16.6.3",
