@@ -1,7 +1,8 @@
 import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
-  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS
+  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
+  PAYMENT_METHODS, MARKET_TYPES
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -11,6 +12,14 @@ const DEFAULT_STATE = {
   users: {},
   offers: {}
 };
+
+function offerForHuman(offer) {
+  return {
+    ...offer,
+    paymentMethodsForHuman: offer.paymentMethods.map((i) => PAYMENT_METHODS[i]).join(' '),
+    rateForHuman: `${offer.margin}% ${MARKET_TYPES[offer.marketType]} Bitfinex`
+  };
+}
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
@@ -23,7 +32,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, addOfferStatus: States.pending
       };
     case ADD_OFFER_SUCCEEDED: {
-      const newOffers = state.offers[action.receipt.from.toLowerCase()].concat([action.offer]);
+      const newOffers = state.offers[action.receipt.from.toLowerCase()].concat([offerForHuman(action.offer)]);
       return {
         ...state,
         addOfferStatus: States.success,
@@ -60,7 +69,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_OFFERS_SUCCEEDED:
       return {
-        ...state, offers: {...state.offers, [action.address.toLowerCase()]: action.offers}
+        ...state, offers: {...state.offers, [action.address.toLowerCase()]: action.offers.map((offer) => offerForHuman(offer))}
       };
     default:
       return state;
