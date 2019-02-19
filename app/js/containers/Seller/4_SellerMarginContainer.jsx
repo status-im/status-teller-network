@@ -5,6 +5,9 @@ import {connect} from 'react-redux';
 import MarginSelectorForm from '../../components/Seller/MarginSelectorForm';
 import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
+import network from '../../features/network';
+import prices from '../../features/prices';
+
 
 class SellerMarginContainer extends Component {
   constructor(props) {
@@ -54,7 +57,9 @@ class SellerMarginContainer extends Component {
     }
 
     return (
-      <MarginSelectorForm currency={this.props.seller.currency}
+      <MarginSelectorForm token={this.props.token}
+                          prices={this.props.prices}
+                          currency={this.props.seller.currency}
                           margin={this.state.margin}
                           marginChange={this.marginChange}
                           marketType={this.state.marketType}
@@ -64,14 +69,18 @@ class SellerMarginContainer extends Component {
 
 SellerMarginContainer.propTypes = {
   t: PropTypes.func,
+  prices: PropTypes.object,
   setMargin: PropTypes.func,
   seller: PropTypes.object,
+  token: PropTypes.object,
   wizard: PropTypes.object,
   footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state)
+  seller: newSeller.selectors.getNewSeller(state),
+  token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
+  prices: prices.selectors.getPrices(state)
 });
 
 export default connect(
