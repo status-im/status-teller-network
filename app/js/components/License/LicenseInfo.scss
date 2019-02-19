@@ -1,0 +1,15 @@
+@import "../../../css/variable-overrides";
+
+.fee-card, .stake-card {
+  font-size: 17px;
+}
+
+.fee-card {
+  background-color: lighten($purple, 25%);
+  color: $purple;
+}
+
+.stake-card {
+  background-color: lighten($orange, 25%);
+  color: $orange;
+}

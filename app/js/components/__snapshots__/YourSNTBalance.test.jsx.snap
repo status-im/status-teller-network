@@ -1,51 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`YourSNTBalance should render correctly 1`] = `
-<Row
-  className="mt-5"
-  tag="div"
->
-  <Col
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
+<Fragment>
+  <h3 />
+  <p
+    className="border rounded p-3"
   >
     <span
-      className="font-weight-bold h5"
-    />
-  </Col>
-  <Col
-    className="pr-0"
-    tag="div"
-    widths={
-      Array [
-        "xs",
-        "sm",
-        "md",
-        "lg",
-        "xl",
-      ]
-    }
-    xs="12"
-  >
-    <Card
-      body={true}
-      className="rounded-0"
-      tag="div"
+      className="h3 font-weight-normal text-danger"
     >
-      <span>
-        10
-         SNT
-      </span>
-    </Card>
-  </Col>
-</Row>
+      <img
+        alt="SNT icon"
+        className="mr-2"
+        src="test-file-stub"
+      />
+      10
+       SNT
+    </span>
+  </p>
+</Fragment>
 `;
