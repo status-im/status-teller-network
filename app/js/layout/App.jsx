@@ -3,6 +3,7 @@ import {HashRouter, Route, Redirect, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import {Container} from 'reactstrap';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import Wizard from '../components/Wizard';
 import Header from "../components/Header";
@@ -57,6 +58,11 @@ class App extends Component {
       this.props.loadProfile(this.props.address);
       this.props.checkLicenseOwner();
     }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    return nextProps.isReady !== this.props.isReady ||
+      !_.isEqual(nextProps.profile, this.props.profile);
   }
 
   render() {
