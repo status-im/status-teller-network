@@ -7,7 +7,6 @@ import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 import network from '../../features/network';
 import prices from '../../features/prices';
-import {getPrices} from '../../features/prices/reducer';
 
 
 class SellerMarginContainer extends Component {
@@ -92,7 +91,7 @@ SellerMarginContainer.propTypes = {
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
   tokens: network.selectors.getTokens(state),
-  prices: getPrices(state)
+  prices: prices.selectors.getPrices(state)
 });
 
 export default connect(
