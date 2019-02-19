@@ -109,9 +109,6 @@ contract("MetadataStore", function () {
     assert(!!offerRemoved, "OfferRemoved() not triggered");
     assert.equal(offerRemoved.returnValues.owner, accounts[0], "Invalid seller");
     assert.equal(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
-
-    const offer = await MetadataStore.methods.offers(offerId).call();
-console.log(offer);
   });
 
 });
