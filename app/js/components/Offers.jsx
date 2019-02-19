@@ -21,7 +21,7 @@ class Offers extends Component {
           <Row>
             <dl className="col-6">
               <dt>{t('offers.type')}</dt>
-              <dd></dd>
+              <dd>{t('offers.typeSell')}</dd>
             </dl>
             <dl className="col-6">
               <dt>{t('offers.paymentMethods')}</dt>
