@@ -14,7 +14,7 @@ storiesOf('Offers', module)
           {
             asset: '0x0',
             currency: 'EUR',
-            paymentMethodsForHuman: ['Credit Card'],
+            paymentMethodsForHuman: ['Bank Transfer'],
             rate: '1% Above Bitfinex'
           }
         ]
