@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import Blockies from 'react-blockies';
 import Reputation from "./Reputation.jsx";
+import Address from './Address';
 
 const SellerInformation = ({address, name, reputation}) => (
   <Row className="border rounded py-4 m-0 text-center shadow-sm">
@@ -13,13 +14,14 @@ const SellerInformation = ({address, name, reputation}) => (
       <h4 className="font-weight-bold">{name}</h4>
     </Col>
     <Col xs="12">
-      <p className="text-muted">{address}</p>
+      <p className="text-muted">
+        <Address address={address}/>
+      </p>
     </Col>
     <Col xs="12">
       <Reputation reputation={reputation}/>
     </Col>
-  </Row>
-);
+  </Row>);
 
 SellerInformation.propTypes = {
   address: PropTypes.string,
