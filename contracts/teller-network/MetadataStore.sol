@@ -62,11 +62,7 @@ contract MetadataStore is Ownable {
         uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
-<<<<<<< HEAD
-=======
-        OfferStatus status;
         address owner;
->>>>>>> Load offers
     }
 
     address public license;
@@ -123,7 +119,7 @@ contract MetadataStore is Ownable {
             tmpUser.username = _username;
         }
         
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, OfferStatus.Open, msg.sender);
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
@@ -218,7 +214,6 @@ contract MetadataStore is Ownable {
         uint8 margin,
         PaymenMethods[] memory paymentMethods,
         MarketType marketType,
-        OfferStatus status,
         address owner
     ) {
         return (
@@ -227,7 +222,6 @@ contract MetadataStore is Ownable {
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].marketType,
-            offers[_id].status,
             offers[_id].owner
         );
     }

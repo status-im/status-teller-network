@@ -58,7 +58,7 @@ exports[`Offers should render correctly 1`] = `
     <CardHeader
       tag="div"
     >
-      0x0
+      ETH
       <FontAwesomeIcon
         border={false}
         className="mx-4"
