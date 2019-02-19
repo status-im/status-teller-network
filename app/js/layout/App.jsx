@@ -74,7 +74,6 @@ class App extends Component {
             <Route exact path="/profile/edit" component={EditProfileContainer}/>
             <Route exact path="/license" component={LicenseContainer}/>
 
-
             <Route exact path="/buy" component={OfferListContainer}/>
             <Route exact path="/buy/map" component={MapContainer}/>
             <Route exact path="/buy/list" component={BankOfferListContainer}/>
