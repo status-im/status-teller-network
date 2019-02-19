@@ -137,9 +137,7 @@ exports[`Offers should render correctly 1`] = `
           className="col-6"
         >
           <dt />
-          <dd>
-            Credit Card
-          </dd>
+          <dd />
         </dl>
       </Row>
       <Row
@@ -157,11 +155,7 @@ exports[`Offers should render correctly 1`] = `
           className="col-6"
         >
           <dt />
-          <dd>
-            1
-             - 
-            1
-          </dd>
+          <dd />
         </dl>
       </Row>
     </CardBody>
