@@ -30,7 +30,7 @@ export function *onLoadUser() {
 export function *loadOffers({address}) {
   try {
     const offerIds = yield MetadataStore.methods.getOfferIds(address).call();
-    const offers = yield all(offerIds.map((id) => MetadataStore.methods.offers(id).call()));
+    const offers = yield all(offerIds.map((id) => MetadataStore.methods.offer(id).call()));
     yield put({type: LOAD_OFFERS_SUCCEEDED, offers, address});
   } catch (error) {
     console.error(error);

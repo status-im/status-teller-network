@@ -188,6 +188,20 @@ contract MetadataStore is Ownable {
     }
 
     /**
+    * @dev Get the offer by Id
+    */
+    function offer(uint256 _id) public view returns (
+        address,
+        string memory,
+        uint8,
+        PaymenMethods[] memory,
+        MarketType,
+        OfferStatus
+    ) {
+        return (offers[_id].asset, offers[_id].currency, offers[_id].margin, offers[_id].paymentMethods, offers[_id].marketType, offers[_id].status);
+    }
+
+    /**
     * @dev Get the size of the users
     */
     function usersSize() public view returns (uint256) {
