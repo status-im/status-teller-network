@@ -40,6 +40,11 @@ contract MetadataStore is Ownable {
         uint8 margin
     );
 
+    event OfferRemoved(
+        address owner,
+        uint256 offerId
+    );
+
     event UserUpdated(
         address owner,
         address statusContactCode,
@@ -185,6 +190,22 @@ contract MetadataStore is Ownable {
         offers[_offerId].margin = _margin;
 
         emit OfferUpdated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+    }
+
+    /**
+    * @notice Remove user offer
+    * @param _offerId Id of the offer to remove
+    */
+    function removeOffer(
+        uint256 _offerId
+    ) public {
+        require(userWhitelist[msg.sender], "User does not exist");
+        require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
+        require(offers[_offerId].status == OfferStatus.Open, "Only open offers can be removed");
+
+        delete offers[_offerId];
+        offerWhitelist[msg.sender][_offerId] = false;
+        emit OfferRemoved(msg.sender, _offerId);
     }
 
     /**
