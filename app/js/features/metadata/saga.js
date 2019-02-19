@@ -38,7 +38,12 @@ export function *loadOffers({address}) {
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
 
-    const offers = yield all(offerIds.map((id) => MetadataStore.methods.offer(id).call()));
+    const offers = yield all(offerIds.map((id) => {
+      const offer = MetadataStore.methods.offer(id).call();
+      put({type: LOAD_USER, address: offer.owner});
+      offer.id = id;
+      return offer;
+    }));
     yield put({type: LOAD_OFFERS_SUCCEEDED, offers});
   } catch (error) {
     console.error(error);

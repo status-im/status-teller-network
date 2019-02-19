@@ -12,7 +12,7 @@ class Offers extends Component {
     return offers.map((offer, index) => (
       <Card key={index} className="mb-2 shadow-sm">
         <CardHeader>
-          {offer.asset}
+          {offer.token.symbol}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
           <FontAwesomeIcon icon={faEuroSign} className="mr-1"/>
           {offer.currency}
