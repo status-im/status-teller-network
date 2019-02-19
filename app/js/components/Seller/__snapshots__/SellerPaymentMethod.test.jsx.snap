@@ -12,7 +12,7 @@ exports[`SellerPaymentMethod should render correctly 1`] = `
     vertical={true}
   />
   <p
-    className="text-info"
+    className="text-muted"
   >
     Select one or more payment method to move to the next page
   </p>

@@ -48,7 +48,7 @@ exports[`FiatSelectorForm should render correctly 1`] = `
       submitFormOnEnter={true}
     />
     <p
-      className="text-info"
+      className="text-muted"
     />
   </FormGroup>
 </Fragment>

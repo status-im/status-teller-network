@@ -54,7 +54,7 @@ class MarginSelectorForm extends Component {
           TODO SNT
         </div>
 
-        {!this.props.margin && this.props.margin !== 0 && <p className="text-info mt-3">{t('marginSelectorForm.enterMargin')}</p>}
+        {!this.props.margin && this.props.margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
     );
   }
