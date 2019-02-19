@@ -124,6 +124,7 @@
     "create": "Create offer",
     "noOpen": "No open offers",
     "type": "Type",
+    "typeSell": "Selling",
     "paymentMethods": "Payment methods",
     "location": "Location",
     "rate": "Rate"
