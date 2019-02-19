@@ -25,7 +25,7 @@ class Offers extends Component {
             </dl>
             <dl className="col-6">
               <dt>{t('offers.paymentMethods')}</dt>
-              <dd>{offer.paymentMethods}</dd>
+              <dd>{offer.paymentMethodsForHuman}</dd>
             </dl>
           </Row>
           <Row>
@@ -35,7 +35,7 @@ class Offers extends Component {
             </dl>
             <dl className="col-6">
               <dt>{t('offers.rate')}</dt>
-              <dd>{offer.margin} - {offer.marketType}</dd>
+              <dd>{offer.rateForHuman}</dd>
             </dl>
           </Row>
         </CardBody>

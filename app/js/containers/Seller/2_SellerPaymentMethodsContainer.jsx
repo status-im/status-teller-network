@@ -5,8 +5,7 @@ import {connect} from "react-redux";
 import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
 import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
-
-const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
+import { PAYMENT_METHODS } from '../../features/metadata/constants';
 
 class SellerPaymentMethodsContainer extends Component {
   constructor(props) {
@@ -54,7 +53,7 @@ class SellerPaymentMethodsContainer extends Component {
     }
 
     return (
-      <SellerPaymentMethod methods={methods} togglePaymentMethod={this.togglePaymentMethod}
+      <SellerPaymentMethod methods={PAYMENT_METHODS} togglePaymentMethod={this.togglePaymentMethod}
                            selectedMethods={this.state.selectedMethods}/>
     );
   }
