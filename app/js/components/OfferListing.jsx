@@ -5,13 +5,13 @@ import {Link} from "react-router-dom";
 import Blockies from "react-blockies";
 import Reputation from './Reputation';
 
-const OfferListing = ({positiveRatings, negativeRating, nbTrades, seller, assets, location, address = '0x353db7d7ad524f77afdd0720b3808b0645bfcfc3'}) => (
-  <Row className="offer-listing rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/buy/profile/${address}`}>
+const OfferListing = ({positiveRatings, negativeRating, nbTrades, assets, location, owner}) => (
+  <Row className="offer-listing rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/buy/profile/${owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
-        <Col xs={2}><Blockies seed={address} className="rounded-circle" scale={5}/></Col>
+        <Col xs={2}><Blockies seed={owner} className="rounded-circle" scale={5}/></Col>
         <Col xs={5}>
-          <p className="seller-name m-0 font-weight-bold">{seller}</p>
+          <p className="seller-name m-0 font-weight-bold">{owner}</p>
           <p className="text-dark m-0">{location}</p>
         </Col>
         <Col xs={5} className="text-right rating-col">
@@ -23,7 +23,7 @@ const OfferListing = ({positiveRatings, negativeRating, nbTrades, seller, assets
         <Col>
           <p className="m-0">{assets.map((asset, idx) => (
             <span className="border rounded mr-2 font-weight-bold p-1"
-                  key={'asset-' + idx}>{asset.name} &rarr; {asset.price}$</span>))}</p>
+                  key={'asset-' + idx}>{asset} &rarr; {asset}$</span>))}</p>
         </Col>
       </Row>
     </Col>
@@ -39,7 +39,7 @@ OfferListing.propTypes = {
   negativeRating: PropTypes.number,
   assets: PropTypes.array,
   location: PropTypes.string,
-  address: PropTypes.string
+  owner: PropTypes.string
 };
 
 
