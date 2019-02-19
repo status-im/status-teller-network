@@ -12,6 +12,11 @@ $footer-height: 58px;
       bottom: 0;
       left: 0;
       height: $footer-height;
+
+      .footer-arrow {
+        position: relative;
+        bottom: 1px;
+      }
     }
   }
 }
