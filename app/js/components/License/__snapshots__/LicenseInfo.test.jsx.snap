@@ -2,7 +2,7 @@
 
 exports[`LicenseInfo should render correctly 1`] = `
 <div
-  className="mt-5 mb-5"
+  className="mt-2"
 >
   <Row
     tag="div"
@@ -25,25 +25,15 @@ exports[`LicenseInfo should render correctly 1`] = `
       />
     </Col>
   </Row>
-  <Card
-    className="mt-5 py-4"
-    color="primary"
-    tag="div"
+  <div
+    className="fee-card mt-3 py-3 text-center rounded font-weight-bold"
   >
-    <CardBody
-      className="text-center"
-      tag="div"
-    />
-  </Card>
-  <Card
-    className="mt-5 py-4"
-    color="primary"
-    tag="div"
+    <br />
+  </div>
+  <div
+    className="stake-card mt-3 py-3 text-center rounded font-weight-bold"
   >
-    <CardBody
-      className="text-center"
-      tag="div"
-    />
-  </Card>
+    <br />
+  </div>
 </div>
 `;

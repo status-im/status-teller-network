@@ -1,29 +1,31 @@
-import React, { Component } from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card } from 'reactstrap';
-import { withNamespaces } from 'react-i18next';
+import {withNamespaces} from 'react-i18next';
+import classnames from 'classnames';
+
+import SNTIcon from '../../images/tokens/SNT.png';
 
 class YourSNTBalance extends Component {
   render() {
     const t = this.props.t;
     return (
-      <Row className="mt-5">
-        <Col xs="12">
-          <span className="font-weight-bold h5">{t('yourSNTBalance.label')}</span>
-        </Col>
-        <Col xs="12" className="pr-0">
-          <Card body className="rounded-0">
-            <span>{this.props.value} SNT</span>
-          </Card>
-        </Col>
-      </Row>
+      <Fragment>
+        <h3>{t('yourSNTBalance.label')}</h3>
+        <p className="border rounded p-3">
+          <span className={classnames("h3", "font-weight-normal", {'text-danger': !this.props.disabled})}>
+            <img src={SNTIcon} alt="SNT icon" className="mr-2"/>
+            {this.props.value} SNT
+          </span>
+        </p>
+      </Fragment>
     );
   }
 }
 
 YourSNTBalance.propTypes = {
   t: PropTypes.func,
-  value: PropTypes.string
+  value: PropTypes.string,
+  disabled: PropTypes.bool
 };
 
 export default withNamespaces()(YourSNTBalance);

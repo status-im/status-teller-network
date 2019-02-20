@@ -53,7 +53,9 @@ class LicenseContainer extends Component {
     return (
       <React.Fragment>
         <LicenseInfo price={this.props.licensePrice} />
-        <YourSNTBalance value={this.props.sntToken.balance}/>
+        <div className="mt-5">
+          <YourSNTBalance value={this.props.sntToken.balance} disabled={!this.enoughBalance()}/>
+        </div>
         <LicenseBuy onClick={this.buyLicense} disabled={!this.enoughBalance()}/>
       </React.Fragment>
     );
