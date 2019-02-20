@@ -9,8 +9,7 @@ const DEFAULT_STATE = {
   addOfferStatus: States.none,
   updateUserStatus: States.none,
   users: {},
-  offers: {},
-  showQRCode: false
+  offers: {}
 };
 
 function formatOffer(offer) {
