@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {Link} from "react-router-dom";
@@ -7,37 +7,53 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 import metadata from '../../features/metadata';
+import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import OfferListing from '../../components/OfferListing';
 import SorterFilter from '../../components/Buyer/SorterFilter';
 
 import './Listing.scss';
 
 class OfferListContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    };
+  }
+
   componentDidMount() {
     this.props.loadOffers();
   }
 
   render() {
+    const groupedOffer = this.props.offers.reduce((grouped, offer) => {
+      offer.paymentMethods.forEach((paymentMethod) => (
+        (grouped[paymentMethod] || (grouped[paymentMethod] = [])).push(offer)
+      ));
+      return grouped;
+    }, {});
+
     return (
-      <React.Fragment>
+      <Fragment>
         <h2 className="text-center">
           We found {this.props.offers.length} sellers worldwide <FontAwesomeIcon icon={faGlobe}/>
         </h2>
         <SorterFilter/>
-        <h4 className="clearfix mt-2">
-          Cash (in person)
-          <Button tag={Link} color="link" className="float-right" to="/buy/map">On Map <FontAwesomeIcon
-            icon={faArrowRight}/></Button>
-        </h4>
-        {this.props.offers.map((offer, idx) => <OfferListing key={'listing-' + idx} offer={offer}/>)}
-
-        <h4 className="mt-5 clearfix">
-          Bank/card transfer
-          <Button tag={Link} color="link" className="float-right" to="/buy/list">See all <FontAwesomeIcon
-            icon={faArrowRight}/></Button>
-        </h4>
-        {this.props.offers.map((offer, idx) => <OfferListing key={'listing-' + idx} offer={offer}/>)}
-      </React.Fragment>
+        {Object.keys(groupedOffer).map((paymentMethod) => (
+          <Fragment key={paymentMethod}>
+            <h4 className="clearfix mt-5">
+              {PAYMENT_METHODS[paymentMethod]}
+              <Button tag={Link} 
+                      color="link" 
+                      className="float-right" 
+                      to="/buy/map">On Map
+                      <FontAwesomeIcon icon={faArrowRight}/>
+              </Button>
+            </h4>
+            {groupedOffer[paymentMethod].map((offer, index) => <OfferListing key={`${paymentMethod}${index}`} offer={offer}/>)}
+          </Fragment>
+        ))}
+      </Fragment>
     );
   }
 }
