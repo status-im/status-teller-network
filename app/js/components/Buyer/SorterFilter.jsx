@@ -12,47 +12,49 @@ import {Typeahead} from "react-bootstrap-typeahead";
 const FilterMenu = (props) => (
   <Fragment>
     <div className={classnames({"filter-menu-backdrop": true, "open": props.open})} onClick={props.close}/>
-    <div className={classnames({"filter-menu": true, "open": props.open})}>
-      <h4>Sort and filter</h4>
+    <div className={classnames("filter-menu", {"open": props.open})}>
+      <div className="filter-menu-content">
+        <h4>Sort and filter</h4>
 
-      <h5 className="mt-4">Sort</h5>
-      <ButtonGroup vertical className="w-100">
-        <CheckButton active={true}>
-          Top rated
-        </CheckButton>
-        <CheckButton active={false}>
-          Most recent
-        </CheckButton>
-      </ButtonGroup>
-
-      <h5 className="mt-4">Payment method</h5>
-      <ButtonGroup vertical className="w-100">
-        {props.paymentMethods.map((paymentMethod, index) => (
-          <CheckButton key={index}
-                       onClick={() => props.setPaymentMethodFilter(index)}
-                       active={index === props.paymentMethodFilter}>
-            {paymentMethod}
+        <h5 className="mt-4">Sort</h5>
+        <ButtonGroup vertical className="w-100">
+          <CheckButton active={true}>
+            Top rated
           </CheckButton>
-        ))}
-      </ButtonGroup>
+          <CheckButton active={false}>
+            Most recent
+          </CheckButton>
+        </ButtonGroup>
 
-      <h5 className="mt-4">Country</h5>
-      <FormGroup>
-        <Typeahead
-          options={['Canada', 'USA', 'France']}
-          placeholder={'Select'}
-        />
-      </FormGroup>
+        <h5 className="mt-4">Payment method</h5>
+        <ButtonGroup vertical className="w-100">
+          {props.paymentMethods.map((paymentMethod, index) => (
+            <CheckButton key={index}
+                         onClick={() => props.setPaymentMethodFilter(index)}
+                         active={index === props.paymentMethodFilter}>
+              {paymentMethod}
+            </CheckButton>
+          ))}
+        </ButtonGroup>
 
-      <h5 className="mt-4">Asset</h5>
-      <FormGroup>
-        <Typeahead
-          options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-          placeholder={'Select'}
-          value={props.tokenFilter}
-          onChange={props.setTokenFilter}
-        />
-      </FormGroup>
+        <h5 className="mt-4">Country</h5>
+        <FormGroup>
+          <Typeahead
+            options={['Canada', 'USA', 'France']}
+            placeholder={'Select'}
+          />
+        </FormGroup>
+
+        <h5 className="mt-4">Asset</h5>
+        <FormGroup>
+          <Typeahead
+            options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+            placeholder={'Select'}
+            value={props.tokenFilter}
+            onChange={props.setTokenFilter}
+          />
+        </FormGroup>
+      </div>
     </div>
   </Fragment>
 );

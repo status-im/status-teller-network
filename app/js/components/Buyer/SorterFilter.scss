@@ -21,43 +21,39 @@
   &.open {
     display: block;
   }
-
-  .filter-menu {
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    max-width: 350px;
-    background-color: white;
-    transition: width 0.5s ease;
-    padding: 24px 16px;
-  }
 }
 
-
+$filter-menu-padding-x: 3%;
+$menu-width: 85%;
 .filter-menu {
   position: fixed;
   right: 0;
   top: 0;
   bottom: 0;
   width: 0;
-  max-width: 500px;
+  max-width: 400px;
   background-color: white;
-  transition: width 0.5s ease;
   z-index: 9000;
-  padding: 0;
+  padding: 24px 0;
   overflow: hidden;
+  transition: width 0.5s, padding 0.5s;
 
   &.open {
-    width: 85%;
-    padding: 24px 16px;
+    width: $menu-width;
+    padding: 24px $filter-menu-padding-x;
 
     .btn {
       .fa-check {
         display: inline-block;
       }
     }
+  }
+
+  .filter-menu-content {
+    width: $menu-width - ($filter-menu-padding-x * 2);
+    overflow: hidden;
+    position: fixed;
+    max-width: 340px;
   }
 
   .btn {
