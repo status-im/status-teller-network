@@ -8,6 +8,7 @@ import Loading from '../../components/ui/Loading';
 import newSeller from "../../features/newSeller";
 import metadata from "../../features/metadata";
 import { States } from '../../utils/transaction';
+import network from '../../features/network';
 
 class SellerContactContainer extends Component {
   constructor(props) {
@@ -69,7 +70,8 @@ class SellerContactContainer extends Component {
     
     if (this.props.addOfferStatus === States.none) {
       return (
-        <ContactForm statusContactCode={this.state.statusContactCode} 
+        <ContactForm isStatus={this.props.isStatus}
+                     statusContactCode={this.state.statusContactCode} 
                      username={this.state.username}
                      changeStatusContactCode={this.changeStatusContactCode}
                      changeUsername={this.changeUsername}/>
@@ -89,12 +91,14 @@ SellerContactContainer.propTypes = {
   seller: PropTypes.object,
   addOffer: PropTypes.func,
   resetAddOfferStatus: PropTypes.func,
-  addOfferStatus: PropTypes.string
+  addOfferStatus: PropTypes.string,
+  isStatus: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
-  addOfferStatus: metadata.selectors.getAddOfferStatus(state)
+  addOfferStatus: metadata.selectors.getAddOfferStatus(state),
+  isStatus: network.selectors.isStatus(state)
 });
 
 export default connect(

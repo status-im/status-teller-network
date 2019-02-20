@@ -9,6 +9,7 @@ import { fromTokenDecimals } from '../../utils/numbers';
 const DEFAULT_STATE = {
   ready: false,
   address: '',
+  isStatus: false,
   network: {
     id: 0,
     name: ''
@@ -27,6 +28,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ready: true,
         address: web3.eth.defaultAccount,
+        isStatus: web3.currentProvider.status,
         network: {
           id: action.networkId,
           name

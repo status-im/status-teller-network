@@ -58,10 +58,11 @@ class EditProfileContainer extends Component {
     if (this.props.updateUserStatus === States.none) {
       return (
         <React.Fragment>
-          <ContactForm statusContactCode={this.state.statusContactCode} 
-                      username={this.state.username}
-                      changeStatusContactCode={this.changeStatusContactCode}
-                      changeUsername={this.changeUsername}/>
+          <ContactForm isStatus={this.props.isStatus}
+                       statusContactCode={this.state.statusContactCode} 
+                       username={this.state.username}
+                       changeStatusContactCode={this.changeStatusContactCode}
+                       changeUsername={this.changeUsername}/>
           <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
       </React.Fragment>
       );
@@ -78,7 +79,8 @@ EditProfileContainer.propTypes = {
   address: PropTypes.string,
   updateUser: PropTypes.func,
   updateUserStatus: PropTypes.string,
-  resetUpdateUserStatus: PropTypes.func
+  resetUpdateUserStatus: PropTypes.func,
+  isStatus: PropTypes.bool
 };
 
 const mapStateToProps = state => {
@@ -86,7 +88,8 @@ const mapStateToProps = state => {
   return {
     address,
     profile: metadata.selectors.getProfile(state, address),
-    updateUserStatus: metadata.selectors.getUpdateUserStatus(state)
+    updateUserStatus: metadata.selectors.getUpdateUserStatus(state),
+    isStatus: network.selectors.isStatus(state)
   };
 };
 
