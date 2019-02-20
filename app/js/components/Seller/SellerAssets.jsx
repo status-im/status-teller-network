@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ButtonGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 import CheckButton from '../ui/CheckButton';
-import {TokenImages} from '../../utils/networks';
+import {TokenImages} from '../../utils/images';
 
 class SellerAssets extends Component {
   selectAsset(selectedAsset) {
