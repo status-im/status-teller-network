@@ -1,6 +1,6 @@
 import { fork, take, takeEvery, call, put, actionChannel, select } from 'redux-saga/effects';
 import cc from 'cryptocompare';
-import { FETCH_PRICES, FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED, PRICE_INTERVAL } from './constants';
+import { FETCH_PRICES, FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED, FETCH_EXCHANGE_RATE } from './constants';
 import network from "../../features/network";
 
 
@@ -20,11 +20,11 @@ export function *onFetchPrices() {
 
 
 function *fetchAllTokenPrices() {
-  const requestChan = yield actionChannel(PRICE_INTERVAL);
+  const requestChan = yield actionChannel(FETCH_EXCHANGE_RATE);
   while (true) {
     yield take(requestChan);
     let tokens = yield select(network.selectors.getTokens); // <-- get the project
-
+    
     const symbols = Object.keys(tokens);
     const fiat = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'KRW']; // TODO: where will this list come from?
 

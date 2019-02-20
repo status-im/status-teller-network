@@ -1,5 +1,5 @@
-import { FETCH_PRICES, PRICE_INTERVAL } from './constants';
+import { FETCH_PRICES, FETCH_EXCHANGE_RATE } from './constants';
 
 export const fetchPrices = payload => ({ type: FETCH_PRICES, payload });
 
-export const priceInterval = () => ({type: PRICE_INTERVAL});
+export const fetchExchangeRates = () => ({type: FETCH_EXCHANGE_RATE});

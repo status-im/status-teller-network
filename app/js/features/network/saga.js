@@ -6,6 +6,7 @@ import {
   INIT, INIT_FAILED, INIT_SUCCEEDED,
   UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED
 } from './constants';
+import {FETCH_EXCHANGE_RATE} from '../prices/constants';
 import { onReady } from '../../services/embarkjs';
 import { zeroAddress } from '../../utils/address';
 
@@ -14,6 +15,7 @@ export function *doInit() {
     yield call(onReady);
     const networkId = yield call(web3.eth.net.getId);
     yield put({type: INIT_SUCCEEDED, networkId});
+    yield put({type: FETCH_EXCHANGE_RATE});
   } catch (error) {
     yield put({type: INIT_FAILED, error});
   }

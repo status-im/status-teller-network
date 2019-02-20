@@ -47,9 +47,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.props.init();
-    setInterval((() => {
-      this.props.priceInterval();
-    })(), PRICE_FETCH_INTERVAL);
+    setInterval(() => {
+      this.props.fetchExchangeRates();
+    }, PRICE_FETCH_INTERVAL);
   }
 
   componentDidUpdate(prevProps) {
@@ -126,7 +126,7 @@ const mapStateToProps = (state) => {
 App.propTypes = {
   init: PropTypes.func,
   fetchPrices: PropTypes.func,
-  priceInterval: PropTypes.func,
+  fetchExchangeRates: PropTypes.func,
   isReady: PropTypes.bool,
   address: PropTypes.string,
   profile: PropTypes.object,
@@ -139,7 +139,7 @@ export default connect(
   mapStateToProps,
   {
     fetchPrices: prices.actions.fetchPrices,
-    priceInterval: prices.actions.priceInterval,
+    fetchExchangeRates: prices.actions.fetchExchangeRates,
     init: network.actions.init,
     loadProfile: metadata.actions.load,
     checkLicenseOwner: license.actions.checkLicenseOwner
