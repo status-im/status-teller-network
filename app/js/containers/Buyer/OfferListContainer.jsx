@@ -31,11 +31,23 @@ class OfferListContainer extends Component {
     this.setState({paymentMethodFilter});
   }
 
+  setTokenFilter = (selected) => {
+    let tokenFilter = '';
+    if (selected[0]) {
+      tokenFilter = selected[0].value;
+    }
+    this.setState({tokenFilter});
+  }
+
   render() {
     let filteredOffer = this.props.offers;
 
     if (this.state.paymentMethodFilter !== -1) {
       filteredOffer = filteredOffer.filter((offer) => offer.paymentMethods.includes(this.state.paymentMethodFilter));
+    }
+
+    if (this.state.tokenFilter !== '') {
+      filteredOffer = filteredOffer.filter((offer) => offer.asset === this.state.tokenFilter);
     }
 
     const groupedOffer = filteredOffer.reduce((grouped, offer) => {

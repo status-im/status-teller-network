@@ -47,8 +47,10 @@ const FilterMenu = (props) => (
       <h5 className="mt-4">Asset</h5>
       <FormGroup>
         <Typeahead
-          options={['ETH', 'DAI', 'SNT']}
+          options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
           placeholder={'Select'}
+          value={props.tokenFilter}
+          onChange={props.setTokenFilter}
         />
       </FormGroup>
     </div>
