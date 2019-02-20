@@ -10,8 +10,8 @@ import {doTransaction} from '../../utils/saga';
 
 export function *loadUser({address}) {
   try {
-    const size = yield MetadataStore.methods.usersSize().call();
-    if (size === '0'){
+    const isUser = yield MetadataStore.methods.userWhitelist(address).call();
+    if (!isUser){
       return;
     }
     const id = yield MetadataStore.methods.addressToUser(address).call();
