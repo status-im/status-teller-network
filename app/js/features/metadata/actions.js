@@ -1,6 +1,7 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS,
-  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS
+  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS,
+  TOGGLE_QR_CODE
 } from './constants';
 import MetadataStore from 'Embark/contracts/MetadataStore';
 
@@ -49,4 +50,8 @@ export const updateUser = (user) => ({
 
 export const resetUpdateUserStatus = () => ({
   type: RESET_UPDATE_USER_STATUS
+});
+
+export const toggleQRCode = () => ({
+  type: TOGGLE_QR_CODE
 });

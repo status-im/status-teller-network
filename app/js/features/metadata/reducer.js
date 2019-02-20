@@ -1,7 +1,8 @@
 import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
-  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS
+  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
+  TOGGLE_QR_CODE
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -9,7 +10,8 @@ const DEFAULT_STATE = {
   addOfferStatus: States.none,
   updateUserStatus: States.none,
   users: {},
-  offers: {}
+  offers: {},
+  showQRCode: false
 };
 
 function formatOffer(offer) {
@@ -75,6 +77,10 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, offers: newOffers
       };
     }
+    case TOGGLE_QR_CODE:
+      return {
+        ...state, showQRCode: !state.showQRCode
+      };
     default:
       return state;
   }

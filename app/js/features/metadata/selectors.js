@@ -42,3 +42,7 @@ export const getOffersWithUser = (state) => {
     user: state.metadata.users[offer.owner] || {}
   }));
 };
+
+export const showQRCode = (state) => {
+  return state.metadata.showQRCode;
+};
