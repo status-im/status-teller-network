@@ -1,3 +1,4 @@
+/*global web3*/
 import React, {Component, Fragment} from 'react';
 import {FormGroup, Label, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
@@ -35,7 +36,7 @@ class ContactForm extends Component {
                    className="form-control"
                    onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
                    validations={[required]}/>
-            <Button className="input-icon p-0" color="link">Give access</Button>
+            {web3.currentProvider.status && <Button className="input-icon p-0" color="link">Give access</Button>}
           </FormGroup>
         </Form>
       </Fragment>
