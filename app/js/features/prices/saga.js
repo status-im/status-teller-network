@@ -24,7 +24,7 @@ function *fetchAllTokenPrices() {
   while (true) {
     yield take(requestChan);
     let tokens = yield select(network.selectors.getTokens); // <-- get the project
-
+    
     const symbols = Object.keys(tokens);
     const fiat = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'KRW']; // TODO: where will this list come from?
 

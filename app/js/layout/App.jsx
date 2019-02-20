@@ -47,9 +47,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.props.init();
-    setInterval((() => {
+    setInterval(() => {
       this.props.priceInterval();
-    })(), PRICE_FETCH_INTERVAL);
+    }, PRICE_FETCH_INTERVAL);
   }
 
   componentDidUpdate(prevProps) {
