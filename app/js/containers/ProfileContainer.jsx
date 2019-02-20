@@ -22,7 +22,7 @@ class ProfileContainer extends Component {
         <SellerInformation reputation={profile.reputation} address={profile.address} name={profile.username}/>
         <Trades trades={profile.trades}/>
         <Offers offers={profile.offers} location={profile.location} />
-        <StatusContactCode value={profile.statusContactCode} toggleQRCode={this.props.toggleQRCode} showQRCode={this.props.showQRCode} />
+        <StatusContactCode value={profile.statusContactCode} />
       </Fragment>
     );
   }
@@ -31,17 +31,14 @@ class ProfileContainer extends Component {
 ProfileContainer.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
-  loadProfile: PropTypes.func,
-  toggleQRCode: PropTypes.func,
-  showQRCode: PropTypes.bool
+  loadProfile: PropTypes.func
 };
 
 const mapStateToProps = state => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
-    profile: metadata.selectors.getProfile(state, address),
-    showQRCode: metadata.selectors.showQRCode(state)
+    profile: metadata.selectors.getProfile(state, address)
   };
 };
 
@@ -49,6 +46,5 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    toggleQRCode: metadata.actions.toggleQRCode,
     loadProfile: metadata.actions.load
   })(ProfileContainer);
