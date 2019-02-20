@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleLeft, faAngleRight} from "@fortawesome/free-solid-svg-icons";
 
+import arrow from '../../images/arrow.png';
 import './withFooter.scss';
 
 const Footer = (props) => {
@@ -12,10 +11,10 @@ const Footer = (props) => {
   }
   return (<footer className="footer">
     {props.wizard.canPrevious() &&
-    <Button onClick={props.previous} className="m-2" color="link"><FontAwesomeIcon icon={faAngleLeft}/> Previous</Button>}
+    <Button onClick={props.previous} className="m-2" color="link"><img className="fa-rotate-180 footer-arrow mr-2" src={arrow} alt="previous arrow"/> Previous</Button>}
     {props.wizard.canNext() &&
     <Button onClick={props.next} className="float-right m-2" color="link"
-            disabled={!props.nextEnabled}>{props.nextLabel} <FontAwesomeIcon icon={faAngleRight}/></Button>}
+            disabled={!props.nextEnabled}>{props.nextLabel} <img  className="footer-arrow ml-2" src={arrow} alt="next arrow"/></Button>}
   </footer>);
 };
 

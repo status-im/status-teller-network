@@ -68,13 +68,6 @@ exports[`SellerContact should render correctly 1`] = `
           ]
         }
       />
-      <Button
-        className="input-icon p-0"
-        color="link"
-        tag="button"
-      >
-        Give access
-      </Button>
     </FormGroup>
   </Form(t)>
 </Fragment>
