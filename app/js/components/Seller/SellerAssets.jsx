@@ -23,9 +23,7 @@ class SellerAssets extends Component {
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
               <img src={TokenImages[`${asset.symbol}.png`]} alt={asset.name + ' icon'} className="mr-3"/>
-              {asset.name}
-              <br/>
-              <span className="ml-5 text-muted">{asset.balance}</span>
+              {asset.balance} {asset.symbol}
             </CheckButton>
           ))}
         </ButtonGroup>
