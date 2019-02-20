@@ -10,12 +10,12 @@ storiesOf('Seller contact infos', module)
   .add(
     "Normal",
     withInfo({inline: true})(() => (
-      <ContactForm nickname="" contactCode="" changeNickname={action('change-nickname')} changeContactCode={action('change-contactCode')}/>
+      <ContactForm nickname="" contactCode="" isStatus={true} changeNickname={action('change-nickname')} changeContactCode={action('change-contactCode')}/>
     ))
   )
   .add(
     "Values",
     withInfo({inline: true})(() => (
-      <ContactForm nickname="Nick Names" contactCode="123456789" changeNickname={action('change-nickname')} changeContactCode={action('change-contactCode')}/>
+      <ContactForm nickname="Nick Names" isStatus={true} contactCode="123456789" changeNickname={action('change-nickname')} changeContactCode={action('change-contactCode')}/>
     ))
   );

@@ -1,5 +1,6 @@
 export const isReady = state => state.network.ready;
 export const getAddress = state => state.network.address;
+export const isStatus = state => state.network.isStatus;
 export const getTokens = state => state.network.tokens;
 export const getTokensWithPositiveBalance = (state) => (
   Object.values(state.network.tokens).filter((token) => token.balance > 0)

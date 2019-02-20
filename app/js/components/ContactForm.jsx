@@ -9,7 +9,7 @@ import {required} from "../validators";
 
 class ContactForm extends Component {
   render() {
-    const {t, username, statusContactCode} = this.props;
+    const {t, username, statusContactCode, isStatus} = this.props;
 
     return (
       <Fragment>
@@ -36,7 +36,7 @@ class ContactForm extends Component {
                    className="form-control"
                    onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
                    validations={[required]}/>
-            {web3.currentProvider.status && <Button className="input-icon p-0" color="link">Give access</Button>}
+            {isStatus && <Button className="input-icon p-0" color="link">Give access</Button>}
           </FormGroup>
         </Form>
       </Fragment>
@@ -49,7 +49,8 @@ ContactForm.propTypes = {
   changeUsername: PropTypes.func,
   changeStatusContactCode: PropTypes.func,
   username: PropTypes.string,
-  statusContactCode: PropTypes.string
+  statusContactCode: PropTypes.string,
+  isStatus: PropTypes.bool
 };
 
 

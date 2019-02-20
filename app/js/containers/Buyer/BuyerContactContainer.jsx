@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ContactForm from '../../components/ContactForm';
 import buyer from "../../features/buyer";
+import network from "../../features/network";
 import {connect} from "react-redux";
 
 class SellerContactContainer extends Component {
@@ -28,10 +29,11 @@ class SellerContactContainer extends Component {
 
   render() {
     return (
-      <ContactForm statusContactCode={this.state.contactCode} 
+      <ContactForm isStatus={this.props.isStatus}
+                   statusContactCode={this.state.contactCode} 
                    username={this.state.nickname}
                    changeStatusContactCode={this.changeContactCode}
-                   changeUsername={this.changeNickname}/>
+                   changeUsername={this.changeNickname} />
     );
   }
 }
@@ -40,12 +42,14 @@ SellerContactContainer.propTypes = {
   footer: PropTypes.object,
   setContact: PropTypes.func,
   nickname: PropTypes.string,
-  contactCode: PropTypes.string
+  contactCode: PropTypes.string,
+  isStatus: PropTypes.bool
 };
 
 const mapStateToProps = state => ({
   contactCode: buyer.selectors.contactCode(state),
-  nickname: buyer.selectors.nickname(state)
+  nickname: buyer.selectors.nickname(state),
+  isStatus: network.selectors.isStatus(state)
 });
 
 export default connect(
