@@ -57,6 +57,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "number-to-bn": "^1.7.0",
+    "qrcode.react": "^0.9.3",
     "react": "^16.6.3",
     "react-blockies": "^1.4.0",
     "react-bootstrap-typeahead": "^3.3.0",
