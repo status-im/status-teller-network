@@ -7,7 +7,6 @@ import withFooterHoC from '../hoc/withFooter';
 class Wizard extends Component {
   constructor(props) {
     super(props);
-
     let currentStep = props.steps.findIndex((step) => location.hash.endsWith(step.path));
 
     if (currentStep === -1) {

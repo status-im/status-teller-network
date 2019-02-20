@@ -9,10 +9,10 @@ import CheckButton from '../ui/CheckButton';
 import {ButtonGroup, FormGroup} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
 
-const FilterMenu = ({open, close}) => (
+const FilterMenu = (props) => (
   <Fragment>
-    <div className={classnames({"filter-menu-backdrop": true, "open": open})} onClick={close}/>
-    <div className={classnames({"filter-menu": true, "open": open})}>
+    <div className={classnames({"filter-menu-backdrop": true, "open": props.open})} onClick={props.close}/>
+    <div className={classnames({"filter-menu": true, "open": props.open})}>
       <h4>Sort and filter</h4>
 
       <h5 className="mt-4">Sort</h5>
@@ -27,12 +27,13 @@ const FilterMenu = ({open, close}) => (
 
       <h5 className="mt-4">Payment method</h5>
       <ButtonGroup vertical className="w-100">
-        <CheckButton active={true}>
-          Cash in person
-        </CheckButton>
-        <CheckButton active={false}>
-          Card transfer
-        </CheckButton>
+        {props.paymentMethods.map((paymentMethod, index) => (
+          <CheckButton key={index}
+                       onClick={() => props.setPaymentMethodFilter(index)}
+                       active={index === props.paymentMethodFilter}>
+            {paymentMethod}
+          </CheckButton>
+        ))}
       </ButtonGroup>
 
       <h5 className="mt-4">Country</h5>
@@ -56,7 +57,13 @@ const FilterMenu = ({open, close}) => (
 
 FilterMenu.propTypes = {
   open: PropTypes.bool,
-  close: PropTypes.func
+  close: PropTypes.func,
+  paymentMethods: PropTypes.array,
+  tokens: PropTypes.array,
+  setTokenFilter: PropTypes.func,
+  setPaymentMethodFilter: PropTypes.func,
+  tokenFilter: PropTypes.string,
+  paymentMethodFilter: PropTypes.number
 };
 
 class SorterFilter extends Component {
@@ -74,7 +81,7 @@ class SorterFilter extends Component {
 
   render() {
     return (<Fragment>
-      <FilterMenu open={this.state.open} close={this.toggleMenu}/>
+      <FilterMenu open={this.state.open} close={this.toggleMenu} {...this.props}/>
       <div className="sorter-select font-weight-bold px-3 py-2 bg-secondary rounded v-align-center my-3"
            onClick={this.toggleMenu}>
         <span className="sort-icon text-white rounded-circle d-inline-block text-center p-2 mr-2">
@@ -87,7 +94,12 @@ class SorterFilter extends Component {
 }
 
 SorterFilter.propTypes = {
-  onChange: PropTypes.func
+  paymentMethods: PropTypes.array,
+  tokens: PropTypes.array,
+  setTokenFilter: PropTypes.func,
+  setPaymentMethodFilter: PropTypes.func,
+  tokenFilter: PropTypes.string,
+  paymentMethodFilter: PropTypes.number
 };
 
 export default SorterFilter;
