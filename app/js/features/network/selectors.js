@@ -21,3 +21,4 @@ export const getTokenByAddress = (state, address) => {
                        .find(token => state.network.tokens[token].address === address);
   return state.network.tokens[symbol];
 };
+export const getStatusContactCode = (state) => state.network.contactCode;

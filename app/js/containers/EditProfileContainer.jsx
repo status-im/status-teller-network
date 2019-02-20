@@ -43,12 +43,19 @@ class EditProfileContainer extends Component {
   changeStatusContactCode = (statusContactCode) => {
     this.validate(this.state.username, statusContactCode);
     this.setState({statusContactCode});
+
   };
   
   changeUsername = (username) => {
     this.validate(username, this.state.statusContactCode);
     this.setState({username});
   };
+
+  getStatusContactCode = () => {
+    this.props.getContactCode((err, contactCode) => {
+      if(!err) this.changeStatusContactCode(contactCode);
+    });
+  }
 
   render() {
     if (this.props.updateUserStatus === States.pending) {
@@ -62,7 +69,9 @@ class EditProfileContainer extends Component {
                        statusContactCode={this.state.statusContactCode} 
                        username={this.state.username}
                        changeStatusContactCode={this.changeStatusContactCode}
-                       changeUsername={this.changeUsername}/>
+                       changeUsername={this.changeUsername}
+                       getContactCode={this.getStatusContactCode}
+                       />
           <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
       </React.Fragment>
       );
@@ -80,7 +89,9 @@ EditProfileContainer.propTypes = {
   updateUser: PropTypes.func,
   updateUserStatus: PropTypes.string,
   resetUpdateUserStatus: PropTypes.func,
-  isStatus: PropTypes.bool
+  getContactCode: PropTypes.func,
+  isStatus: PropTypes.bool,
+  statusContactCode: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -89,7 +100,8 @@ const mapStateToProps = state => {
     address,
     profile: metadata.selectors.getProfile(state, address),
     updateUserStatus: metadata.selectors.getUpdateUserStatus(state),
-    isStatus: network.selectors.isStatus(state)
+    isStatus: network.selectors.isStatus(state),
+    statusContactCode: network.selectors.getStatusContactCode(state)
   };
 };
 
@@ -98,6 +110,7 @@ export default connect(
   {
     loadProfile: metadata.actions.load,
     updateUser: metadata.actions.updateUser,
-    resetUpdateUserStatus: metadata.actions.resetUpdateUserStatus
+    resetUpdateUserStatus: metadata.actions.resetUpdateUserStatus,
+    getContactCode: network.actions.getContactCode
   }
 )(withRouter(EditProfileContainer));

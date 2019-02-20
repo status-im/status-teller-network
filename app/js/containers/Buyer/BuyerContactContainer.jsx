@@ -26,6 +26,11 @@ class SellerContactContainer extends Component {
     this.setState({nickname});
   };
 
+  getStatusContactCode = () => {
+    this.props.getContactCode((err, contactCode) => {
+      if(!err) this.changeContactCode(contactCode);
+    });
+  }
 
   render() {
     return (
@@ -33,7 +38,8 @@ class SellerContactContainer extends Component {
                    statusContactCode={this.state.contactCode} 
                    username={this.state.nickname}
                    changeStatusContactCode={this.changeContactCode}
-                   changeUsername={this.changeNickname} />
+                   changeUsername={this.changeNickname}
+                   getContactCode={this.getStatusContactCode} />
     );
   }
 }
@@ -43,18 +49,22 @@ SellerContactContainer.propTypes = {
   setContact: PropTypes.func,
   nickname: PropTypes.string,
   contactCode: PropTypes.string,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  getContactCode: PropTypes.func,
+  statusContactCode: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   contactCode: buyer.selectors.contactCode(state),
   nickname: buyer.selectors.nickname(state),
-  isStatus: network.selectors.isStatus(state)
+  isStatus: network.selectors.isStatus(state),
+  statusContactCode: network.selectors.getStatusContactCode(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setContact: buyer.actions.setContact
+    setContact: buyer.actions.setContact,
+    getContactCode: buyer.actions.getContactCode
   }
 )(SellerContactContainer);
