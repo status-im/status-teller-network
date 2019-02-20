@@ -73,7 +73,11 @@ exports[`MarginSelectorForm should render correctly 1`] = `
   <div
     className="border rounded p-3"
   >
-    1 TODO = 1,234.00 
+    1 
+    SNT
+     = 
+    NaN
+     
   </div>
   <small />
   <h3 />
