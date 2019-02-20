@@ -1,11 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {Link} from "react-router-dom";
 import {Button} from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
+import network from '../../features/network';
 import metadata from '../../features/metadata';
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import OfferListing from '../../components/OfferListing';
@@ -17,7 +18,8 @@ class OfferListContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      tokenFilter: '',
+      paymentMethodFilter: -1
     };
   }
 
@@ -25,8 +27,18 @@ class OfferListContainer extends Component {
     this.props.loadOffers();
   }
 
+  setPaymentMethodFilter = (paymentMethodFilter) => {
+    this.setState({paymentMethodFilter});
+  }
+
   render() {
-    const groupedOffer = this.props.offers.reduce((grouped, offer) => {
+    let filteredOffer = this.props.offers;
+
+    if (this.state.paymentMethodFilter !== -1) {
+      filteredOffer = filteredOffer.filter((offer) => offer.paymentMethods.includes(this.state.paymentMethodFilter));
+    }
+
+    const groupedOffer = filteredOffer.reduce((grouped, offer) => {
       offer.paymentMethods.forEach((paymentMethod) => (
         (grouped[paymentMethod] || (grouped[paymentMethod] = [])).push(offer)
       ));
@@ -38,7 +50,14 @@ class OfferListContainer extends Component {
         <h2 className="text-center">
           We found {this.props.offers.length} sellers worldwide <FontAwesomeIcon icon={faGlobe}/>
         </h2>
-        <SorterFilter/>
+
+        <SorterFilter paymentMethods={PAYMENT_METHODS}
+                      tokens={this.props.tokens}
+                      setTokenFilter={this.setTokenFilter}
+                      setPaymentMethodFilter={this.setPaymentMethodFilter}
+                      tokenFilter={this.state.tokenFilter}
+                      paymentMethodFilter={this.state.paymentMethodFilter}/>
+
         {Object.keys(groupedOffer).map((paymentMethod) => (
           <Fragment key={paymentMethod}>
             <h4 className="clearfix mt-5">
@@ -60,12 +79,14 @@ class OfferListContainer extends Component {
 
 OfferListContainer.propTypes = {
   offers: PropTypes.array,
+  tokens: PropTypes.array,
   loadOffers: PropTypes.func
 };
 
 const mapStateToProps = state => {
   return {
-    offers: metadata.selectors.getOffersWithUser(state)
+    offers: metadata.selectors.getOffersWithUser(state),
+    tokens: Object.values(network.selectors.getTokens(state))
   };
 };
 

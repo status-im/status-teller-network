@@ -16,6 +16,7 @@ function formatOffer(offer) {
   return {
     ...offer,
     id: parseInt(offer.id, 10),
+    paymentMethods: offer.paymentMethods.map((i) => parseInt(i, 10)),
     owner: offer.owner.toLowerCase(),
     asset: offer.asset.toLowerCase()
   };
