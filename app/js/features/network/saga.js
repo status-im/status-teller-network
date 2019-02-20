@@ -2,7 +2,7 @@
 
 import ERC20Token from 'Embark/contracts/ERC20Token';
 import { fork, takeEvery, call, put, all, select } from 'redux-saga/effects';
-import { 
+import {
   INIT, INIT_FAILED, INIT_SUCCEEDED,
   UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED
 } from './constants';
@@ -17,7 +17,8 @@ export function *doInit() {
     yield put({type: INIT_SUCCEEDED, networkId});
     yield put({type: FETCH_EXCHANGE_RATE});
   } catch (error) {
-    yield put({type: INIT_FAILED, error});
+    console.error(error);
+    yield put({type: INIT_FAILED, error: error.message});
   }
 }
 

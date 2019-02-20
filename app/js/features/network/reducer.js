@@ -1,8 +1,5 @@
 /*global web3*/
-
-import {
-  INIT_SUCCEEDED, UPDATE_BALANCE_SUCCEEDED
-} from './constants';
+import {INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED} from './constants';
 import { Networks, Tokens } from '../../utils/networks';
 import { fromTokenDecimals } from '../../utils/numbers';
 
@@ -34,6 +31,13 @@ function reducer(state = DEFAULT_STATE, action) {
           name
         },
         tokens
+      };
+    }
+    case INIT_FAILED: {
+      return {
+        ...state,
+        ready: false,
+        error: action.error
       };
     }
     case UPDATE_BALANCE_SUCCEEDED: {

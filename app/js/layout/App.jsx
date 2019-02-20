@@ -8,6 +8,7 @@ import _ from 'lodash';
 import Wizard from '../components/Wizard';
 import Header from "../components/Header";
 import Loading from "../components/ui/Loading";
+import ErrorPage from '../components/ErrorPage';
 
 import HomeContainer from '../containers/HomeContainer';
 import ProfileContainer from '../containers/ProfileContainer';
@@ -61,10 +62,15 @@ class App extends Component {
 
   shouldComponentUpdate(nextProps) {
     return nextProps.isReady !== this.props.isReady ||
-      !_.isEqual(nextProps.profile, this.props.profile);
+      !_.isEqual(nextProps.profile, this.props.profile) ||
+      nextProps.error !== this.props.error;
   }
 
   render() {
+    if (this.props.error) {
+      return <ErrorPage error={this.props.error} tip={this.props.errorTip}/>;
+    }
+
     if (!this.props.isReady) {
       return <Loading initial/>;
     }
@@ -119,12 +125,16 @@ const mapStateToProps = (state) => {
     address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isReady: network.selectors.isReady(state),
+    error: network.selectors.error(state),
+    errorTip: network.selectors.errorTip(state),
     profile: metadata.selectors.getProfile(state, address)
   };
 };
 
 App.propTypes = {
   init: PropTypes.func,
+  error: PropTypes.string,
+  errorTip: PropTypes.string,
   fetchPrices: PropTypes.func,
   fetchExchangeRates: PropTypes.func,
   isReady: PropTypes.bool,
