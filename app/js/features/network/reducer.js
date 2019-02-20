@@ -25,7 +25,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ready: true,
         address: web3.eth.defaultAccount,
-        isStatus: web3.currentProvider.status,
+        isStatus: web3.currentProvider.isStatus,
         network: {
           id: action.networkId,
           name
