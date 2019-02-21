@@ -47,7 +47,6 @@ class EditProfileContainer extends Component {
   changeStatusContactCode = (statusContactCode) => {
     this.validate(this.state.username, statusContactCode);
     this.setState({statusContactCode});
-
   };
   
   changeUsername = (username) => {
