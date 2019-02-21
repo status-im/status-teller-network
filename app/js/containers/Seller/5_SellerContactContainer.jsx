@@ -35,10 +35,14 @@ class SellerContactContainer extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.addOfferStatus === States.success) {
       this.props.history.push('/profile');
       this.props.resetAddOfferStatus();
+    }
+
+    if (prevProps.statusContactCode !== this.props.statusContactCode) {
+      this.changeStatusContactCode(this.props.statusContactCode);
     }
   }
 
@@ -59,12 +63,6 @@ class SellerContactContainer extends Component {
     this.setState({username});
   };
 
-  getStatusContactCode = () => {
-    this.props.getContactCode((err, contactCode) => {
-      if(!err) this.changeStatusContactCode(contactCode);
-    });
-  }
-
   render() {
     if (!this.state.ready) {
       return <Loading page/>;
@@ -81,7 +79,7 @@ class SellerContactContainer extends Component {
                      username={this.state.username}
                      changeStatusContactCode={this.changeStatusContactCode}
                      changeUsername={this.changeUsername}
-                     getContactCode={this.getStatusContactCode}
+                     getContactCode={this.props.getContactCode}
                      />
       );
     }

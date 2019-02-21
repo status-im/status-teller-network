@@ -18,6 +18,12 @@ class SellerContactContainer extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.statusContactCode !== this.props.statusContactCode) {
+      this.changeStatusContactCode(this.props.statusContactCode);
+    }
+  }
+
   changeContactCode = (contactCode) => {
     this.setState({contactCode});
   };
@@ -26,12 +32,6 @@ class SellerContactContainer extends Component {
     this.setState({nickname});
   };
 
-  getStatusContactCode = () => {
-    this.props.getContactCode((err, contactCode) => {
-      if(!err) this.changeContactCode(contactCode);
-    });
-  }
-
   render() {
     return (
       <ContactForm isStatus={this.props.isStatus}
@@ -39,7 +39,7 @@ class SellerContactContainer extends Component {
                    username={this.state.nickname}
                    changeStatusContactCode={this.changeContactCode}
                    changeUsername={this.changeNickname}
-                   getContactCode={this.getStatusContactCode} />
+                   getContactCode={this.props.getContactCode} />
     );
   }
 }

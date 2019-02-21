@@ -25,10 +25,14 @@ class EditProfileContainer extends Component {
     this.props.loadProfile(this.props.address);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.updateUserStatus === States.success) {
       this.props.resetUpdateUserStatus();
       this.props.history.push('/profile');
+    }
+
+    if (prevProps.statusContactCode !== this.props.statusContactCode) {
+      this.changeStatusContactCode(this.props.statusContactCode);
     }
   }
 
@@ -51,12 +55,6 @@ class EditProfileContainer extends Component {
     this.setState({username});
   };
 
-  getStatusContactCode = () => {
-    this.props.getContactCode((err, contactCode) => {
-      if(!err) this.changeStatusContactCode(contactCode);
-    });
-  }
-
   render() {
     if (this.props.updateUserStatus === States.pending) {
       return <Loading mining/>;
@@ -70,7 +68,7 @@ class EditProfileContainer extends Component {
                        username={this.state.username}
                        changeStatusContactCode={this.changeStatusContactCode}
                        changeUsername={this.changeUsername}
-                       getContactCode={this.getStatusContactCode}
+                       getContactCode={this.props.getContactCode}
                        />
           <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
       </React.Fragment>

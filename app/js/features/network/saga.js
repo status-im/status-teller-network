@@ -62,16 +62,14 @@ export function *onUpdateBalances() {
   yield takeEvery(UPDATE_BALANCES, updateBalances);
 }
 
-export function *getStatusCode({callback}) {
+export function *getStatusCode() {
   try {
     // https://status.im/developer_tools/status_web_api.html
     const contactCode = yield web3.currentProvider.status.getContactCode();
     yield put({type: GET_CONTACT_CODE_SUCCEEDED, contactCode});
-    if(callback) callback(null, contactCode);
   } catch (error) {
     console.error(error);
     yield put({type: GET_CONTACT_CODE_FAILED, error: error.message});
-    if(callback) callback(error);
   }
 }
 
