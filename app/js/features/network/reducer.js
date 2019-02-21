@@ -1,11 +1,12 @@
 /*global web3*/
-import {INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED} from './constants';
+import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED } from './constants';
 import { Networks, Tokens } from '../../utils/networks';
 import { fromTokenDecimals } from '../../utils/numbers';
 
 const DEFAULT_STATE = {
   ready: false,
   address: '',
+  contactCode: '',
   isStatus: false,
   network: {
     id: 0,
@@ -25,7 +26,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ready: true,
         address: web3.eth.defaultAccount,
-        isStatus: web3.currentProvider.status,
+        isStatus: web3.currentProvider.isStatus,
         network: {
           id: action.networkId,
           name
@@ -44,6 +45,12 @@ function reducer(state = DEFAULT_STATE, action) {
       const balance = fromTokenDecimals(action.value, action.token.decimals);
       return {
         ...state, tokens: { ...state.tokens, [action.token.symbol]: {...action.token, balance} }
+      };
+    }
+    case GET_CONTACT_CODE_SUCCEEDED: {
+      return {
+        ...state,
+        contactCode: action.contactCode
       };
     }
     default:

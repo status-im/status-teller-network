@@ -16,7 +16,7 @@ contract MetadataStore is Ownable {
         address owner,
         uint256 offerId,
         address asset,
-        address statusContactCode,
+        bytes statusContactCode,
         string location,
         string currency,
         string username,
@@ -29,7 +29,7 @@ contract MetadataStore is Ownable {
         address owner,
         uint256 id,
         address asset,
-        address statusContactCode,
+        bytes statusContactCode,
         string location,
         string currency,
         string username,
@@ -45,13 +45,13 @@ contract MetadataStore is Ownable {
 
     event UserUpdated(
         address owner,
-        address statusContactCode,
+        bytes statusContactCode,
         string location,
         string username
     );
 
     struct User {
-        address statusContactCode;
+        bytes statusContactCode;
         string location;
         string username;
     }
@@ -96,7 +96,7 @@ contract MetadataStore is Ownable {
     */
     function addOffer(
         address _asset,
-        address _statusContactCode,
+        bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
         string memory _username,
@@ -136,7 +136,7 @@ contract MetadataStore is Ownable {
     * @param _username The username of the user
     */
     function updateUser(
-        address _statusContactCode,
+        bytes memory _statusContactCode,
         string memory _location,
         string memory _username
     ) public {
@@ -164,7 +164,7 @@ contract MetadataStore is Ownable {
     function updateOffer(
         uint256 _offerId,
         address _asset,
-        address _statusContactCode,
+        bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
         string memory _username,

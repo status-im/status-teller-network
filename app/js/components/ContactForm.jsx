@@ -36,7 +36,7 @@ class ContactForm extends Component {
                    className="form-control"
                    onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
                    validations={[required]}/>
-            {isStatus && <Button className="input-icon p-0" color="link">Give access</Button>}
+            {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
         </Form>
       </Fragment>
@@ -48,6 +48,7 @@ ContactForm.propTypes = {
   t: PropTypes.func,
   changeUsername: PropTypes.func,
   changeStatusContactCode: PropTypes.func,
+  getContactCode: PropTypes.func,
   username: PropTypes.string,
   statusContactCode: PropTypes.string,
   isStatus: PropTypes.bool

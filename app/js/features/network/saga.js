@@ -4,7 +4,8 @@ import ERC20Token from 'Embark/contracts/ERC20Token';
 import { fork, takeEvery, call, put, all, select } from 'redux-saga/effects';
 import {
   INIT, INIT_FAILED, INIT_SUCCEEDED,
-  UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED
+  UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED,
+  GET_CONTACT_CODE, GET_CONTACT_CODE_SUCCEEDED, GET_CONTACT_CODE_FAILED
 } from './constants';
 import {FETCH_EXCHANGE_RATE} from '../prices/constants';
 import { onReady } from '../../services/embarkjs';
@@ -61,8 +62,24 @@ export function *onUpdateBalances() {
   yield takeEvery(UPDATE_BALANCES, updateBalances);
 }
 
+export function *getStatusCode() {
+  try {
+    // https://status.im/developer_tools/status_web_api.html
+    const contactCode = yield web3.currentProvider.status.getContactCode();
+    yield put({type: GET_CONTACT_CODE_SUCCEEDED, contactCode});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_CONTACT_CODE_FAILED, error: error.message});
+  }
+}
+
+export function *onGetStatusCode() {
+  yield takeEvery(GET_CONTACT_CODE, getStatusCode);
+}
+
 export default [
   fork(onInit),
   fork(onUpdateBalances),
-  fork(onUpdateBalance)
+  fork(onUpdateBalance),
+  fork(onGetStatusCode)
 ];

@@ -35,10 +35,14 @@ class SellerContactContainer extends Component {
     }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     if (this.props.addOfferStatus === States.success) {
       this.props.history.push('/profile');
       this.props.resetAddOfferStatus();
+    }
+
+    if (prevProps.statusContactCode !== this.props.statusContactCode) {
+      this.changeStatusContactCode(this.props.statusContactCode);
     }
   }
 
@@ -74,7 +78,9 @@ class SellerContactContainer extends Component {
                      statusContactCode={this.state.statusContactCode} 
                      username={this.state.username}
                      changeStatusContactCode={this.changeStatusContactCode}
-                     changeUsername={this.changeUsername}/>
+                     changeUsername={this.changeUsername}
+                     getContactCode={this.props.getContactCode}
+                     />
       );
     }
 
@@ -92,13 +98,16 @@ SellerContactContainer.propTypes = {
   addOffer: PropTypes.func,
   resetAddOfferStatus: PropTypes.func,
   addOfferStatus: PropTypes.string,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  getContactCode: PropTypes.func,
+  statusContactCode: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
   addOfferStatus: metadata.selectors.getAddOfferStatus(state),
-  isStatus: network.selectors.isStatus(state)
+  isStatus: network.selectors.isStatus(state),
+  statusContactCode: network.selectors.getStatusContactCode(state)
 });
 
 export default connect(
@@ -106,6 +115,7 @@ export default connect(
   {
     setContactInfo: newSeller.actions.setContactInfo,
     addOffer: metadata.actions.addOffer,
-    resetAddOfferStatus: metadata.actions.resetAddOfferStatus
+    resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
+    getContactCode: network.actions.getContactCode
   }
 )(withRouter(SellerContactContainer));

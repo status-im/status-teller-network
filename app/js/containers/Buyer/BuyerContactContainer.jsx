@@ -18,6 +18,12 @@ class SellerContactContainer extends Component {
     });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.statusContactCode !== this.props.statusContactCode) {
+      this.changeStatusContactCode(this.props.statusContactCode);
+    }
+  }
+
   changeContactCode = (contactCode) => {
     this.setState({contactCode});
   };
@@ -26,14 +32,14 @@ class SellerContactContainer extends Component {
     this.setState({nickname});
   };
 
-
   render() {
     return (
       <ContactForm isStatus={this.props.isStatus}
                    statusContactCode={this.state.contactCode} 
                    username={this.state.nickname}
                    changeStatusContactCode={this.changeContactCode}
-                   changeUsername={this.changeNickname} />
+                   changeUsername={this.changeNickname}
+                   getContactCode={this.props.getContactCode} />
     );
   }
 }
@@ -43,18 +49,22 @@ SellerContactContainer.propTypes = {
   setContact: PropTypes.func,
   nickname: PropTypes.string,
   contactCode: PropTypes.string,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  getContactCode: PropTypes.func,
+  statusContactCode: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   contactCode: buyer.selectors.contactCode(state),
   nickname: buyer.selectors.nickname(state),
-  isStatus: network.selectors.isStatus(state)
+  isStatus: network.selectors.isStatus(state),
+  statusContactCode: network.selectors.getStatusContactCode(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setContact: buyer.actions.setContact
+    setContact: buyer.actions.setContact,
+    getContactCode: buyer.actions.getContactCode
   }
 )(SellerContactContainer);
