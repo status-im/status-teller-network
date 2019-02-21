@@ -2,13 +2,14 @@ import SNT from 'Embark/contracts/SNT';
 import { zeroAddress } from './address';
 
 export const Networks = {
-  1: 'mainnet',
-  3: 'ropsten',
-  4: 'rinkeny',
+  // 1: 'mainnet', Not deployed
+  // 3: 'ropsten', Not tokens and not deployed
+  4: 'rinkeby',
   1337: 'private'
 };
 
 export const Tokens = {
+  'unknown': [],
   'mainnet': [
     {
       symbol: 'ETH',

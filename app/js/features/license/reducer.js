@@ -9,7 +9,9 @@ import { fromTokenDecimals } from '../../utils/numbers';
 const DEFAULT_STATE = {
   licenseOwner: false,
   userRating: 0,
-  price: Number.MAX_SAFE_INTEGER
+  price: Number.MAX_SAFE_INTEGER,
+  loading: false,
+  error: ''
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -17,7 +19,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case BUY_LICENSE:
       return {
         ...state, 
-        loading: true
+        loading: true,
+        error: ''
       };
     case BUY_LICENSE_PRE_SUCCESS:
       return {
@@ -28,7 +31,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, 
         licenseOwner: true,
-        loading: false
+        loading: false,
+        error: ''
       };
     case LOAD_PRICE_SUCCEEDED:
       return {

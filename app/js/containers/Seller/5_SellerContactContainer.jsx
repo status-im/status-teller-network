@@ -5,6 +5,7 @@ import {connect} from "react-redux";
 
 import ContactForm from '../../components/ContactForm';
 import Loading from '../../components/ui/Loading';
+import ErrorInformation from '../../components/ui/ErrorInformation';
 import newSeller from "../../features/newSeller";
 import metadata from "../../features/metadata";
 import { States } from '../../utils/transaction';
@@ -22,9 +23,11 @@ class SellerContactContainer extends Component {
     props.footer.onPageChange(() => {
       props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
-    props.footer.onNext(() => {
-      props.addOffer({...this.props.seller, username: this.state.username, statusContactCode: this.state.statusContactCode});
-    });
+    props.footer.onNext(this.postOffer);
+  }
+
+  postOffer = () => {
+    this.props.addOffer({...this.props.seller, username: this.state.username, statusContactCode: this.state.statusContactCode});
   }
 
   componentDidMount() {
@@ -68,24 +71,23 @@ class SellerContactContainer extends Component {
       return <Loading page/>;
     }
 
-    if (this.props.addOfferStatus === States.pending) {
-      return <Loading mining/>;
+    switch(this.props.addOfferStatus){
+      case States.pending:
+        return <Loading mining/>;
+      case States.failed:
+        return <ErrorInformation transaction retry={this.postOffer}/>;
+      case States.none:
+        return (
+          <ContactForm isStatus={this.props.isStatus}
+                       statusContactCode={this.state.statusContactCode} 
+                       username={this.state.username}
+                       changeStatusContactCode={this.changeStatusContactCode}
+                       getContactCode={this.props.getContactCode}
+                       changeUsername={this.changeUsername}/>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
     }
-    
-    if (this.props.addOfferStatus === States.none) {
-      return (
-        <ContactForm isStatus={this.props.isStatus}
-                     statusContactCode={this.state.statusContactCode} 
-                     username={this.state.username}
-                     changeStatusContactCode={this.changeStatusContactCode}
-                     changeUsername={this.changeUsername}
-                     getContactCode={this.props.getContactCode}
-                     />
-      );
-    }
-
-    return <React.Fragment></React.Fragment>;
-    
   }
 }
 

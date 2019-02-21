@@ -9,16 +9,12 @@ import network from "../features/network";
 import LicenseInfo from '../components/License/LicenseInfo';
 import LicenseBuy from '../components/License/LicenseBuy';
 import Loading from '../components/ui/Loading';
+import ErrorInformation from '../components/ui/ErrorInformation';
 import YourSNTBalance from '../components/YourSNTBalance';
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
 class LicenseContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isBuying: false };
-  }
-
   componentDidMount() {
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
@@ -31,7 +27,6 @@ class LicenseContainer extends Component {
 
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
-      this.setState({isBuying: false});
       return this.props.history.push('/sell');
     }
   }
@@ -46,10 +41,13 @@ class LicenseContainer extends Component {
   }
 
   render() {
-    if (this.state.isBuying) {
+    if (this.props.isLoading) {
       return <Loading mining/>;
     }
 
+    if (this.props.isError) {
+      return <ErrorInformation transaction retry={this.buyLicense}/>;
+    }
     return (
       <React.Fragment>
         <LicenseInfo price={this.props.licensePrice} />
@@ -68,6 +66,8 @@ LicenseContainer.propTypes = {
   checkLicenseOwner: PropTypes.func,
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  isError: PropTypes.bool,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.string,
   loadLicensePrice: PropTypes.func,
@@ -77,6 +77,8 @@ LicenseContainer.propTypes = {
 const mapStateToProps = state => {
   return {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
+    isLoading: license.selectors.isLoading(state),
+    isError: license.selectors.isError(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: license.selectors.getLicensePrice(state)
   };
