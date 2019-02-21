@@ -8,8 +8,9 @@ const SellerOfferList = ({offers, onClick}) => (
     <Col xs="12" className="mt-2">
       <h3>Offers</h3>
       <div>
-        {offers.map((offer, idx) => <SellerOffer key={'offer-' + idx} fiat={offer.fiat} asset={offer.asset}
-                                                 max={offer.max} min={offer.min} onClick={() => onClick(idx)}/>)}
+        {offers.map((offer, index) => <SellerOffer key={index}
+                                                   offer={offer}
+                                                   onClick={() => onClick(offer.id)}/>)}
       </div>
     </Col>
   </Row>
