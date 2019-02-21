@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
@@ -43,12 +43,12 @@ class EditProfileContainer extends Component {
   validate(username, statusContactCode) {
     this.setState({updateDisabled: !username || !statusContactCode});
   }
-  
+
   changeStatusContactCode = (statusContactCode) => {
     this.validate(this.state.username, statusContactCode);
     this.setState({statusContactCode});
   };
-  
+
   changeUsername = (username) => {
     this.validate(username, this.state.statusContactCode);
     this.setState({username});
@@ -61,7 +61,7 @@ class EditProfileContainer extends Component {
 
     if (this.props.updateUserStatus === States.none) {
       return (
-        <React.Fragment>
+        <Fragment>
           <ContactForm isStatus={this.props.isStatus}
                        statusContactCode={this.state.statusContactCode} 
                        username={this.state.username}
@@ -70,11 +70,11 @@ class EditProfileContainer extends Component {
                        getContactCode={this.props.getContactCode}
                        />
           <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
-      </React.Fragment>
+      </Fragment>
       );
     }
-  
-    return <React.Fragment></React.Fragment>;
+
+    return <Fragment/>;
   }
 }
 

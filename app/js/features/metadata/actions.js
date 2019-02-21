@@ -2,9 +2,8 @@ import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS
 } from './constants';
-import MetadataStore from 'Embark/contracts/MetadataStore';
 
-export const load = (address) => ({ type: LOAD, address });
+export const load = (address) => ({type: LOAD, address});
 export const loadOffers = (address) => ({ type: LOAD_OFFERS, address });
 
 export const addOffer = (seller) => ({
@@ -20,17 +19,7 @@ export const addOffer = (seller) => ({
     paymentMethods: seller.paymentMethods,
     marketType: seller.marketType,
     margin: seller.margin
-  },
-  toSend: MetadataStore.methods.addOffer(
-    seller.asset,
-    seller.statusContactCode,
-    seller.location,
-    seller.currency,
-    seller.username,
-    seller.paymentMethods,
-    seller.marketType,
-    seller.margin
-  )
+  }
 });
 
 export const resetAddOfferStatus = () => ({
@@ -39,12 +28,7 @@ export const resetAddOfferStatus = () => ({
 
 export const updateUser = (user) => ({
   type: UPDATE_USER,
-  user,
-  toSend: MetadataStore.methods.updateUser(
-    user.statusContactCode,
-    user.location,
-    user.username
-  )
+  user
 });
 
 export const resetUpdateUserStatus = () => ({
