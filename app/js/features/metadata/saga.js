@@ -40,7 +40,7 @@ export function *loadOffers({address}) {
 
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call();
-      put({type: LOAD_USER, address: offer.owner});
+      yield put({type: LOAD_USER, address: offer.owner});
       return {...offer, id};
     }));
 
