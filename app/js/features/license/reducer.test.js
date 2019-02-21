@@ -7,7 +7,9 @@ describe('reducer', () => {
       {
         licenseOwner: false,
         userRating: 0,
-        price: Number.MAX_SAFE_INTEGER
+        loading: false,
+        price: Number.MAX_SAFE_INTEGER,
+        error: ''
       }
     );
   });
@@ -20,7 +22,8 @@ describe('reducer', () => {
     ).toEqual(
       {
         licenseOwner: true,
-        loading: false
+        loading: false,
+        error: ''
       }
     );
   });

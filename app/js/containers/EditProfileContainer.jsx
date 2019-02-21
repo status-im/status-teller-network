@@ -7,6 +7,7 @@ import network from "../features/network";
 import metadata from "../features/metadata";
 
 import Loading from '../components/ui/Loading';
+import ErrorInformation from '../components/ui/ErrorInformation';
 import ContactForm from '../components/ContactForm';
 import UpdateUser from '../components/Profile/UpdateUser';
 import { States } from '../utils/transaction';
@@ -55,26 +56,26 @@ class EditProfileContainer extends Component {
   };
 
   render() {
-    if (this.props.updateUserStatus === States.pending) {
-      return <Loading mining/>;
+    switch(this.props.updateUserStatus){
+      case States.pending:
+        return <Loading mining/>;
+      case States.failed:
+        return <ErrorInformation transaction retry={this.update}/>;
+      case States.none:
+        return (
+          <Fragment>
+            <ContactForm isStatus={this.props.isStatus}
+                         statusContactCode={this.state.statusContactCode} 
+                         username={this.state.username}
+                         changeStatusContactCode={this.changeStatusContactCode}
+                         getContactCode={this.props.getContactCode}
+                         changeUsername={this.changeUsername}/>
+            <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
+        </Fragment>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
     }
-
-    if (this.props.updateUserStatus === States.none) {
-      return (
-        <Fragment>
-          <ContactForm isStatus={this.props.isStatus}
-                       statusContactCode={this.state.statusContactCode} 
-                       username={this.state.username}
-                       changeStatusContactCode={this.changeStatusContactCode}
-                       changeUsername={this.changeUsername}
-                       getContactCode={this.props.getContactCode}
-                       />
-          <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
-      </Fragment>
-      );
-    }
-
-    return <Fragment/>;
   }
 }
 

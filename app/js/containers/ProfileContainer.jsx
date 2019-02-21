@@ -9,6 +9,15 @@ import SellerInformation from '../components/SellerInformation';
 import Trades from '../components/Profile/Trades';
 import Offers from '../components/Profile/Offers';
 import StatusContactCode from '../components/StatusContactCode';
+import { zeroAddress } from '../utils/address';
+
+const NULL_PROFILE = {
+  address: zeroAddress,
+  username: '',
+  trades: [],
+  reputation: {upCount: 0, downCount: 0},
+  offers: []
+};
 
 class ProfileContainer extends Component {
   componentDidMount() {
@@ -19,10 +28,10 @@ class ProfileContainer extends Component {
     const profile = this.props.profile;
     return (
       <Fragment>
-        <SellerInformation reputation={profile.reputation} address={profile.address} name={profile.username}/>
+        <SellerInformation reputation={profile.reputation} address={profile.address} username={profile.username}/>
         <Trades trades={profile.trades}/>
         <Offers offers={profile.offers} location={profile.location} />
-        <StatusContactCode value={profile.statusContactCode} />
+        {profile.username.length > 0 && <StatusContactCode value={profile.statusContactCode} />}
       </Fragment>
     );
   }
@@ -38,7 +47,7 @@ const mapStateToProps = state => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
-    profile: metadata.selectors.getProfile(state, address)
+    profile: metadata.selectors.getProfile(state, address) || NULL_PROFILE
   };
 };
 

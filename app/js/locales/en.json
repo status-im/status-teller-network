@@ -170,7 +170,19 @@
     "initial": "The best and most convenient way to buy and sell crypto",
     "page": "Loading ..."
   },
-  "errorPage": {
-    "repeat": "Repeat"
+  "errorInformation": {
+    "retry": "Retry",
+    "provider": {
+      "title": "Your browser doesn't support web3 standards",
+      "tip": "Try using a different browser"
+    },
+    "network": {
+      "title": "Network is not supported",
+      "tip": "Switch your wallet to Rinkeby Network"
+    },
+    "transaction": {
+      "title": "Transaction failed",
+      "tip": "Try to retry it"
+    }
   }
 }

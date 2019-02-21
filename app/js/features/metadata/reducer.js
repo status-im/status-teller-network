@@ -41,7 +41,7 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case ADD_OFFER_FAILED:
       return {
-        ...state, addOfferStatus: States.fail
+        ...state, addOfferStatus: States.failed
       };
     case RESET_UPDATE_USER_STATUS:
       return {
@@ -60,7 +60,7 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case UPDATE_USER_FAILED:
       return {
-        ...state, updateUserStatus: States.fail
+        ...state, updateUserStatus: States.failed
       };
     case LOAD_USER_SUCCEEDED:
       return {

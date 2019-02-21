@@ -8,6 +8,7 @@ const DEFAULT_STATE = {
   address: '',
   contactCode: '',
   isStatus: false,
+  error: '',
   network: {
     id: 0,
     name: ''
@@ -18,7 +19,7 @@ const DEFAULT_STATE = {
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case INIT_SUCCEEDED: {
-      const name = Networks[action.networkId];
+      const name = Networks[action.networkId] || 'unknown';
       const tokens = Tokens[name].reduce((acc, token) => {
         acc[token.symbol] = token;
         return acc;
@@ -27,6 +28,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ready: true,
         address: web3.eth.defaultAccount,
         isStatus: web3.currentProvider.isStatus,
+        error: '',
         network: {
           id: action.networkId,
           name

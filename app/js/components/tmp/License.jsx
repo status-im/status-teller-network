@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardHeader, CardBody, CardTitle, Button, Alert} from 'reactstrap';
+import {Card, CardHeader, CardBody, CardTitle, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
 import { withNamespaces } from 'react-i18next';
 import TransactionResults from "./TransactionResults";
