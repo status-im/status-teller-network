@@ -6,15 +6,15 @@ import {connect} from "react-redux";
 import license from "../../features/license";
 import network from "../../features/network";
 
-import LicenseInfo from './components/Info';
-import LicenseBuy from './components/BuyButton';
+import Info from './components/Info';
+import BuyButton from './components/BuyButton';
+import Balance from './components/Balance';
 import Loading from '../../components/ui/Loading';
 import ErrorInformation from '../../components/ui/ErrorInformation';
-import YourSNTBalance from './components/Balance';
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
-class LicenseContainer extends Component {
+class License extends Component {
   componentDidMount() {
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
@@ -50,17 +50,17 @@ class LicenseContainer extends Component {
     }
     return (
       <React.Fragment>
-        <LicenseInfo price={this.props.licensePrice} />
+        <Info price={this.props.licensePrice} />
         <div className="mt-5">
-          <YourSNTBalance value={this.props.sntToken.balance} disabled={!this.enoughBalance()}/>
+          <Balance value={this.props.sntToken.balance} disabled={!this.enoughBalance()}/>
         </div>
-        <LicenseBuy onClick={this.buyLicense} disabled={!this.enoughBalance()}/>
+        <BuyButton onClick={this.buyLicense} disabled={!this.enoughBalance()}/>
       </React.Fragment>
     );
   }
 }
 
-LicenseContainer.propTypes = {
+License.propTypes = {
   history: PropTypes.object,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
@@ -92,4 +92,4 @@ export default connect(
     loadLicensePrice: license.actions.loadPrice,
     updateBalance: network.actions.updateBalance
   }
-)(withRouter(LicenseContainer));
+)(withRouter(License));

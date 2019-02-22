@@ -19,7 +19,7 @@ const NULL_PROFILE = {
   offers: []
 };
 
-class ProfileContainer extends Component {
+class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
   }
@@ -37,7 +37,7 @@ class ProfileContainer extends Component {
   }
 }
 
-ProfileContainer.propTypes = {
+MyProfile.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
   loadProfile: PropTypes.func

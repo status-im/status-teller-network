@@ -9,7 +9,7 @@ import metadata from "../../features/metadata";
 import Loading from '../../components/ui/Loading';
 import ErrorInformation from '../../components/ui/ErrorInformation';
 import ContactForm from '../../components/ContactForm';
-import UpdateUser from './components/UpdateUser';
+import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
 
 class EditProfileContainer extends Component {
@@ -70,7 +70,7 @@ class EditProfileContainer extends Component {
                          changeStatusContactCode={this.changeStatusContactCode}
                          getContactCode={this.props.getContactCode}
                          changeUsername={this.changeUsername}/>
-            <UpdateUser disabled={this.state.updateDisabled} onClick={this.update}/>
+            <UpdateButton disabled={this.state.updateDisabled} onClick={this.update}/>
         </Fragment>
         );
       default:

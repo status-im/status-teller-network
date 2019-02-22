@@ -3,7 +3,7 @@ import {Row, Col, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 
-class UpdateUser extends Component {
+class UpdateButton extends Component {
   render() {
     const t = this.props.t;
     return (
@@ -16,10 +16,10 @@ class UpdateUser extends Component {
   }
 }
 
-UpdateUser.propTypes = {
+UpdateButton.propTypes = {
   t: PropTypes.func,
   onClick: PropTypes.func,
   disabled: PropTypes.bool
 };
 
-export default withNamespaces()(UpdateUser);
+export default withNamespaces()(UpdateButton);

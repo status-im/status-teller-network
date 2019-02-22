@@ -7,7 +7,7 @@ import { withNamespaces } from 'react-i18next';
 
 import license from "../../features/license";
 
-import "./HomeContainer.scss";
+import "./index.scss";
 
 class HomeContainer extends Component {
   componentDidMount() {
@@ -36,7 +36,7 @@ class HomeContainer extends Component {
 
         <Row className="home--footer">
           <Col xs={6}>
-            <Button tag={Link} color="primary" block to="/buy">{t('home.buy')}</Button>
+            <Button tag={Link} color="primary" block to="/offers/list">{t('home.buy')}</Button>
           </Col>
           <Col xs={6}>
             <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
