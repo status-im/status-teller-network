@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditContact should render correctly 1`] = `
+<Fragment>
+  <h2 />
+  <p />
+  <Form(t)>
+    <FormGroup
+      tag="div"
+    >
+      <Label
+        className="text-dark"
+        for="nickname"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Set nickname
+      </Label>
+      <Control(s)
+        className="form-control"
+        id="nickname"
+        name="nickname"
+        onChange={[Function]}
+        type="text"
+        validations={
+          Array [
+            [Function],
+          ]
+        }
+      />
+    </FormGroup>
+    <FormGroup
+      tag="div"
+    >
+      <Label
+        className="text-dark"
+        for="contactCode"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Status contact code or Status ENS name
+      </Label>
+      <Control(s)
+        className="form-control"
+        id="contactCode"
+        name="contactCode"
+        onChange={[Function]}
+        type="text"
+        validations={
+          Array [
+            [Function],
+          ]
+        }
+      />
+    </FormGroup>
+  </Form(t)>
+</Fragment>
+`;
