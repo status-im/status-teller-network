@@ -10,7 +10,7 @@ import {Alert} from "reactstrap";
 import Map from '../../components/Map';
 import license from "../../features/license";
 
-class MapContainer extends Component {
+class OffersMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,7 +60,7 @@ class MapContainer extends Component {
   }
 }
 
-MapContainer.propTypes = {
+OffersMap.propTypes = {
   t: PropTypes.func,
   getLicenseOwners: PropTypes.func,
   licenseOwners: PropTypes.array,
@@ -78,4 +78,4 @@ export default connect(
   {
     getLicenseOwners: license.actions.getLicenseOwners
   }
-)(withRouter(withNamespaces()(MapContainer)));
+)(withRouter(withNamespaces()(OffersMap)));

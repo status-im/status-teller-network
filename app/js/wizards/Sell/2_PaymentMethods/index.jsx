@@ -7,7 +7,7 @@ import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import { PAYMENT_METHODS } from '../../../features/metadata/constants';
 
-class SellerPaymentMethodsContainer extends Component {
+class PaymentMethods extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -59,7 +59,7 @@ class SellerPaymentMethodsContainer extends Component {
   }
 }
 
-SellerPaymentMethodsContainer.propTypes = {
+PaymentMethods.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
   seller: PropTypes.object,
@@ -75,4 +75,4 @@ export default connect(
   {
     setPaymentMethods: newSeller.actions.setPaymentMethods
   }
-)(SellerPaymentMethodsContainer);
+)(PaymentMethods);

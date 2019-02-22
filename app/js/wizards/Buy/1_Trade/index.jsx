@@ -10,7 +10,7 @@ const FAKE_ETH_PRICE = 423;
 const MIN = 200;
 const MAX = 600;
 
-class OfferTradeContainer extends Component {
+class Trade extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -79,7 +79,7 @@ class OfferTradeContainer extends Component {
   }
 }
 
-OfferTradeContainer.propTypes = {
+Trade.propTypes = {
   history: PropTypes.object,
   setTrade: PropTypes.func,
   offerId: PropTypes.number,
@@ -99,4 +99,4 @@ export default connect(
   {
     setTrade: buyer.actions.setTrade
   }
-)(withRouter(OfferTradeContainer));
+)(withRouter(Trade));

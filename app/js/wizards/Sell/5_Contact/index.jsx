@@ -12,7 +12,7 @@ import metadata from "../../../features/metadata";
 import { States } from '../../../utils/transaction';
 import network from '../../../features/network';
 
-class SellerContactContainer extends Component {
+class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,7 +92,7 @@ class SellerContactContainer extends Component {
   }
 }
 
-SellerContactContainer.propTypes = {
+Contact.propTypes = {
   history: PropTypes.object,
   footer: PropTypes.object,
   wizard: PropTypes.object,
@@ -121,4 +121,4 @@ export default connect(
     resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
     getContactCode: network.actions.getContactCode
   }
-)(withRouter(SellerContactContainer));
+)(withRouter(Contact));

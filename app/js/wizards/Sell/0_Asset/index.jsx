@@ -7,7 +7,7 @@ import network from "../../../features/network";
 import newSeller from "../../../features/newSeller";
 import SellerAssets from './components/SellerAssets';
 
-class SellerAssetContainer extends Component {
+class Asset extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -41,7 +41,7 @@ class SellerAssetContainer extends Component {
   }
 }
 
-SellerAssetContainer.propTypes = {
+Asset.propTypes = {
   footer: PropTypes.object,
   setAsset: PropTypes.func,
   updateBalances: PropTypes.func,
@@ -60,4 +60,4 @@ export default connect(
     setAsset: newSeller.actions.setAsset,
     updateBalances: network.actions.updateBalances
   }
-)(SellerAssetContainer);
+)(Asset);

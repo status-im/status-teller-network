@@ -5,7 +5,7 @@ import buyer from "../../../features/buyer";
 import network from "../../../features/network";
 import {connect} from "react-redux";
 
-class SellerContactContainer extends Component {
+class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -44,7 +44,7 @@ class SellerContactContainer extends Component {
   }
 }
 
-SellerContactContainer.propTypes = {
+Contact.propTypes = {
   footer: PropTypes.object,
   setContact: PropTypes.func,
   nickname: PropTypes.string,
@@ -67,4 +67,4 @@ export default connect(
     setContact: buyer.actions.setContact,
     getContactCode: buyer.actions.getContactCode
   }
-)(SellerContactContainer);
+)(Contact);

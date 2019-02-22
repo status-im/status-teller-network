@@ -9,7 +9,7 @@ import license from "../../features/license";
 
 import "./index.scss";
 
-class HomeContainer extends Component {
+class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
   }
@@ -47,7 +47,7 @@ class HomeContainer extends Component {
   }
 }
 
-HomeContainer.propTypes = {
+Home.propTypes = {
   t: PropTypes.func,
   checkLicenseOwner: PropTypes.func,
   isLicenseOwner: PropTypes.bool
@@ -62,4 +62,4 @@ export default connect(
   {
     checkLicenseOwner: license.actions.checkLicenseOwner
   }
-)(withNamespaces()(HomeContainer));
+)(withNamespaces()(Home));

@@ -19,7 +19,7 @@ const CURRENCY_DATA = [
   {id: 'KRW', label: 'South Korean Won - KRW'}
 ];
 
-class SellerCurrencyContainer extends Component {
+class Currency extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,7 +66,7 @@ class SellerCurrencyContainer extends Component {
   }
 }
 
-SellerCurrencyContainer.propTypes = {
+Currency.propTypes = {
   t: PropTypes.func,
   wizard: PropTypes.object,
   setCurrency: PropTypes.func,
@@ -83,4 +83,4 @@ export default connect(
   {
     setCurrency: newSeller.actions.setCurrency
   }
-)(withNamespaces()(SellerCurrencyContainer));
+)(withNamespaces()(Currency));

@@ -6,7 +6,7 @@ import SellerPosition from './components/SellerPosition';
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 
-class SellerLocationContainer extends Component {
+class Location extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -49,7 +49,7 @@ class SellerLocationContainer extends Component {
   }
 }
 
-SellerLocationContainer.propTypes = {
+Location.propTypes = {
   wizard: PropTypes.object,
   seller: PropTypes.object,
   setLocation: PropTypes.func,
@@ -65,4 +65,4 @@ export default connect(
   {
     setLocation: newSeller.actions.setLocation
   }
-)(SellerLocationContainer);
+)(Location);

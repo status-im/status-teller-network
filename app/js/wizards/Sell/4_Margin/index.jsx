@@ -8,7 +8,7 @@ import newSeller from "../../../features/newSeller";
 import network from '../../../features/network';
 import prices from '../../../features/prices';
 
-class SellerMarginContainer extends Component {
+class Margin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,7 +66,7 @@ class SellerMarginContainer extends Component {
   }
 }
 
-SellerMarginContainer.propTypes = {
+Margin.propTypes = {
   t: PropTypes.func,
   prices: PropTypes.object,
   setMargin: PropTypes.func,
@@ -87,4 +87,4 @@ export default connect(
   {
     setMargin: newSeller.actions.setMargin
   }
-)(SellerMarginContainer);
+)(Margin);
