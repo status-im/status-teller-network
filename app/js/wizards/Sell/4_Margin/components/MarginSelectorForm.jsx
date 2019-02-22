@@ -4,8 +4,9 @@ import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, InputGroupTe
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
+
 import {isNumber, required, lowerThan} from '../../../../validators';
-import MarketButton from '../../../../components/MarketButton';
+import MarketButton from '../../../../ui/MarketButton';
 
 const ABOVE = 0;
 const BELOW = 1;

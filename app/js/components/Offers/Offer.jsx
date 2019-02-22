@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col, Button} from 'reactstrap';
-import {TokenImages} from '../../../utils/images';
+import {TokenImages} from '../../utils/images';
 
-const SellerOfferList = ({offer, onClick}) => (
+const Offer = ({offer, onClick}) => (
   <Row className="border py-2 mx-0 my-2 rounded">
     <Col xs="6" className="v-align-center">
       <p className="font-weight-bold"><img src={TokenImages[`${offer.token.symbol}.png`]} alt="asset icon" className="mr-2"/>{offer.token.symbol}</p>
@@ -14,9 +14,9 @@ const SellerOfferList = ({offer, onClick}) => (
   </Row>
 );
 
-SellerOfferList.propTypes = {
+Offer.propTypes = {
   offer: PropTypes.object,
   onClick: PropTypes.func
 };
 
-export default SellerOfferList;
+export default Offer;

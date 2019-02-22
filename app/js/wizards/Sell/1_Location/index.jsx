@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import SellerPosition from '../../../components/Seller/SellerPosition';
-import Loading from '../../../components/ui/Loading';
+import SellerPosition from './components/SellerPosition';
+import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 
 class SellerLocationContainer extends Component {

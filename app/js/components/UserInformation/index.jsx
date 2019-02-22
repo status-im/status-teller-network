@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import Blockies from 'react-blockies';
-import Reputation from "./Reputation.jsx";
+import Reputation from "../Reputation";
 import Address from './Address';
 
 const UserInformation = ({address, username, reputation}) => (

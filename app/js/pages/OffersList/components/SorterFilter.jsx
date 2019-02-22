@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown, faSortAmountDown} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
-
-import './SorterFilter.scss';
-import CheckButton from '../../../components/ui/CheckButton';
 import {ButtonGroup, FormGroup} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
+
+import CheckButton from '../../../ui/CheckButton';
+
+import './SorterFilter.scss';
 
 const FilterMenu = (props) => (
   <Fragment>

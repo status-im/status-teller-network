@@ -3,9 +3,10 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import ContactForm from '../../../components/ContactForm';
-import Loading from '../../../components/ui/Loading';
-import ErrorInformation from '../../../components/ui/ErrorInformation';
+import EditContact from '../../../components/EditContact';
+import Loading from '../../../components/Loading';
+import ErrorInformation from '../../../components/ErrorInformation';
+
 import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 import { States } from '../../../utils/transaction';
@@ -78,7 +79,7 @@ class SellerContactContainer extends Component {
         return <ErrorInformation transaction retry={this.postOffer}/>;
       case States.none:
         return (
-          <ContactForm isStatus={this.props.isStatus}
+          <EditContact isStatus={this.props.isStatus}
                        statusContactCode={this.state.statusContactCode} 
                        username={this.state.username}
                        changeStatusContactCode={this.changeStatusContactCode}

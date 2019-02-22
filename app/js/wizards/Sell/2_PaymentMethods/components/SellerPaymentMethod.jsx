@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ButtonGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import CheckButton from '../../../../components/ui/CheckButton';
+import CheckButton from '../../../../ui/CheckButton';
 
 class SellerPaymentMethod extends Component {
   togglePaymentMethod(selectedMethod) {

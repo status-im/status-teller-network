@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'reactstrap';
 
-import "./MarketButton.scss";
+import "./index.scss";
 
 const MarketButton = ({children, onClick, active}) => (
   <Button className="market-button text-center" size="lg" onClick={onClick} active={active}>

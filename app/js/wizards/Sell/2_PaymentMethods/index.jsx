@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import SellerPaymentMethod from '../../../components/Seller/SellerPaymentMethod';
-import Loading from '../../../components/ui/Loading';
+import SellerPaymentMethod from './components/SellerPaymentMethod';
+import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import { PAYMENT_METHODS } from '../../../features/metadata/constants';
 

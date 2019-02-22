@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import {connect} from 'react-redux';
 
-import FiatSelectorForm from "../../../components/Seller/FiatSelectorForm";
-import Loading from '../../../components/ui/Loading';
+import FiatSelectorForm from "./components/FiatSelectorForm";
+import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 
 // TODO: where will this FIAT currency list come from?

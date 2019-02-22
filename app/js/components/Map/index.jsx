@@ -5,6 +5,7 @@ import {GoogleMap, Marker, withGoogleMap, withScriptjs} from "react-google-maps"
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
+
 import SearchBar from '../SearchBar';
 
 import CustomInfoWindow from './CustomInfoWindow';

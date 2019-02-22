@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
-import RatingIcon from "../RatingIcon";
 import classnames from "classnames";
 
-import './Reputation.scss';
+import RatingIcon from "../../ui/RatingIcon";
+
+import './index.scss';
 
 const Reputation = ({reputation, size}) => (
   <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>

@@ -6,7 +6,7 @@ import {faCircle} from "@fortawesome/free-solid-svg-icons";
 import {faCircle as faCircleReg} from "@fortawesome/free-regular-svg-icons";
 import classnames from 'classnames';
 
-import "./CheckButton.scss";
+import "./index.scss";
 
 const CheckButton = ({children, active, onClick, size}) => (
   <Button className={classnames('check-button', 'text-left', 'text-body', 'px-0', 'py-2', 'v-align-center', 'mb-2', {

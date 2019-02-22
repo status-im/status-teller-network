@@ -9,7 +9,7 @@ import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import network from '../../features/network';
 import metadata from '../../features/metadata';
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
-import OfferListing from '../../components/OfferListing';
+import Offer from './components/Offer';
 import SorterFilter from './components/SorterFilter';
 
 import './index.scss';
@@ -81,7 +81,7 @@ class OffersList extends Component {
                       <FontAwesomeIcon icon={faArrowRight}/>
               </Button>
             </h4>
-            {groupedOffer[paymentMethod].map((offer, index) => <OfferListing key={`${paymentMethod}${index}`} offer={offer}/>)}
+            {groupedOffer[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} offer={offer}/>)}
           </Fragment>
         ))}
       </Fragment>

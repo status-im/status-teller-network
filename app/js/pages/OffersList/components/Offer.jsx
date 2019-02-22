@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
 import Blockies from "react-blockies";
-import Reputation from './Reputation';
+import Reputation from '../../../components/Reputation';
 
-const OfferListing = ({offer}) => (
+const Offer = ({offer}) => (
   <Row className="offer-listing rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/buy/profile/${offer.owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
@@ -33,9 +33,9 @@ const OfferListing = ({offer}) => (
 );
 
 
-OfferListing.propTypes = {
+Offer.propTypes = {
   offer: PropTypes.object
 };
 
 
-export default OfferListing;
+export default Offer;
