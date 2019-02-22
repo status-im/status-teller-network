@@ -5,36 +5,35 @@ import {Container} from 'reactstrap';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
+import Header from "./Header";
 import Wizard from '../wizards/Wizard';
-import Header from "../components/Header";
 import Loading from "../components/ui/Loading";
 import ErrorInformation from '../components/ui/ErrorInformation';
 
-import HomeContainer from '../containers/HomeContainer';
-import ProfileContainer from '../containers/MyProfileContainer';
-import EditProfileContainer from '../containers/EditMyContactContainer';
-import LicenseContainer from '../containers/LicenseContainer';
+import Home from '../pages/Home';
+import Profile from '../pages/Profile';
+import MyProfile from '../pages/MyProfile';
+import EditMyContact from '../pages/EditMyContact';
+import License from '../pages/License';
+import OffersList from '../pages/OffersList';
+import OffersMap from '../pages/OffersMap';
 
-// Buyer
-import OfferListContainer from '../containers/Buyer/OfferListContainer';
-import BankOfferListContainer from '../containers/Buyer/BankOfferListContainer';
-import MapContainer from '../containers/Buyer/MapContainer';
-import SellerProfileContainer from '../pages/ProfileContainer/SellerProfileContainer';
-import OfferTradeContainer from '../containers/Buyer/OfferTradeContainer';
-import BuyerContactContainer from '../containers/Buyer/BuyerContactContainer';
+// Buy
+import BuyContact from '../wizards/Buy/Contact';
+import BuyTrade from '../wizards/Buy/Trade';
 
-// Seller
-import SellerAssetContainer from '../containers/Seller/0_SellAssetContainer';
-import SellerLocationContainer from '../containers/Seller/1_SellLocationContainer';
-import SellerPaymentMethodsContainer from '../containers/Seller/2_SellPaymentMethodsContainer';
-import SellerCurrencyContainer from '../containers/Seller/3_SellCurrencyContainer';
-import SellerMarginContainer from '../containers/Seller/4_SellMarginContainer';
-import SellerContactContainer from '../containers/Seller/5_SellContactContainer';
+// Sell
+import SellAsset from '../wizards/Sell/0_Asset';
+import SellLocation from '../wizards/Sell/1_Location';
+import SellPaymentMethods from '../wizards/Sell/2_PaymentMethods';
+import SellCurrency from '../wizards/Sell/3_Currency';
+import SellMargin from '../wizards/Sell/4_Margin';
+import SellContact from '../wizards/Sell/5_Contact';
 
 // Tmp
-import EscrowsContainer from '../containers/tmp/EscrowsContainer';
-import SignatureContainer from '../containers/tmp/SignatureContainer';
-import ArbitrationContainer from '../containers/tmp/ArbitrationContainer';
+import EscrowsContainer from '../pages/tmp/EscrowsContainer';
+import SignatureContainer from '../pages/tmp/SignatureContainer';
+import ArbitrationContainer from '../pages/tmp/ArbitrationContainer';
 
 import prices from '../features/prices';
 import network from '../features/network';
@@ -85,31 +84,30 @@ class App extends Component {
         <Container>
           <Header profile={this.props.profile}/>
           <Switch>
-            <Route exact path="/" component={HomeContainer}/>
+            <Route exact path="/" component={Home}/>
 
-            <Route exact path="/profile" component={MyProfileContainer}/>
-            <Route exact path="/profile/contact/edit" component={EditMyContactContainer}/>
-            <Route exact path="/profile/:address" component={ProfileContainer}/>
+            <Route exact path="/profile" component={MyProfile}/>
+            <Route exact path="/profile/contact/edit" component={EditMyContact}/>
+            <Route exact path="/profile/:address" component={Profile}/>
 
-            <Route exact path="/license" component={LicenseContainer}/>
+            <Route exact path="/license" component={License}/>
 
-
-            <Route exact path="/offers/list" component={OffersListContainer}/>
-            <Route exact path="/offers/map" component={OffersMapContainer}/>
+            <Route exact path="/offers/list" component={OffersList}/>
+            <Route exact path="/offers/map" component={OffersMap}/>
             
-            <Wizard path="/offers/:id" steps={[
-              {path: '/offers/:id/contact', component: BuyContactContainer},
-              {path: '/offers/:id/trade', component: BuyTradeContainer}
+            <Wizard path="/buy/:id" steps={[
+              {path: '/buy/:id/contact', component: BuyContact},
+              {path: '/buy/:id/trade', component: BuyTrade}
             ]}/>
 
             {this.props.isLicenseOwner &&
               <Wizard path="/sell/" steps={[
-                {path: '/sell/asset', component: SellAssetContainer},
-                {path: '/sell/location', component: SellLocationContainer},
-                {path: '/sell/payment-methods', component: SellPaymentMethodsContainer},
-                {path: '/sell/currency', component: SellCurrencyContainer},
-                {path: '/sell/margin', component: SellMarginContainer, nextLabel: 'Confirm price'},
-                {path: '/sell/contact', component: SellContactContainer, nextLabel: 'Post the offer'}
+                {path: '/sell/asset', component: SellAsset},
+                {path: '/sell/location', component: SellLocation},
+                {path: '/sell/payment-methods', component: SellPaymentMethods},
+                {path: '/sell/currency', component: SellCurrency},
+                {path: '/sell/margin', component: SellMargin, nextLabel: 'Confirm price'},
+                {path: '/sell/contact', component: SellContact, nextLabel: 'Post the offer'}
               ]}/>
             }
 
