@@ -9,18 +9,7 @@ import Map from '../../components/Buyer/Map';
 import buyer from "../../features/buyer";
 import metadata from "../../features/metadata";
 
-
-import ETH from "../../../images/tokens/ETH.png";
-import SNT from "../../../images/tokens/SNT.png";
-import ZRX from "../../../images/tokens/ZRX.png";
-
 import './SellerProfileContainer.scss';
-
-const FAKE_OFFERS = [
-  {asset: {name: 'SNT', icon: ETH}, min: 200, max: 600, fiat: '$'},
-  {asset: {name: 'ETH', icon: SNT}, min: 200, max: 600, fiat: '$'},
-  {asset: {name: 'ZRX', icon: ZRX}, min: 200, max: 600, fiat: '$'}
-];
 
 class SellerProfileContainer extends Component {
   componentDidMount() {
@@ -29,7 +18,7 @@ class SellerProfileContainer extends Component {
 
   offerClick = (offerId) => {
     this.props.setOffer(offerId);
-    this.props.history.push('/buy/contact');
+    this.props.history.push('/buy/offer/');
   };
 
   render() {
