@@ -33,7 +33,6 @@ import SellerContactContainer from '../containers/Seller/5_SellerContactContaine
 
 // Tmp
 import EscrowsContainer from '../containers/tmp/EscrowsContainer';
-import PriceContainer from '../containers/tmp/PriceContainer';
 import SignatureContainer from '../containers/tmp/SignatureContainer';
 import ArbitrationContainer from '../containers/tmp/ArbitrationContainer';
 
@@ -111,9 +110,7 @@ class App extends Component {
               ]}/>
             }
 
-            <Route path="/tmp/price" component={PriceContainer}/>
             <Route path="/tmp/escrows" component={EscrowsContainer}/>
-            <Route path="/tmp/map" component={MapContainer}/>
             <Route path="/tmp/signature" component={SignatureContainer}/>
             <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
 
