@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ContactForm from '../../../components/ContactForm';
+import EditContact from '../../../components/EditContact';
 import buyer from "../../../features/buyer";
 import network from "../../../features/network";
 import {connect} from "react-redux";
@@ -34,7 +34,7 @@ class SellerContactContainer extends Component {
 
   render() {
     return (
-      <ContactForm isStatus={this.props.isStatus}
+      <EditContact isStatus={this.props.isStatus}
                    statusContactCode={this.state.contactCode} 
                    username={this.state.nickname}
                    changeStatusContactCode={this.changeContactCode}
