@@ -9,7 +9,7 @@ import metadata from "../../features/metadata";
 import Loading from '../../components/ui/Loading';
 import ErrorInformation from '../../components/ui/ErrorInformation';
 import ContactForm from '../../components/ContactForm';
-import UpdateUser from '../../components/Profile/UpdateUser';
+import UpdateUser from './components/UpdateUser';
 import { States } from '../../utils/transaction';
 
 class EditProfileContainer extends Component {

@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import LicenseInfo from "./LicenseInfo";
+import LicenseInfo from "./Info";
 
 describe('LicenseInfo', () => {
   it('should render correctly', () => {

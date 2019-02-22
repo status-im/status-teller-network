@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import Map from '../../components/Buyer/Map';
+import Map from '../../components/ui/Map';
 import license from "../../features/license";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';

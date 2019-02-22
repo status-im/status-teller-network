@@ -6,11 +6,11 @@ import {connect} from "react-redux";
 import license from "../../features/license";
 import network from "../../features/network";
 
-import LicenseInfo from '../../components/License/LicenseInfo';
-import LicenseBuy from '../../components/License/LicenseBuy';
+import LicenseInfo from './components/Info';
+import LicenseBuy from './components/BuyButton';
 import Loading from '../../components/ui/Loading';
 import ErrorInformation from '../../components/ui/ErrorInformation';
-import YourSNTBalance from '../../components/YourSNTBalance';
+import YourSNTBalance from './components/Balance';
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 

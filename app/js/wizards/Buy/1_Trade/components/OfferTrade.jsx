@@ -5,7 +5,7 @@ import {Row, Col, FormGroup, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Blockies from 'react-blockies';
-import {isNumber, lowerEqThan, higherEqThan} from "../../validators";
+import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 
 const OfferTrade = ({address, name, min, max, fiat, asset, onClick, assetQty, fiatQty, onFiatChange, onAssetChange, disabled, t}) => (
   <Row>

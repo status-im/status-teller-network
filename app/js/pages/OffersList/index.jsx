@@ -10,7 +10,7 @@ import network from '../../features/network';
 import metadata from '../../features/metadata';
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import OfferListing from '../../components/OfferListing';
-import SorterFilter from '../../components/Buyer/SorterFilter';
+import SorterFilter from './components/SorterFilter';
 
 import './Listing.scss';
 

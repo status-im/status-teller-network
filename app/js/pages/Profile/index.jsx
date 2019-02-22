@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
 import SellerInformation from '../../components/SellerInformation';
-import SellerOfferList from '../../components/Buyer/SellerOfferList';
-import Map from '../../components/Buyer/Map';
+import SellerOfferList from '../OffersList/components/SellerOfferList';
+import Map from '../../components/ui/Map';
 import buyer from "../../features/buyer";
 import metadata from "../../features/metadata";
 

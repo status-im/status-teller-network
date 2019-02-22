@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import YourSNTBalance from "./YourSNTBalance";
+import YourSNTBalance from "./Balance";
 
 describe('YourSNTBalance', () => {
   it('should render correctly', () => {

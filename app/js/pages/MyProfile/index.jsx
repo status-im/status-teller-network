@@ -6,9 +6,9 @@ import metadata from '../../features/metadata';
 import network from '../../features/network';
 
 import SellerInformation from '../../components/SellerInformation';
-import Trades from '../../components/Profile/Trades';
-import Offers from '../../components/Profile/Offers';
-import StatusContactCode from '../../components/StatusContactCode';
+import Trades from './components/Trades';
+import Offers from './components/Offers';
+import StatusContactCode from './components/StatusContactCode';
 import { zeroAddress } from '../../utils/address';
 
 const NULL_PROFILE = {

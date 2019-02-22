@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col, Button} from 'reactstrap';
-import {TokenImages} from '../../utils/images';
+import {TokenImages} from '../../../utils/images';
 
 const SellerOfferList = ({offer, onClick}) => (
   <Row className="border py-2 mx-0 my-2 rounded">

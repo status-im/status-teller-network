@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import LicenseBuy from "./LicenseBuy";
+import LicenseBuy from "./BuyButton";
 
 describe('LicenseBuy', () => {
   it('should render correctly when disabled', () => {
