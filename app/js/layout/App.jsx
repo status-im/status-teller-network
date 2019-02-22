@@ -19,8 +19,8 @@ import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
 
 // Buy
-import BuyContact from '../wizards/Buy/Contact';
-import BuyTrade from '../wizards/Buy/Trade';
+import BuyContact from '../wizards/Buy/0_Contact';
+import BuyTrade from '../wizards/Buy/1_Trade';
 
 // Sell
 import SellAsset from '../wizards/Sell/0_Asset';

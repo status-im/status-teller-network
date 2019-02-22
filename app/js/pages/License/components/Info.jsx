@@ -3,7 +3,7 @@ import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 
-import "./LicenseInfo.scss";
+import "./Info.scss";
 
 class LicenseInfo extends Component {
   render() {

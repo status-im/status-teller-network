@@ -5,7 +5,7 @@ import {withNamespaces} from "react-i18next";
 import {Button} from 'reactstrap';
 
 import errorImage from '../../../images/error.png';
-import './ErrorInformation.scss';
+import './index.scss';
 
 const ErrorInformation = ({t, provider, network, transaction, retry}) => (
   <div className={classnames("error-information with-tip", {'with-button': !!retry})}>

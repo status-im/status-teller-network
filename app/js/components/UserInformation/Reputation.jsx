@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
-import RatingIcon from "./RatingIcon";
+import RatingIcon from "../RatingIcon";
 import classnames from "classnames";
 
 import './Reputation.scss';

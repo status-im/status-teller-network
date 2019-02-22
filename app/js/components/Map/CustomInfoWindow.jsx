@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import {InfoWindow} from "react-google-maps";
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
-import RatingIcon from './RatingIcon';
+import RatingIcon from '../RatingIcon';
 
 const CustomInfoWindow = ({name, address: _address, onClose, onClick, assets, isPositiveRating}) => (
   <InfoWindow onCloseClick={onClose}>

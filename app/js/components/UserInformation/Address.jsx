@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {compactAddress} from "../utils/address";
+import {compactAddress} from "../../utils/address";
 
 class Address extends Component {
   constructor(props) {

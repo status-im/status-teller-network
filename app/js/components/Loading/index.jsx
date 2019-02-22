@@ -4,7 +4,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
 
-import "./Loading.scss";
+import "./index.scss";
 
 const Loading = ({t, mining, initial, page}) => (
   <div className="loading text-center">

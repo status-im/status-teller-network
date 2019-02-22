@@ -12,7 +12,7 @@ import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import OfferListing from '../../components/OfferListing';
 import SorterFilter from './components/SorterFilter';
 
-import './Listing.scss';
+import './index.scss';
 
 class OffersList extends Component {
   constructor(props) {
