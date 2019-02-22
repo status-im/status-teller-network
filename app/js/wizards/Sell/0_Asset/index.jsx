@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import {connect} from "react-redux";
 
-import network from "../../features/network";
-import newSeller from "../../features/newSeller";
-import SellerAssets from '../../components/Seller/SellerAssets';
+import network from "../../../features/network";
+import newSeller from "../../../features/newSeller";
+import SellerAssets from '../../../components/Seller/SellerAssets';
 
 class SellerAssetContainer extends Component {
   constructor(props) {

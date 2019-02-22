@@ -5,7 +5,7 @@ import { Row, Col, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 
-import license from "../features/license";
+import license from "../../features/license";
 
 import "./HomeContainer.scss";
 

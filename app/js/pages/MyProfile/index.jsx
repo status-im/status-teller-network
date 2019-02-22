@@ -2,14 +2,14 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import metadata from '../features/metadata';
-import network from '../features/network';
+import metadata from '../../features/metadata';
+import network from '../../features/network';
 
-import SellerInformation from '../components/SellerInformation';
-import Trades from '../components/Profile/Trades';
-import Offers from '../components/Profile/Offers';
-import StatusContactCode from '../components/StatusContactCode';
-import { zeroAddress } from '../utils/address';
+import SellerInformation from '../../components/SellerInformation';
+import Trades from '../../components/Profile/Trades';
+import Offers from '../../components/Profile/Offers';
+import StatusContactCode from '../../components/StatusContactCode';
+import { zeroAddress } from '../../utils/address';
 
 const NULL_PROFILE = {
   address: zeroAddress,

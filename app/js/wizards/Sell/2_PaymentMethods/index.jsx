@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import SellerPaymentMethod from '../../components/Seller/SellerPaymentMethod';
-import Loading from '../../components/ui/Loading';
-import newSeller from "../../features/newSeller";
-import { PAYMENT_METHODS } from '../../features/metadata/constants';
+import SellerPaymentMethod from '../../../components/Seller/SellerPaymentMethod';
+import Loading from '../../../components/ui/Loading';
+import newSeller from "../../../features/newSeller";
+import { PAYMENT_METHODS } from '../../../features/metadata/constants';
 
 class SellerPaymentMethodsContainer extends Component {
   constructor(props) {

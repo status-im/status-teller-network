@@ -3,13 +3,13 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import ContactForm from '../../components/ContactForm';
-import Loading from '../../components/ui/Loading';
-import ErrorInformation from '../../components/ui/ErrorInformation';
-import newSeller from "../../features/newSeller";
-import metadata from "../../features/metadata";
-import { States } from '../../utils/transaction';
-import network from '../../features/network';
+import ContactForm from '../../../components/ContactForm';
+import Loading from '../../../components/ui/Loading';
+import ErrorInformation from '../../../components/ui/ErrorInformation';
+import newSeller from "../../../features/newSeller";
+import metadata from "../../../features/metadata";
+import { States } from '../../../utils/transaction';
+import network from '../../../features/network';
 
 class SellerContactContainer extends Component {
   constructor(props) {

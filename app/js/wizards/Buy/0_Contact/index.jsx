@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import ContactForm from '../../components/ContactForm';
-import buyer from "../../features/buyer";
-import network from "../../features/network";
+import ContactForm from '../../../components/ContactForm';
+import buyer from "../../../features/buyer";
+import network from "../../../features/network";
 import {connect} from "react-redux";
 
 class SellerContactContainer extends Component {

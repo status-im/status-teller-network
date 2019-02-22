@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import OfferTrade from '../../components/Buyer/OfferTrade';
+import OfferTrade from '../../../components/Buyer/OfferTrade';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import buyer from "../../features/buyer";
+import buyer from "../../../features/buyer";
 import {withRouter} from "react-router-dom";
 
 const FAKE_ETH_PRICE = 423;

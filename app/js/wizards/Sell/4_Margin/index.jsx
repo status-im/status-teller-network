@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
-import MarginSelectorForm from '../../components/Seller/MarginSelectorForm';
-import Loading from '../../components/ui/Loading';
-import newSeller from "../../features/newSeller";
-import network from '../../features/network';
-import prices from '../../features/prices';
+import MarginSelectorForm from '../../../components/Seller/MarginSelectorForm';
+import Loading from '../../../components/ui/Loading';
+import newSeller from "../../../features/newSeller";
+import network from '../../../features/network';
+import prices from '../../../features/prices';
 
 
 class SellerMarginContainer extends Component {

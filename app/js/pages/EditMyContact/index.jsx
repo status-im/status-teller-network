@@ -3,14 +3,14 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import network from "../features/network";
-import metadata from "../features/metadata";
+import network from "../../features/network";
+import metadata from "../../features/metadata";
 
-import Loading from '../components/ui/Loading';
-import ErrorInformation from '../components/ui/ErrorInformation';
-import ContactForm from '../components/ContactForm';
-import UpdateUser from '../components/Profile/UpdateUser';
-import { States } from '../utils/transaction';
+import Loading from '../../components/ui/Loading';
+import ErrorInformation from '../../components/ui/ErrorInformation';
+import ContactForm from '../../components/ContactForm';
+import UpdateUser from '../../components/Profile/UpdateUser';
+import { States } from '../../utils/transaction';
 
 class EditProfileContainer extends Component {
   constructor(props) {
