@@ -1,17 +1,17 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import UpdateUser from "./UpdateUser";
+import UpdateButton from "./UpdateButton";
 
-describe('UpdateUser', () => {
+describe('UpdateButton', () => {
   it('should render correctly when disabled', () => {
-    const component = shallow(<UpdateUser disabled={false} onClick={() => undefined}/>);
+    const component = shallow(<UpdateButton disabled={false} onClick={() => undefined}/>);
   
     expect(component).toMatchSnapshot();
   });
 
   it('should render correctly when enabled', () => {
-    const component = shallow(<UpdateUser disabled={true} onClick={() => undefined}/>);
+    const component = shallow(<UpdateButton disabled={true} onClick={() => undefined}/>);
   
     expect(component).toMatchSnapshot();
   });

@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SellerPaymentMethod should render correctly 1`] = `
+<Fragment>
+  <h2>
+    Payment methods that you want to accept
+  </h2>
+  <ButtonGroup
+    className="w-100 mt-3"
+    role="group"
+    tag="div"
+    vertical={true}
+  />
+  <p
+    className="text-muted"
+  >
+    Select one or more payment method to move to the next page
+  </p>
+</Fragment>
+`;

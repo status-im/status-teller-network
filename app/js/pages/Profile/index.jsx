@@ -18,7 +18,7 @@ class Profile extends Component {
 
   offerClick = (offerId) => {
     this.props.setOffer(offerId);
-    this.props.history.push('/buy/offer/');
+    this.props.history.push('/buy');
   };
 
   render() {

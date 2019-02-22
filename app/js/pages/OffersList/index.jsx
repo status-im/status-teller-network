@@ -77,7 +77,7 @@ class OffersList extends Component {
               <Button tag={Link} 
                       color="link" 
                       className="float-right" 
-                      to="/buy/map">On Map
+                      to="/offers/map">On Map
                       <FontAwesomeIcon icon={faArrowRight}/>
               </Button>
             </h4>

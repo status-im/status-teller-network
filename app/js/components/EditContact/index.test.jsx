@@ -1,11 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 
-import ContactForm from "./ContactForm";
+import EditContact from "./index";
 
-describe('SellerContact', () => {
+describe('EditContact', () => {
   it('should render correctly', () => {
-    const component = shallow(<ContactForm changeNickname={() => undefined} changeContactCode={() => undefined}
+    const component = shallow(<EditContact changeNickname={() => undefined} changeContactCode={() => undefined}
                                            nickname={"nickname"} contractCode={"contractCode"} />);
 
     expect(component).toMatchSnapshot();

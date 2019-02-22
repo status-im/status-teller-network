@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SellerPosition should render correctly 1`] = `
+<Fragment>
+  <h2>
+    Your location
+  </h2>
+  <p>
+    What location do you want to display
+  </p>
+  <p
+    className="text-muted"
+  >
+    This position will be displayed to buyers. You can choose to be precise or not.
+  </p>
+  <Form
+    tag="form"
+  >
+    <FormGroup
+      tag="div"
+    >
+      <Input
+        id="location"
+        name="location"
+        onChange={[Function]}
+        placeholder="City, Country"
+        type="text"
+        value=""
+      />
+    </FormGroup>
+    <p
+      className="text-muted"
+    >
+      Enter a location to move to the next page
+    </p>
+  </Form>
+</Fragment>
+`;
