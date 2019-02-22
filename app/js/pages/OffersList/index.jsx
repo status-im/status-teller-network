@@ -14,7 +14,7 @@ import SorterFilter from './components/SorterFilter';
 
 import './Listing.scss';
 
-class OfferListContainer extends Component {
+class OffersList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +89,7 @@ class OfferListContainer extends Component {
   }
 }
 
-OfferListContainer.propTypes = {
+OffersList.propTypes = {
   offers: PropTypes.array,
   tokens: PropTypes.array,
   loadOffers: PropTypes.func
@@ -107,4 +107,4 @@ export default connect(
   mapStateToProps,
   {
     loadOffers: metadata.actions.loadOffers
-  })(OfferListContainer);
+  })(OffersList);

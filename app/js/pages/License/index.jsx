@@ -9,8 +9,8 @@ import network from "../../features/network";
 import Info from './components/Info';
 import BuyButton from './components/BuyButton';
 import Balance from './components/Balance';
-import Loading from '../../components/ui/Loading';
-import ErrorInformation from '../../components/ui/ErrorInformation';
+import Loading from '../../components/Loading';
+import ErrorInformation from '../../components/ErrorInformation';
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 

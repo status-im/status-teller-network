@@ -5,11 +5,11 @@ import {connect} from "react-redux";
 
 import SellerInformation from '../../components/SellerInformation';
 import SellerOfferList from '../OffersList/components/SellerOfferList';
-import Map from '../../components/ui/Map';
+import Map from '../../components//Map';
 import buyer from "../../features/buyer";
 import metadata from "../../features/metadata";
 
-import './SellerProfileContainer.scss';
+import './index.scss';
 
 class SellerProfileContainer extends Component {
   componentDidMount() {

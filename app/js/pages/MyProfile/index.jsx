@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import metadata from '../../features/metadata';
 import network from '../../features/network';
 
-import SellerInformation from '../../components/SellerInformation';
+import UserInformation from '../../components/UserInformation';
 import Trades from './components/Trades';
 import Offers from './components/Offers';
 import StatusContactCode from './components/StatusContactCode';
@@ -28,7 +28,7 @@ class MyProfile extends Component {
     const profile = this.props.profile;
     return (
       <Fragment>
-        <SellerInformation reputation={profile.reputation} address={profile.address} username={profile.username}/>
+        <UserInformation reputation={profile.reputation} address={profile.address} username={profile.username}/>
         <Trades trades={profile.trades}/>
         <Offers offers={profile.offers} location={profile.location} />
         {profile.username.length > 0 && <StatusContactCode value={profile.statusContactCode} />}
@@ -56,4 +56,4 @@ export default connect(
   mapStateToProps,
   {
     loadProfile: metadata.actions.load
-  })(ProfileContainer);
+  })(MyProfile);

@@ -6,13 +6,13 @@ import {connect} from "react-redux";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 
-import Loading from '../../components/ui/Loading';
-import ErrorInformation from '../../components/ui/ErrorInformation';
-import ContactForm from '../../components/ContactForm';
+import Loading from '../../components/Loading';
+import ErrorInformation from '../../components/ErrorInformation';
+import EditContact from '../../components/EditContact';
 import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
 
-class EditProfileContainer extends Component {
+class EditMyContact extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -64,7 +64,7 @@ class EditProfileContainer extends Component {
       case States.none:
         return (
           <Fragment>
-            <ContactForm isStatus={this.props.isStatus}
+            <EditContact isStatus={this.props.isStatus}
                          statusContactCode={this.state.statusContactCode} 
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
@@ -79,7 +79,7 @@ class EditProfileContainer extends Component {
   }
 }
 
-EditProfileContainer.propTypes = {
+EditMyContact.propTypes = {
   history: PropTypes.object,
   profile: PropTypes.object,
   loadProfile: PropTypes.func,
@@ -111,4 +111,4 @@ export default connect(
     resetUpdateUserStatus: metadata.actions.resetUpdateUserStatus,
     getContactCode: network.actions.getContactCode
   }
-)(withRouter(EditProfileContainer));
+)(withRouter(EditMyContact));

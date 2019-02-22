@@ -7,8 +7,8 @@ import _ from 'lodash';
 
 import Header from "./Header";
 import Wizard from '../wizards/Wizard';
-import Loading from "../components/ui/Loading";
-import ErrorInformation from '../components/ui/ErrorInformation';
+import Loading from "../components/Loading";
+import ErrorInformation from '../components/ErrorInformation';
 
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';

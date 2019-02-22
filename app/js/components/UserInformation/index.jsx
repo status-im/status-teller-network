@@ -5,7 +5,7 @@ import Blockies from 'react-blockies';
 import Reputation from "./Reputation.jsx";
 import Address from './Address';
 
-const SellerInformation = ({address, username, reputation}) => (
+const UserInformation = ({address, username, reputation}) => (
   <Row className="border rounded py-4 m-0 text-center shadow-sm">
     <Col xs="12">
       <Blockies seed={address} className="rounded-circle border" scale={8}/>
@@ -23,10 +23,10 @@ const SellerInformation = ({address, username, reputation}) => (
     </Col>
   </Row>);
 
-SellerInformation.propTypes = {
+UserInformation.propTypes = {
   address: PropTypes.string,
   username: PropTypes.string,
   reputation: PropTypes.object
 };
 
-export default SellerInformation;
+export default UserInformation;

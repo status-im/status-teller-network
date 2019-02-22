@@ -1,6 +1,4 @@
 import React, {Component, Fragment} from 'react';
-import Map from '../../components/ui/Map';
-import license from "../../features/license";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 import {withRouter} from "react-router-dom";
@@ -8,6 +6,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
 import {Alert} from "reactstrap";
+
+import Map from '../../components/Map';
+import license from "../../features/license";
 
 class MapContainer extends Component {
   constructor(props) {
