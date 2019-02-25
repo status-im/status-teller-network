@@ -9,6 +9,7 @@ import Header from "./Header";
 import Wizard from '../wizards/Wizard';
 import Loading from "../components/Loading";
 import ErrorInformation from '../components/ErrorInformation';
+import fourOFour from '../components/ErrorInformation/404';
 
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
@@ -94,7 +95,7 @@ class App extends Component {
 
             <Route exact path="/offers/list" component={OffersList}/>
             <Route exact path="/offers/map" component={OffersMap}/>
-            
+
             <Wizard path="/buy/" steps={[
               {path: '/buy/contact', component: BuyContact},
               {path: '/buy/trade', component: BuyTrade}
@@ -111,11 +112,13 @@ class App extends Component {
               ]}/>
             }
 
+            <Route path="/404" component={fourOFour}/>
+
             <Route path="/tmp/escrows" component={EscrowsContainer}/>
             <Route path="/tmp/signature" component={SignatureContainer}/>
             <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
 
-            <Redirect to="/"/>
+            <Redirect to="/404"/>
           </Switch>
         </Container>
       </HashRouter>
