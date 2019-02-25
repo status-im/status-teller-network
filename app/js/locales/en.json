@@ -183,6 +183,12 @@
     "transaction": {
       "title": "Transaction failed",
       "tip": "Try to retry it"
+    },
+    "404": {
+      "title": "Page not found",
+      "tip": "The page your were looking for doesn't exist. Do you wish to go back to the previous page or the Home?",
+      "back": "Back",
+      "home": "Home"
     }
   }
 }
