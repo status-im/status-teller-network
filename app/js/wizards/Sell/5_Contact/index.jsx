@@ -32,7 +32,7 @@ class Contact extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.margin || this.props.seller.margin === 0) {
+    if (isNaN(this.props.seller.margin)) {
       this.props.wizard.previous();
     } else {
       this.setState({ready: true});

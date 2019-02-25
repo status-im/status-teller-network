@@ -69,7 +69,10 @@ MarginSelectorForm.propTypes = {
   t: PropTypes.func,
   token: PropTypes.object,
   prices: PropTypes.object,
-  margin: PropTypes.number,
+  margin: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   marketType: PropTypes.number,
   currency: PropTypes.string,
   marginChange: PropTypes.func,
