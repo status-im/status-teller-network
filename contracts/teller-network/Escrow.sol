@@ -14,6 +14,9 @@ import "../token/ERC20Token.sol";
 contract Escrow is Pausable, MessageSigned {
     string private constant TRANSACTION_ALREADY_RELEASED = "Transaction already released";
     string private constant TRANSACTION_ALREADY_CANCELED = "Transaction already canceled";
+    string private constant TRANSACTION_ALREADY_PAID = "Transaction already paid";
+    string private constant TRANSACTION_NOT_FUNDED = "Transaction is not funded";
+
     string private constant INVALID_ESCROW_ID = "Invalid escrow id";
     string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
@@ -25,14 +28,17 @@ contract Escrow is Pausable, MessageSigned {
     struct EscrowTransaction {
         address payable seller;
         address payable buyer;
-        uint amount;
+        uint tokenAmount;
         address token;
         uint expirationTime;
-        bool released;
-        bool canceled;
-        bool paid;
         uint rating;
+        uint256 tradeAmount;
+        TradeType tradeType;
+        EscrowStatus status;
     }
+
+    enum TradeType {FIAT, CRYPTO}
+    enum EscrowStatus {CREATED, FUNDED, PAID, RELEASED, CANCELED}
 
     EscrowTransaction[] public transactions;
 
@@ -40,7 +46,10 @@ contract Escrow is Pausable, MessageSigned {
 
     address public arbitrator;
 
-    event Created(address indexed seller, address indexed buyer, uint escrowId, uint expirationTime, uint amount);
+
+    event Created(address indexed seller, address indexed buyer, uint escrowId);
+    event Funded(uint escrowId, uint expirationTime, uint amount);
+
     event Paid(uint escrowId);
     event Released(uint escrowId);
     event Canceled(uint escrowId);
@@ -61,43 +70,68 @@ contract Escrow is Pausable, MessageSigned {
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
 
+
     /**
      * @notice Create a new escrow
-     * @param _buyer The address that will perform the buy for the escrow
-     * @param _amount How much ether/tokens will be put in escrow
+     * @param _buyer Buyer address
+     * @param _seller Seller address
+     * @param _tradeAmount Amount buyer is willing to trade
+     * @param _tradeType Indicates if the amount is in crypto or fiat
      * @param _token Token address. Must be 0 for ETH
+     * @dev Requires contract to be unpaused.
+     *         The seller needs to be licensed.
+     */
+    function create(address payable _buyer, address payable _seller, address _token, uint _tradeAmount, uint8 _tradeType) public whenNotPaused {
+        require(msg.sender == _buyer || msg.sender == _seller, "Must participate in the trade");
+        require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
+
+        uint escrowId = transactions.length++;
+
+        transactions[escrowId] = EscrowTransaction({
+            seller: _seller,
+            buyer: _buyer,
+            tokenAmount: 0,
+            token: _token,
+            expirationTime: 0,
+            rating: 0,
+            tradeAmount: _tradeAmount,
+            tradeType: TradeType(_tradeType),
+            status: EscrowStatus.CREATED
+        });
+
+        emit Created(_seller, _buyer, escrowId);
+    }
+
+    /**
+     * @notice Fund a new escrow
+     * @param _tokenAmount How much ether/tokens will be put in escrow
      * @param _expirationTime Unix timestamp before the transaction is considered expired
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function create(address payable _buyer, uint _amount, address _token, uint _expirationTime) public payable whenNotPaused {
+    function fund(uint _escrowId, uint _tokenAmount, uint _expirationTime) public payable whenNotPaused {
+        require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
         require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create escrow transactions");
 
-        if(_token == address(0)){
-            require(msg.value == _amount, "ETH amount is required");
+        EscrowTransaction storage trx = transactions[_escrowId];
+
+        if(trx.token == address(0)){
+            require(msg.value == _tokenAmount, "ETH amount is required");
         } else {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
-            ERC20Token token = ERC20Token(_token);
-            require(token.allowance(msg.sender, address(this)) >= _amount, "Allowance not set for this contract for specified amount");
-            require(token.transferFrom(msg.sender, address(this), _amount), "Unsuccessful token transfer");
+            ERC20Token token = ERC20Token(trx.token);
+            require(token.allowance(msg.sender, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
+            require(token.transferFrom(msg.sender, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
 
+        transactions[_escrowId].tokenAmount = _tokenAmount;
+        transactions[_escrowId].expirationTime = _expirationTime;
+        transactions[_escrowId].status = EscrowStatus.FUNDED;
 
-        uint escrowId = transactions.length++;
-
-        transactions[escrowId].seller = msg.sender;
-        transactions[escrowId].buyer = _buyer;
-        transactions[escrowId].token = _token;
-        transactions[escrowId].amount = _amount;
-        transactions[escrowId].expirationTime = _expirationTime;
-        transactions[escrowId].released = false;
-        transactions[escrowId].canceled = false;
-        transactions[escrowId].paid = false;
-
-        emit Created(msg.sender, _buyer, escrowId, _expirationTime, _amount);
+        emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }
 
     /**
@@ -113,8 +147,9 @@ contract Escrow is Pausable, MessageSigned {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
-        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
-        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
+        require(trx.status != EscrowStatus.RELEASED, TRANSACTION_ALREADY_RELEASED);
+        require(trx.status != EscrowStatus.CANCELED, TRANSACTION_ALREADY_CANCELED);
+        require(trx.status == EscrowStatus.PAID || trx.status == EscrowStatus.FUNDED, TRANSACTION_NOT_FUNDED);
 
         _release(_escrowId, trx);
     }
@@ -125,13 +160,13 @@ contract Escrow is Pausable, MessageSigned {
      * @param trx EscrowTransaction with data of transaction to be released
      */
     function _release(uint _escrowId, EscrowTransaction storage trx) private {
-        trx.released = true;
+        trx.status = EscrowStatus.RELEASED;
 
         if(trx.token == address(0)){
-            trx.buyer.transfer(trx.amount); // TODO: transfer fee to Status?
+            trx.buyer.transfer(trx.tokenAmount); // TODO: transfer fee to Status?
         } else {
             ERC20Token token = ERC20Token(trx.token);
-            require(token.transfer(trx.buyer, trx.amount));
+            require(token.transfer(trx.buyer, trx.tokenAmount));
         }
 
         emit Released(_escrowId);
@@ -147,13 +182,16 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(!trx.paid, "Transaction already paid");
-        require(!trx.released, "Transaction already released");
-        require(!trx.canceled, "Transaction already canceled");
+
+        require(trx.status != EscrowStatus.RELEASED, TRANSACTION_ALREADY_RELEASED);
+        require(trx.status != EscrowStatus.CANCELED, TRANSACTION_ALREADY_CANCELED);
+        require(trx.status != EscrowStatus.PAID, TRANSACTION_ALREADY_PAID);
+        require(trx.status == EscrowStatus.FUNDED, TRANSACTION_NOT_FUNDED);
+
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
         require(trx.buyer == _sender || trx.seller == _sender, "Function can only be invoked by the escrow buyer or seller");
 
-        trx.paid = true;
+        trx.status  = EscrowStatus.PAID;
 
         emit Paid(_escrowId);
     }
@@ -207,13 +245,8 @@ contract Escrow is Pausable, MessageSigned {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
 
         EscrowTransaction storage trx = transactions[_escrowId];
-
-        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
-        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
-        require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
         require(trx.expirationTime < block.timestamp, "Transaction has not expired");
-        require(!trx.paid, "Cannot cancel an already paid transaction. Open a case");
-
+        require(trx.status == EscrowStatus.FUNDED || trx.status == EscrowStatus.CREATED, "Only transactions in created or funded state can be canceled");
         _cancel(_escrowId, trx);
     }
 
@@ -223,15 +256,17 @@ contract Escrow is Pausable, MessageSigned {
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
     function _cancel(uint _escrowId, EscrowTransaction storage trx) private {
-        trx.canceled = true;
-
-        if(trx.token == address(0)){
-            trx.seller.transfer(trx.amount);
-        } else {
-            ERC20Token token = ERC20Token(trx.token);
-            require(token.transfer(trx.seller, trx.amount));
+        if(trx.status == EscrowStatus.FUNDED){
+            require(msg.sender == trx.seller, "Only seller can cancel transaction");
+            if(trx.token == address(0)){
+                trx.seller.transfer(trx.tokenAmount);
+            } else {
+                ERC20Token token = ERC20Token(trx.token);
+                require(token.transfer(trx.seller, trx.tokenAmount));
+            }
         }
 
+        trx.status = EscrowStatus.CANCELED;
         emit Canceled(_escrowId);
     }
 
@@ -244,15 +279,32 @@ contract Escrow is Pausable, MessageSigned {
      */
     function withdraw_emergency(uint _escrowId) public whenPaused {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
-
         EscrowTransaction storage trx = transactions[_escrowId];
-
-        require(!trx.released, TRANSACTION_ALREADY_RELEASED);
-        require(!trx.canceled, TRANSACTION_ALREADY_CANCELED);
-        require(!trx.paid, "Cannot withdraw an already paid transaction. Open a case");
-
+        require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
         _cancel(_escrowId, trx);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
     * @dev Fallback function
@@ -277,7 +329,7 @@ contract Escrow is Pausable, MessageSigned {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.rating == 0, "Transaction already rated");
-        require(trx.released == true, "Transaction not released yet");
+        require(trx.status == EscrowStatus.RELEASED, "Transaction not released yet");
         require(trx.buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
         trx.rating  = _rate;
@@ -316,7 +368,7 @@ contract Escrow is Pausable, MessageSigned {
     function openCase(uint _escrowId) public {
         require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
         require(transactions[_escrowId].buyer == msg.sender || transactions[_escrowId].seller == msg.sender, "Only a buyer or seller can open a case");
-        require(transactions[_escrowId].paid == true, "Cases can only be open for paid transactions");
+        require(transactions[_escrowId].status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
@@ -336,7 +388,7 @@ contract Escrow is Pausable, MessageSigned {
      */
     function openCase(uint _escrowId, bytes calldata _signature) external {
         require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
-        require(transactions[_escrowId].paid == true, "Cases can only be open for paid transactions");
+        require(transactions[_escrowId].status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
 
