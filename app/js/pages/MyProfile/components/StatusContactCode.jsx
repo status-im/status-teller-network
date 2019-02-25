@@ -25,7 +25,7 @@ class StatusContactCode extends Component {
             {t('statusContactCode.title')}
           </h3>
           <span className="float-right">
-            <Link to="/profile/edit" className="float-right">{t('statusContactCode.edit')}</Link>
+            <Link to="/profile/contact/edit" className="float-right">{t('statusContactCode.edit')}</Link>
           </span>
         </div>
         <InputGroup className="full-width-input white-input">
