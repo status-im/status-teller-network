@@ -4,10 +4,10 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from '@storybook/addon-actions';
 
-import CreateEscrowForm from '../app/js/components/tmp/CreateEscrowForm';
+import CreateEscrowForm from '../../app/js/components/tmp/CreateEscrowForm';
 
 const info = {inline: true, propTables: [CreateEscrowForm.WrappedComponent]};
-storiesOf('CreateEscrowForm', module)
+storiesOf('tmp/CreateEscrowForm', module)
   .add(
     "Empty Form",
     withInfo(info)(() => (

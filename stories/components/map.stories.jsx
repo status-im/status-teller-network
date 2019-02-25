@@ -3,7 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { withInfo } from "@storybook/addon-info";
 
-import Map, { Map as MapWrapped } from '../app/js/components/Buyer/Map';
+import Map, { Map as MapWrapped } from '../../app/js/components/Map';
 
 const info = {inline: true, propTables: [MapWrapped]};
 
@@ -12,19 +12,19 @@ const defaultCoords = {
   longitude: -73.617959
 };
 
-storiesOf('Map', module)
+storiesOf('Components/Map', module)
   .add(
-    "Display Map with Coords",
+    "With Coords",
     withInfo(info)(() => (
       <Map coords={defaultCoords}/>
     ))
   ).add(
-    "Display Map when access denied",
+    "When access denied",
     withInfo(info)(() => (
       <Map error={"denied access"}/>
     ))
   ).add(
-    "Display Map with errors",
+    "With errors",
     withInfo(info)(() => (
       <Map error={"Something Bad Happened"}/>
     ))

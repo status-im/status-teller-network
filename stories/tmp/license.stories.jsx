@@ -5,11 +5,11 @@ import { withKnobs, number } from '@storybook/addon-knobs';
 import { withInfo } from "@storybook/addon-info";
 import { action } from '@storybook/addon-actions';
 
-import License from '../app/js/components/tmp/License';
+import License from '../../app/js/components/tmp/License';
 
 const info = {inline: true, propTables: [License.WrappedComponent]};
 
-const stories = storiesOf('License', module);
+const stories = storiesOf('tmp/License', module);
 
 stories.addDecorator(withKnobs);
 
