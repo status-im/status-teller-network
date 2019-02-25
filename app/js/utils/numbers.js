@@ -17,3 +17,14 @@ export const fromTokenDecimals = (value, decimals) => {
   return int.toString(10) + (dec !== "" ? "." + dec : "");
 };
 
+export function formatBalance(balance) {
+  balance = parseFloat(balance);
+  if (!balance) {
+    return '0';
+  }
+  if (balance > 99999) {
+    return '99999+';
+  }
+  return parseFloat(balance.toFixed(6)).toString();
+}
+
