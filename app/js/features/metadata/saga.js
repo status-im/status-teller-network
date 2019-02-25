@@ -7,7 +7,6 @@ import {
 } from './constants';
 import {doTransaction} from '../../utils/saga';
 import {getEnsAddress} from '../../services/embarkjs';
-import {contactCodeRegExp} from '../../utils/address';
 
 export function *loadUser({address}) {
   try {
@@ -87,10 +86,8 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  if (!contactCodeRegExp.test(user.statusContactCode)) {
-    user.statusContactCode = yield getEnsAddress(user.statusContactCode);
-  }
-
+  user.statusContactCode = yield getEnsAddress(user.statusContactCode);
+  
   const toSend = MetadataStore.methods.updateUser(
     user.statusContactCode,
     user.location,
