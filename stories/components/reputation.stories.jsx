@@ -3,11 +3,11 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Reputation from '../app/js/components/Reputation';
+import Reputation from '../../app/js/components/Reputation';
 
-storiesOf('Reputation', module)
+storiesOf('Components/Reputation', module)
   .add(
-    "Normal",
+    "Default",
     withInfo({inline: true})(() => (
       <Reputation reputation={{upCount: 1, downCount: 2}} />
     ))

@@ -4,18 +4,25 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
-import Address from '../app/js/components/Address';
+import UserInformation from '../../app/js/components/UserInformation';
+import Address from '../../app/js/components/UserInformation/Address';
 
-storiesOf('Address', module)
-  .addDecorator(withKnobs)
+storiesOf('Components/UserInformation', module)
+.addDecorator(withKnobs)
   .add(
-    "Normal",
+    "Default",
+    withInfo({inline: true})(() => (
+      <UserInformation address={"0x123123123"} username={"Eric"} reputation={{upCount: 432, downCount: 54}}/>
+    ))
+  )
+  .add(
+    "Address",
     withInfo({inline: true})(() => (
       <Address address={text('Address', "0x1122334455667788990011223344556677889900")} compact={boolean('Compact', false)} />
     ))
   )
   .add(
-    "Compact",
+    "Address Compact",
     withInfo({inline: true})(() => (
       <Address address={text('Address', "0x1122334455667788990011223344556677889900")} compact={boolean('Compact', true)} />
     ))

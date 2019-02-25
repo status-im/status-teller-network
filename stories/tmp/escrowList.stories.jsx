@@ -6,7 +6,7 @@ import {action} from '@storybook/addon-actions';
 import cloneDeep from 'clone-deep';
 import moment from 'moment';
 
-import EscrowList from '../app/js/components/tmp/EscrowList';
+import EscrowList from '../../app/js/components/tmp/EscrowList';
 
 global.web3 = {
   eth: {
@@ -106,7 +106,7 @@ sellerEscrows.forEach(escrow => {
 
 const info = {inline: true, propTables: [EscrowList.WrappedComponent]};
 
-storiesOf('EscrowList', module)
+storiesOf('tmp/EscrowList', module)
   .add(
     "Buyer List",
     withInfo(info)(() => (

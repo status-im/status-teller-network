@@ -5,7 +5,7 @@ import {withInfo} from "@storybook/addon-info";
 import {action} from '@storybook/addon-actions';
 import moment from 'moment';
 
-import ArbitrationList from '../app/js/components/tmp/ArbitrationList';
+import ArbitrationList from '../../app/js/components/tmp/ArbitrationList';
 
 global.web3 = {
   eth: {
@@ -54,7 +54,7 @@ const escrows = [
 
 const info = {inline: true};
 
-storiesOf('ArbitrationList', module)
+storiesOf('tmp/ArbitrationList', module)
   .add(
     "List with disputes",
     withInfo(info)(() => (

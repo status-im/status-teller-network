@@ -3,9 +3,9 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Loading from '../app/js/components/ui/Loading';
+import Loading from '../../app/js/components/Loading';
 
-storiesOf('Loading', module)
+storiesOf('Components/Loading', module)
   .add(
     "Mining",
     withInfo({inline: true})(() => (
