@@ -87,6 +87,7 @@ export function *onAddOffer() {
 
 export function *updateUser({user}) {
   user.statusContactCode = yield getEnsAddress(user.statusContactCode);
+  
   const toSend = MetadataStore.methods.updateUser(
     user.statusContactCode,
     user.location,
