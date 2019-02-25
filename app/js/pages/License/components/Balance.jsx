@@ -12,7 +12,7 @@ class YourSNTBalance extends Component {
       <Fragment>
         <h3>{t('yourSNTBalance.label')}</h3>
         <p className="border rounded p-3">
-          <span className={classnames("h3", "font-weight-normal", {'text-danger': !this.props.disabled})}>
+          <span className={classnames("h3", "font-weight-normal", {'text-danger': this.props.disabled})}>
             <img src={SNTIcon} alt="SNT icon" className="mr-2"/>
             {this.props.value} SNT
           </span>

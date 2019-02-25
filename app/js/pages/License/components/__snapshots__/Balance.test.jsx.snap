@@ -7,7 +7,7 @@ exports[`YourSNTBalance should render correctly 1`] = `
     className="border rounded p-3"
   >
     <span
-      className="h3 font-weight-normal text-danger"
+      className="h3 font-weight-normal"
     >
       <img
         alt="SNT icon"
