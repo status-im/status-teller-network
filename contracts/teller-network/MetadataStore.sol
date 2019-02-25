@@ -12,6 +12,14 @@ contract MetadataStore is Ownable {
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
 
+    event TradeAdded(
+        uint256 tradeId,
+        uint256 offerId,
+        uint256 amount,
+        address maker,
+        address taker
+    );
+
     event OfferAdded(
         address owner,
         uint256 offerId,
@@ -56,6 +64,13 @@ contract MetadataStore is Ownable {
         string username;
     }
 
+    struct Trade {
+        uint256 offerId;
+        address maker;
+        address taker;
+        uint256 amount;
+    }
+
     struct Offer {
         address asset;
         string currency;
@@ -67,6 +82,7 @@ contract MetadataStore is Ownable {
 
     address public license;
     User[] public users;
+    Trade[] public trades;
     Offer[] public offers;
 
     mapping(address => bool) public userWhitelist;
@@ -75,12 +91,56 @@ contract MetadataStore is Ownable {
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
     mapping(address => uint256[]) public addressToOffers;
 
+    mapping(address => uint256[]) public makerToTrades;
+    mapping(address => uint256[]) public takerToTrades;
+
     constructor(address _license) public {
         license = _license;
     }
 
     function setLicense(address _license) public onlyOwner {
         license = _license;
+    }
+
+    /**
+    * @dev Add a new trade with a new user for the maker if needed to the list
+    * @param _statusContactCode The address of the status contact code
+    * @param _username The username of the user
+    * @param _amount Then amount of token/eth you request
+    * @param _offerId The offer id you want to create the trade from
+    */
+    function addTrade(
+        bytes memory _statusContactCode,
+        string memory _username,
+        uint256 _amount,
+        uint256 _offerId
+    ) public {
+        require(offers[_offerId].owner != address(0x0), "Offer do not exist");
+        Offer storage offer = offers[_offerId];
+
+        if (!userWhitelist[msg.sender]) {
+            User memory user = User(_statusContactCode, "", _username);
+            uint256 userId = users.push(user) - 1;
+            addressToUser[msg.sender] = userId;
+            userWhitelist[msg.sender] = true;
+        } else {
+            User storage tmpUser = users[addressToUser[msg.sender]];
+            tmpUser.statusContactCode = _statusContactCode;
+            tmpUser.username = _username;
+        }
+        
+        Trade memory trade = Trade(_offerId, msg.sender, offer.owner, _amount);
+        uint256 tradeId = trades.push(trade) - 1;
+        makerToTrades[msg.sender].push(tradeId);
+        takerToTrades[offer.owner].push(tradeId);
+
+        emit TradeAdded(
+            tradeId,
+            _offerId,
+            _amount,
+            msg.sender,
+            offer.owner
+        );
     }
 
     /**
@@ -242,10 +302,26 @@ contract MetadataStore is Ownable {
 
     /**
     * @dev Get all the offer ids of the address in params
-    * @param _address Address of the offers
+    * @param _address Address of the owner
     */
     function getOfferIds(address _address) public view returns (uint256[] memory) {
         return addressToOffers[_address];
+    }
+
+    /**
+    * @dev Get all the trade maker ids of the address in params
+    * @param _address Address of the maker
+    */
+    function getMakerTradeIds(address _address) public view returns (uint256[] memory) {
+        return makerToTrades[_address];
+    }
+
+    /**
+    * @dev Get all the trade taker ids of the address in params
+    * @param _address Address of the maker
+    */
+    function getTakerTradeIds(address _address) public view returns (uint256[] memory) {
+        return takerToTrades[_address];
     }
 
     /**

@@ -111,4 +111,13 @@ contract("MetadataStore", function () {
     assert.equal(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
   });
 
+  it("should allow to add a trade", async function () {
+    const receipt = await MetadataStore.methods.addTrade(License.address, "Anthony", 1, 1).send();
+    const tradeAdded = receipt.events.TradeAdded;
+    const tradeId = tradeAdded.returnValues.tradeId;
+
+    assert.equal(tradeId, '0');
+  });
+
+
 });
