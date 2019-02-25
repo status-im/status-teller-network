@@ -5,7 +5,10 @@ import {compactAddress} from "../../utils/address";
 class Address extends Component {
   constructor(props) {
     super(props);
-    this.state = {addressHovered: false};
+    this.state = {
+      addressHovered: false,
+      fixed: false
+    };
   }
 
   mouseOverAddress = () => {
@@ -16,9 +19,14 @@ class Address extends Component {
     this.setState({addressHovered: false});
   };
 
+  handleClick = () => {
+    this.setState({fixed: !this.state.fixed});
+  }
+
   render() {
-    return (<span title={this.props.address} onMouseOver={this.mouseOverAddress}
-                  onMouseOut={this.mouseOutAddress}>{this.props.compact || !this.state.addressHovered ? compactAddress(this.props.address) : this.props.address}
+    const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address) : this.props.address;
+    return (<span title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
+                  onMouseOut={this.mouseOutAddress}>{address}
     </span>);
   }
 }
