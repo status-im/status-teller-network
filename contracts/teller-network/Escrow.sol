@@ -134,6 +134,51 @@ contract Escrow is Pausable, MessageSigned {
         emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }
 
+
+    /**
+     * @notice Create and fund escrow
+     * @param _buyer Buyer address
+     * @param _tradeAmount Amount buyer is willing to trade
+     * @param _tradeType Indicates if the amount is in crypto or fiat
+     * @param _token Token address. Must be 0 for ETH
+     * @param _tokenAmount How much ether/tokens will be put in escrow
+     * @param _expirationTime Unix timestamp before the transaction is considered expired
+     * @dev Requires contract to be unpaused.
+     *         The seller needs to be licensed.
+     *         The expiration time must be at least 10min in the future
+     *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
+     */
+    function create_and_fund(address payable _buyer, address _token, uint _tokenAmount, uint _expirationTime, uint _tradeAmount, uint8 _tradeType) public payable whenNotPaused {
+        require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create and fund escrow transactions");
+        require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
+
+        uint escrowId = transactions.length++;
+
+        transactions[escrowId] = EscrowTransaction({
+            seller: msg.sender,
+            buyer: _buyer,
+            tokenAmount: _tokenAmount,
+            token: _token,
+            expirationTime: _expirationTime,
+            rating: 0,
+            tradeAmount: _tradeAmount,
+            tradeType: TradeType(_tradeType),
+            status: EscrowStatus.FUNDED
+        });
+
+        if(_token == address(0)){
+            require(msg.value == _tokenAmount, "ETH amount is required");
+        } else {
+            require(msg.value == 0, "Cannot send ETH with token address different from 0");
+            ERC20Token token = ERC20Token(_token);
+            require(token.allowance(msg.sender, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
+            require(token.transferFrom(msg.sender, address(this), _tokenAmount), "Unsuccessful token transfer");
+        }
+
+        emit Created(msg.sender, _buyer, escrowId);
+        emit Funded(escrowId, _expirationTime, _tokenAmount);
+    }
+
     /**
      * @notice Release escrow funds to buyer
      * @param _escrowId Id of the escrow
