@@ -81,11 +81,11 @@ contract Escrow is Pausable, MessageSigned {
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      */
-    function create(address payable _buyer, address payable _seller, address _token, uint _tradeAmount, uint8 _tradeType) public whenNotPaused {
+    function create(address payable _buyer, address payable _seller, address _token, uint _tradeAmount, uint8 _tradeType) public whenNotPaused returns(uint escrowId) {
         require(msg.sender == _buyer || msg.sender == _seller, "Must participate in the trade");
         require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
 
-        uint escrowId = transactions.length++;
+        escrowId = transactions.length++;
 
         transactions[escrowId] = EscrowTransaction({
             seller: _seller,
@@ -118,6 +118,9 @@ contract Escrow is Pausable, MessageSigned {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
+        require(msg.sender == trx.seller, "Only the seller can fund this escrow");
+        require(trx.status == EscrowStatus.CREATED || trx.status == EscrowStatus.FUNDED, "Invalid escrow status");
+
         if(trx.token == address(0)){
             require(msg.value == _tokenAmount, "ETH amount is required");
         } else {
@@ -127,7 +130,7 @@ contract Escrow is Pausable, MessageSigned {
             require(token.transferFrom(msg.sender, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
 
-        transactions[_escrowId].tokenAmount = _tokenAmount;
+        transactions[_escrowId].tokenAmount += _tokenAmount;
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
@@ -149,34 +152,8 @@ contract Escrow is Pausable, MessageSigned {
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
     function create_and_fund(address payable _buyer, address _token, uint _tokenAmount, uint _expirationTime, uint _tradeAmount, uint8 _tradeType) public payable whenNotPaused {
-        require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create and fund escrow transactions");
-        require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
-
-        uint escrowId = transactions.length++;
-
-        transactions[escrowId] = EscrowTransaction({
-            seller: msg.sender,
-            buyer: _buyer,
-            tokenAmount: _tokenAmount,
-            token: _token,
-            expirationTime: _expirationTime,
-            rating: 0,
-            tradeAmount: _tradeAmount,
-            tradeType: TradeType(_tradeType),
-            status: EscrowStatus.FUNDED
-        });
-
-        if(_token == address(0)){
-            require(msg.value == _tokenAmount, "ETH amount is required");
-        } else {
-            require(msg.value == 0, "Cannot send ETH with token address different from 0");
-            ERC20Token token = ERC20Token(_token);
-            require(token.allowance(msg.sender, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
-            require(token.transferFrom(msg.sender, address(this), _tokenAmount), "Unsuccessful token transfer");
-        }
-
-        emit Created(msg.sender, _buyer, escrowId);
-        emit Funded(escrowId, _expirationTime, _tokenAmount);
+        uint escrowId = create(_buyer, msg.sender, _token, _tradeAmount, _tradeType);
+        fund(escrowId, _tokenAmount, _expirationTime);
     }
 
     /**
@@ -328,28 +305,6 @@ contract Escrow is Pausable, MessageSigned {
         require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
         _cancel(_escrowId, trx);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
     * @dev Fallback function
