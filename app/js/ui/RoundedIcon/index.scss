@@ -1,0 +1,19 @@
+@import "../../../css/variable-overrides.scss";
+
+.rounded-icon {
+  padding: 10px;
+}
+
+.rounded-icon__grey {
+  background-color: $dark;
+  .rounded-icon--icon {
+    color: $white;
+  }
+}
+
+.rounded-icon__blue {
+  background-color: $light-blue;
+  .rounded-icon--icon {
+    color: $blue;
+  }
+}

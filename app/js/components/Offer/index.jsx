@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
 import Blockies from "react-blockies";
-import Reputation from '../../../components/Reputation';
+
+import Reputation from '../Reputation';
 
 const Offer = ({offer}) => (
-  <Row className="offer-listing rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
+  <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
         <Col xs={2}><Blockies seed={offer.owner} className="rounded-circle" scale={5}/></Col>
