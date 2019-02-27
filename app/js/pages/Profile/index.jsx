@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import {Row, Col} from "reactstrap";
 
 import UserInformation from '../../components/UserInformation';
-import Offers from '../../components/Offers';
 import Map from '../../components//Map';
+import Offer from './components/Offer';
+
 import buyer from "../../features/buyer";
 import metadata from "../../features/metadata";
 
@@ -29,7 +31,16 @@ class Profile extends Component {
         <h3 className="mt-3">{profile.location}</h3>
         <Map coords={{latitude: 45.492611, longitude: -73.617959}} markerOnly={true}/>
         <p className="text-muted mt-2">Saalestraße 39A, 12055 Berlin</p>
-        <Offers offers={profile.offers} onClick={this.offerClick}/>
+        <Row>
+          <Col xs="12" className="mt-2">
+            <h3>Offers</h3>
+            <div>
+              {profile.offers.map((offer, index) => <Offer key={index}
+                                                           offer={offer}
+                                                           onClick={() => this.offerClick(offer.id)}/>)}
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   }

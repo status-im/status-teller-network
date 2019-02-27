@@ -9,7 +9,7 @@ import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import network from '../../features/network';
 import metadata from '../../features/metadata';
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
-import Offer from './components/Offer';
+import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 
 import './index.scss';
