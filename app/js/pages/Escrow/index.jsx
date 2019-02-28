@@ -9,6 +9,7 @@ import CancelEscrow from './components/CancelEscrow';
 import CardEscrow from './components/CardEscrow';
 import EscrowDetail from './components/EscrowDetail';
 import OpenChat from './components/OpenChat';
+import OpenDispute from './components/OpenDispute';
 
 class Escrow extends Component {
   componentDidMount() {
@@ -19,9 +20,10 @@ class Escrow extends Component {
       <div className="escrow">
         <CardEscrow/>
         <CancelEscrow/>
-        <Row className="bg-secondary p-4 mt-4">
+        <OpenDispute/>
+        <Row className="bg-secondary py-4 mt-4">
           <Col>
-            <h2>You are trading with</h2>
+            <h3 className="mb-3">You are trading with</h3>
             <Offer offer={{owner: 'avb', user: { username: 'Anthony', location: 'London'}, currency: 'USD', token: { symbol: 'SNT'}}}/>
             <EscrowDetail/>
             <OpenChat/>

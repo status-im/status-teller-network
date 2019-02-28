@@ -9,8 +9,8 @@ const OpenChat = () => (
     <Col xs="2">
       <RoundedIcon icon={faComment} bgColor="grey"/>
     </Col>
-    <Col xs="10">
-      Open Chat
+    <Col xs="10 my-auto">
+      <h5 className="m-0">Open Chat</h5>
     </Col>
   </Row>
 );

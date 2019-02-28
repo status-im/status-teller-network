@@ -81,7 +81,7 @@ class OffersList extends Component {
                       <FontAwesomeIcon icon={faArrowRight}/>
               </Button>
             </h4>
-            {groupedOffer[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} offer={offer}/>)}
+            {groupedOffer[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer}/>)}
           </Fragment>
         ))}
       </Fragment>

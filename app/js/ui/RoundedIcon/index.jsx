@@ -5,17 +5,21 @@ import classnames from "classnames";
 
 import './index.scss';
 
-const RoundedIcon = ({icon, bgColor}) => (
-  <span className={classnames("rounded-icon rounded-circle mr-2", {
+const RoundedIcon = ({icon, image, bgColor}) => (
+  <div className={classnames("rounded-icon rounded-circle", {
     'rounded-icon__grey': bgColor === 'grey',
-    'rounded-icon__blue': bgColor === 'blue'
+    'rounded-icon__blue': bgColor === 'blue',
+    'rounded-icon__red': bgColor === 'red',
+    'rounded-icon__green': bgColor === 'green'
   })}>
-    <FontAwesomeIcon icon={icon} className="text-center rounded-icon--icon" size="lg"/>
-  </span>
+    {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size="lg"/>}
+    {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon"/>}
+  </div>
 );
 
 RoundedIcon.propTypes = {
   icon: PropTypes.object,
+  image: PropTypes.string,
   bgColor: PropTypes.string
 };
 
