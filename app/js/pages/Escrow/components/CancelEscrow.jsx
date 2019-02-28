@@ -6,12 +6,12 @@ import {faTimes} from "@fortawesome/free-solid-svg-icons";
 import RoundedIcon from "../../../ui/RoundedIcon";
 
 const CancelEscrow = () => (
-  <Row className="mt-4">
+  <Row className="mt-4 text-primary">
     <Col xs="2">
       <RoundedIcon icon={faTimes} bgColor="blue"/>
     </Col>
-    <Col xs="10">
-      <h5>Cancel Trade</h5>
+    <Col xs="10" className="my-auto">
+      <h6 className="m-0">Cancel Trade</h6>
     </Col>
   </Row>
 );

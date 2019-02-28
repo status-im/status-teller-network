@@ -6,7 +6,7 @@ import Blockies from "react-blockies";
 
 import Reputation from '../Reputation';
 
-const Offer = ({offer}) => (
+const Offer = ({offer, withDetail}) => (
   <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
@@ -20,22 +20,26 @@ const Offer = ({offer}) => (
           <Reputation reputation={{upCount: 1, downCount: 1}} size="s"/>
         </Col>
       </Row>
-      <Row>
+      {withDetail && <Row>
         <Col>
           <p className="m-0">
             <span className="border rounded mr-2 font-weight-bold p-1">{offer.token.symbol}</span>
             <span className="border rounded mr-2 font-weight-bold p-1">{offer.currency}</span>
           </p>
         </Col>
-      </Row>
+      </Row>}
     </Col>
   </Row>
 
 );
 
+Offer.defaultProps = {
+  withDetail: false
+};
 
 Offer.propTypes = {
-  offer: PropTypes.object
+  offer: PropTypes.object,
+  withDetail: PropTypes.bool
 };
 
 
