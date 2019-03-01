@@ -94,24 +94,8 @@ contract Escrow is Pausable, MessageSigned {
         string memory _username
     ) public whenNotPaused returns(uint escrowId) {
         require(msg.sender == _buyer || msg.sender == _seller, "Must participate in the trade");
-        require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
-
+        createTransaction(_buyer, _seller, _token, _tradeAmount, _tradeType);
         metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
-        escrowId = transactions.length++;
-
-        transactions[escrowId] = EscrowTransaction({
-            seller: _seller,
-            buyer: _buyer,
-            tokenAmount: 0,
-            token: _token,
-            expirationTime: 0,
-            rating: 0,
-            tradeAmount: _tradeAmount,
-            tradeType: TradeType(_tradeType),
-            status: EscrowStatus.CREATED
-        });
-
-        emit Created(_seller, _buyer, escrowId);
     }
 
     /**
@@ -157,9 +141,6 @@ contract Escrow is Pausable, MessageSigned {
      * @param _token Token address. Must be 0 for ETH
      * @param _tokenAmount How much ether/tokens will be put in escrow
      * @param _expirationTime Unix timestamp before the transaction is considered expired
-     * @param _statusContactCode The address of the status contact code
-     * @param _location The location on earth
-     * @param _username The username of the user
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
@@ -171,13 +152,37 @@ contract Escrow is Pausable, MessageSigned {
         uint _tokenAmount,
         uint _expirationTime,
         uint _tradeAmount,
-        uint8 _tradeType,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
+        uint8 _tradeType
     ) public payable whenNotPaused {
-        uint escrowId = create(_buyer, msg.sender, _token, _tradeAmount, _tradeType, _statusContactCode, _location, _username);
+        uint escrowId = createTransaction(_buyer, msg.sender, _token, _tradeAmount, _tradeType);
         fund(escrowId, _tokenAmount, _expirationTime);
+    }
+
+    function createTransaction(
+        address payable _buyer,
+        address payable _seller,
+        address _token,
+        uint _tradeAmount,
+        uint8 _tradeType
+    ) private returns(uint escrowId) {
+        require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
+
+        uint escrowId = transactions.length++;
+
+        transactions[escrowId] = EscrowTransaction({
+            seller: _seller,
+            buyer: _buyer,
+            tokenAmount: 0,
+            token: _token,
+            expirationTime: 0,
+            rating: 0,
+            tradeAmount: _tradeAmount,
+            tradeType: TradeType(_tradeType),
+            status: EscrowStatus.CREATED
+        });
+
+        emit Created(_seller, _buyer, escrowId);
+        return escrowId;
     }
 
     /**
