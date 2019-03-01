@@ -8,11 +8,14 @@ import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 import network from '../../features/network';
 import metadata from '../../features/metadata';
+import {getLocation} from '../../services/googleMap';
 import {PAYMENT_METHODS, SORT_TYPES} from '../../features/metadata/constants';
 import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
+import Loading from '../../components/Loading';
 
 import './index.scss';
+import {withNamespaces} from "react-i18next";
 
 class OffersList extends Component {
   constructor(props) {
@@ -20,7 +23,9 @@ class OffersList extends Component {
     this.state = {
       tokenFilter: '',
       paymentMethodFilter: -1,
-      sortType: 0
+      sortType: 0,
+      locationCoords: null,
+      calculatingLocation: false
     };
   }
 
@@ -50,6 +55,34 @@ class OffersList extends Component {
     this.setState({sortType});
   };
 
+  setLocation = (location) => {
+    if (!location) {
+      return this.setState({calculatingLocation: false, locationCoords: null});
+    }
+    if (location === this.state.location) {
+      return;
+    }
+
+    this.setState({calculatingLocation: true});
+    getLocation(location).then(coords => {
+      this.setState({
+        calculatingLocation: false,
+        locationCoords: coords,
+        location
+      });
+    }).catch(e => {
+      this.setState({
+        calculatingLocation: false,
+        error: e.message,
+        location
+      });
+    });
+  };
+
+  calculateDistance = (userCoords) => {
+    return Math.sqrt(Math.pow(userCoords.lat - this.state.locationCoords.lat, 2) + Math.pow(userCoords.lng - this.state.locationCoords.lng, 2));
+  };
+
   sortByDate(a, b) {
     // Using the id as there is no date in the contract
     if (a.id < b.id) return -1;
@@ -60,6 +93,9 @@ class OffersList extends Component {
   render() {
     let filteredOffers = this.props.offers;
 
+    if (this.state.locationCoords) {
+      filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
+    }
     if (this.state.paymentMethodFilter !== -1) {
       filteredOffers = filteredOffers.filter((offer) => offer.paymentMethods.includes(this.state.paymentMethodFilter));
     }
@@ -77,7 +113,6 @@ class OffersList extends Component {
       default: sortFunction = this.sortByDate;
     }
     filteredOffers = filteredOffers.sort(sortFunction);
-
 
     const groupedOffer = filteredOffers.reduce((grouped, offer) => {
       offer.paymentMethods.forEach((paymentMethod) => (
@@ -98,9 +133,12 @@ class OffersList extends Component {
                       tokens={this.props.tokens}
                       setTokenFilter={this.setTokenFilter}
                       setSortType={this.setSortType}
+                      setLocation={this.setLocation}
                       setPaymentMethodFilter={this.setPaymentMethodFilter}
                       tokenFilter={this.state.tokenFilter}
                       paymentMethodFilter={this.state.paymentMethodFilter}/>
+
+        {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
         {Object.keys(groupedOffer).map((paymentMethod) => (
           <Fragment key={paymentMethod}>
@@ -122,6 +160,7 @@ class OffersList extends Component {
 }
 
 OffersList.propTypes = {
+  t: PropTypes.func,
   offers: PropTypes.array,
   tokens: PropTypes.array,
   loadOffers: PropTypes.func
@@ -139,4 +178,4 @@ export default connect(
   mapStateToProps,
   {
     loadOffers: metadata.actions.loadOffers
-  })(OffersList);
+  })(withNamespaces()(OffersList));

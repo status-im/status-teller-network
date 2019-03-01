@@ -127,7 +127,8 @@
     "typeSell": "Selling",
     "paymentMethods": "Payment methods",
     "location": "Location",
-    "rate": "Rate"
+    "rate": "Rate",
+    "locationLoading": "Calculating location distance..."
   },
   "signatureForm": {
     "paying": "Paying using Signature..."

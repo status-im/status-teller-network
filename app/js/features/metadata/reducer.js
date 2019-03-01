@@ -1,7 +1,8 @@
 import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
-  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS
+  UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
+  LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -65,6 +66,14 @@ function reducer(state = DEFAULT_STATE, action) {
     case LOAD_USER_SUCCEEDED:
       return {
         ...state, users: {...state.users, [action.address.toLowerCase()]: action.user}
+      };
+    case LOAD_USER_LOCATION_SUCCEEDED:
+      return {
+        ...state, users: {...state.users, [action.address.toLowerCase()]: {
+            ...state.users[action.address.toLowerCase()],
+            coords: action.coords
+          }
+        }
       };
     case LOAD_OFFERS_SUCCEEDED: {
       const newOffers = action.offers.reduce((offers, offer) => {

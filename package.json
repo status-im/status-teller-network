@@ -52,6 +52,7 @@
     "embark": "4.0.0-beta.0",
     "embark-solium": "0.0.1",
     "ethereumjs-util": "^6.0.0",
+    "google-geocoder": "^0.2.1",
     "i18next": "^13.1.2",
     "i18next-browser-languagedetector": "^2.2.4",
     "lodash": "^4.17.11",
