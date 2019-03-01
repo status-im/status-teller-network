@@ -3,9 +3,9 @@ pragma solidity ^0.5.0;
 import "../common/Ownable.sol";
 import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
-import "./License.sol";
 import "../token/ERC20Token.sol";
-
+import "./License.sol";
+import "./MetadataStore.sol";
 
 /**
  * @title Escrow
@@ -20,9 +20,10 @@ contract Escrow is Pausable, MessageSigned {
     string private constant INVALID_ESCROW_ID = "Invalid escrow id";
     string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
-    constructor(address _license, address _arbitrator) public {
+    constructor(address _license, address _arbitrator, address _metadataStore) public {
         license = License(_license);
         arbitrator = _arbitrator;
+        metadataStore = MetadataStore(_metadataStore);
     }
 
     struct EscrowTransaction {
@@ -43,9 +44,8 @@ contract Escrow is Pausable, MessageSigned {
     EscrowTransaction[] public transactions;
 
     License public license;
-
+    MetadataStore public metadataStore;
     address public arbitrator;
-
 
     event Created(address indexed seller, address indexed buyer, uint escrowId);
     event Funded(uint escrowId, uint expirationTime, uint amount);
@@ -70,7 +70,6 @@ contract Escrow is Pausable, MessageSigned {
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
 
-
     /**
      * @notice Create a new escrow
      * @param _buyer Buyer address
@@ -78,13 +77,26 @@ contract Escrow is Pausable, MessageSigned {
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
      * @param _token Token address. Must be 0 for ETH
+     * @param _statusContactCode The address of the status contact code
+     * @param _location The location on earth
+     * @param _username The username of the user
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      */
-    function create(address payable _buyer, address payable _seller, address _token, uint _tradeAmount, uint8 _tradeType) public whenNotPaused returns(uint escrowId) {
+    function create(
+        address payable _buyer,
+        address payable _seller,
+        address _token,
+        uint _tradeAmount,
+        uint8 _tradeType,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public whenNotPaused returns(uint escrowId) {
         require(msg.sender == _buyer || msg.sender == _seller, "Must participate in the trade");
         require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
 
+        metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
         escrowId = transactions.length++;
 
         transactions[escrowId] = EscrowTransaction({
@@ -137,7 +149,6 @@ contract Escrow is Pausable, MessageSigned {
         emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }
 
-
     /**
      * @notice Create and fund escrow
      * @param _buyer Buyer address
@@ -146,13 +157,26 @@ contract Escrow is Pausable, MessageSigned {
      * @param _token Token address. Must be 0 for ETH
      * @param _tokenAmount How much ether/tokens will be put in escrow
      * @param _expirationTime Unix timestamp before the transaction is considered expired
+     * @param _statusContactCode The address of the status contact code
+     * @param _location The location on earth
+     * @param _username The username of the user
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function create_and_fund(address payable _buyer, address _token, uint _tokenAmount, uint _expirationTime, uint _tradeAmount, uint8 _tradeType) public payable whenNotPaused {
-        uint escrowId = create(_buyer, msg.sender, _token, _tradeAmount, _tradeType);
+    function create_and_fund(
+        address payable _buyer,
+        address _token,
+        uint _tokenAmount,
+        uint _expirationTime,
+        uint _tradeAmount,
+        uint8 _tradeType,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public payable whenNotPaused {
+        uint escrowId = create(_buyer, msg.sender, _token, _tradeAmount, _tradeType, _statusContactCode, _location, _username);
         fund(escrowId, _tokenAmount, _expirationTime);
     }
 

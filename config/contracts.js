@@ -63,8 +63,11 @@ module.exports = {
           86400 * 365
         ]
       },
+      "MetadataStore": {
+        args: ["$License"]
+      },
       Escrow: {
-        args: ["$License", "$accounts[1]"]
+        args: ["$License", "$accounts[1]", "$MetadataStore"]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
@@ -81,9 +84,6 @@ module.exports = {
           "STT",
           true
         ]
-      },
-      "MetadataStore": {
-        args: ["$License"]
       }
     }
   },
