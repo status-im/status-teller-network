@@ -4,7 +4,19 @@ import { Row, Card, CardHeader, CardBody } from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEuroSign } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faEuroSign, faDollarSign, faPoundSign, faYenSign, faWonSign, faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
+
+const currencyIcon = (currencySymbol) => {
+  switch(currencySymbol) {
+    case 'USD': return faDollarSign;
+    case 'EUR': return faEuroSign;
+    case 'GBP': return faPoundSign;
+    case 'JPY': return faYenSign; // Japan and China share same symbol
+    case 'CNY': return faYenSign;
+    case 'KRW': return faWonSign;
+    default: return faMoneyBillAlt;
+  }
+};
 
 class Offers extends Component {
   renderOffers() {
@@ -14,7 +26,7 @@ class Offers extends Component {
         <CardHeader>
           {offer.token.symbol}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
-          <FontAwesomeIcon icon={faEuroSign} className="mr-1"/>
+          <FontAwesomeIcon icon={currencyIcon(offer.currency)} className="mr-1"/>
           {offer.currency}
         </CardHeader>
         <CardBody>
