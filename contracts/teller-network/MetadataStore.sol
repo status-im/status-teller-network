@@ -83,6 +83,25 @@ contract MetadataStore is Ownable {
         license = _license;
     }
 
+    function addOrUpdateUser(
+        address _user,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        if (!userWhitelist[_user]) {
+            User memory user = User(_statusContactCode, _location, _username);
+            uint256 userId = users.push(user) - 1;
+            addressToUser[_user] = userId;
+            userWhitelist[_user] = true;
+        } else {
+            User storage tmpUser = users[addressToUser[_user]];
+            tmpUser.statusContactCode = _statusContactCode;
+            tmpUser.location = _location;
+            tmpUser.username = _username;
+        }
+    }
+
     /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
@@ -107,17 +126,7 @@ contract MetadataStore is Ownable {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
 
-        if (!userWhitelist[msg.sender]) {
-            User memory user = User(_statusContactCode, _location, _username);
-            uint256 userId = users.push(user) - 1;
-            addressToUser[msg.sender] = userId;
-            userWhitelist[msg.sender] = true;
-        } else {
-            User storage tmpUser = users[addressToUser[msg.sender]];
-            tmpUser.statusContactCode = _statusContactCode;
-            tmpUser.location = _location;
-            tmpUser.username = _username;
-        }
+        this.addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
         
         Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender);
         uint256 offerId = offers.push(offer) - 1;
