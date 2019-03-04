@@ -9,6 +9,12 @@ const padLeft = (number, length) => {
   return str;
 };
 
+export const addDecimals = (value, decimals) => {
+  const pow = new BN(10, 10).pow(numberToBN(decimals));
+  const res = pow * value;
+  return Math.floor(res).toString(10);
+};
+
 export const fromTokenDecimals = (value, decimals) => {
   value = new BN(value, 10);
   const pow = new BN(10, 10).pow(numberToBN(decimals));

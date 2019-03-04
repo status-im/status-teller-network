@@ -10,7 +10,7 @@ import network from './features/network';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
 import newSeller from './features/newSeller';
-import buyer from './features/buyer';
+import newBuy from './features/newBuy';
 import metadata from './features/metadata';
 
 const rootReducer = combineReducers({
@@ -22,7 +22,7 @@ const rootReducer = combineReducers({
   signature: signature.reducer,
   arbitration: arbitration.reducer,
   newSeller: newSeller.reducer,
-  buyer: buyer.reducer,
+  newBuy: newBuy.reducer,
   metadata: metadata.reducer
 });
 

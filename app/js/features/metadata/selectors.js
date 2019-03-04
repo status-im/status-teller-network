@@ -36,6 +36,11 @@ export const getUpdateUserStatus = (state) => {
   return state.metadata.updateUserStatus;
 };
 
+export const getOfferById = (state, id) => {
+  const offer = enhanceOffer(state, state.metadata.offers[id]);
+  return {...offer, user: state.metadata.users[offer.owner] || {}};
+};
+
 export const getOffersWithUser = (state) => {
   return Object.values(state.metadata.offers).map((offer) => ({
     ...enhanceOffer(state, offer),
