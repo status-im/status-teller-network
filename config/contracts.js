@@ -1,4 +1,8 @@
 const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
+
+const FEE_AMOUNT = "1000000000000000000"; // 1 * Math.pow(10, 18)
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
+
 const dataMigration = require('./data.js')
 
 module.exports = {
@@ -67,11 +71,14 @@ module.exports = {
         args: ["$License"]
       },
       Escrow: {
-        args: ["$License", "$accounts[1]", "$MetadataStore"]
+        args: ["$License", "$accounts[1]", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
 
+      },
+      "Fees": {
+        "deploy": false
       },
       "SNT": {
         "instanceOf": "MiniMeToken",

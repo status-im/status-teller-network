@@ -6,12 +6,13 @@ import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
+import "./Fees.sol";
 
 /**
  * @title Escrow
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
-contract Escrow is Pausable, MessageSigned {
+contract Escrow is Pausable, MessageSigned, Fees {
     string private constant TRANSACTION_ALREADY_RELEASED = "Transaction already released";
     string private constant TRANSACTION_ALREADY_CANCELED = "Transaction already canceled";
     string private constant TRANSACTION_ALREADY_PAID = "Transaction already paid";
@@ -20,7 +21,14 @@ contract Escrow is Pausable, MessageSigned {
     string private constant INVALID_ESCROW_ID = "Invalid escrow id";
     string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
-    constructor(address _license, address _arbitrator, address _metadataStore) public {
+    constructor(
+        address _license, 
+        address _arbitrator, 
+        address _metadataStore, 
+        address _feeToken, 
+        address _feeDestination, 
+        uint _feeAmount) 
+        Fees(_feeToken, _feeDestination, _feeAmount) public {
         license = License(_license);
         arbitrator = _arbitrator;
         metadataStore = MetadataStore(_metadataStore);
@@ -129,6 +137,8 @@ contract Escrow is Pausable, MessageSigned {
         transactions[_escrowId].tokenAmount += _tokenAmount;
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
+
+        payFee(_escrowId);
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }
@@ -382,7 +392,7 @@ contract Escrow is Pausable, MessageSigned {
     /**
      * @notice Set address as arbitrator
      * @param _addr New arbitrator address
-     * @dev Can only be called by the owner of the controller
+     * @dev Can only be called by the owner of the contract
      */
     function setArbitrator(address _addr) public onlyOwner {
         arbitrator = _addr;
