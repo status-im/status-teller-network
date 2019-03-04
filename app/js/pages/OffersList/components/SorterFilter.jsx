@@ -19,19 +19,20 @@ const FilterMenu = (props) => (
 
         <h5 className="mt-4">Sort</h5>
         <ButtonGroup vertical className="w-100">
-          <CheckButton active={true}>
-            Top rated
-          </CheckButton>
-          <CheckButton active={false}>
-            Most recent
-          </CheckButton>
+          {props.sortTypes.map((sortType, index) => (
+            <CheckButton key={'sort-' + index}
+                         onClick={() => { props.setSortType(index); props.close(); }}
+                         active={index === props.sortType}>
+              {sortType}
+            </CheckButton>
+          ))}
         </ButtonGroup>
 
         <h5 className="mt-4">Payment method</h5>
         <ButtonGroup vertical className="w-100">
           {props.paymentMethods.map((paymentMethod, index) => (
-            <CheckButton key={index}
-                         onClick={() => props.setPaymentMethodFilter(index)}
+            <CheckButton key={'paymentMethod' + index}
+                         onClick={() => { props.setPaymentMethodFilter(index); props.close(); }}
                          active={index === props.paymentMethodFilter}>
               {paymentMethod}
             </CheckButton>
@@ -53,6 +54,7 @@ const FilterMenu = (props) => (
             placeholder={'Select'}
             value={props.tokenFilter}
             onChange={props.setTokenFilter}
+            onMenuToggle={(isOpen) => { if (!isOpen) props.close(); }}
           />
         </FormGroup>
       </div>
@@ -64,11 +66,14 @@ FilterMenu.propTypes = {
   open: PropTypes.bool,
   close: PropTypes.func,
   paymentMethods: PropTypes.array,
+  sortTypes: PropTypes.array,
   tokens: PropTypes.array,
   setTokenFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
+  setSortType: PropTypes.func,
   tokenFilter: PropTypes.string,
-  paymentMethodFilter: PropTypes.number
+  paymentMethodFilter: PropTypes.number,
+  sortType: PropTypes.number
 };
 
 class SorterFilter extends Component {
@@ -100,11 +105,14 @@ class SorterFilter extends Component {
 
 SorterFilter.propTypes = {
   paymentMethods: PropTypes.array,
+  sortTypes: PropTypes.array,
   tokens: PropTypes.array,
   setTokenFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
+  setSortType: PropTypes.func,
   tokenFilter: PropTypes.string,
-  paymentMethodFilter: PropTypes.number
+  paymentMethodFilter: PropTypes.number,
+  sortType: PropTypes.number
 };
 
 export default SorterFilter;
