@@ -7,22 +7,25 @@ import Input from 'react-validation/build/input';
 import Blockies from 'react-blockies';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 
-const OfferTrade = ({address, name, min, max, fiat, asset, onClick, assetQty, fiatQty, onFiatChange, onAssetChange, disabled, t}) => (
+const OfferTrade = ({
+  address, name, min, max, currency, asset, onClick, 
+  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t
+}) => (
   <Row>
     <Col xs="12" className="mt-5 text-center">
-      <h2>Trade amount with <br/><span><Blockies seed={address || '0x0'} className="rounded-circle"/> {name}</span></h2>
-      <p className="mt-3">Min: {min}{fiat.symbol} - Max: {max}{fiat.symbol}</p>
+      <h2>Trade amount with <br/><span><Blockies seed={address} className="rounded-circle"/> {name}</span></h2>
+      <p className="mt-3">Min: {min}{currency.symbol} - Max: {max}{currency.symbol}</p>
     </Col>
     <Col xs="12" className="mt-4">
       <Form className="text-center">
         <FormGroup>
-          <Input type="number" name="fiat" className="form-control" value={fiatQty}
+          <Input type="number" name="fiat" className="form-control" value={currencyQuantity}
                  validations={[isNumber, lowerEqThan.bind(null, max), higherEqThan.bind(null, min)]}
-                 placeholder="Fiat quantity" onChange={(e) => onFiatChange(e.target.value)}/>
-          <span className="input-icon">{fiat.id}</span>
+                 placeholder="Fiat quantity" onChange={(e) => onCurrencyChange(e.target.value)}/>
+          <span className="input-icon">{currency.id}</span>
         </FormGroup>
         <FormGroup>
-          <Input type="number" name="asset" className="form-control" value={assetQty} validations={[isNumber]}
+          <Input type="number" name="asset" className="form-control" value={assetQuantity} validations={[isNumber]}
                  placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)}/>
           <span className="input-icon">{asset}</span>
         </FormGroup>
@@ -37,20 +40,20 @@ OfferTrade.propTypes = {
   t: PropTypes.func,
   address: PropTypes.string,
   name: PropTypes.string,
-  fiat: PropTypes.object,
+  currency: PropTypes.object,
   min: PropTypes.number,
   max: PropTypes.number,
   asset: PropTypes.string,
   onClick: PropTypes.func,
-  assetQty: PropTypes.oneOfType([
+  assetQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]),
-  fiatQty: PropTypes.oneOfType([
+  currencyQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]),
-  onFiatChange: PropTypes.func,
+  onCurrencyChange: PropTypes.func,
   onAssetChange: PropTypes.func,
   disabled: PropTypes.bool
 };

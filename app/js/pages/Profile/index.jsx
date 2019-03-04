@@ -8,8 +8,8 @@ import UserInformation from '../../components/UserInformation';
 import Map from '../../components//Map';
 import Offer from './components/Offer';
 
-import buyer from "../../features/buyer";
 import metadata from "../../features/metadata";
+import newBuy from "../../features/newBuy";
 
 import './index.scss';
 
@@ -19,7 +19,7 @@ class Profile extends Component {
   }
 
   offerClick = (offerId) => {
-    this.props.setOffer(offerId);
+    this.props.setOfferId(offerId);
     this.props.history.push('/buy');
   };
 
@@ -48,10 +48,10 @@ class Profile extends Component {
 
 Profile.propTypes = {
   match: PropTypes.object,
-  setOffer: PropTypes.func,
   load: PropTypes.func,
   history: PropTypes.object,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  setOfferId: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -64,7 +64,7 @@ const mapStateToProps = (state, props) => {
 export default connect(
   mapStateToProps,
   {
-    load: metadata.actions.load,
-    setOffer: buyer.actions.setOffer
+    setOfferId: newBuy.actions.setOfferId,
+    load: metadata.actions.load
   }
 )(withRouter(Profile));

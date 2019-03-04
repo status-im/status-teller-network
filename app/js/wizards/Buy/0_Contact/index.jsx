@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
+import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import EditContact from '../../../components/EditContact';
-import buyer from "../../../features/buyer";
+import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
 import {connect} from "react-redux";
 
@@ -9,12 +10,13 @@ class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      nickname: props.nickname,
-      contactCode: props.contactCode
+      username: props.username,
+      statusContactCode: props.statusContactCode
     };
+    this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
     props.footer.onPageChange(() => {
-      props.setContact({nickname: this.state.nickname, contactCode: this.state.contactCode});
+      props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
   }
 
@@ -24,47 +26,55 @@ class Contact extends Component {
     }
   }
 
-  changeContactCode = (contactCode) => {
-    this.setState({contactCode});
+  validate(username, statusContactCode) {
+    if (username && statusContactCode) {
+      return this.props.footer.enableNext();
+    }
+    this.props.footer.disableNext();
+  }
+
+  changeStatusContactCode = (statusContactCode) => {
+    this.validate(this.state.username, statusContactCode);
+    this.setState({statusContactCode});
   };
 
-  changeNickname = (nickname) => {
-    this.setState({nickname});
+  changeUsername = (username) => {
+    this.validate(username, this.state.statusContactCode);
+    this.setState({username});
   };
 
   render() {
     return (
       <EditContact isStatus={this.props.isStatus}
-                   statusContactCode={this.state.contactCode} 
-                   username={this.state.nickname}
-                   changeStatusContactCode={this.changeContactCode}
-                   changeUsername={this.changeNickname}
+                   statusContactCode={this.state.statusContactCode} 
+                   username={this.state.username}
+                   changeStatusContactCode={this.changeStatusContactCode}
+                   changeUsername={this.changeUsername}
                    getContactCode={this.props.getContactCode} />
     );
   }
 }
 
 Contact.propTypes = {
+  history: PropTypes.object,
   footer: PropTypes.object,
-  setContact: PropTypes.func,
-  nickname: PropTypes.string,
-  contactCode: PropTypes.string,
+  setContactInfo: PropTypes.func,
+  username: PropTypes.string,
+  statusContactCode: PropTypes.string,
   isStatus: PropTypes.bool,
-  getContactCode: PropTypes.func,
-  statusContactCode: PropTypes.string
+  getContactCode: PropTypes.func
 };
 
 const mapStateToProps = state => ({
-  contactCode: buyer.selectors.contactCode(state),
-  nickname: buyer.selectors.nickname(state),
-  isStatus: network.selectors.isStatus(state),
-  statusContactCode: network.selectors.getStatusContactCode(state)
+  statusContactCode: newBuy.selectors.statusContactCode(state),
+  username: newBuy.selectors.username(state),
+  isStatus: network.selectors.isStatus(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setContact: buyer.actions.setContact,
-    getContactCode: buyer.actions.getContactCode
+    setContactInfo: newBuy.actions.setContactInfo,
+    getContactCode: network.actions.getContactCode
   }
-)(Contact);
+  )(withRouter(Contact));

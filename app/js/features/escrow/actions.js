@@ -1,9 +1,17 @@
 import { CREATE_ESCROW, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW, RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE,
   OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG } from './constants';
 import Escrow from 'Embark/contracts/Escrow';
-import { zeroAddress } from '../../utils/address';
+import { addDecimals } from '../../utils/numbers';
 
-export const createEscrow = (buyer, value, expiration) => ({ type: CREATE_ESCROW, value, toSend: Escrow.methods.create(buyer, parseInt(value, 10), zeroAddress, expiration)});
+export const createEscrow = (buyerAddress, username, tradeAmount, statusContactCode, offer) => {
+  tradeAmount = addDecimals(tradeAmount, offer.token.decimals);
+  return {
+    type: CREATE_ESCROW,
+    toSend: Escrow.methods.create(buyerAddress, offer.owner, offer.asset, tradeAmount, 1, statusContactCode, '', username)
+  };
+};
+
+// TODO: Update with new UI
 
 export const getEscrows = () => ({ type: GET_ESCROWS });
 
