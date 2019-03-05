@@ -62,7 +62,7 @@ contract MetadataStore is Ownable {
         uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
-        address owner;
+        address payable owner;
     }
 
     address public license;
@@ -223,8 +223,10 @@ contract MetadataStore is Ownable {
         uint8 margin,
         PaymenMethods[] memory paymentMethods,
         MarketType marketType,
-        address owner
+        address payable owner
     ) {
+        require(_id < offers.length, "Invalid offer id");
+
         return (
             offers[_id].asset,
             offers[_id].currency,
