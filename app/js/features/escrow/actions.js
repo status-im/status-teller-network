@@ -9,7 +9,7 @@ export const createEscrow = (buyerAddress, username, tradeAmount, statusContactC
   tradeAmount = addDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
-    toSend: Escrow.methods.create(buyerAddress, offer.owner, offer.asset, tradeAmount, 1, statusContactCode, '', username)
+    toSend: Escrow.methods.create(buyerAddress, offer.id, tradeAmount, 1, statusContactCode, '', username)
   };
 };
 
