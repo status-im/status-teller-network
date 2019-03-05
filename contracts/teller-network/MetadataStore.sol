@@ -62,7 +62,7 @@ contract MetadataStore is Ownable {
         uint8 margin;
         PaymenMethods[] paymentMethods;
         MarketType marketType;
-        address owner;
+        address payable owner;
     }
 
     address public license;
@@ -233,6 +233,11 @@ contract MetadataStore is Ownable {
             offers[_id].marketType,
             offers[_id].owner
         );
+    }
+
+    function offerOwner(uint256 _id) public view returns (address payable){
+        require(offers.length < _id, "Invalid offer id");
+        return offers[_id].owner;
     }
 
     /**

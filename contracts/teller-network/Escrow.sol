@@ -35,7 +35,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     }
 
     struct EscrowTransaction {
-        address payable seller;
+        uint offerId;
         address payable buyer;
         uint tokenAmount;
         address token;
@@ -55,13 +55,13 @@ contract Escrow is Pausable, MessageSigned, Fees {
     MetadataStore public metadataStore;
     address public arbitrator;
 
-    event Created(address indexed seller, address indexed buyer, uint escrowId);
+    event Created(uint indexed offerId, address indexed buyer, uint escrowId);
     event Funded(uint escrowId, uint expirationTime, uint amount);
 
     event Paid(uint escrowId);
     event Released(uint escrowId);
     event Canceled(uint escrowId);
-    event Rating(address indexed seller, address indexed buyer, uint escrowId, uint rating);
+    event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating);
 
     mapping(uint => ArbitrationCase) public arbitrationCases;
 
@@ -81,7 +81,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     /**
      * @notice Create a new escrow
      * @param _buyer Buyer address
-     * @param _seller Seller address
+     * @param _offerId Offer
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
      * @param _token Token address. Must be 0 for ETH
@@ -93,7 +93,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
      */
     function create(
         address payable _buyer,
-        address payable _seller,
+        uint _offerId,
         address _token,
         uint _tradeAmount,
         uint8 _tradeType,
@@ -101,8 +101,9 @@ contract Escrow is Pausable, MessageSigned, Fees {
         string memory _location,
         string memory _username
     ) public whenNotPaused returns(uint escrowId) {
+        address _seller = metadataStore.offerOwner(_offerId);
         require(msg.sender == _buyer || msg.sender == _seller, "Must participate in the trade");
-        createTransaction(_buyer, _seller, _token, _tradeAmount, _tradeType);
+        createTransaction(_buyer, _offerId, _token, _tradeAmount, _tradeType);
         metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
     }
 
@@ -122,7 +123,8 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(msg.sender == trx.seller, "Only the seller can fund this escrow");
+        address _seller = metadataStore.offerOwner(trx.offerId);
+        require(msg.sender == _seller, "Only the seller can fund this escrow");
         require(trx.status == EscrowStatus.CREATED || trx.status == EscrowStatus.FUNDED, "Invalid escrow status");
 
         if(trx.token == address(0)){
@@ -146,6 +148,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     /**
      * @notice Create and fund escrow
      * @param _buyer Buyer address
+     * @param _offerId Offer id
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
      * @param _token Token address. Must be 0 for ETH
@@ -158,29 +161,33 @@ contract Escrow is Pausable, MessageSigned, Fees {
      */
     function create_and_fund(
         address payable _buyer,
+        uint _offerId,
         address _token,
         uint _tokenAmount,
         uint _expirationTime,
         uint _tradeAmount,
         uint8 _tradeType
     ) public payable whenNotPaused {
-        uint escrowId = createTransaction(_buyer, msg.sender, _token, _tradeAmount, _tradeType);
+        uint escrowId = createTransaction(_buyer,_offerId, _token, _tradeAmount, _tradeType);
         fund(escrowId, _tokenAmount, _expirationTime);
     }
 
     function createTransaction(
         address payable _buyer,
-        address payable _seller,
+        uint _offerId,
         address _token,
         uint _tradeAmount,
         uint8 _tradeType
     ) private returns(uint escrowId) {
+
+        address _seller = metadataStore.offerOwner(_offerId);
+
         require(license.isLicenseOwner(_seller), "Must be a valid seller to create escrow transactions");
 
-        uint escrowId = transactions.length++;
+        escrowId = transactions.length++;
 
         transactions[escrowId] = EscrowTransaction({
-            seller: _seller,
+            offerId: _offerId,
             buyer: _buyer,
             tokenAmount: 0,
             token: _token,
@@ -191,7 +198,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             status: EscrowStatus.CREATED
         });
 
-        emit Created(_seller, _buyer, escrowId);
+        emit Created(_offerId, _buyer, escrowId);
         return escrowId;
     }
 
@@ -207,7 +214,9 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(trx.seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
+        address _seller = metadataStore.offerOwner(trx.offerId);
+
+        require(_seller == msg.sender, CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER);
         require(trx.status != EscrowStatus.RELEASED, TRANSACTION_ALREADY_RELEASED);
         require(trx.status != EscrowStatus.CANCELED, TRANSACTION_ALREADY_CANCELED);
         require(trx.status == EscrowStatus.PAID || trx.status == EscrowStatus.FUNDED, TRANSACTION_NOT_FUNDED);
@@ -243,6 +252,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
+        address _seller = metadataStore.offerOwner(trx.offerId);
 
         require(trx.status != EscrowStatus.RELEASED, TRANSACTION_ALREADY_RELEASED);
         require(trx.status != EscrowStatus.CANCELED, TRANSACTION_ALREADY_CANCELED);
@@ -250,7 +260,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         require(trx.status == EscrowStatus.FUNDED, TRANSACTION_NOT_FUNDED);
 
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
-        require(trx.buyer == _sender || trx.seller == _sender, "Function can only be invoked by the escrow buyer or seller");
+        require(trx.buyer == _sender || _seller == _sender, "Function can only be invoked by the escrow buyer or seller");
 
         trx.status  = EscrowStatus.PAID;
 
@@ -318,12 +328,13 @@ contract Escrow is Pausable, MessageSigned, Fees {
      */
     function _cancel(uint _escrowId, EscrowTransaction storage trx) private {
         if(trx.status == EscrowStatus.FUNDED){
-            require(msg.sender == trx.seller, "Only seller can cancel transaction");
+            address payable _seller = metadataStore.offerOwner(trx.offerId);
+            require(msg.sender == _seller, "Only seller can cancel transaction");
             if(trx.token == address(0)){
-                trx.seller.transfer(trx.tokenAmount);
+                _seller.transfer(trx.tokenAmount);
             } else {
                 ERC20Token token = ERC20Token(trx.token);
-                require(token.transfer(trx.seller, trx.tokenAmount));
+                require(token.transfer(_seller, trx.tokenAmount));
             }
         }
 
@@ -372,7 +383,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         require(trx.buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
         trx.rating  = _rate;
-        emit Rating(trx.seller, trx.buyer, _escrowId, _rate);
+        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
     }
 
     modifier onlyArbitrator {
@@ -405,9 +416,12 @@ contract Escrow is Pausable, MessageSigned, Fees {
      * @dev Consider using Aragon Court for this.
      */
     function openCase(uint _escrowId) public {
+        EscrowTransaction storage trx = transactions[_escrowId];
+        address _seller = metadataStore.offerOwner(trx.offerId);
+
         require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
-        require(transactions[_escrowId].buyer == msg.sender || transactions[_escrowId].seller == msg.sender, "Only a buyer or seller can open a case");
-        require(transactions[_escrowId].status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
+        require(trx.buyer == msg.sender || _seller == msg.sender, "Only a buyer or seller can open a case");
+        require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
@@ -426,12 +440,15 @@ contract Escrow is Pausable, MessageSigned, Fees {
      * @dev Consider opening a dispute in aragon court.
      */
     function openCase(uint _escrowId, bytes calldata _signature) external {
+        EscrowTransaction storage trx = transactions[_escrowId];
+        address _seller = metadataStore.offerOwner(trx.offerId);
+        
         require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
-        require(transactions[_escrowId].status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
+        require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
 
-        require(transactions[_escrowId].buyer == senderAddress || transactions[_escrowId].seller == senderAddress, "Only a buyer or seller can open a case");
+        require(trx.buyer == senderAddress || _seller == senderAddress, "Only a buyer or seller can open a case");
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
@@ -453,8 +470,9 @@ contract Escrow is Pausable, MessageSigned, Fees {
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
 
         EscrowTransaction storage trx = transactions[_escrowId];
+        address _seller = metadataStore.offerOwner(trx.offerId);
 
-        require(trx.buyer != arbitrator && trx.seller != arbitrator, "Arbitrator cannot be part of transaction");
+        require(trx.buyer != arbitrator && _seller != arbitrator, "Arbitrator cannot be part of transaction");
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;
