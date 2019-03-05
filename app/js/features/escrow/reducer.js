@@ -1,5 +1,6 @@
 import {
-  CREATE_ESCROW_FAILED, CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW,
+  CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW,
+  RESET_CREATE_ESCROW_STATUS,
   GET_ESCROWS_SUCCEEDED, GET_ESCROWS_FAILED, GET_ESCROWS,
   RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
@@ -9,19 +10,28 @@ import {
   CLOSE_DIALOG, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
 } from './constants';
 import cloneDeep from 'clone-deep';
+import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
-  escrows: [], message: null, type: null, escrowId: null, loading: false, error: '', txHash: '',
-  txHashList: '', loadingList: false
+  createEscrowStatus: States.none,
+  escrows: [],
+  message: null,
+  type: null,
+  escrowId: null,
+  loading: false,
+  error: '',
+  txHash: '',
+  txHashList: '',
+  loadingList: false
 };
 
-const escrowBuilder = function(escrowObject) {
+const escrowBuilder = function(rawEscrow) {
   return {
-    escrowId: escrowObject.escrowId,
-    buyer: escrowObject.buyer,
-    seller: escrowObject.seller,
-    expirationTime: escrowObject.expirationTime,
-    amount: escrowObject.amount,
+    escrowId: rawEscrow.escrowId,
+    buyer: rawEscrow.buyer,
+    seller: rawEscrow.seller,
+    expirationTime: rawEscrow.expirationTime,
+    amount: rawEscrow.amount,
     released: false,
     canceled: false,
     paid: false,
@@ -38,39 +48,27 @@ function reducer(state = DEFAULT_STATE, action) {
   }
 
   switch (action.type) {
+    case RESET_CREATE_ESCROW_STATUS:
+      return {
+        ...state,
+        createEscrowStatus: States.none
+      };
     case CREATE_ESCROW:
       return {
-        ...state, ...{
-          error: '',
-          receipt: null,
-          loading: true,
-          txHash: ''
-        }
-      };
-    case CREATE_ESCROW_PRE_SUCCESS:
-      return {
-        ...state, ...{
-          txHash: action.txHash
-        }
+        ...state, 
+        createEscrowStatus: States.pending
       };
     case CREATE_ESCROW_FAILED:
       return {
-        ...state, ...{
-          error: action.error,
-          receipt: null,
-          loading: false,
-          txHash: ''
-        }
+        ...state,
+        createEscrowStatus: States.error
       };
     case CREATE_ESCROW_SUCCEEDED:
       escrows.push(escrowBuilder(action.receipt.events.Created.returnValues));
       return {
-        ...state, ...{
-          escrows: escrows,
-          receipt: action.receipt,
-          error: '',
-          loading: false
-        }
+        ...state,
+        createEscrowStatus: States.success,
+        escrows: escrows
       };
     case GET_ESCROWS:
       return {

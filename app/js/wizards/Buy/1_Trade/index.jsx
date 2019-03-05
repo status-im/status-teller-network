@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 
+import { States } from '../../../utils/transaction';
 import newBuy from "../../../features/newBuy";
 import escrow from '../../../features/escrow';
 import metadata from '../../../features/metadata';
 import network from '../../../features/network';
 import Loading from '../../../components/Loading';
+import ErrorInformation from '../../../components/ErrorInformation';
 import OfferTrade from './components/OfferTrade';
 
 const FAKE_ETH_PRICE = 423;
@@ -32,6 +34,13 @@ class Trade extends Component {
       return this.props.history.push('/');
     }
     this.props.loadOffers();
+  }
+
+  componentDidUpdate() {
+    if (this.props.createEscrowStatus === States.success) {
+      this.props.resetCreateEscrowStatus();
+      return this.props.history.push('/profile');
+    }
   }
 
   validate(currencyQuantity, assetQuantity) {
@@ -71,24 +80,36 @@ class Trade extends Component {
       return <Loading page/>;
     }
 
-    return (<OfferTrade address={this.props.offer.owner}
-                        name={this.props.offer.user.username}
-                        min={200}
-                        max={600}
-                        asset={'ETH'}
-                        currency={{id: 'USD', symbol: '$'}}
-                        onClick={this.postEscrow}
-                        currencyQuantity={this.state.currencyQuantity}
-                        assetQuantity={this.state.assetQuantity}
-                        onAssetChange={this.onAssetChange}
-                        onCurrencyChange={this.onCurrencyChange}
-                        disabled={this.state.disabled}/>);
+    switch(this.props.createEscrowStatus){
+      case States.pending:
+        return <Loading mining/>;
+      case States.failed:
+        return <ErrorInformation transaction retry={this.postEscrow}/>;
+      case States.none:
+        return (
+          <OfferTrade address={this.props.offer.owner}
+                      name={this.props.offer.user.username}
+                      min={200}
+                      max={600}
+                      asset={'ETH'}
+                      currency={{id: 'USD', symbol: '$'}}
+                      onClick={this.postEscrow}
+                      currencyQuantity={this.state.currencyQuantity}
+                      assetQuantity={this.state.assetQuantity}
+                      onAssetChange={this.onAssetChange}
+                      onCurrencyChange={this.onCurrencyChange}
+                      disabled={this.state.disabled}/>
+        );
+      default:
+        return <React.Fragment></React.Fragment>;
+    }
   }
 }
 
 Trade.propTypes = {
   history: PropTypes.object,
   setTrade: PropTypes.func,
+  resetCreateEscrowStatus: PropTypes.func,
   offer: PropTypes.object,
   address: PropTypes.string,
   currencyQuantity: PropTypes.number,
@@ -98,12 +119,14 @@ Trade.propTypes = {
   username: PropTypes.string,
   loadOffers: PropTypes.func,
   offerId: PropTypes.number,
-  createEscrow: PropTypes.func
+  createEscrow: PropTypes.func,
+  createEscrowStatus: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
   const offerId = newBuy.selectors.offerId(state);
   return {
+    createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
     statusContactCode: newBuy.selectors.statusContactCode(state),
     username: newBuy.selectors.username(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
@@ -118,6 +141,7 @@ export default connect(
   mapStateToProps,
   {
     setTrade: newBuy.actions.setTrade,
+    resetCreateEscrowStatus: escrow.actions.resetCreateEscrowStatus,
     createEscrow: escrow.actions.createEscrow,
     loadOffers: metadata.actions.loadOffers 
   }

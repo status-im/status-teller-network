@@ -1,5 +1,8 @@
 import moment from 'moment';
 
+export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
+
+// TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;
 export const isLoading = state => state.escrow.loading;

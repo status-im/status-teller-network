@@ -1,5 +1,7 @@
-import { CREATE_ESCROW, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW, RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE,
-  OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG } from './constants';
+import {
+  CREATE_ESCROW, RESET_CREATE_ESCROW_STATUS, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
+  RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG
+} from './constants';
 import Escrow from 'Embark/contracts/Escrow';
 import { addDecimals } from '../../utils/numbers';
 
@@ -10,6 +12,10 @@ export const createEscrow = (buyerAddress, username, tradeAmount, statusContactC
     toSend: Escrow.methods.create(buyerAddress, offer.owner, offer.asset, tradeAmount, 1, statusContactCode, '', username)
   };
 };
+
+export const resetCreateEscrowStatus = () => ({
+  type: RESET_CREATE_ESCROW_STATUS
+});
 
 // TODO: Update with new UI
 
