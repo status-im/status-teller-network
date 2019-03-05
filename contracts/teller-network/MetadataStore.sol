@@ -223,8 +223,10 @@ contract MetadataStore is Ownable {
         uint8 margin,
         PaymenMethods[] memory paymentMethods,
         MarketType marketType,
-        address owner
+        address payable owner
     ) {
+        require(_id < offers.length, "Invalid offer id");
+
         return (
             offers[_id].asset,
             offers[_id].currency,
@@ -235,10 +237,6 @@ contract MetadataStore is Ownable {
         );
     }
 
-    function offerOwner(uint256 _id) public view returns (address payable){
-        require(_id < offers.length, "Invalid offer id");
-        return offers[_id].owner;
-    }
 
     /**
     * @dev Get the size of the users
