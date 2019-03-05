@@ -237,7 +237,6 @@ contract MetadataStore is Ownable {
         );
     }
 
-
     /**
     * @dev Get the size of the users
     */
