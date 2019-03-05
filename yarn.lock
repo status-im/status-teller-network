@@ -4761,6 +4761,11 @@ cookie@0.3.1:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.3.1.tgz#e7e0a1f9ef43b4c8ba925c5c5a96e806d16873bb"
   integrity sha1-5+Ch+e9DtMi6klxcWpboBtFoc7s=
 
+cookiejar@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-1.3.0.tgz#dd00b35679021e99cbd4e855b9ad041913474765"
+  integrity sha1-3QCzVnkCHpnL1OhVua0EGRNHR2U=
+
 cookiejar@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/cookiejar/-/cookiejar-2.1.2.tgz#dd8a235530752f988f9a0844f3fc589e3111125c"
@@ -5219,6 +5224,11 @@ debug@^3.0.1, debug@^3.1.0:
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
   dependencies:
     ms "^2.1.1"
+
+debug@~0.7.2:
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-0.7.4.tgz#06e1ea8082c2cb14e39806e22e2f6f757f92af39"
+  integrity sha1-BuHqgILCyxTjmAbiLi9vdX+Srzk=
 
 decamelize@^1.1.1, decamelize@^1.1.2, decamelize@^1.2.0:
   version "1.2.0"
@@ -5871,6 +5881,11 @@ embarkjs@0.5.0:
     "@babel/runtime-corejs2" "7.0.0-rc.1"
     async "2.6.1"
     async-es "2.6.1"
+
+emitter-component@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/emitter-component/-/emitter-component-1.0.0.tgz#f04dd18fc3dc3e9a74cbc0f310b088666e4c016f"
+  integrity sha1-8E3Rj8PcPpp0y8DzELCIZm5MAW8=
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -7318,6 +7333,11 @@ form-data@~2.3.1, form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
+formidable@1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/formidable/-/formidable-1.0.14.tgz#2b3f4c411cbb5fdd695c44843e2a23514a43231a"
+  integrity sha1-Kz9MQRy7X91pXESEPiojUUpDIxo=
+
 forwarded@~0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
@@ -7747,6 +7767,14 @@ globule@1.2.1, globule@^1.0.0:
     glob "~7.1.1"
     lodash "~4.17.10"
     minimatch "~3.0.2"
+
+google-geocoder@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/google-geocoder/-/google-geocoder-0.2.1.tgz#2b151be6bf9059ca2f772fb003650004ed9927aa"
+  integrity sha1-KxUb5r+QWcovdy+wA2UABO2ZJ6o=
+  dependencies:
+    superagent "~0.16.0"
+    underscore "^1.6.0"
 
 google-maps-infobox@^2.0.0:
   version "2.0.0"
@@ -10626,6 +10654,11 @@ messageformat@^0.3.1:
     nopt "~3.0.6"
     watchr "~2.4.13"
 
+methods@0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/methods/-/methods-0.0.1.tgz#277c90f8bef39709645a8371c51c3b6c648e068c"
+  integrity sha1-J3yQ+L7zlwlkWoNxxRw7bGSOBow=
+
 methods@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/methods/-/methods-1.1.2.tgz#5529a4d67654134edcc5266656835b0f851afcee"
@@ -10693,6 +10726,11 @@ mime.json@1.0.x:
   version "1.0.18"
   resolved "https://registry.yarnpkg.com/mime.json/-/mime.json-1.0.18.tgz#f3efa110cf9e8c647d626277bd722f9060558f68"
   integrity sha512-GA+bgKycQECTUKDszphjkhKO7N6frDyrWTH4mZ2W9ohFYxT0U2pkN0+XzvBU8LSRzyQLvmDK2bBpXmPfLbckWw==
+
+mime@1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-1.2.5.tgz#9eed073022a8bf5e16c8566c6867b8832bfbfa13"
+  integrity sha1-nu0HMCKov14WyFZsaGe4gyv7+hM=
 
 mime@1.4.1:
   version "1.4.1"
@@ -12557,6 +12595,11 @@ qrcode.react@^0.9.3:
     prop-types "^15.6.0"
     qr.js "0.0.0"
 
+qs@0.6.5:
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-0.6.5.tgz#294b268e4b0d4250f6dde19b3b8b34935dff14ef"
+  integrity sha1-KUsmjksNQlD23eGbO4s0k13/FO8=
+
 qs@6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
@@ -13195,6 +13238,11 @@ redent@^1.0.0:
   dependencies:
     indent-string "^2.1.0"
     strip-indent "^1.0.1"
+
+reduce-component@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/reduce-component/-/reduce-component-1.0.1.tgz#e0c93542c574521bea13df0f9488ed82ab77c5da"
+  integrity sha1-4Mk1QsV0UhvqE98PlIjtgqt3xdo=
 
 redux-persist@^5.10.0:
   version "5.10.0"
@@ -14862,6 +14910,20 @@ style-loader@0.23.1, style-loader@^0.23.1:
     loader-utils "^1.1.0"
     schema-utils "^1.0.0"
 
+superagent@~0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/superagent/-/superagent-0.16.0.tgz#f38df4a476565dffdbaa07764b81a19f0ab38a4e"
+  integrity sha1-8430pHZWXf/bqgd2S4Ghnwqzik4=
+  dependencies:
+    cookiejar "1.3.0"
+    debug "~0.7.2"
+    emitter-component "1.0.0"
+    formidable "1.0.14"
+    methods "0.0.1"
+    mime "1.2.5"
+    qs "0.6.5"
+    reduce-component "1.0.1"
+
 supports-color@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-4.4.0.tgz#883f7ddabc165142b2a61427f3352ded195d1a3e"
@@ -15520,6 +15582,11 @@ underscore@1.8.3:
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.8.3.tgz#4f3fb53b106e6097fcf9cb4109f2a5e9bdfa5022"
   integrity sha1-Tz+1OxBuYJf8+ctBCfKl6b36UCI=
+
+underscore@^1.6.0:
+  version "1.9.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.9.1.tgz#06dce34a0e68a7babc29b365b8e74b8925203961"
+  integrity sha512-5/4etnCkd9c8gwgowi5/om/mYO5ajCaOgdzj/oW+0eQV9WxKBDZw5+ycmKmeaTXjInS/W0BzpGLo2xR2aBwZdg==
 
 underscore@~1.6.0:
   version "1.6.0"

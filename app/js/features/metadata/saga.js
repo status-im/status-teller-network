@@ -3,10 +3,14 @@ import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
   LOAD, LOAD_USER, LOAD_USER_FAILED, LOAD_USER_SUCCEEDED,
   LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
-  ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS, UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED
+  ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
+  UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
+  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
 import {doTransaction} from '../../utils/saga';
 import {getEnsAddress} from '../../services/embarkjs';
+import {getLocation} from '../../services/googleMap';
+
 
 export function *loadUser({address}) {
   try {
@@ -16,6 +20,8 @@ export function *loadUser({address}) {
     }
     const id = yield MetadataStore.methods.addressToUser(address).call();
     const user = yield MetadataStore.methods.users(id).call();
+
+    yield put({type: LOAD_USER_LOCATION, user, address});
     yield put({type: LOAD_USER_SUCCEEDED, user, address});
   } catch (error) {
     console.error(error);
@@ -25,6 +31,20 @@ export function *loadUser({address}) {
 
 export function *onLoadUser() {
   yield takeEvery(LOAD_USER, loadUser);
+}
+
+export function *loadLocation({user, address}) {
+  try {
+    const coords = yield getLocation(user.location);
+    yield put({type: LOAD_USER_LOCATION_SUCCEEDED, user, address, coords});
+  } catch (error) {
+    console.error(error);
+    yield put({type: LOAD_USER_FAILED, error: error.message});
+  }
+}
+
+export function *onLoadLocation() {
+  yield takeEvery(LOAD_USER_LOCATION, loadLocation);
 }
 
 export function *loadOffers({address}) {
@@ -87,7 +107,7 @@ export function *onAddOffer() {
 
 export function *updateUser({user}) {
   user.statusContactCode = yield getEnsAddress(user.statusContactCode);
-  
+
   const toSend = MetadataStore.methods.updateUser(
     user.statusContactCode,
     user.location,
@@ -103,6 +123,7 @@ export function *onUpdateUser() {
 export default [
   fork(onLoad),
   fork(onLoadUser),
+  fork(onLoadLocation),
   fork(onLoadOffers),
   fork(onAddOffer),
   fork(onUpdateUser)

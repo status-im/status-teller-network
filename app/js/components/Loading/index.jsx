@@ -6,9 +6,10 @@ import {withNamespaces} from "react-i18next";
 
 import "./index.scss";
 
-const Loading = ({t, mining, initial, page}) => (
+const Loading = ({t, mining, initial, page, value}) => (
   <div className="loading text-center">
     <h3 className="mb-4">
+      {value}
       {mining && t('loading.mining')}
       {initial && t('loading.initial')}
       {page && t('loading.page')}
@@ -21,7 +22,8 @@ Loading.propTypes = {
   t: PropTypes.func,
   mining: PropTypes.bool,
   initial: PropTypes.bool,
-  page: PropTypes.bool
+  page: PropTypes.bool,
+  value: PropTypes.string
 };
 
 export default withNamespaces()(Loading);
