@@ -1,7 +1,7 @@
 import {
   PAYMENT_METHODS, MARKET_TYPES
 } from './constants';
-  
+
 function enhanceOffer(state, offer) {
   return {
     ...offer,
@@ -13,7 +13,7 @@ function enhanceOffer(state, offer) {
 
 export const getProfile = (state, address) => {
   const lAddress = address.toLowerCase();
-  
+
   if (!state.metadata.users[lAddress]) {
     return null;
   }
@@ -23,7 +23,7 @@ export const getProfile = (state, address) => {
     address: lAddress,
     ...state.metadata.users[lAddress],
     offers: offers.map(enhanceOffer.bind(null, state)),
-    reputation: {upCount: 432, downCount: 54}
+    reputation: {upCount: state.metadata.users[lAddress].upCount, downCount: state.metadata.users[lAddress].downCount}
   };
 };
 

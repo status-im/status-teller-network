@@ -130,7 +130,6 @@ export function *checkUserRating({address}) {
     if (!offers.length) {
       return yield put({type: USER_RATING_SUCCEEDED, userRating: -1, address});
     }
-    const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
 
     const allEvents = yield all(offers.map(async (offer) => {
       return Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {offerId: offer.id}});
@@ -142,9 +141,11 @@ export function *checkUserRating({address}) {
         ratings.push(parseInt(e.returnValues.rating, 10));
       });
     });
-    const averageRating = ratings.length ? arrAvg(ratings) : -1;
+    const downCount = ratings.filter(rating => rating < 3).length;
+    const upCount = ratings.filter(rating => rating > 3).length;
+    const voteCount = ratings.length;
 
-    yield put({type: USER_RATING_SUCCEEDED, userRating: averageRating, address});
+    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address});
   } catch (error) {
     console.error(error);
     yield put({type: USER_RATING_FAILED, error: error.message});
