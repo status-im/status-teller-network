@@ -13,6 +13,7 @@ import {PAYMENT_METHODS, SORT_TYPES} from '../../features/metadata/constants';
 import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
+import {sortByDate, sortByRating} from '../../utils/sorters';
 
 import './index.scss';
 import {withNamespaces} from "react-i18next";
@@ -83,13 +84,6 @@ class OffersList extends Component {
     return Math.sqrt(Math.pow(userCoords.lat - this.state.locationCoords.lat, 2) + Math.pow(userCoords.lng - this.state.locationCoords.lng, 2));
   };
 
-  sortByDate(a, b) {
-    // Using the id as there is no date in the contract
-    if (a.id < b.id) return -1;
-    if (a.id > b.id) return 1;
-    return 0;
-  }
-
   render() {
     let filteredOffers = this.props.offers;
 
@@ -104,22 +98,24 @@ class OffersList extends Component {
       filteredOffers = filteredOffers.filter((offer) => offer.asset === this.state.tokenFilter);
     }
 
-    // Sort
-    // TODO get rating for users
-    let sortFunction;
-    switch (this.state.sortType) {
-      case 0: sortFunction = this.sortByDate; break;
-      case 1: sortFunction = this.sortByDate; break;
-      default: sortFunction = this.sortByDate;
-    }
-    filteredOffers = filteredOffers.sort(sortFunction);
 
-    const groupedOffer = filteredOffers.reduce((grouped, offer) => {
+    let groupedOffers = filteredOffers.reduce((grouped, offer) => {
       offer.paymentMethods.forEach((paymentMethod) => (
         (grouped[paymentMethod] || (grouped[paymentMethod] = [])).push(offer)
       ));
       return grouped;
     }, {});
+
+    // Sort
+    let sortFunction;
+    switch (this.state.sortType) {
+      case 0: sortFunction = sortByRating; break;
+      case 1: sortFunction = sortByDate; break;
+      default: sortFunction = sortByRating;
+    }
+    Object.keys(groupedOffers).forEach(key => {
+      groupedOffers[key].sort(sortFunction);
+    });
 
     return (
       <Fragment>
@@ -140,7 +136,7 @@ class OffersList extends Component {
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
-        {Object.keys(groupedOffer).map((paymentMethod) => (
+        {Object.keys(groupedOffers).map((paymentMethod) => (
           <Fragment key={paymentMethod}>
             <h4 className="clearfix mt-5">
               {PAYMENT_METHODS[paymentMethod]}
@@ -151,7 +147,7 @@ class OffersList extends Component {
                       <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>
             </h4>
-            {groupedOffer[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer}/>)}
+            {groupedOffers[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer}/>)}
           </Fragment>
         ))}
       </Fragment>
