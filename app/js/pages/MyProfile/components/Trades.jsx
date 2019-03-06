@@ -14,10 +14,10 @@ class Trades extends Component {
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Blockies seed={trade.address} className="align-middle rounded-circle"/>
-              <span className="ml-2">{trade.name}</span>
+              <Blockies seed={trade.offer.owner} className="align-middle rounded-circle"/>
+              <span className="ml-2">{trade.offer.user.username}</span>
             </span>
-            <span className="flex-fill align-self-center">{trade.value} ETH</span>
+            <span className="flex-fill align-self-center">{trade.amount} {trade.offer.token.symbol}</span>
             <span className="flex-fill align-self-center text-right text-success">
               <FontAwesomeIcon icon={faCircle} className="mr-2"/>
               {trade.status}

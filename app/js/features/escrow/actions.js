@@ -1,5 +1,5 @@
 import {
-  CREATE_ESCROW, RESET_CREATE_ESCROW_STATUS, GET_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
+  CREATE_ESCROW, RESET_CREATE_ESCROW_STATUS, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG
 } from './constants';
 import Escrow from 'Embark/contracts/Escrow';
@@ -17,9 +17,9 @@ export const resetCreateEscrowStatus = () => ({
   type: RESET_CREATE_ESCROW_STATUS
 });
 
-// TODO: Update with new UI
+export const loadEscrows = (offerId) => ({ type: LOAD_ESCROWS, offerId });
 
-export const getEscrows = () => ({ type: GET_ESCROWS });
+// TODO: Update with new UI
 
 export const releaseEscrow = (escrowId) => ({ type: RELEASE_ESCROW, escrowId, toSend: Escrow.methods.release(escrowId) });
 

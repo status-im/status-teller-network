@@ -64,7 +64,7 @@ exports[`Trades should render correctly 1`] = `
       >
         <Identicon
           className="align-middle rounded-circle"
-          seed="address"
+          seed="0x0"
         />
         <span
           className="ml-2"
@@ -75,8 +75,8 @@ exports[`Trades should render correctly 1`] = `
       <span
         className="flex-fill align-self-center"
       >
-        2
-         ETH
+         
+        SNT
       </span>
       <span
         className="flex-fill align-self-center text-right text-success"
