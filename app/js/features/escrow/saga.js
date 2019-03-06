@@ -13,7 +13,8 @@ import {
   OPEN_CASE, OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, PAY_ESCROW_SIGNATURE, OPEN_CASE_PRE_SUCCESS,
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
-  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED
+  SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
+  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING
 } from './constants';
 
 export function *onCreateEscrow() {
@@ -120,7 +121,41 @@ export function *onLoadEscrows() {
   yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
 }
 
+
+export function *checkUserRating({address}) {
+  try {
+    address = address || web3.eth.defaultAccount;
+    const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
+    const events = yield Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller: address}});
+    const ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
+    console.log(ratings);
+    const averageRating = arrAvg(ratings);
+
+    yield put({type: USER_RATING_SUCCEEDED, userRating: averageRating, address});
+  } catch (error) {
+    console.error(error);
+    yield put({type: USER_RATING_FAILED, error: error.message});
+  }
+}
+export function *onUserRating() {
+  yield takeEvery(USER_RATING, checkUserRating);
+}
+
+export async function *addRating() {
+  try {
+    // TODO add this back (don't know when this was commented
+    //rate_transaction(uint _escrowId, uint _rate)
+  } catch (error) {
+    console.error(error);
+    yield put({type: USER_RATING_FAILED, error: error.message});
+  }
+}
+
+export function *onAddUserRating() {
+  yield takeEvery(ADD_USER_RATING, addRating);
+}
+
 export default [
-  fork(onCreateEscrow), fork(onLoadEscrows), fork(onReleaseEscrow), fork(onCancelEscrow),
+  fork(onCreateEscrow), fork(onLoadEscrows), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess)
 ];

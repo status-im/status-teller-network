@@ -1,8 +1,7 @@
 import {
   BUY_LICENSE_FAILED, BUY_LICENSE, BUY_LICENSE_PRE_SUCCESS,
   BUY_LICENSE_SUCCEEDED, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER,
-  CHECK_LICENSE_OWNER_SUCCEEDED, USER_RATING_FAILED,
-  USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
+  CHECK_LICENSE_OWNER_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 
@@ -18,7 +17,7 @@ function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case BUY_LICENSE:
       return {
-        ...state, 
+        ...state,
         loading: true,
         error: ''
       };
@@ -29,7 +28,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case BUY_LICENSE_SUCCEEDED:
       return {
-        ...state, 
+        ...state,
         licenseOwner: true,
         loading: false,
         error: ''
@@ -51,14 +50,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, licenseOwners: action.licenseOwners
       };
-    case USER_RATING_SUCCEEDED:
-      return {
-        ...state,
-        userRating: action.userRating
-      };
     case BUY_LICENSE_FAILED:
     case CHECK_LICENSE_OWNER_FAILED:
-    case USER_RATING_FAILED:
       return {
         ...state,
         error: action.error,

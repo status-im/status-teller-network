@@ -109,7 +109,7 @@ export default connect(
     cancelEscrow: escrow.actions.cancelEscrow,
     rateTransaction: escrow.actions.rateTransaction,
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    checkUserRating: license.actions.checkUserRating,
+    checkUserRating: escrow.actions.checkUserRating,
     closeDialog: escrow.actions.closeDialog
   }
 )(EscrowsContainer);

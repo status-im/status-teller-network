@@ -2,7 +2,7 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
-  LOAD_USER_LOCATION_SUCCEEDED
+  LOAD_USER_LOCATION_SUCCEEDED, USER_RATING_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -85,6 +85,14 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, offers: newOffers
       };
     }
+    case USER_RATING_SUCCEEDED:
+      return  {
+        ...state, users: {...state.users, [action.address.toLowerCase()]: {
+            ...state.users[action.address.toLowerCase()],
+            userRating: action.userRating
+          }
+        }
+      };
     default:
       return state;
   }
