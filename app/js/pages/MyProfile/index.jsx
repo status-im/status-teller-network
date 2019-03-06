@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 import metadata from '../../features/metadata';
 import network from '../../features/network';
+import escrow from '../../features/escrow';
 
 import UserInformation from '../../components/UserInformation';
 import Trades from './components/Trades';
@@ -14,7 +15,6 @@ import { zeroAddress } from '../../utils/address';
 const NULL_PROFILE = {
   address: zeroAddress,
   username: '',
-  trades: [],
   reputation: {upCount: 0, downCount: 0},
   offers: []
 };
@@ -29,7 +29,7 @@ class MyProfile extends Component {
     return (
       <Fragment>
         <UserInformation reputation={profile.reputation} address={profile.address} username={profile.username}/>
-        <Trades trades={profile.trades}/>
+        <Trades trades={this.props.trades}/>
         <Offers offers={profile.offers} location={profile.location} />
         {profile.username.length > 0 && <StatusContactCode value={profile.statusContactCode} />}
       </Fragment>
@@ -40,14 +40,17 @@ class MyProfile extends Component {
 MyProfile.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
+  trades: PropTypes.array,
   loadProfile: PropTypes.func
 };
 
 const mapStateToProps = state => {
   const address = network.selectors.getAddress(state) || '';
+  const profile = metadata.selectors.getProfile(state, address) || NULL_PROFILE;
   return {
     address,
-    profile: metadata.selectors.getProfile(state, address) || NULL_PROFILE
+    profile,
+    trades: escrow.selectors.getTrades(state, profile.offers.map(offer => offer.id))
   };
 };
 

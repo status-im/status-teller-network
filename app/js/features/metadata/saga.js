@@ -7,10 +7,10 @@ import {
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
+import { LOAD_ESCROWS } from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getEnsAddress} from '../../services/embarkjs';
 import {getLocation} from '../../services/googleMap';
-
 
 export function *loadUser({address}) {
   try {
@@ -60,6 +60,7 @@ export function *loadOffers({address}) {
 
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call();
+      yield put({type: LOAD_ESCROWS, offerId: id});
       yield put({type: LOAD_USER, address: offer.owner});
       return {...offer, id};
     }));

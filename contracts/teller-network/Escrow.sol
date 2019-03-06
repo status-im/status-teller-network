@@ -49,6 +49,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     enum EscrowStatus {CREATED, FUNDED, PAID, RELEASED, CANCELED}
 
     EscrowTransaction[] public transactions;
+    mapping(uint => uint[]) public transactionsByOfferId;
 
     License public license;
     MetadataStore public metadataStore;
@@ -193,7 +194,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             tradeType: TradeType(_tradeType),
             status: EscrowStatus.CREATED
         });
-
+        transactionsByOfferId[_offerId].push(escrowId);
         emit Created(_offerId, _buyer, escrowId);
         return escrowId;
     }
@@ -514,6 +515,10 @@ contract Escrow is Pausable, MessageSigned, Fees {
                 _escrowId
             )
         );
+    }
+
+    function getTransactionsIdByOfferId(uint _offerId) public view returns(uint[] memory) {
+        return transactionsByOfferId[_offerId];
     }
 }
 

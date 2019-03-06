@@ -23,7 +23,6 @@ export const getProfile = (state, address) => {
     address: lAddress,
     ...state.metadata.users[lAddress],
     offers: offers.map(enhanceOffer.bind(null, state)),
-    trades: [{address: '0xfonwoefowejfwejf', name: 'Alice', value: 2.3, status: 'Open'}],
     reputation: {upCount: 432, downCount: 54}
   };
 };

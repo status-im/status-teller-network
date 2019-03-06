@@ -1,11 +1,11 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import {fork, takeEvery, call, put} from 'redux-saga/effects';
+import {all, fork, takeEvery, call, put} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
-  GET_ESCROWS, GET_ESCROWS_FAILED, GET_ESCROWS_SUCCEEDED,
+  LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
   RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_PRE_SUCCESS,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
@@ -102,28 +102,25 @@ function *formatEscrows(escrowIds) {
   return escrows;
 }
 
-export function *doGetEscrows() {
+export function *doLoadEscrows({offerId}) {
   try {
-    const eventsSeller = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
-    const eventsBuyer = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {buyer: web3.eth.defaultAccount}});
-    const events = eventsSeller.concat(eventsBuyer);
-    const escrowIds = events.map(event => {
-      return event.returnValues.escrowId;
-    });
-    const escrows = yield formatEscrows(escrowIds);
-
-    yield put({type: GET_ESCROWS_SUCCEEDED, escrows});
+    const escrowIds = yield Escrow.methods.getTransactionsIdByOfferId(offerId).call();
+    const escrows = yield all(escrowIds.map(function *(id) {
+      return yield Escrow.methods.transactions(id).call();
+    }));
+    
+    yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows, offerId});
   } catch (error) {
     console.error(error);
-    yield put({type: GET_ESCROWS_FAILED, error: error.message});
+    yield put({type: LOAD_ESCROWS_FAILED, error: error.message});
   }
 }
 
-export function *onGetLicenseOwners() {
-  yield takeEvery(GET_ESCROWS, doGetEscrows);
+export function *onLoadEscrows() {
+  yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
 }
 
 export default [
-  fork(onCreateEscrow), fork(onGetLicenseOwners), fork(onReleaseEscrow), fork(onCancelEscrow),
+  fork(onCreateEscrow), fork(onLoadEscrows), fork(onReleaseEscrow), fork(onCancelEscrow),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess)
 ];
