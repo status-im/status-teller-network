@@ -87,7 +87,12 @@ export function *onLoad() {
 }
 
 export function *addOffer({user, offer}) {
-  user.statusContactCode = yield getEnsAddress(user.statusContactCode);
+  try {
+    user.statusContactCode = yield getEnsAddress(user.statusContactCode);
+  } catch (error) {
+    yield put({type: ADD_OFFER_FAILED, error});
+    return;
+  }
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
     user.statusContactCode,
