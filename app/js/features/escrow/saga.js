@@ -1,7 +1,7 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
 
-import {all, fork, takeEvery, call, put} from 'redux-saga/effects';
+import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
@@ -125,11 +125,24 @@ export function *onLoadEscrows() {
 export function *checkUserRating({address}) {
   try {
     address = address || web3.eth.defaultAccount;
+    const state = yield select();
+    const offers = Object.values(state.metadata.offers).filter(offer => offer.owner.toLowerCase() === address.toLowerCase());
+    if (!offers.length) {
+      return yield put({type: USER_RATING_SUCCEEDED, userRating: -1, address});
+    }
     const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-    const events = yield Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller: address}});
-    const ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
-    console.log(ratings);
-    const averageRating = arrAvg(ratings);
+
+    const allEvents = yield all(offers.map(async (offer) => {
+      return Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {offerId: offer.id}});
+    }));
+
+    const ratings = [];
+    allEvents.forEach(events => {
+      events.forEach((e) => {
+        ratings.push(parseInt(e.returnValues.rating, 10));
+      });
+    });
+    const averageRating = ratings.length ? arrAvg(ratings) : -1;
 
     yield put({type: USER_RATING_SUCCEEDED, userRating: averageRating, address});
   } catch (error) {

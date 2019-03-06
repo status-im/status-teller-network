@@ -1,6 +1,4 @@
-const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
-
-module.exports = async (deps) => {
+module.exports = async (licensePrice, feeAmount, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
@@ -33,7 +31,7 @@ module.exports = async (deps) => {
     console.log('Buy Licenses...');
     await Promise.all(addresses.slice(1, 8).map(async (address) => {
       const buyLicense = deps.contracts.License.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.License._address, LICENSE_PRICE, buyLicense);
+      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.License._address, licensePrice, buyLicense);
 
       const gas = await toSend.estimateGas({from: address});
       return toSend.send({from: address, gas});
@@ -47,20 +45,47 @@ module.exports = async (deps) => {
     const currencies = ['USD', 'EUR'];
     const marketTypes = [0, 1];
 
-    await Promise.all(addresses.slice(1, 5).map(async (address) => {
+    const offerReceipts = await Promise.all(addresses.slice(1, 5).map(async (address) => {
       const addOffer = deps.contracts.MetadataStore.methods.addOffer(
-        tokens[Math.floor(Math.random()*tokens.length)],
+        tokens[1],
+        // TODO un hardcode token and check below
+        // tokens[Math.floor(Math.random() * tokens.length)],
         address,
-        locations[Math.floor(Math.random()*locations.length)],
-        currencies[Math.floor(Math.random()*currencies.length)],
-        usernames[Math.floor(Math.random()*usernames.length)],
-        [paymentMethods[Math.floor(Math.random()*paymentMethods.length)]],
-        marketTypes[Math.floor(Math.random()*marketTypes.length)],
+        locations[Math.floor(Math.random() * locations.length)],
+        currencies[Math.floor(Math.random() * currencies.length)],
+        usernames[Math.floor(Math.random() * usernames.length)],
+        [paymentMethods[Math.floor(Math.random() * paymentMethods.length)]],
+        marketTypes[Math.floor(Math.random() * marketTypes.length)],
         Math.floor(Math.random() * 100)
       );
 
       const gas = await addOffer.estimateGas({from: address});
       return addOffer.send({from: address, gas});
+    }));
+
+    console.log('Creating escrows and rating them...');
+    const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
+    const FIAT = 0;
+    const val = 1000;
+
+    const buyerAddress = addresses[1];
+    await Promise.all(addresses.slice(2, 5).map(async (creatorAddress, idx) => {
+      const ethOfferId = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.offerId;
+
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT);
+      let gas = await creation.estimateGas({from: creatorAddress, value: val});
+      const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
+      const created = receipt.events.Created;
+      const escrowId = created.returnValues.escrowId;
+
+      const release = deps.contracts.Escrow.methods.release(escrowId);
+      gas = await release.estimateGas({from: creatorAddress});
+      await release.send({from: creatorAddress, gas: gas + 1000});
+
+      const rating = Math.floor(Math.random() * 5) + 1;
+      const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
+      gas = await rate.estimateGas({from: buyerAddress});
+      await rate.send({from: buyerAddress, gas: gas + 1000});
     }));
 
     const accounts = await Promise.all(addresses.map(async(address) => {
@@ -98,7 +123,7 @@ module.exports = async (deps) => {
       console.log('');
     });
   } catch (e) {
-    console.log("------- data seeding error ------- ")
-    console.dir(e)
+    console.log("------- data seeding error ------- ");
+    console.dir(e);
   }
-}
+};

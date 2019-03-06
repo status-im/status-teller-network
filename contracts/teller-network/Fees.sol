@@ -33,7 +33,7 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Set Fee Amount 
+     * @notice Set Fee Amount
      * @param _amount New Amount
      * @dev Can only be called by the owner of the contract
      */

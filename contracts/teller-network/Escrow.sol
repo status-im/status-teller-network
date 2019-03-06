@@ -22,12 +22,12 @@ contract Escrow is Pausable, MessageSigned, Fees {
     string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
     constructor(
-        address _license, 
-        address _arbitrator, 
-        address _metadataStore, 
-        address _feeToken, 
-        address _feeDestination, 
-        uint _feeAmount) 
+        address _license,
+        address _arbitrator,
+        address _metadataStore,
+        address _feeToken,
+        address _feeDestination,
+        uint _feeAmount)
         Fees(_feeToken, _feeDestination, _feeAmount) public {
         license = License(_license);
         arbitrator = _arbitrator;
@@ -139,7 +139,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
-        payFee(_escrowId);
+//        payFee(_escrowId);
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }
@@ -333,7 +333,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             address payable seller;
             address token;
             (token, , , , , seller) = metadataStore.offer(trx.offerId);
-        
+
             require(msg.sender == seller, "Only seller can cancel transaction");
             if(token == address(0)){
                 seller.transfer(trx.tokenAmount);
@@ -422,7 +422,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
      */
     function openCase(uint _escrowId) public {
         EscrowTransaction storage trx = transactions[_escrowId];
-        
+
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
 
@@ -448,10 +448,10 @@ contract Escrow is Pausable, MessageSigned, Fees {
      */
     function openCase(uint _escrowId, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
-        
+
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
-        
+
         require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
