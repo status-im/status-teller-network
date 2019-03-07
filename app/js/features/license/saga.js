@@ -1,16 +1,14 @@
 /*global web3*/
 import License from 'Embark/contracts/License';
 import SNT from 'Embark/contracts/SNT';
-import Escrow from 'Embark/contracts/Escrow';
 
 window.SNT = SNT;
 
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
-  ADD_USER_RATING,
   BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_SUCCEEDED, BUY_LICENSE_PRE_SUCCESS,
   CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
-  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, GET_LICENSE_OWNERS, GET_LICENSE_OWNERS_SUCCCEDED,
+  GET_LICENSE_OWNERS, GET_LICENSE_OWNERS_SUCCCEDED,
   GET_LICENSE_OWNERS_FAILED,
   LOAD_PRICE,
   LOAD_PRICE_SUCCEEDED,
@@ -95,41 +93,9 @@ export function *onGetLicenseOwners() {
   yield takeEvery(GET_LICENSE_OWNERS, doGetLicenseOwners);
 }
 
-export function *checkUserRating() {
-  try {
-    const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
-    const events = yield Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller: web3.eth.defaultAccount}});
-    const ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
-    const averageRating = arrAvg(ratings);
-
-    yield put({type: USER_RATING_SUCCEEDED, userRating: averageRating});
-  } catch (error) {
-    console.error(error);
-    yield put({type: USER_RATING_FAILED, error: error.message});
-  }
-}
-export function *onUserRating() {
-  yield takeEvery(USER_RATING, checkUserRating);
-}
-
-export async function *addRating() {
-  try {
-    //rate_transaction(uint _escrowId, uint _rate)
-  } catch (error) {
-    console.error(error);
-    yield put({type: USER_RATING_FAILED, error: error.message});
-  }
-}
-
-export function *onAddUserRating() {
-  yield takeEvery(ADD_USER_RATING, addRating);
-}
-
 export default [
   fork(onBuyLicense),
   fork(onLoadPrice),
   fork(onCheckLicenseOwner),
-  fork(onUserRating), 
-  fork(onAddUserRating),
   fork(onGetLicenseOwners)
 ];

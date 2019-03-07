@@ -17,7 +17,7 @@ const Offer = ({offer, withDetail}) => (
         </Col>
         <Col xs={5} className="text-right rating-col">
           <p className="text-dark m-0 text-right mb-1">{"TODO"} trades</p>
-          <Reputation reputation={{upCount: 1, downCount: 1}} size="s"/>
+          <Reputation reputation={{upCount: offer.user.upCount, downCount: offer.user.downCount}} size="s"/>
         </Col>
       </Row>
       {withDetail && <Row>

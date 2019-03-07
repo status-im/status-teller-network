@@ -7,7 +7,7 @@ import {
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
-import { LOAD_ESCROWS } from '../escrow/constants';
+import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getEnsAddress} from '../../services/embarkjs';
 import {getLocation} from '../../services/googleMap';
@@ -22,6 +22,7 @@ export function *loadUser({address}) {
     const user = yield MetadataStore.methods.users(id).call();
 
     yield put({type: LOAD_USER_LOCATION, user, address});
+    yield put({type: USER_RATING, address});
     yield put({type: LOAD_USER_SUCCEEDED, user, address});
   } catch (error) {
     console.error(error);

@@ -4,6 +4,7 @@ import {
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
+import {USER_RATING_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
@@ -85,6 +86,16 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, offers: newOffers
       };
     }
+    case USER_RATING_SUCCEEDED:
+      return  {
+        ...state, users: {...state.users, [action.address.toLowerCase()]: {
+            ...state.users[action.address.toLowerCase()],
+            downCount: action.downCount,
+            upCount: action.upCount,
+            voteCount: action.voteCount
+          }
+        }
+      };
     default:
       return state;
   }
