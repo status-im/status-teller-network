@@ -140,13 +140,14 @@ export class Map extends Component {
   }
 
   render() {
-    let {goToProfile, markerOnly} = this.props;
+    let {goToProfile, markerOnly, markers} = this.props;
     let {center, activeMarkers} = this.state;
 
     // TODO remove this when we have actual data
-    if (!fakeData[0].lat) {
+    if ((!markers || markers.length) && !fakeData[0].lat) {
       this.generateFakeData(center);
     }
+    const _markers = markers && markers.length ? markers : fakeData;
 
     return (
       <GoogleMap
@@ -163,16 +164,16 @@ export class Map extends Component {
         >
           <SearchBar className="map-search-form" placeholder="Enter a city or ZIP code"/>
         </SearchBox>}
-        {fakeData.map(fake => {
+        {_markers.map(marker => {
           return (<Marker
-          key={`marker-${fake.address}`}
-          onClick={() => this.onMarkerClick(fake.address)}
-          position={{lat: fake.lat, lng: fake.lng}}
+          key={`marker-${marker.address}`}
+          onClick={() => this.onMarkerClick(marker.address)}
+          position={{lat: marker.lat, lng: marker.lng}}
           icon={dot}
-          >{activeMarkers[fake.address] && !markerOnly &&
-        <CustomInfoWindow onClose={() => this.onClose(fake.address)} name={fake.name} assets={fake.assets}
-                          address={fake.address} onClick={() => goToProfile(fake.address)}
-                          isPositiveRating={fake.isPositiveRating}/>}
+          >{activeMarkers[marker.address] && !markerOnly &&
+        <CustomInfoWindow onClose={() => this.onClose(marker.address)} name={marker.name} assets={marker.assets}
+                          address={marker.address} onClick={() => goToProfile(marker.address)}
+                          isPositiveRating={marker.isPositiveRating}/>}
           </Marker>);
         })}
       </GoogleMap>);
@@ -184,7 +185,8 @@ Map.propTypes = {
   goToProfile: PropTypes.func,
   coords: PropTypes.object.isRequired,
   google: PropTypes.object,
-  markerOnly: PropTypes.bool
+  markerOnly: PropTypes.bool,
+  markers: PropTypes.array
 };
 
 export default compose(
