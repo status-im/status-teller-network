@@ -1,4 +1,4 @@
-$search-field-height: 38px;
+$search-field-height: 52px;
 $autocomplete-height: 157px;
 
 .map-component {
@@ -15,12 +15,9 @@ $autocomplete-height: 157px;
     right: 60px !important;
     top: auto !important;
 
-    input {
+    .form-control {
       height: $search-field-height;
-    }
-
-    .search-icon {
-      top: 10px;
+      background: white;
     }
   }
 

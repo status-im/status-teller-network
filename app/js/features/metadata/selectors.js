@@ -1,7 +1,7 @@
 import {
   PAYMENT_METHODS, MARKET_TYPES
 } from './constants';
-  
+
 function enhanceOffer(state, offer) {
   return {
     ...offer,
@@ -13,7 +13,7 @@ function enhanceOffer(state, offer) {
 
 export const getProfile = (state, address) => {
   const lAddress = address.toLowerCase();
-  
+
   if (!state.metadata.users[lAddress]) {
     return null;
   }
@@ -44,5 +44,13 @@ export const getOffersWithUser = (state) => {
   return Object.values(state.metadata.offers).map((offer) => ({
     ...enhanceOffer(state, offer),
     user: state.metadata.users[offer.owner] || {}
+  }));
+};
+
+export const getUsersWithOffers = (state) => {
+  return Object.keys(state.metadata.users).map((address) => ({
+    ...state.metadata.users[address],
+    address,
+    offers: Object.values(state.metadata.offers).filter(offer => offer.owner === address)
   }));
 };
