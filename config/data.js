@@ -44,11 +44,12 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     const locations = ['London', 'Montreal', 'Paris', 'Berlin'];
     const currencies = ['USD', 'EUR'];
     const marketTypes = [0, 1];
+    const offerStartIndex = 1;
 
-    const offerReceipts = await Promise.all(addresses.slice(1, 5).map(async (address) => {
+    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, 5).map(async (address) => {
       const addOffer = deps.contracts.MetadataStore.methods.addOffer(
         tokens[1],
-        // TODO un hardcode token and check below
+        // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
         address,
         locations[Math.floor(Math.random() * locations.length)],
@@ -68,12 +69,21 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     const FIAT = 0;
     const val = 1000;
 
-    const buyerAddress = addresses[1];
-    await Promise.all(addresses.slice(2, 5).map(async (creatorAddress, idx) => {
-      const ethOfferId = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.offerId;
+    const buyerAddress = addresses[offerStartIndex];
+    const escrowStartIndex = offerStartIndex + 1;
+    await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
+      const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
+      // TODO when we re-enable creating tokens too, use this to know
+      // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
+
+      let gas;
+
+      const approval = deps.contracts.SNT.methods.approve(deps.contracts.Escrow.options.address, feeAmount);
+      gas = await approval.estimateGas({from: creatorAddress});
+      await approval.send({from: creatorAddress, gas: gas + 1000});
 
       const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT);
-      let gas = await creation.estimateGas({from: creatorAddress, value: val});
+      gas = await creation.estimateGas({from: creatorAddress, value: val});
       const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
       const escrowId = created.returnValues.escrowId;

@@ -109,7 +109,7 @@ export function *doLoadEscrows({offerId}) {
     const escrows = yield all(escrowIds.map(function *(id) {
       return yield Escrow.methods.transactions(id).call();
     }));
-    
+
     yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows, offerId});
   } catch (error) {
     console.error(error);
@@ -126,9 +126,9 @@ export function *checkUserRating({address}) {
   try {
     address = address || web3.eth.defaultAccount;
     const state = yield select();
-    const offers = Object.values(state.metadata.offers).filter(offer => offer.owner.toLowerCase() === address.toLowerCase());
+    const offers = Object.values(state.metadata.offers).filter(offer => offer.owner === address.toLowerCase());
     if (!offers.length) {
-      return yield put({type: USER_RATING_SUCCEEDED, userRating: -1, address});
+      return yield put({type: USER_RATING_SUCCEEDED, userRating: -1, address, downCount: 0, upCount: 0, voteCount: 0});
     }
 
     const allEvents = yield all(offers.map(async (offer) => {

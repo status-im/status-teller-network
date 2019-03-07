@@ -109,7 +109,6 @@ class OffersList extends Component {
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 0: sortFunction = sortByRating; break;
       case 1: sortFunction = sortByDate; break;
       default: sortFunction = sortByRating;
     }
