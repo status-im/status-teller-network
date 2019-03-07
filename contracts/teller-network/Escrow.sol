@@ -139,7 +139,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
-//        payFee(_escrowId);
+        payFee(_escrowId);
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount);
     }

@@ -71,9 +71,17 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     const buyerAddress = addresses[1];
     await Promise.all(addresses.slice(2, 5).map(async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.offerId;
+      const token = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.asset;
+      const feeAmount = "1000000000000000000";
 
+      let gas;
+
+      const approval = deps.contracts.SNT.methods.approve(deps.contracts.Escrow.options.address, feeAmount);
+      gas = await approval.estimateGas({from: creatorAddress});
+      await approval.send({from: creatorAddress, gas: gas + 1000});
+      
       const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT);
-      let gas = await creation.estimateGas({from: creatorAddress, value: val});
+      gas = await creation.estimateGas({from: creatorAddress, value: val});
       const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
       const escrowId = created.returnValues.escrowId;
