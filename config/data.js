@@ -72,7 +72,6 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     await Promise.all(addresses.slice(2, 5).map(async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.offerId;
       const token = offerReceipts[idx - 1 + 2].events.OfferAdded.returnValues.asset;
-      const feeAmount = "1000000000000000000";
 
       let gas;
 
