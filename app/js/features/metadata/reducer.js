@@ -57,7 +57,10 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         updateUserStatus: States.success,
-        users: {...state.users, [action.receipt.from.toLowerCase()]: action.user}
+        users: {...state.users, [action.receipt.from.toLowerCase()]: {
+          ...state.users[action.address.toLowerCase()],
+          ...action.user
+        }}
       };
     }
     case UPDATE_USER_FAILED:
@@ -66,7 +69,10 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_USER_SUCCEEDED:
       return {
-        ...state, users: {...state.users, [action.address.toLowerCase()]: action.user}
+        ...state, users: {...state.users, [action.address.toLowerCase()]: {
+          ...state.users[action.address.toLowerCase()],
+          ...action.user
+        }}
       };
     case LOAD_USER_LOCATION_SUCCEEDED:
       return {
