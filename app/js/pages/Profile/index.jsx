@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {Row, Col} from "reactstrap";
 
 import UserInformation from '../../components/UserInformation';
-import Map from '../../components//Map';
+import Map from '../../components/Map';
 import Offer from './components/Offer';
 
 import metadata from "../../features/metadata";
@@ -28,9 +28,9 @@ class Profile extends Component {
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation} address={profile.address} />
-        <h3 className="mt-3">{profile.location}</h3>
-        <Map coords={{latitude: 45.492611, longitude: -73.617959}} markerOnly={true}/>
-        <p className="text-muted mt-2">Saalestraße 39A, 12055 Berlin</p>
+        {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
+                                markers={[profile.coords]}/>}
+        <p className="text-muted mt-2">{profile.location}</p>
         <Row>
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>

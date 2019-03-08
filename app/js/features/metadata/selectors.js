@@ -46,3 +46,11 @@ export const getOffersWithUser = (state) => {
     user: state.metadata.users[offer.owner] || {}
   }));
 };
+
+export const getUsersWithOffers = (state) => {
+  return Object.keys(state.metadata.users).map((address) => ({
+    ...state.metadata.users[address],
+    address,
+    offers: Object.values(state.metadata.offers).filter(offer => offer.owner === address)
+  }));
+};

@@ -9,6 +9,8 @@ import {Alert} from "reactstrap";
 
 import Map from '../../components/Map';
 import license from "../../features/license";
+import metadata from "../../features/metadata";
+import network from "../../features/network";
 
 class OffersMap extends Component {
   constructor(props) {
@@ -34,7 +36,7 @@ class OffersMap extends Component {
 
   render() {
     let {error, coords} = this.state;
-    const {t} = this.props;
+    const {t, tokens, usersWithOffers} = this.props;
 
     if (error && error.indexOf('denied') > -1) {
       coords = {
@@ -50,10 +52,20 @@ class OffersMap extends Component {
       return <p><FontAwesomeIcon icon={faSpinner} spin/>{t('map.loading')}</p>;
     }
 
+    const markers = usersWithOffers.filter(user => user.offers.length && user.coords).map(user => ({
+      name: user.username,
+      address: user.address,
+      assets: user.offers.map(offer => {
+        return Object.values(tokens).find(token => token.address === offer.asset).symbol;
+      }),
+      lat: user.coords.lat,
+      lng: user.coords.lng
+    }));
+
     return (
       <Fragment>
         {error && <p className="text-danger">{error}</p>}
-        <Map error={error} coords={coords} goToProfile={this.goToProfile}/>
+        <Map error={error} coords={coords} goToProfile={this.goToProfile} markers={markers}/>
       </Fragment>
 
     );
@@ -64,13 +76,17 @@ OffersMap.propTypes = {
   t: PropTypes.func,
   getLicenseOwners: PropTypes.func,
   licenseOwners: PropTypes.array,
+  usersWithOffers: PropTypes.array,
   licenseOwnersError: PropTypes.string,
-  history: PropTypes.object
+  history: PropTypes.object,
+  tokens: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   licenseOwners: license.selectors.licenseOwners(state),
-  licenseOwnersError: license.selectors.licenseOwnersError(state)
+  licenseOwnersError: license.selectors.licenseOwnersError(state),
+  usersWithOffers: metadata.selectors.getUsersWithOffers(state),
+  tokens: network.selectors.getTokens(state)
 });
 
 export default connect(

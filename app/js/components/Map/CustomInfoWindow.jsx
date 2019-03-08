@@ -1,17 +1,15 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {InfoWindow} from "react-google-maps";
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
 
-import RatingIcon from "../../ui/RatingIcon";
-
-const CustomInfoWindow = ({name, address: _address, onClose, onClick, assets, isPositiveRating}) => (
+const CustomInfoWindow = ({name, address: _address, onClose, onClick, assets}) => (
   <InfoWindow onCloseClick={onClose}>
-    <Fragment>
-      <h4>{name} <RatingIcon isPositiveRating={isPositiveRating}/></h4>
+    <div className="px-3">
+      <h4>{name}</h4>
       <p>{assets.join(', ')}</p>
       <Button color="primary" onClick={onClick}>Profile</Button>
-    </Fragment>
+    </div>
   </InfoWindow>
 );
 
@@ -20,8 +18,7 @@ CustomInfoWindow.propTypes = {
   address: PropTypes.string,
   assets: PropTypes.array,
   onClose: PropTypes.func,
-  onClick: PropTypes.func,
-  isPositiveRating: PropTypes.bool
+  onClick: PropTypes.func
 };
 
 export default CustomInfoWindow;
