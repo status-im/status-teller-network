@@ -8,7 +8,7 @@ import Blockies from 'react-blockies';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 
 const OfferTrade = ({
-  address, name, min, max, currency, asset, onClick, 
+  address, name, min, max, currency, asset, onClick,
   assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t
 }) => (
   <Row>
@@ -21,12 +21,12 @@ const OfferTrade = ({
         <FormGroup>
           <Input type="number" name="fiat" className="form-control" value={currencyQuantity}
                  validations={[isNumber, lowerEqThan.bind(null, max), higherEqThan.bind(null, min)]}
-                 placeholder="Fiat quantity" onChange={(e) => onCurrencyChange(e.target.value)}/>
+                 placeholder="Fiat quantity" onChange={(e) => onCurrencyChange(e.target.value)} step="any" />
           <span className="input-icon">{currency.id}</span>
         </FormGroup>
         <FormGroup>
           <Input type="number" name="asset" className="form-control" value={assetQuantity} validations={[isNumber]}
-                 placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)}/>
+                 placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)} step="any" />
           <span className="input-icon">{asset}</span>
         </FormGroup>
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
