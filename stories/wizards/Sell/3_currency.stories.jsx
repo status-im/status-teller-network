@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import FiatSelectorForm from '../../../app/js/wizards/Sell/3_Currency/components/FiatSelectorForm';
+import FiatSelectorForm from '../../../app/js/wizards/Sell/4_Currency/components/FiatSelectorForm';
 
 const CURRENCY_DATA = [
   {id: 'USD', label: 'United States Dollar - USD'},
@@ -15,7 +15,7 @@ const CURRENCY_DATA = [
   {id: 'KRW', label: 'South Korean Won - KRW'}
 ];
 
-storiesOf('Wizards/Sell/3_Currency', module)
+storiesOf('Wizards/Sell/4_Currency', module)
   .add(
     "Not Selected",
     withInfo({inline: true})(() => (

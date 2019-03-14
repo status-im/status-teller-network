@@ -69,7 +69,7 @@ License.propTypes = {
   isLoading: PropTypes.bool,
   isError: PropTypes.bool,
   sntToken: PropTypes.object,
-  licensePrice: PropTypes.string,
+  licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
   updateBalance: PropTypes.func
 };

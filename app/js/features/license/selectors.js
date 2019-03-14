@@ -5,4 +5,4 @@ export const isError = state => !!state.license.error;
 export const txHash = state => state.license.txHash;
 export const licenseOwners = state => state.license.licenseOwners;
 export const licenseOwnersError = state => state.license.licenseOwnersError;
-export const getLicensePrice = state => state.license.price;
+export const getLicensePrice = state => parseInt(state.license.price, 10);

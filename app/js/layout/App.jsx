@@ -25,12 +25,12 @@ import BuyContact from '../wizards/Buy/0_Contact';
 import BuyTrade from '../wizards/Buy/1_Trade';
 
 // Sell
-import SellAsset from '../wizards/Sell/0_Asset';
-import SellLocation from '../wizards/Sell/1_Location';
-import SellPaymentMethods from '../wizards/Sell/2_PaymentMethods';
-import SellCurrency from '../wizards/Sell/3_Currency';
-import SellMargin from '../wizards/Sell/4_Margin';
-import SellContact from '../wizards/Sell/5_Contact';
+import SellLocation from '../wizards/Sell/0_Location';
+import SellContact from '../wizards/Sell/1_Contact';
+import SellAsset from '../wizards/Sell/2_Asset';
+import SellPaymentMethods from '../wizards/Sell/3_PaymentMethods';
+import SellCurrency from '../wizards/Sell/4_Currency';
+import SellMargin from '../wizards/Sell/5_Margin';
 
 // Tmp
 import EscrowsContainer from '../pages/tmp/EscrowsContainer';
@@ -105,12 +105,12 @@ class App extends Component {
 
             {this.props.isLicenseOwner &&
               <Wizard path="/sell/" steps={[
-                {path: '/sell/asset', component: SellAsset},
                 {path: '/sell/location', component: SellLocation},
+                {path: '/sell/contact', component: SellContact},
+                {path: '/sell/asset', component: SellAsset},
                 {path: '/sell/payment-methods', component: SellPaymentMethods},
                 {path: '/sell/currency', component: SellCurrency},
-                {path: '/sell/margin', component: SellMargin, nextLabel: 'Confirm price'},
-                {path: '/sell/contact', component: SellContact, nextLabel: 'Post the offer'}
+                {path: '/sell/margin', component: SellMargin, nextLabel: 'Post the offer'}
               ]}/>
             }
 
