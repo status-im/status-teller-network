@@ -1,4 +1,5 @@
 import MetadataStore from 'Embark/contracts/MetadataStore';
+import Escrow from 'Embark/contracts/Escrow';
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
   LOAD, LOAD_USER, LOAD_USER_FAILED, LOAD_USER_SUCCEEDED,
@@ -14,13 +15,23 @@ import {getLocation} from '../../services/googleMap';
 
 export function *loadUser({address}) {
   try {
+    const isArbitrator = yield Escrow.methods.isArbitrator(address).call();
     const isUser = yield MetadataStore.methods.userWhitelist(address).call();
+    
+    let user = {
+      isArbitrator
+    };
+
     if (!isUser){
+      if(isArbitrator) {
+        yield put({type: LOAD_USER_SUCCEEDED, user, address}); 
+      }
       return;
     }
-    const id = yield MetadataStore.methods.addressToUser(address).call();
-    const user = yield MetadataStore.methods.users(id).call();
 
+    const id = yield MetadataStore.methods.addressToUser(address).call();
+    user = Object.assign(user, yield MetadataStore.methods.users(id).call());
+    
     yield put({type: LOAD_USER_LOCATION, user, address});
     yield put({type: USER_RATING, address});
     yield put({type: LOAD_USER_SUCCEEDED, user, address});

@@ -82,3 +82,28 @@ $input-icon-height: 20px;
   padding: 11px 36px;
 }
 
+
+.arbiterLabel {
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 140px;
+  font-family: Inter;
+  font-size: 10px;
+  text-transform: uppercase;
+  position: relative;
+  display: block;
+  margin: -14px auto 10px auto;
+  width: 73px;
+  background: #fff;
+  padding: 3px;
+}
+
+.topCircle {
+  z-index: 90;
+  position: relative;
+}
+
+.bottomCircle {
+  z-index: 80;
+  position: relative;
+  left: -10px;
+}
