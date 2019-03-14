@@ -4,9 +4,9 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import MarginSelectorForm from '../../../app/js/wizards/Sell/4_Margin/components/MarginSelectorForm';
+import MarginSelectorForm from '../../../app/js/wizards/Sell/5_Margin/components/MarginSelectorForm';
 
-storiesOf('Wizards/Sell/4_Margin', module)
+storiesOf('Wizards/Sell/5_Margin', module)
   .add(
     "Default",
     withInfo({inline: true})(() => (

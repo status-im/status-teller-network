@@ -21,11 +21,10 @@ class PaymentMethods extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.location) {
-      this.props.wizard.previous();
-    } else {
-      this.setState({ready: true});
+    if (!this.props.seller.asset) {
+      return this.props.wizard.previous();
     }
+    this.setState({ready: true});
   }
 
   validate(selectedMethods) {

@@ -1,3 +1,4 @@
+/*global web3*/
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
@@ -5,6 +6,7 @@ import {connect} from "react-redux";
 import SellerPosition from './components/SellerPosition';
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
+import metadata from "../../../features/metadata";
 
 class Location extends Component {
   constructor(props) {
@@ -20,8 +22,9 @@ class Location extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.asset) {
-      this.props.wizard.previous();
+    if (this.props.profile && this.props.profile.location) {
+      this.props.setLocation(this.props.profile.location);
+      this.props.wizard.next();
     } else {
       this.setState({ready: true});
     }
@@ -53,11 +56,13 @@ Location.propTypes = {
   wizard: PropTypes.object,
   seller: PropTypes.object,
   setLocation: PropTypes.func,
-  footer: PropTypes.object
+  footer: PropTypes.object,
+  profile: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state)
+  seller: newSeller.selectors.getNewSeller(state),
+  profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
 });
 
 export default connect(

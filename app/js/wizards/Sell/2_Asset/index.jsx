@@ -20,6 +20,9 @@ class Asset extends Component {
   }
 
   componentDidMount() {
+    if (!this.props.seller.username) {
+      return this.props.wizard.previous();
+    }
     this.props.updateBalances();
   }
 
@@ -43,6 +46,7 @@ class Asset extends Component {
 
 Asset.propTypes = {
   footer: PropTypes.object,
+  wizard: PropTypes.object,
   setAsset: PropTypes.func,
   updateBalances: PropTypes.func,
   seller: PropTypes.object,
