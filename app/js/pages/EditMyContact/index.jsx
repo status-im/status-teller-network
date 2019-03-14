@@ -65,7 +65,7 @@ class EditMyContact extends Component {
         return (
           <Fragment>
             <EditContact isStatus={this.props.isStatus}
-                         statusContactCode={this.state.statusContactCode} 
+                         statusContactCode={this.state.statusContactCode}
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
                          getContactCode={this.props.getContactCode}

@@ -1,3 +1,4 @@
+/*global web3*/
 import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -5,19 +6,30 @@ import EditContact from '../../../components/EditContact';
 import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
 import {connect} from "react-redux";
+import metadata from "../../../features/metadata";
+import Loading from '../../../components/Loading';
 
 class Contact extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: props.username,
-      statusContactCode: props.statusContactCode
+      statusContactCode: props.statusContactCode,
+      ready: false
     };
     this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
     props.footer.onPageChange(() => {
       props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
     });
+  }
+
+  componentDidMount() {
+    if (this.props.profile && this.props.profile.username) {
+      this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
+      return this.props.wizard.next();
+    }
+    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {
@@ -44,9 +56,12 @@ class Contact extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Loading page/>;
+    }
     return (
       <EditContact isStatus={this.props.isStatus}
-                   statusContactCode={this.state.statusContactCode} 
+                   statusContactCode={this.state.statusContactCode}
                    username={this.state.username}
                    changeStatusContactCode={this.changeStatusContactCode}
                    changeUsername={this.changeUsername}
@@ -58,17 +73,20 @@ class Contact extends Component {
 Contact.propTypes = {
   history: PropTypes.object,
   footer: PropTypes.object,
+  wizard: PropTypes.object,
   setContactInfo: PropTypes.func,
   username: PropTypes.string,
   statusContactCode: PropTypes.string,
   isStatus: PropTypes.bool,
-  getContactCode: PropTypes.func
+  getContactCode: PropTypes.func,
+  profile: PropTypes.object
 };
 
 const mapStateToProps = state => ({
   statusContactCode: newBuy.selectors.statusContactCode(state),
   username: newBuy.selectors.username(state),
-  isStatus: network.selectors.isStatus(state)
+  isStatus: network.selectors.isStatus(state),
+  profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
 });
 
 export default connect(

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
@@ -22,7 +22,8 @@ class Trade extends Component {
     this.state = {
       currencyQuantity: props.currencyQuantity,
       assetQuantity: props.assetQuantity,
-      disabled: true
+      disabled: true,
+      ready: false
     };
     props.footer.onPageChange(() => {
       props.setTrade(this.state.currencyQuantity, this.state.assetQuantity);
@@ -34,6 +35,7 @@ class Trade extends Component {
       return this.props.history.push('/');
     }
     this.props.loadOffers();
+    this.setState({ready: true});
   }
 
   componentDidUpdate() {
@@ -76,7 +78,7 @@ class Trade extends Component {
   };
 
   render() {
-    if (!this.props.offer) {
+    if (!this.state.ready || !this.props.offer) {
       return <Loading page/>;
     }
 
@@ -101,7 +103,7 @@ class Trade extends Component {
                       disabled={this.state.disabled}/>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return <Fragment/>;
     }
   }
 }
@@ -143,6 +145,6 @@ export default connect(
     setTrade: newBuy.actions.setTrade,
     resetCreateEscrowStatus: escrow.actions.resetCreateEscrowStatus,
     createEscrow: escrow.actions.createEscrow,
-    loadOffers: metadata.actions.loadOffers 
+    loadOffers: metadata.actions.loadOffers
   }
 )(withRouter(Trade));
