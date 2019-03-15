@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import {Card} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
-import Blockies from 'react-blockies';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircle, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import Identicon from "../../../components/UserInformation/Identicon";
 
 class Trades extends Component {
   renderTrades() {
@@ -14,7 +14,7 @@ class Trades extends Component {
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Blockies seed={trade.offer.owner} className="align-middle rounded-circle"/>
+              <Identicon seed={trade.offer.owner} className="align-middle rounded-circle border"/>
               <span className="ml-2">{trade.offer.user.username}</span>
             </span>
             <span className="flex-fill align-self-center">{trade.amount} {trade.offer.token.symbol}</span>

@@ -4,8 +4,8 @@ import {withNamespaces} from "react-i18next";
 import {Row, Col, FormGroup, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import Blockies from 'react-blockies';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
+import Identicon from "../../../../components/UserInformation/Identicon";
 
 const OfferTrade = ({
   address, name, min, max, currency, asset, onClick,
@@ -13,7 +13,7 @@ const OfferTrade = ({
 }) => (
   <Row>
     <Col xs="12" className="mt-5 text-center">
-      <h2>Trade amount with <br/><span><Blockies seed={address} className="rounded-circle"/> {name}</span></h2>
+      <h2>Trade amount with <br/><span><Identicon seed={address} className="rounded-circle border"/> {name}</span></h2>
       <p className="mt-3">Min: {min}{currency.symbol} - Max: {max}{currency.symbol}</p>
     </Col>
     <Col xs="12" className="mt-4">

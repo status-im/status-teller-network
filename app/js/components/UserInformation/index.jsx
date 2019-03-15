@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
-import Blockies from 'react-blockies';
 import Reputation from "../Reputation";
 import Address from './Address';
+import Identicon from "./Identicon";
 
 const UserInformation = ({address, username, reputation, isArbitrator}) => (
   <Row className="border rounded py-4 m-0 text-center shadow-sm">
     <Col xs="12">
-      <Blockies seed={address} className="rounded-circle border" scale={8}/>
+      <Identicon seed={address} className="rounded-circle border" scale={8} />
       {isArbitrator && <span className="arbiterLabel">Arbiter</span>}
     </Col>
     { !isArbitrator && <Col xs="12">

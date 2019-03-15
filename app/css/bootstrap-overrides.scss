@@ -74,6 +74,10 @@ $input-icon-height: 20px;
   bottom: ($input-height / 2) - ($input-icon-height / 2);
 }
 
+.border {
+  border-width: 2px !important;
+}
+
 .rounded {
   border-radius: 8px !important;
 }
