@@ -14,6 +14,8 @@ import Disputes from './components/Disputes';
 import StatusContactCode from './components/StatusContactCode';
 import { zeroAddress } from '../../utils/address';
 
+import "./index.scss";
+
 const NULL_PROFILE = {
   address: zeroAddress,
   username: '',

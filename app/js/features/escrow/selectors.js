@@ -7,7 +7,7 @@ export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 export const getTrades = (state, offerIds) => {
   const escrows = state.escrow.escrows[offerIds] || [];
   return escrows.map((escrow) => {
-    const offer = getOfferById(state, escrow.offerId);   
+    const offer = getOfferById(state, escrow.offerId);
     return {
       ...escrow,
       status: getTradeStatus(escrow),
