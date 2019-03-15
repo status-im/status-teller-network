@@ -2,15 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
-import Blockies from "react-blockies";
-
 import Reputation from '../Reputation';
+import Identicon from "../UserInformation/Identicon";
 
 const Offer = ({offer, withDetail}) => (
   <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
-        <Col xs={2}><Blockies seed={offer.owner} className="rounded-circle" scale={5}/></Col>
+        <Col xs={2}><Identicon seed={offer.owner} className="rounded-circle border" scale={5}/></Col>
         <Col xs={5}>
           <p className="seller-name m-0 font-weight-bold">{offer.user.username}</p>
           <p className="text-dark m-0">{offer.user.location}</p>
