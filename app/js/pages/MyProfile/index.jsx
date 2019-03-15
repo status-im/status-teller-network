@@ -5,12 +5,16 @@ import { connect } from 'react-redux';
 import metadata from '../../features/metadata';
 import network from '../../features/network';
 import escrow from '../../features/escrow';
+import arbitration from '../../features/arbitration';
 
 import UserInformation from '../../components/UserInformation';
 import Trades from './components/Trades';
 import Offers from './components/Offers';
+import Disputes from './components/Disputes';
 import StatusContactCode from './components/StatusContactCode';
 import { zeroAddress } from '../../utils/address';
+
+import "./index.scss";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -22,16 +26,25 @@ const NULL_PROFILE = {
 class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
+    this.props.getDisputedEscrows();
   }
 
   render() {
     const profile = this.props.profile;
     return (
       <Fragment>
-        <UserInformation reputation={profile.reputation} address={profile.address} username={profile.username}/>
-        <Trades trades={this.props.trades}/>
-        <Offers offers={profile.offers} location={profile.location} />
-        {profile.username.length > 0 && <StatusContactCode value={profile.statusContactCode} />}
+        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} address={profile.address} username={profile.username}/>
+        
+        {profile.isArbitrator && <Fragment>
+          <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open)} open={true} showDate={true} />
+          <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open)} open={false} showDate={false} />
+        </Fragment>}
+
+        { !profile.isArbitrator && <Fragment>
+          <Trades trades={this.props.trades}/>
+          <Offers offers={profile.offers} location={profile.location} />
+          {profile.username && <StatusContactCode value={profile.statusContactCode} />}
+        </Fragment> }
       </Fragment>
     );
   }
@@ -41,7 +54,9 @@ MyProfile.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
   trades: PropTypes.array,
-  loadProfile: PropTypes.func
+  disputes: PropTypes.array,
+  loadProfile: PropTypes.func,
+  getDisputedEscrows: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -50,7 +65,8 @@ const mapStateToProps = state => {
   return {
     address,
     profile,
-    trades: escrow.selectors.getTrades(state, profile.offers.map(offer => offer.id))
+    trades: escrow.selectors.getTrades(state, profile.offers.map(offer => offer.id)),
+    disputes: arbitration.selectors.escrows(state)
   };
 };
 
@@ -58,5 +74,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    loadProfile: metadata.actions.load
+    loadProfile: metadata.actions.load,
+    getDisputedEscrows: arbitration.actions.getDisputedEscrows
   })(MyProfile);

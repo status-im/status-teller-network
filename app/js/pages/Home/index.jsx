@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 
 import license from "../../features/license";
+import network from "../../features/network";
+import metadata from "../../features/metadata";
 
 import "./index.scss";
 
@@ -19,6 +21,7 @@ class Home extends Component {
   }
 
   render() {
+    const isArbitrator = this.props.profile && this.props.profile.isArbitrator;
     const t = this.props.t;
     return (
       <div className="home">
@@ -34,14 +37,14 @@ class Home extends Component {
           </Col>
         </Row>
 
-        <Row className="home--footer">
+        {!isArbitrator && <Row className="home--footer">
           <Col xs={6}>
             <Button tag={Link} color="primary" block to="/offers/list">{t('home.buy')}</Button>
           </Col>
           <Col xs={6}>
             <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
           </Col>
-        </Row>
+        </Row>}
       </div>
     );
   }
@@ -50,12 +53,19 @@ class Home extends Component {
 Home.propTypes = {
   t: PropTypes.func,
   checkLicenseOwner: PropTypes.func,
-  isLicenseOwner: PropTypes.bool
+  isLicenseOwner: PropTypes.bool,
+  profile: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  isLicenseOwner: license.selectors.isLicenseOwner(state)
-});
+
+const mapStateToProps = (state) => {
+  const address = network.selectors.getAddress(state) || '';
+  return {
+    address,
+    isLicenseOwner: license.selectors.isLicenseOwner(state),
+    profile: metadata.selectors.getProfile(state, address)
+  };
+};
 
 export default connect(
   mapStateToProps,

@@ -1,4 +1,5 @@
 import Escrow from 'Embark/contracts/Escrow';
+import MetadataStore from 'Embark/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
@@ -22,7 +23,16 @@ export function *doGetEscrows() {
     const escrows = [];
     for (let i = 0; i < escrowIds.length; i++) {
       const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
+      const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
+      const buyer = yield MetadataStore.methods.users(buyerId).call();
+      const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
+      const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
+      const seller = yield MetadataStore.methods.users(sellerId).call();
+      
       escrow.escrowId = escrowIds[i];
+      escrow.seller = offer.owner;
+      escrow.buyerInfo = buyer;
+      escrow.sellerInfo = seller;
       escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
       escrows.push(escrow);
     }

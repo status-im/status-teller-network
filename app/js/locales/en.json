@@ -77,6 +77,11 @@
     "noRating": "No rating available yet",
     "buying": "Buying License"
   },
+  "disputes": {
+    "noRecords": "No records available yet",
+    "openedDisputes": "Opened disputes",
+    "resolvedDisputes": "Resolved disputes"
+  },
   "map": {
     "loading": "Loading...",
     "denied": "You denied access to your position. We do not store that information, it is only to position you the following map."
