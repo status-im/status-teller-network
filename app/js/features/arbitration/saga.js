@@ -1,4 +1,6 @@
 import Escrow from 'Embark/contracts/Escrow';
+import Arbitration from 'Embark/contracts/Arbitration';
+
 import MetadataStore from 'Embark/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
@@ -15,7 +17,7 @@ export function *onResolveDispute() {
 
 export function *doGetEscrows() {
   try {
-    const events = yield Escrow.getPastEvents('ArbitrationRequired', {fromBlock: 1});
+    const events = yield Arbitration.getPastEvents('ArbitrationRequired', {fromBlock: 1});
     const escrowIds = events.map(event => {
       return event.returnValues.escrowId;
     });
@@ -33,7 +35,7 @@ export function *doGetEscrows() {
       escrow.seller = offer.owner;
       escrow.buyerInfo = buyer;
       escrow.sellerInfo = seller;
-      escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
+      escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowIds[i]).call);
       escrows.push(escrow);
     }
 
