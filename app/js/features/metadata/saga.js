@@ -1,5 +1,4 @@
 import MetadataStore from 'Embark/contracts/MetadataStore';
-import Escrow from 'Embark/contracts/Escrow';
 import Arbitration from 'Embark/contracts/Arbitration';
 
 import {fork, takeEvery, put, all} from 'redux-saga/effects';

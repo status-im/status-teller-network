@@ -63,7 +63,7 @@ exports[`Trades should render correctly 1`] = `
         className="flex-fill align-self-center"
       >
         <Identicon
-          className="align-middle rounded-circle"
+          className="align-middle rounded-circle border"
           seed="0x0"
         />
         <span
