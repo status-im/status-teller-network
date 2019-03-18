@@ -7,6 +7,7 @@ const MetadataStore = embark.require('Embark/contracts/MetadataStore');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
+const Arbitration = embark.require('Embark/contracts/Arbitration');
 
 
 const ESCROW_CREATED = 0;
@@ -58,8 +59,12 @@ config({
     MetadataStore: {
       args: ["$License"]
     },
+    Arbitration: {
+      args: ["$accounts[5]"]
+    },
     Escrow: {
-      args: ["$License", "$accounts[5]", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount]
+      args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      onDeploy: ["Arbitration.methods.setEscrowAddress('$Escrow').send()"]
     },
     StandardToken: {
     }
@@ -70,6 +75,7 @@ config({
 });
 
 contract("Escrow", function() {
+
   const {toBN} = web3.utils;
   const value = web3.utils.toWei("0.1", "ether");
 
@@ -85,6 +91,13 @@ contract("Escrow", function() {
   this.timeout(0);
 
   before(async () => {
+
+    const escrowEvents = Escrow.options.jsonInterface.filter(x => x.type == 'event');
+    const arbitrationEvents = Arbitration.options.jsonInterface.filter(x => x.type == 'event');
+
+    Escrow.options.jsonInterface = Escrow.options.jsonInterface.concat(arbitrationEvents);
+    Arbitration.options.jsonInterface = Arbitration.options.jsonInterface.concat(escrowEvents);
+
     await SNT.methods.generateTokens(accounts[0], 1000).send();
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
@@ -618,7 +631,7 @@ contract("Escrow", function() {
 
     it("non arbitrators cannot resolve a case", async() => {
       try {
-        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
+        receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
@@ -629,7 +642,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
 
-      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
+      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
       const released = receipt.events.Released;
       assert(!!released, "Released() not triggered");
     });
@@ -638,7 +651,8 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
 
-      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
+      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
+      
       const released = receipt.events.Canceled;
       assert(!!released, "Canceled() not triggered");
     });
@@ -739,16 +753,16 @@ contract("Escrow", function() {
     });
 
     it("arbitrator should be valid", async () => {
-      const isArbitrator = await Escrow.methods.isArbitrator(arbitrator).call();
+      const isArbitrator = await Arbitration.methods.isArbitrator(arbitrator).call();
       assert.equal(isArbitrator, true, "Invalid arbitrator");
 
-      const nonArbitrator = await Escrow.methods.isArbitrator(accounts[9]).call();
+      const nonArbitrator = await Arbitration.methods.isArbitrator(accounts[9]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
     });
 
     it("non-owner should not be able to change the arbitrator", async () => {
       try {
-        receipt = await await Escrow.methods.setArbitrator(accounts[7]).send({from: accounts[9]});
+        receipt = await await Arbitration.methods.setArbitrator(accounts[7]).send({from: accounts[9]});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
@@ -758,13 +772,13 @@ contract("Escrow", function() {
     it("owner should be able to change the arbitrator", async() => {
       const newArbitrator = "0x1122334455667788990011223344556677889900";
       
-      receipt = await Escrow.methods.setArbitrator(newArbitrator).send({from: accounts[0]});
+      receipt = await Arbitration.methods.setArbitrator(newArbitrator).send({from: accounts[0]});
 
       const arbitratorChanged = receipt.events.ArbitratorChanged;
       assert(!!arbitratorChanged, "ArbitratorChanged() not triggered");
       assert.equal(arbitratorChanged.returnValues.arbitrator, newArbitrator, "Invalid Arbitrator");
 
-      const isArbitrator = await Escrow.methods.isArbitrator(newArbitrator).call();
+      const isArbitrator = await Arbitration.methods.isArbitrator(newArbitrator).call();
       assert.equal(isArbitrator, true, "New arbitrator not set correctly");
     });
   });

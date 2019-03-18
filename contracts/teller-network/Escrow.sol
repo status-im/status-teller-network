@@ -7,6 +7,7 @@ import "../token/ERC20Token.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
+import "./Arbitration.sol";
 
 /**
  * @title Escrow
@@ -23,16 +24,18 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
     constructor(
         address _license,
-        address _arbitrator,
+        address _arbitration,
         address _metadataStore,
         address _feeToken,
         address _feeDestination,
         uint _feeAmount)
         Fees(_feeToken, _feeDestination, _feeAmount) public {
         license = License(_license);
-        arbitrator = _arbitrator;
+        arbitration = Arbitration(_arbitration);
         metadataStore = MetadataStore(_metadataStore);
     }
+
+    Arbitration arbitration;
 
     struct EscrowTransaction {
         uint offerId;
@@ -53,7 +56,6 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
     License public license;
     MetadataStore public metadataStore;
-    address public arbitrator;
 
     event Created(uint indexed offerId, address indexed buyer, uint escrowId);
     event Funded(uint escrowId, uint expirationTime, uint amount);
@@ -62,21 +64,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     event Released(uint escrowId);
     event Canceled(uint escrowId);
     event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating);
-
-    mapping(uint => ArbitrationCase) public arbitrationCases;
-
-    struct ArbitrationCase {
-        bool open;
-        address openBy;
-        address arbitrator;
-        ArbitrationResult result;
-    }
-
-    event ArbitratorChanged(address arbitrator);
-    event ArbitrationRequired(uint escrowId);
-    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
-
-    enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
+   
 
     /**
      * @notice Create a new escrow
@@ -379,7 +367,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
-        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Can't rate a transaction that has an arbitration process");
+        require(!arbitration.exists(_escrowId), "Can't rate a transaction that has an arbitration process");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
@@ -391,29 +379,6 @@ contract Escrow is Pausable, MessageSigned, Fees {
         emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
     }
 
-    modifier onlyArbitrator {
-        require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
-        _;
-    }
-
-    /**
-     * @notice Determine if address is arbitrator
-     * @param _addr Address to be verified
-     * @return result
-     */
-    function isArbitrator(address _addr) public view returns(bool){
-        return arbitrator == _addr;
-    }
-
-    /**
-     * @notice Set address as arbitrator
-     * @param _addr New arbitrator address
-     * @dev Can only be called by the owner of the contract
-     */
-    function setArbitrator(address _addr) public onlyOwner {
-        arbitrator = _addr;
-        emit ArbitratorChanged(_addr);
-    }
 
     /**
      * @notice Open case as a buyer or seller for arbitration
@@ -426,18 +391,11 @@ contract Escrow is Pausable, MessageSigned, Fees {
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
 
-        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
+        require(!arbitration.exists(_escrowId), "Case already exist");
         require(trx.buyer == msg.sender || seller == msg.sender, "Only a buyer or seller can open a case");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        arbitrationCases[_escrowId] = ArbitrationCase({
-            open: true,
-            openBy: msg.sender,
-            arbitrator: address(0),
-            result: ArbitrationResult.UNSOLVED
-        });
-
-        emit ArbitrationRequired(_escrowId);
+        arbitration.openCase(_escrowId, msg.sender);
     }
 
     /**
@@ -452,49 +410,32 @@ contract Escrow is Pausable, MessageSigned, Fees {
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
 
-        require(!arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case already exist");
+        require(!arbitration.exists(_escrowId), "Case already exist");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
 
         require(trx.buyer == senderAddress || seller == senderAddress, "Only a buyer or seller can open a case");
 
-        arbitrationCases[_escrowId] = ArbitrationCase({
-            open: true,
-            openBy: msg.sender,
-            arbitrator: address(0),
-            result: ArbitrationResult.UNSOLVED
-        });
-
-        emit ArbitrationRequired(_escrowId);
+        arbitration.openCase(_escrowId, msg.sender);
     }
 
     /**
      * @notice Set arbitration result in favour of the buyer or seller and transfer funds accordingly
      * @param _escrowId Id of the escrow
-     * @param _result Result of the arbitration
+     * @param _releaseFunds Release funds to buyer or cancel escrow
      */
-    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public onlyArbitrator {
-        require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
-        require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
+    function setArbitrationResult(uint _escrowId, bool _releaseFunds) public {
+        assert(msg.sender == address(arbitration)); // Only arbitration contract can invoke this
+
+        address arbitrator = arbitration.getArbitrator();
 
         EscrowTransaction storage trx = transactions[_escrowId];
-
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
         require(trx.buyer != arbitrator && seller != arbitrator, "Arbitrator cannot be part of transaction");
-
-        arbitrationCases[_escrowId].open = false;
-        arbitrationCases[_escrowId].result = _result;
-
-        // TODO: incentive mechanism for opening arbitration process
-        // if(arbitrationCases[_escrowId].openBy != trx.seller || arbitrationCases[_escrowId].openBy != trx.buyer){
-            // Consider deducting a fee as reward for whoever opened the arbitration process.
-        // }
-
-        emit ArbitrationResolved(_escrowId, _result, msg.sender);
-
-        if(_result == ArbitrationResult.BUYER){
+        
+        if(_releaseFunds){
             _release(_escrowId, trx);
         } else {
             _cancel(_escrowId, trx);
