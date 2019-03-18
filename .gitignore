@@ -5,6 +5,7 @@ config/production/password
 config/livenet/password
 coverage
 dist
+embarkArtifacts
 node_modules
 yarn-error.log
 cypress/videos/*
