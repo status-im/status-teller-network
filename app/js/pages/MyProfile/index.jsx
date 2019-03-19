@@ -33,7 +33,7 @@ class MyProfile extends Component {
     const profile = this.props.profile;
     return (
       <Fragment>
-        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} address={profile.isArbitrator ? profile.address : profile.statusContactCode} username={profile.username}/>
+        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} address={profile.address} username={profile.username}/>
         
         {profile.isArbitrator && <Fragment>
           <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open)} open={true} showDate={true} />

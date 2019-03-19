@@ -14,9 +14,9 @@ class Trades extends Component {
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Identicon seed={trade.buyer.statusContactCode} scale={5} className="align-middle rounded-circle topCircle border"/>
-              <Identicon seed={trade.seller.statusContactCode} scale={5} className="align-middle rounded-circle bottomCircle border"/>
-              <span className="ml-2">{trade.buyer.username} & {trade.seller.username}</span>
+              <Identicon seed={trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
+              <Identicon seed={trade.offer.owner} scale={5} className="align-middle rounded-circle bottomCircle border"/>
+              <span className="ml-2">{trade.buyerInfo.username} & {trade.seller.username}</span>
 
             </span>
             <span className="flex-fill align-self-center">{trade.tokenAmount} {trade.token.symbol}</span>

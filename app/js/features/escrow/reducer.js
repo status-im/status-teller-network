@@ -14,7 +14,7 @@ import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
-  escrows: {},
+  escrows: [],
 
   //Migrate to new UI
   message: null,
