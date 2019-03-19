@@ -4,7 +4,7 @@ import {Card} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {faCircle, faArrowRight, faStore} from "@fortawesome/free-solid-svg-icons";
 import Identicon from "../../../components/UserInformation/Identicon";
 
 class Trades extends Component {
@@ -14,10 +14,12 @@ class Trades extends Component {
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Identicon seed={trade.offer.owner} className="align-middle rounded-circle border"/>
-              <span className="ml-2">{trade.offer.user.username}</span>
+              <Identicon seed={trade.buyer.statusContactCode} scale={5} className="align-middle rounded-circle topCircle border"/>
+              <Identicon seed={trade.seller.statusContactCode} scale={5} className="align-middle rounded-circle bottomCircle border"/>
+              <span className="ml-2">{trade.buyer.username} & {trade.seller.username}</span>
+
             </span>
-            <span className="flex-fill align-self-center">{trade.amount} {trade.offer.token.symbol}</span>
+            <span className="flex-fill align-self-center">{trade.tokenAmount} {trade.token.symbol}</span>
             <span className="flex-fill align-self-center text-right text-success">
               <FontAwesomeIcon icon={faCircle} className="mr-2"/>
               {trade.status}

@@ -52,9 +52,8 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_ESCROWS_SUCCEEDED:
       return {
-        ...state, ...{
-          escrows: {...state.escrows, [action.offerId]: action.escrows}
-        }
+        ...state,
+        escrows: action.escrows
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

@@ -57,7 +57,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
     License public license;
     MetadataStore public metadataStore;
 
-    event Created(uint indexed offerId, address indexed buyer, uint escrowId, uint date);
+    event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId, uint date);
     event Funded(uint escrowId, uint expirationTime, uint amount, uint date);
 
     event Paid(uint escrowId, uint date);
@@ -183,7 +183,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             status: EscrowStatus.CREATED
         });
         transactionsByOfferId[_offerId].push(escrowId);
-        emit Created(_offerId, _buyer, escrowId, block.timestamp);
+        emit Created(_offerId, seller, _buyer, escrowId, block.timestamp);
         return escrowId;
     }
 
