@@ -57,13 +57,13 @@ contract Escrow is Pausable, MessageSigned, Fees {
     License public license;
     MetadataStore public metadataStore;
 
-    event Created(uint indexed offerId, address indexed buyer, uint escrowId);
-    event Funded(uint escrowId, uint expirationTime, uint amount);
+    event Created(uint indexed offerId, address indexed buyer, uint escrowId, uint date);
+    event Funded(uint escrowId, uint expirationTime, uint amount, uint date);
 
-    event Paid(uint escrowId);
-    event Released(uint escrowId);
-    event Canceled(uint escrowId);
-    event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating);
+    event Paid(uint escrowId, uint date);
+    event Released(uint escrowId, uint date);
+    event Canceled(uint escrowId, uint date);
+    event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating, uint date);
    
 
     /**
@@ -129,7 +129,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
         payFee(_escrowId);
 
-        emit Funded(_escrowId, _expirationTime, _tokenAmount);
+        emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
     }
 
     /**
@@ -183,7 +183,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             status: EscrowStatus.CREATED
         });
         transactionsByOfferId[_offerId].push(escrowId);
-        emit Created(_offerId, _buyer, escrowId);
+        emit Created(_offerId, _buyer, escrowId, block.timestamp);
         return escrowId;
     }
 
@@ -228,7 +228,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             require(erc20token.transfer(trx.buyer, trx.tokenAmount));
         }
 
-        emit Released(_escrowId);
+        emit Released(_escrowId, block.timestamp);
     }
 
     /**
@@ -254,7 +254,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
 
         trx.status  = EscrowStatus.PAID;
 
-        emit Paid(_escrowId);
+        emit Paid(_escrowId, block.timestamp);
     }
 
     /**
@@ -332,7 +332,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         }
 
         trx.status = EscrowStatus.CANCELED;
-        emit Canceled(_escrowId);
+        emit Canceled(_escrowId, block.timestamp);
     }
 
     /**
@@ -376,7 +376,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         require(trx.buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
         trx.rating  = _rate;
-        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
+        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate, block.timestamp);
     }
 
 
