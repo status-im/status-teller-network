@@ -5682,26 +5682,26 @@ elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.4.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-embark-async-wrapper@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark-async-wrapper/-/embark-async-wrapper-4.0.0-beta.1.tgz#9664cf82af52fa28882ed85bb2e1ef4d68ef1e55"
-  integrity sha512-IykxviekZ/x7g/g4C12daUxHIoKNhgz7Ojj8OzWVLTiwMPShgbgQM7YDTrDohadw6yxSgktcjXokH7V3o7ytmw==
+embark-async-wrapper@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark-async-wrapper/-/embark-async-wrapper-4.0.0.tgz#9141ee2996a931b57d11b90fbe0bdfaa61b11c7a"
+  integrity sha512-90Ypcj31loQI6bJaO8+Py6CLJAYFuc2SziuobbvyAVeD/A6GCVNBDLKw1adUEezZ54Hor+JULX8mppTReab+bw==
   dependencies:
     "@babel/runtime-corejs2" "7.3.1"
     async "2.6.1"
 
-embark-compiler@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-4.0.0-beta.1.tgz#f2b35869481bd53fcf2361c0375d1ea19311fcd4"
-  integrity sha512-d8+0ztfanEBRLZzaOwMmQbrC4deMmpaAn4Znry5Gx20/zZH7vqAwnW/cB/FJ3lRngF61fggPvCmxjt7JNR8lOQ==
+embark-compiler@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-4.0.0.tgz#bde82dcbfeb4b0dcaabdc7a1358efd5ff3ce4ed9"
+  integrity sha512-R95MpCHK1D5U8z1OMMEOghzCvhB7rbcnqNfdF3SkEbOTmKD6skW5T9wa7T14vyZiQSvYMl3FaMC3RWRZ4idxFg==
   dependencies:
     "@babel/runtime-corejs2" "7.3.1"
-    embark-async-wrapper "^4.0.0-beta.1"
+    embark-async-wrapper "^4.0.0"
 
-embark-reset@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark-reset/-/embark-reset-4.0.0-beta.1.tgz#bde67d1f40dc35784f7bba6674ed988e24af182b"
-  integrity sha512-yix/luM96c6Th4mZUTo1jdKkUV5QuzMZYeotmnDVOUsSThc/fpLTkbgo79s9zi6cdNE5OAq4d2r9TvT5CIN0Pw==
+embark-reset@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark-reset/-/embark-reset-4.0.0.tgz#ebf8160a9bcd6ea3c957456f5bcddfefac120d52"
+  integrity sha512-CaMNr05TzQC1oju7XwaLEwdIC4E8hDu2DLF21UP4E88t9DhnCxsnkjdIozflbfVWApiu5wbxQOewQw1XB26JYA==
   dependencies:
     rimraf "2.6.3"
 
@@ -5713,24 +5713,24 @@ embark-solium@0.0.1:
     solium "1.1.0"
     text-table "^0.2.0"
 
-embark-ui@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-4.0.0-beta.1.tgz#8d3b6579f62b54602604783b323aad255f01391c"
-  integrity sha512-DGe9OBekvCj28y22huFZoYbma6GKuDsqNS593eURqqKIVDaPeVS0GG/HPPUInFr5cW+EaNZZ/wQVPFRO9QuB7g==
+embark-ui@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-4.0.0.tgz#7486dfd9dc82b8f7e343215713af6beee8a3d903"
+  integrity sha512-+sb+9//5oaTA6FLJ2gQRCJNeyNQp6DHQUsiusSj8l4xwK/ZDtkd6qWdJgEkmofnrwtnBav49um8yUkS405gd1A==
 
-embark-vyper@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark-vyper/-/embark-vyper-4.0.0-beta.1.tgz#09d662d41b888feecc33147b2c590340144f55f1"
-  integrity sha512-r3ZFEfKBUypYjknkpWvKeWYu2HXad6GArTEBcLAh87amqOcB7lIgdFwxbp3cRCngeeRSKJG8bp34QSFhpnn9cA==
+embark-vyper@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark-vyper/-/embark-vyper-4.0.0.tgz#cf1a886402f1ed6ada36570d852b1ac5bbf9d717"
+  integrity sha512-bOErqxioPlum2L4txr3vZAQ1PkA+AA00FYlKk8iFzzUysxc8J3te2PpBkYihqpA53Yf+tCsqn8RAslz0fmSIYw==
   dependencies:
     "@babel/runtime-corejs2" "7.3.1"
-    embark-async-wrapper "^4.0.0-beta.1"
+    embark-async-wrapper "^4.0.0"
     shelljs "0.5.3"
 
-embark@4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embark/-/embark-4.0.0-beta.1.tgz#e184e102912fc1f187287e476f73bb3e9d159396"
-  integrity sha512-nIe2tzWC0ryc/Q/SnmV4aa4YmPItjaJebIzBsYhVvqKGZamwUVh9FlqYKgyj42Pv5WacwbA9dfPJ5/vDIk8ZRg==
+embark@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embark/-/embark-4.0.0.tgz#c6cf2a9d85e79f293141af9613b342a9644e49d2"
+  integrity sha512-PkPzR+puMdp0FLq+QysRyIVCbJIz5mIZSrKP2wR3ess4laVeS2ENyRNYO0k+5ywp2BUqpo3ILPYm/2LCf0Ndqw==
   dependencies:
     "@babel/core" "7.2.2"
     "@babel/plugin-proposal-class-properties" "7.3.0"
@@ -5764,11 +5764,11 @@ embark@4.0.0-beta.1:
     decompress "4.2.0"
     deep-equal "1.0.1"
     ejs "2.6.1"
-    embark-compiler "^4.0.0-beta.1"
-    embark-reset "^4.0.0-beta.1"
-    embark-ui "^4.0.0-beta.1"
-    embark-vyper "^4.0.0-beta.1"
-    embarkjs "^4.0.0-beta.1"
+    embark-compiler "^4.0.0"
+    embark-reset "^4.0.0"
+    embark-ui "^4.0.0"
+    embark-vyper "^4.0.0"
+    embarkjs "^4.0.0"
     eth-ens-namehash "2.0.8"
     ethereumjs-tx "1.3.7"
     ethereumjs-util "6.0.0"
@@ -5861,15 +5861,15 @@ embark@4.0.0-beta.1:
     window-size "1.1.1"
     ws "6.1.2"
 
-embarkjs-connector-web3@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embarkjs-connector-web3/-/embarkjs-connector-web3-4.0.0-beta.1.tgz#b86a2e897d4d98804b927ff6383a677eee2ab0bb"
-  integrity sha512-lP9H0io57cT2/xniJlYjODYLBpnZSYpP/ag73Og8dS3VTEWf4Xw2ZlfvhVpRnmMdo5WSXavCj2FbEXCFuPtRyA==
+embarkjs-connector-web3@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embarkjs-connector-web3/-/embarkjs-connector-web3-4.0.0.tgz#d474b23649668730082c7f6fa74b6a8c2cd0a447"
+  integrity sha512-mqLDRGawEfyqXgoSb2NgTwhlbAHwDrk7eyHrtEvywWgKfEPer+S+5IN+KGXi85d7QxcNKJSZ+BHve8wvWX0FfQ==
 
-embarkjs@^4.0.0-beta.1:
-  version "4.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/embarkjs/-/embarkjs-4.0.0-beta.1.tgz#8d6f8bf96d6bf46333c777237427020e0ed145fb"
-  integrity sha512-oBNBRKJaqk+SWfnIaRwlIVevzlhEahb4n13XjerblsJshX6tk1FcYBGvBbV+Y74fl0RBHk4iRvFzh9yRYunRkA==
+embarkjs@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/embarkjs/-/embarkjs-4.0.0.tgz#56c78c6591ec9f744dd058745f45a33535680123"
+  integrity sha512-4BekkmaV/Ix4aqLkgLO9rGmTogNsgl1VMKQUYc8nJbYuaYzAJ6d+u+C9Fta3qW5EkVnK5a98rTct8W+qFf/NCg==
   dependencies:
     "@babel/runtime-corejs2" "7.3.1"
     async "2.6.1"
