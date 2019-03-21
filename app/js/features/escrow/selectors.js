@@ -19,6 +19,17 @@ export const getTrades = (state) => {
   });
 };
 
+export const getEscrow = (state) => {
+  const escrow = state.escrow.escrow;
+  const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
+  return {
+    ...escrow,
+    token,
+    status: getTradeStatus(escrow),
+    tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
+  };
+};
+
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;

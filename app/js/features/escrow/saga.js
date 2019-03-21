@@ -15,7 +15,9 @@ import {
   PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED,
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
-  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING
+  USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING,
+  GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED
+
 } from './constants';
 
 export function *onCreateEscrow() {
@@ -106,6 +108,8 @@ function *formatEscrows(escrowIds) {
 
 export function *doLoadEscrows({address}) {
   try {
+    address = address || web3.eth.defaultAccount;
+
     const eventsAsBuyer = yield Escrow.getPastEvents('Created', {filter: {buyer: address}, fromBlock: 1});
     const eventsAsSeller = yield Escrow.getPastEvents('Created', {filter: {seller: address}, fromBlock: 1});
 
@@ -129,8 +133,28 @@ export function *doLoadEscrows({address}) {
   }
 }
 
+export function *doGetEscrow({escrowId}) {
+  try {
+    const escrow = yield Escrow.methods.transactions(escrowId).call();
+    escrow.escrowId = escrowId;
+    escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
+    const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
+    escrow.seller = yield MetadataStore.methods.users(sellerId).call();
+    const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
+    escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+    yield put({type: GET_ESCROW_SUCCEEDED, escrow});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_ESCROW_FAILED, error: error.message});
+  }
+}
+
 export function *onLoadEscrows() {
   yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
+}
+
+export function *onGetEscrow() {
+  yield takeEvery(GET_ESCROW, doGetEscrow);
 }
 
 export function *checkUserRating({address}) {
@@ -181,6 +205,6 @@ export function *onAddUserRating() {
 }
 
 export default [
-  fork(onCreateEscrow), fork(onLoadEscrows), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
+  fork(onCreateEscrow), fork(onLoadEscrows), fork(onGetEscrow), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess)
 ];

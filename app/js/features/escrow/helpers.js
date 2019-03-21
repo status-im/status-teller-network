@@ -8,24 +8,27 @@ export const tradeStates = {
   waiting: 'waiting'
 };
 
+export const escrowStatus = {
+  CREATED: 0,
+  FUNDED: 1,
+  PAID: 2,
+  RELEASED: 3,
+  CANCELED: 4
+};
+
 export function getTradeStatus(trade) {
-  if (trade.released) {
-    return tradeStates.released;
-  }
-  if (trade.paid) {
-    if(trade.arbitration && trade.arbitration.open){
-      if(trade.arbitration.result !== "0"){
-        return tradeStates.arbitration_closed;
+  switch(trade.status) {
+    case escrowStatus.RELEASED: return tradeStates.released;
+    case escrowStatus.PAID: {
+      if(trade.arbitration && trade.arbitration.open){
+        if(trade.arbitration.result !== "0"){
+          return tradeStates.arbitration_closed;
+        }
+        return tradeStates.arbitration_open;
       }
-      return tradeStates.arbitration_open;
+      return tradeStates.paid;
     }
-    return tradeStates.paid;
+    case escrowStatus.CANCELED: return tradeStates.canceled;
+    default: return tradeStates.waiting;
   }
-  if (trade.canceled) {
-    return tradeStates.canceled;
-  }
-  // if (trade.expirationTime.valueOf() <= Date.now()) {
-  //   return tradeStates.expired;
-  // }
-  return tradeStates.waiting;
 }

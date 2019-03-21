@@ -1,7 +1,7 @@
 import {
   CREATE_ESCROW, RESET_CREATE_ESCROW_STATUS, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
-  ADD_USER_RATING, USER_RATING
+  ADD_USER_RATING, USER_RATING, GET_ESCROW
 } from './constants';
 import Escrow from 'Embark/contracts/Escrow';
 import { addDecimals } from '../../utils/numbers';
@@ -19,6 +19,8 @@ export const resetCreateEscrowStatus = () => ({
 });
 
 export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
+
+export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 // TODO: Update with new UI
 

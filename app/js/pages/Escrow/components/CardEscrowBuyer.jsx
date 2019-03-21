@@ -55,13 +55,11 @@ const Funding = () => (
 const PreFund = () => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={two} alt="two" />
+      <img src={one} alt="one" />
     </span>
-    <p className="h2 mt-4">You are about to send</p>
-    <p className="h2 text-success">2.0 ETH</p>
-    <p className="h2">+ our fee</p>
-    <p className="h2 text-success">1 SNT</p>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Fund</Button>
+    <p className="h2 mt-4">Waiting for the seller to fund an escrow</p>
+    <p>Notify the seller about the trade using  Status ecrypted p2p chat</p>
+    <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Open chat</Button>
   </React.Fragment>
 );
 
@@ -76,7 +74,7 @@ const Start = () => (
   </React.Fragment>
 );
 
-const CardEscrow = () => (
+const CardEscrowBuyer = (step) => (
   <Card>
     <CardBody className="text-center p-5">
       <PreFund/>
@@ -84,7 +82,7 @@ const CardEscrow = () => (
   </Card>
 );
 
-CardEscrow.propTypes = {
+CardEscrowBuyer.propTypes = {
 };
 
-export default CardEscrow;
+export default CardEscrowBuyer;

@@ -1,7 +1,8 @@
 import {
   CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW,
   RESET_CREATE_ESCROW_STATUS,
-  LOAD_ESCROWS_SUCCEEDED
+  LOAD_ESCROWS_SUCCEEDED,
+  GET_ESCROW_SUCCEEDED
   // GET_ESCROWS_FAILED,
   // RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   // CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
@@ -20,6 +21,7 @@ const DEFAULT_STATE = {
   message: null,
   type: null,
   escrowId: null,
+  escrow: null,
   loading: false,
   error: '',
   txHash: '',
@@ -50,6 +52,11 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         createEscrowId: action.receipt.events.Created.returnValues.escrowId,
         createEscrowStatus: States.success
+      };
+    case GET_ESCROW_SUCCEEDED: 
+      return {
+        ...state,
+        escrow: action.escrow
       };
     case LOAD_ESCROWS_SUCCEEDED:
       return {
