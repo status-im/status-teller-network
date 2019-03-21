@@ -6,11 +6,11 @@ import {
 import Escrow from 'Embark/contracts/Escrow';
 import { addDecimals } from '../../utils/numbers';
 
-export const createEscrow = (buyerAddress, username, tradeAmount, statusContactCode, offer) => {
+export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
   tradeAmount = addDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
-    toSend: Escrow.methods.create(buyerAddress, offer.id, tradeAmount, 1, statusContactCode, '', username)
+    toSend: Escrow.methods.create(buyerAddress, offer.id, tradeAmount, 1, assetPrice, statusContactCode, '', username)
   };
 };
 
