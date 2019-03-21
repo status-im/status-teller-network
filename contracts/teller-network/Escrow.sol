@@ -45,6 +45,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
         uint rating;
         uint256 tradeAmount;
         TradeType tradeType;
+        uint tradePrice;
         EscrowStatus status;
     }
 
@@ -72,6 +73,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
      * @param _offerId Offer
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
+     * @param _tradePrice Indicates the price of the asset in the FIAT of choice
      * @param _statusContactCode The address of the status contact code
      * @param _location The location on earth
      * @param _username The username of the user
@@ -83,11 +85,12 @@ contract Escrow is Pausable, MessageSigned, Fees {
         uint _offerId,
         uint _tradeAmount,
         uint8 _tradeType,
+        uint _tradePrice,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
     ) public whenNotPaused returns(uint escrowId) {
-        escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType);
+        escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _tradePrice);
         metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
     }
 
@@ -138,6 +141,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
      * @param _offerId Offer id
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
+     * @param _tradePrice Indicates the price of the asset in the FIAT of choice
      * @param _tokenAmount How much ether/tokens will be put in escrow
      * @param _expirationTime Unix timestamp before the transaction is considered expired
      * @dev Requires contract to be unpaused.
@@ -151,9 +155,10 @@ contract Escrow is Pausable, MessageSigned, Fees {
         uint _tokenAmount,
         uint _expirationTime,
         uint _tradeAmount,
-        uint8 _tradeType
+        uint8 _tradeType,
+        uint _tradePrice
     ) public payable whenNotPaused {
-        uint escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType);
+        uint escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _tradePrice);
         fund(escrowId, _tokenAmount, _expirationTime);
     }
 
@@ -161,7 +166,8 @@ contract Escrow is Pausable, MessageSigned, Fees {
         address payable _buyer,
         uint _offerId,
         uint _tradeAmount,
-        uint8 _tradeType
+        uint8 _tradeType,
+        uint _tradePrice
     ) private returns(uint escrowId) {
 
         address seller;
@@ -180,6 +186,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
             rating: 0,
             tradeAmount: _tradeAmount,
             tradeType: TradeType(_tradeType),
+            tradePrice: _tradePrice,
             status: EscrowStatus.CREATED
         });
         transactionsByOfferId[_offerId].push(escrowId);
