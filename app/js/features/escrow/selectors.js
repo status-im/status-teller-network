@@ -4,6 +4,8 @@ import { getTradeStatus } from './helpers';
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
+export const getCreateEscrowId = state => state.escrow.createEscrowId;
+
 export const getTrades = (state) => {
   const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {

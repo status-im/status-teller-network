@@ -25,6 +25,9 @@ class Trade extends Component {
       disabled: true,
       ready: false
     };
+
+    props.footer.hide();
+
     props.footer.onPageChange(() => {
       props.setTrade(this.state.currencyQuantity, this.state.assetQuantity);
     });
@@ -41,7 +44,7 @@ class Trade extends Component {
   componentDidUpdate() {
     if (this.props.createEscrowStatus === States.success) {
       this.props.resetCreateEscrowStatus();
-      return this.props.history.push('/profile');
+      return this.props.history.push('/escrow/' + this.props.escrowId);
     }
   }
 
@@ -122,13 +125,15 @@ Trade.propTypes = {
   loadOffers: PropTypes.func,
   offerId: PropTypes.number,
   createEscrow: PropTypes.func,
-  createEscrowStatus: PropTypes.string
+  createEscrowStatus: PropTypes.string,
+  escrowId: PropTypes.number
 };
 
 const mapStateToProps = (state) => {
   const offerId = newBuy.selectors.offerId(state);
   return {
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
+    escrowId: escrow.selectors.getCreateEscrowId(state),
     statusContactCode: newBuy.selectors.statusContactCode(state),
     username: newBuy.selectors.username(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),

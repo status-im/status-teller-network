@@ -48,6 +48,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case CREATE_ESCROW_SUCCEEDED:
       return {
         ...state,
+        createEscrowId: action.receipt.events.Created.returnValues.escrowId,
         createEscrowStatus: States.success
       };
     case LOAD_ESCROWS_SUCCEEDED:

@@ -4,7 +4,7 @@ import {Card} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle, faArrowRight, faStore} from "@fortawesome/free-solid-svg-icons";
+import {faCircle, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import Identicon from "../../../components/UserInformation/Identicon";
 
 class Trades extends Component {
@@ -13,17 +13,18 @@ class Trades extends Component {
       <Card body className="py-2 px-3 shadow-sm">
         {this.props.trades.map((trade, index) => (
           <div key={index} className="d-flex my-1">
-            <span className="flex-fill align-self-center">
-              <Identicon seed={trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
-              <Identicon seed={trade.offer.owner} scale={5} className="align-middle rounded-circle bottomCircle border"/>
-              <span className="ml-2">{trade.buyerInfo.username} & {trade.seller.username}</span>
-
-            </span>
-            <span className="flex-fill align-self-center">{trade.tokenAmount} {trade.token.symbol}</span>
-            <span className="flex-fill align-self-center text-right text-success">
-              <FontAwesomeIcon icon={faCircle} className="mr-2"/>
-              {trade.status}
-            </span>
+              <span className="flex-fill align-self-center">
+                <Link to={"/escrow/" + trade.escrowId}>
+                  <Identicon seed={trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
+                  <Identicon seed={trade.offer.owner} scale={5} className="align-middle rounded-circle bottomCircle border"/>
+                  <span className="ml-2">{trade.buyerInfo.username} & {trade.seller.username}</span>
+                </Link>
+              </span>
+              <span className="flex-fill align-self-center">{trade.tokenAmount} {trade.token.symbol}</span>
+              <span className="flex-fill align-self-center text-right text-success">
+                <FontAwesomeIcon icon={faCircle} className="mr-2"/>
+                {trade.status}
+              </span>
           </div>
         ))}
       </Card>

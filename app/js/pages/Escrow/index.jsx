@@ -24,7 +24,7 @@ class Escrow extends Component {
         <Row className="bg-secondary py-4 mt-4">
           <Col>
             <h3 className="mb-3">You are trading with</h3>
-            <Offer offer={{owner: 'avb', user: { username: 'Anthony', location: 'London'}, currency: 'USD', token: { symbol: 'SNT'}}}/>
+            <Offer offer={{owner: '0x12345678901234567890', user: { username: 'Anthony', location: 'London'}, currency: 'USD', token: { symbol: 'SNT'}}}/>
             <EscrowDetail/>
             <OpenChat/>
           </Col>
