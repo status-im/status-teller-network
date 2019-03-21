@@ -21,6 +21,8 @@ export const getTrades = (state) => {
 
 export const getEscrow = (state) => {
   const escrow = state.escrow.escrow;
+  if(!escrow) return null;
+
   const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
   return {
     ...escrow,
