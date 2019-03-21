@@ -126,7 +126,7 @@ Trade.propTypes = {
   offerId: PropTypes.number,
   createEscrow: PropTypes.func,
   createEscrowStatus: PropTypes.string,
-  escrowId: PropTypes.number
+  escrowId: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
