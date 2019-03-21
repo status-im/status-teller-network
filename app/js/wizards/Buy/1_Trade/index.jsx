@@ -6,13 +6,13 @@ import {withRouter} from "react-router-dom";
 import { States } from '../../../utils/transaction';
 import newBuy from "../../../features/newBuy";
 import escrow from '../../../features/escrow';
+import prices from '../../../features/prices';
 import metadata from '../../../features/metadata';
 import network from '../../../features/network';
 import Loading from '../../../components/Loading';
 import ErrorInformation from '../../../components/ErrorInformation';
 import OfferTrade from './components/OfferTrade';
 
-const FAKE_ETH_PRICE = 423;
 const MIN = 200;
 const MAX = 600;
 
@@ -61,21 +61,27 @@ class Trade extends Component {
   };
 
   onAssetChange = (assetQuantity) => {
-    assetQuantity = parseFloat(assetQuantity);
-    const currencyQuantity = assetQuantity * FAKE_ETH_PRICE;
-    this.validate(currencyQuantity, assetQuantity);
-    if (isNaN(currencyQuantity)) {
-      return;
+    let currencyQuantity = 0;
+    if(assetQuantity !== ""){ 
+      assetQuantity = parseFloat(assetQuantity);
+      currencyQuantity = assetQuantity * this.props.price;
+      this.validate(currencyQuantity, assetQuantity);
+      if (isNaN(currencyQuantity)) {
+        return;
+      }
     }
     this.setState({assetQuantity, currencyQuantity});
   };
 
   onCurrencyChange = (currencyQuantity) => {
-    currencyQuantity = parseFloat(currencyQuantity);
-    const assetQuantity = currencyQuantity / FAKE_ETH_PRICE;
-    this.validate(currencyQuantity, assetQuantity);
-    if (isNaN(assetQuantity)) {
-      return;
+    let assetQuantity = 0;
+    if(currencyQuantity !== ""){ 
+      currencyQuantity = parseFloat(currencyQuantity);
+      assetQuantity = currencyQuantity / this.props.price;
+      this.validate(currencyQuantity, assetQuantity);
+      if (isNaN(assetQuantity)) {
+        return;
+      }
     }
     this.setState({currencyQuantity, assetQuantity});
   };
@@ -94,10 +100,11 @@ class Trade extends Component {
         return (
           <OfferTrade address={this.props.offer.owner}
                       name={this.props.offer.user.username}
-                      min={200}
-                      max={600}
-                      asset={'ETH'}
-                      currency={{id: 'USD', symbol: '$'}}
+                      minFIAT={200}
+                      maxFIAT={600}
+                      price={this.props.price}
+                      asset={this.props.offer.token.symbol}
+                      currency={{id: this.props.offer.currency}}
                       onClick={this.postEscrow}
                       currencyQuantity={this.state.currencyQuantity}
                       assetQuantity={this.state.assetQuantity}
@@ -126,11 +133,16 @@ Trade.propTypes = {
   offerId: PropTypes.number,
   createEscrow: PropTypes.func,
   createEscrowStatus: PropTypes.string,
-  escrowId: PropTypes.string
+  escrowId: PropTypes.string,
+  price: PropTypes.number
 };
 
 const mapStateToProps = (state) => {
   const offerId = newBuy.selectors.offerId(state);
+  const offer = metadata.selectors.getOfferById(state, offerId);
+  const priceData = prices.selectors.getPrices(state);
+  const price = priceData[offer.token.symbol][offer.currency];
+
   return {
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
     escrowId: escrow.selectors.getCreateEscrowId(state),
@@ -139,8 +151,9 @@ const mapStateToProps = (state) => {
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
     address: network.selectors.getAddress(state),
-    offer: metadata.selectors.getOfferById(state, offerId),
-    offerId
+    offer,
+    offerId,
+    price
   };
 };
 
