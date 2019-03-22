@@ -62,6 +62,7 @@ MyProfile.propTypes = {
 const mapStateToProps = state => {
   const address = network.selectors.getAddress(state) || '';
   const profile = metadata.selectors.getProfile(state, address) || NULL_PROFILE;
+
   return {
     address,
     profile,

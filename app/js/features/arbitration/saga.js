@@ -1,7 +1,8 @@
 import Escrow from 'Embark/contracts/Escrow';
 import Arbitration from 'Embark/contracts/Arbitration';
-
 import MetadataStore from 'Embark/contracts/MetadataStore';
+
+import moment from 'moment';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
@@ -18,24 +19,25 @@ export function *onResolveDispute() {
 export function *doGetEscrows() {
   try {
     const events = yield Arbitration.getPastEvents('ArbitrationRequired', {fromBlock: 1});
-    const escrowIds = events.map(event => {
-      return event.returnValues.escrowId;
-    });
 
     const escrows = [];
-    for (let i = 0; i < escrowIds.length; i++) {
-      const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
+    for (let i = 0; i < events.length; i++) {
+      const escrowId = events[i].returnValues.escrowId;
+
+      const escrow = yield call(Escrow.methods.transactions(escrowId).call);
       const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
       const buyer = yield MetadataStore.methods.users(buyerId).call();
       const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
       const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
       const seller = yield MetadataStore.methods.users(sellerId).call();
       
-      escrow.escrowId = escrowIds[i];
+      escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
       escrow.buyerInfo = buyer;
       escrow.sellerInfo = seller;
-      escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowIds[i]).call);
+      escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowId).call);
+      escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
+
       escrows.push(escrow);
     }
 

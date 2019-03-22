@@ -1,18 +1,18 @@
 import moment from 'moment';
-import { getOfferById } from '../metadata/selectors';
 import { fromTokenDecimals } from '../../utils/numbers';
 import { getTradeStatus } from './helpers';
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
-export const getTrades = (state, offerIds) => {
-  const escrows = state.escrow.escrows[offerIds] || [];
+
+export const getTrades = (state) => {
+  const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {
-    const offer = getOfferById(state, escrow.offerId);
+    const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
     return {
       ...escrow,
+      token,
       status: getTradeStatus(escrow),
-      amount: fromTokenDecimals(escrow.tradeAmount, offer.token.decimals),
-      offer
+      tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
     };
   });
 };

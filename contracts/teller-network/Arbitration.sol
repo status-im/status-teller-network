@@ -16,8 +16,8 @@ contract Arbitration is Ownable {
     }
 
     event ArbitratorChanged(address arbitrator);
-    event ArbitrationRequired(uint escrowId);
-    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
+    event ArbitrationRequired(uint escrowId, uint date);
+    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
 
@@ -87,7 +87,7 @@ contract Arbitration is Ownable {
             result: ArbitrationResult.UNSOLVED
         });
 
-        emit ArbitrationRequired(_escrowId);
+        emit ArbitrationRequired(_escrowId, block.timestamp);
     }
 
 
@@ -109,7 +109,7 @@ contract Arbitration is Ownable {
             // Consider deducting a fee as reward for whoever opened the arbitration process.
         // }
 
-        emit ArbitrationResolved(_escrowId, _result, msg.sender);
+        emit ArbitrationResolved(_escrowId, _result, msg.sender, block.timestamp);
 
         if(_result == ArbitrationResult.BUYER){
             escrow.setArbitrationResult(_escrowId, true);

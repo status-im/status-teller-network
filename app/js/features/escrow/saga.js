@@ -1,5 +1,6 @@
 /*global web3*/
 import Escrow from 'Embark/contracts/Escrow';
+import MetadataStore from 'Embark/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
@@ -103,14 +104,24 @@ function *formatEscrows(escrowIds) {
   return escrows;
 }
 
-export function *doLoadEscrows({offerId}) {
+export function *doLoadEscrows({address}) {
   try {
-    const escrowIds = yield Escrow.methods.getTransactionsIdByOfferId(offerId).call();
-    const escrows = yield all(escrowIds.map(function *(id) {
-      return yield Escrow.methods.transactions(id).call();
-    }));
+    const eventsAsBuyer = yield Escrow.getPastEvents('Created', {filter: {buyer: address}, fromBlock: 1});
+    const eventsAsSeller = yield Escrow.getPastEvents('Created', {filter: {seller: address}, fromBlock: 1});
 
-    yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows, offerId});
+    const events = eventsAsBuyer.map(x => { x.isBuyer = true; return x; }).concat(eventsAsSeller.map(x => { x.isBuyer = false; return x; }));
+
+    const escrows = yield all(events.map(function *(ev) {
+      const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call();
+      escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
+      const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
+      escrow.seller = yield MetadataStore.methods.users(sellerId).call();
+      const buyerId = yield MetadataStore.methods.addressToUser(address).call();
+      escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+      return escrow;
+    }));
+    
+    yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows: escrows});
   } catch (error) {
     console.error(error);
     yield put({type: LOAD_ESCROWS_FAILED, error: error.message});
@@ -120,7 +131,6 @@ export function *doLoadEscrows({offerId}) {
 export function *onLoadEscrows() {
   yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
 }
-
 
 export function *checkUserRating({address}) {
   try {

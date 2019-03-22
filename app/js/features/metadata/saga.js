@@ -36,6 +36,7 @@ export function *loadUser({address}) {
     yield put({type: LOAD_USER_LOCATION, user, address});
     yield put({type: USER_RATING, address});
     yield put({type: LOAD_USER_SUCCEEDED, user, address});
+    yield put({type: LOAD_ESCROWS, address});
   } catch (error) {
     console.error(error);
     yield put({type: LOAD_USER_FAILED, error: error.message});
@@ -73,7 +74,6 @@ export function *loadOffers({address}) {
 
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call();
-      yield put({type: LOAD_ESCROWS, offerId: id});
       yield put({type: LOAD_USER, address: offer.owner});
       return {...offer, id};
     }));

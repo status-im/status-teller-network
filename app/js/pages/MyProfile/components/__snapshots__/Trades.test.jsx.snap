@@ -63,12 +63,19 @@ exports[`Trades should render correctly 1`] = `
         className="flex-fill align-self-center"
       >
         <Identicon
-          className="align-middle rounded-circle border"
+          className="align-middle rounded-circle topCircle border"
+          scale={5}
+        />
+        <Identicon
+          className="align-middle rounded-circle bottomCircle border"
+          scale={5}
           seed="0x0"
         />
         <span
           className="ml-2"
         >
+          Name
+           & 
           Name
         </span>
       </span>

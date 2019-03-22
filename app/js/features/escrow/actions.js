@@ -18,7 +18,7 @@ export const resetCreateEscrowStatus = () => ({
   type: RESET_CREATE_ESCROW_STATUS
 });
 
-export const loadEscrows = (offerId) => ({ type: LOAD_ESCROWS, offerId });
+export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
 
 // TODO: Update with new UI
 

@@ -15,7 +15,7 @@ class Disputes extends Component {
               <span className="ml-2">{dispute.buyerInfo.username} & {dispute.sellerInfo.username}</span>
             </span>
             <span className="flex-fill align-self-center text-right">
-              {this.props.showDate && 'TODO'}
+              {this.props.showDate && dispute.arbitration.createDate}
             </span>
           </div>
           </Card>
