@@ -37,7 +37,7 @@ class License extends Component {
   };
 
   enoughBalance() {
-    return parseInt(this.props.sntToken.balance, 10) >= parseInt(this.props.licensePrice, 10);
+    return this.props.sntToken && parseInt(this.props.sntToken.balance, 10) >= parseInt(this.props.licensePrice, 10);
   }
 
   render() {
@@ -45,6 +45,9 @@ class License extends Component {
       return <Loading mining/>;
     }
 
+    if (!this.props.sntToken) {
+      return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
+    }
     if (this.props.isError) {
       return <ErrorInformation transaction retry={this.buyLicense}/>;
     }
