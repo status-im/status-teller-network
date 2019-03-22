@@ -190,6 +190,10 @@
       "title": "Transaction failed",
       "tip": "Try to retry it"
     },
+    "sntTokenError": {
+      "title": "Couldn't find SNT token",
+      "tip": "Switch to a network that supports SNT"
+    },
     "404": {
       "title": "Page not found",
       "tip": "The page your were looking for doesn't exist. Do you wish to go back to the previous page or the Home?",

@@ -34,7 +34,10 @@ export function *updateBalance({symbol, address}) {
   const token = yield select((state) => state.network.tokens[symbol]);
   let value;
   try {
-    if (token.address === zeroAddress) {
+    if (!token) {
+      yield put({type: UPDATE_BALANCE_FAILED, error: "token doesn't exist in this network"});
+      return;
+    } else if (token.address === zeroAddress) {
       value = yield web3.eth.getBalance(address);
     } else {
       const contract = new web3.eth.Contract(ERC20Token._jsonInterface, token.address);

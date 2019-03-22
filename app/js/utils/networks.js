@@ -593,6 +593,12 @@ export const Tokens = {
       decimals: 18
     },
     {
+      symbol: 'SNT',
+      name: "Status Network Token",
+      address: SNT.address.toLowerCase(),
+      decimals: 18
+    },
+    {
       name: "Moksha Coin",
       symbol: 'MOKSHA',
       decimals: 18,
