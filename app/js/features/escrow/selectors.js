@@ -4,6 +4,8 @@ import { getTradeStatus } from './helpers';
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
+export const getCreateEscrowId = state => state.escrow.createEscrowId;
+
 export const getTrades = (state) => {
   const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {
@@ -15,6 +17,19 @@ export const getTrades = (state) => {
       tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
     };
   });
+};
+
+export const getEscrow = (state) => {
+  const escrow = state.escrow.escrow;
+  if(!escrow) return null;
+
+  const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
+  return {
+    ...escrow,
+    token,
+    status: getTradeStatus(escrow),
+    tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
+  };
 };
 
 // TODO: move to new UI
