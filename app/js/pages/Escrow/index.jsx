@@ -31,14 +31,13 @@ class Escrow extends Component {
     if(!escrow){
       return <Loading/>;
     }
-
-
+    
     const isBuyer = escrow.buyer === address;
     
     return (
       <div className="escrow">
         { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller /> }
-        <EscrowDetail/>
+        <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
             <h3 className="mb-3">You are trading with</h3>
