@@ -39,8 +39,7 @@ Offer.defaultProps = {
 
 Offer.propTypes = {
   offer: PropTypes.object,
-  withDetail: PropTypes.bool,
-  hideIcon: PropTypes.bool
+  withDetail: PropTypes.bool
 };
 
 
