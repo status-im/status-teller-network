@@ -30,7 +30,7 @@ export function *doGetEscrows() {
       const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
       const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
       const seller = yield MetadataStore.methods.users(sellerId).call();
-      
+
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
       escrow.buyerInfo = buyer;
@@ -60,7 +60,10 @@ export function *doLoadArbitration({escrowId}) {
     const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
     const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
     const seller = yield MetadataStore.methods.users(sellerId).call();
+
+    const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
     
+    escrow.createDate = moment(events[0].returnValues.date * 1000).format("DD.MM.YY");
     escrow.escrowId = escrowId;
     escrow.seller = offer.owner;
     escrow.buyerInfo = buyer;

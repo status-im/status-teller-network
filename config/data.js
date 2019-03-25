@@ -100,6 +100,8 @@ module.exports = async (licensePrice, feeAmount, deps) => {
 
     
     console.log('Creating arbitrations');
+
+    
     await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;

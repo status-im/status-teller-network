@@ -14,13 +14,16 @@ import arbitration from '../../features/arbitration';
 import network from '../../features/network';
 
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
+
+import './index.scss';
+
 const getArbitrationStatus = status => {
   switch(status){
     case ARBITRATION_UNSOLVED: 
       return "open";
     case ARBITRATION_SOLVED_BUYER: 
     case ARBITRATION_SOLVED_SELLER:
-      return "open";
+      return "resolved";
     default:
       return "undetermined";
   }
@@ -36,7 +39,6 @@ class Arbitration extends Component {
   }
 
   render() {
-    console.log(this.props);
     const {escrow} = this.props;
 
     if(!escrow){
@@ -44,19 +46,22 @@ class Arbitration extends Component {
     }
     
     const status = getArbitrationStatus(escrow.arbitration.result);
-    
+
     return (
       <div className="escrow">
-        <h2>Dispute Details <span>{status}</span></h2>
-        <h4>TODO: Add arbitration motive here</h4>
-        <TradeParticipant address={escrow.arbitration.openBy} info={escrow.arbitration.openBy == escrow.buyer ? escrow.buyerInfo : escrow.sellerInfo} />
+        <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
+        <div className="arbitrationMotive">
+          TODO: Add arbitration motive here
+        </div>
+        <span className="triangle" />
+        <TradeParticipant address={escrow.arbitration.openBy} info={escrow.arbitration.openBy === escrow.buyer ? escrow.buyerInfo : escrow.sellerInfo} />
         <EscrowDetail escrow={escrow} />
         <h5 className="mt-4">Trade participants</h5>
         <TradeParticipant address={escrow.buyer} info={escrow.buyerInfo} />
         <TradeParticipant address={escrow.seller} info={escrow.sellerInfo} />
         <ReadChatLogs/>
-        <ContactUser username={escrow.buyerInfo.username} seed={escrow.buyer}/>
-        <ContactUser username={escrow.sellerInfo.username} seed={escrow.seller}/>
+        <ContactUser username={escrow.buyerInfo.username} seed={escrow.buyer} statusContactCode={escrow.buyerInfo.statusContactCode} />
+        <ContactUser username={escrow.sellerInfo.username} seed={escrow.seller} statusContactCode={escrow.sellerInfo.statusContactCode}  />
         <Row className="mt-4">
           <Col xs={3} />
           <Col xs={6}>
