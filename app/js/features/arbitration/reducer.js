@@ -5,10 +5,11 @@ import {
   RESOLVE_DISPUTE,
   RESOLVE_DISPUTE_PRE_SUCCESS,
   RESOLVE_DISPUTE_SUCCEEDED,
-  RESOLVE_DISPUTE_FAILED
+  RESOLVE_DISPUTE_FAILED,
+  LOAD_ARBITRATION_SUCCEEDED
 } from './constants';
 
-const DEFAULT_STATE = {escrows: []};
+const DEFAULT_STATE = {escrows: [], arbitration: null};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows = state.escrows;
@@ -53,6 +54,11 @@ function reducer(state = DEFAULT_STATE, action) {
           errorGet: '',
           loading: false
         }
+      };
+    case LOAD_ARBITRATION_SUCCEEDED: 
+      return {
+        ...state,
+        arbitration: action.escrow
       };
     default:
       return state;

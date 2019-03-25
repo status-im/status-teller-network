@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {Card} from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
 import Identicon from "../../../components/UserInformation/Identicon";
+import {Link} from "react-router-dom";
 
 class Disputes extends Component {
   renderTrades() {
@@ -10,9 +11,11 @@ class Disputes extends Component {
         this.props.disputes.map((dispute, index) => <Card key={index} body className="py-2 px-3 mb-3 shadow-sm">
           <div className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Identicon seed={dispute.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
-              <Identicon seed={dispute.seller} scale={5} className="align-middle rounded-circle bottomCircle border"/>
-              <span className="ml-2">{dispute.buyerInfo.username} & {dispute.sellerInfo.username}</span>
+              <Link to={"/arbitration/" + dispute.escrowId}>
+                <Identicon seed={dispute.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
+                <Identicon seed={dispute.seller} scale={5} className="align-middle rounded-circle bottomCircle border"/>
+                <span className="ml-2">{dispute.buyerInfo.username} & {dispute.sellerInfo.username}</span>
+              </Link>
             </span>
             <span className="flex-fill align-self-center text-right">
               {this.props.showDate && dispute.arbitration.createDate}

@@ -33,12 +33,14 @@ const Offer = ({offer, withDetail}) => (
 );
 
 Offer.defaultProps = {
-  withDetail: false
+  withDetail: false,
+  hideIcon: false
 };
 
 Offer.propTypes = {
   offer: PropTypes.object,
-  withDetail: PropTypes.bool
+  withDetail: PropTypes.bool,
+  hideIcon: PropTypes.bool
 };
 
 
