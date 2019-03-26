@@ -16,7 +16,7 @@ import {
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING,
-  GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED
+  GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED
 
 } from './constants';
 
@@ -157,6 +157,20 @@ export function *onGetEscrow() {
   yield takeEvery(GET_ESCROW, doGetEscrow);
 }
 
+export function *onGetFee() {
+  yield takeEvery(GET_FEE, doGetFee);
+}
+
+export function *doGetFee(){
+  try {
+    const fee = yield Escrow.methods.feeAmount().call();
+    return yield put({type: GET_FEE_SUCCEEDED, fee});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_FEE_FAILED, error: error.message});
+  }
+}
+
 export function *checkUserRating({address}) {
   try {
     address = address || web3.eth.defaultAccount;
@@ -206,5 +220,6 @@ export function *onAddUserRating() {
 
 export default [
   fork(onCreateEscrow), fork(onLoadEscrows), fork(onGetEscrow), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
-  fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess)
+  fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess),
+  fork(onGetFee)
 ];

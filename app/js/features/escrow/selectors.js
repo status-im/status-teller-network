@@ -32,6 +32,8 @@ export const getEscrow = (state) => {
   };
 };
 
+export const getFee = state => state.escrow.fee;
+
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;

@@ -20,31 +20,36 @@ class Escrow extends Component {
   constructor(props){
     super(props);
     props.getEscrow(props.escrowId);
-  }
-
-  componentDidMount() {
+    props.getFee();
   }
 
   render() {
-    const {escrow, address} = this.props;
-
+    const {escrow, fee, address} = this.props;
     if(!escrow){
       return <Loading/>;
     }
     
     const isBuyer = escrow.buyer === address;
     
+    const offer = escrow.offer;
+    
+    if(isBuyer){
+      offer.user = escrow.sellerInfo;
+    } else {
+      offer.user = escrow.buyerInfo;
+    }
+
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller /> }
+        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller escrow={escrow} fee={fee} /> }
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
             <h3 className="mb-3">You are trading with</h3>
-            <Offer offer={{owner: '0x12345678901234567890', user: { username: 'Anthony', location: 'London'}, currency: 'USD', token: { symbol: 'SNT'}}}/>
+            <Offer offer={offer}/>
           </Col>
         </Row>
-        <OpenChat/>
+        <OpenChat statusContactCode={offer.user.statusContactCode} />
         <CancelEscrow/>
         <OpenDispute/>
       </div>
@@ -54,10 +59,12 @@ class Escrow extends Component {
 
 Escrow.propTypes = {
   history: PropTypes.object,
-  address: PropTypes.string,
   escrow: PropTypes.object,
   escrowId: PropTypes.string,
-  getEscrow: PropTypes.func
+  getEscrow: PropTypes.func,
+  getFee: PropTypes.func,
+  fee: PropTypes.string,
+  address: PropTypes.string
 };
 
 
@@ -65,13 +72,15 @@ const mapStateToProps = (state, props) => {
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
-    escrow: escrow.selectors.getEscrow(state)
+    escrow: escrow.selectors.getEscrow(state),
+    fee: escrow.selectors.getFee(state)
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    getEscrow: escrow.actions.getEscrow
+    getEscrow: escrow.actions.getEscrow,
+    getFee: escrow.actions.getFee
   }
 )(withRouter(Escrow));

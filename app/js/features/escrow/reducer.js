@@ -2,7 +2,8 @@ import {
   CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW,
   RESET_CREATE_ESCROW_STATUS,
   LOAD_ESCROWS_SUCCEEDED,
-  GET_ESCROW_SUCCEEDED
+  GET_ESCROW_SUCCEEDED,
+  GET_FEE_SUCCEEDED
   // GET_ESCROWS_FAILED,
   // RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   // CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
@@ -26,7 +27,8 @@ const DEFAULT_STATE = {
   error: '',
   txHash: '',
   txHashList: '',
-  loadingList: false
+  loadingList: false,
+  fee: '0'
 };
 
 // eslint-disable-next-line complexity
@@ -62,6 +64,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: action.escrows
+      };
+    case GET_FEE_SUCCEEDED:
+      return {
+        ...state,
+        fee: action.fee
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

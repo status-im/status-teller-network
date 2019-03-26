@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
+import { fromTokenDecimals } from '../../../utils/numbers';
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -52,39 +53,92 @@ const Funding = () => (
   </React.Fragment>
 );
 
-const PreFund = () => (
+const PreFund = ({amount, asset, fee}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
     </span>
     <p className="h2 mt-4">You are about to send</p>
-    <p className="h2 text-success">2.0 ETH</p>
+    <p className="h2 text-success">{fromTokenDecimals(amount, asset.decimals)} {asset.symbol}</p>
+    { fee !== "0" && <Fragment>
     <p className="h2">+ our fee</p>
-    <p className="h2 text-success">1 SNT</p>
+    <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
+    </Fragment> }
     <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Fund</Button>
   </React.Fragment>
 );
 
-const Start = () => (
+PreFund.propTypes = {
+  amount: PropTypes.string,
+  asset: PropTypes.object,
+  fee: PropTypes.string
+};
+
+const Start = ({onClick}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={one} alt="one" />
     </span>
     <h2 className="mt-4">Waiting for you to fund the escrow</h2>
     <p>Before accepting the payment you must put the assets into an escrow</p>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Start</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={onClick}>Start</Button>
   </React.Fragment>
 );
 
-const CardEscrowSeller = () => (
-  <Card>
+Start.propTypes = {
+  onClick: PropTypes.func
+};
+
+class CardEscrowSeller extends Component {
+
+  state = {
+    step: 1
+  }
+
+  componentDidMount(){
+    const escrow = this.props.escrow;
+    let step;
+    switch(escrow.status){
+      case 'waiting':
+      default:
+        step = 1;
+    }
+    this.setState({step});
+  }
+
+  handleStepClick = () => {
+    let step = this.state.step;
+    step++;
+
+    this.setState({step});
+  }
+
+  render(){
+    const step = this.state.step;
+    const {escrow, fee} = this.props;
+
+    let component;
+    switch(step){
+      case 2:
+        component = <PreFund amount={escrow.tradeAmount} asset={escrow.token} fee={fee} />;
+        break;
+      case 1:
+      default: 
+        component = <Start onClick={this.handleStepClick} />;
+    }
+    
+
+    return <Card>
     <CardBody className="text-center p-5">
-      <PreFund/>
+      {component}
     </CardBody>
-  </Card>
-);
+  </Card>;
+  }
+}
 
 CardEscrowSeller.propTypes = {
+  escrow: PropTypes.object,
+  fee: PropTypes.string
 };
 
 export default CardEscrowSeller;
