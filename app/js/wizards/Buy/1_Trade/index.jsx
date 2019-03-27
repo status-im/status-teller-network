@@ -15,6 +15,7 @@ import OfferTrade from './components/OfferTrade';
 
 const MIN = 200;
 const MAX = 600;
+const ABOVE = '0';
 
 class Trade extends Component {
   constructor(props) {
@@ -60,11 +61,17 @@ class Trade extends Component {
     this.props.createEscrow(this.props.address, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer);
   };
 
+  _calcPrice = () => {
+    const marginPrice = this.props.offer.margin / 100 * this.props.price;
+    const calcPrice = this.props.price + (this.props.offer.marketType === ABOVE ? marginPrice : -marginPrice);
+    return calcPrice;
+  }
+
   onAssetChange = (assetQuantity) => {
     let currencyQuantity = 0;
     if(assetQuantity !== ""){ 
       assetQuantity = parseFloat(assetQuantity);
-      currencyQuantity = assetQuantity * this.props.price;
+      currencyQuantity = assetQuantity * this._calcPrice();
       this.validate(currencyQuantity, assetQuantity);
       if (isNaN(currencyQuantity)) {
         return;
@@ -77,7 +84,7 @@ class Trade extends Component {
     let assetQuantity = 0;
     if(currencyQuantity !== ""){ 
       currencyQuantity = parseFloat(currencyQuantity);
-      assetQuantity = currencyQuantity / this.props.price;
+      assetQuantity = currencyQuantity / this._calcPrice();
       this.validate(currencyQuantity, assetQuantity);
       if (isNaN(assetQuantity)) {
         return;
@@ -102,7 +109,7 @@ class Trade extends Component {
                       name={this.props.offer.user.username}
                       minFIAT={200}
                       maxFIAT={600}
-                      price={this.props.price}
+                      price={this._calcPrice()}
                       asset={this.props.offer.token.symbol}
                       currency={{id: this.props.offer.currency}}
                       onClick={this.postEscrow}
