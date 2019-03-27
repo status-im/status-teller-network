@@ -82,7 +82,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       gas = await approval.estimateGas({from: creatorAddress});
       await approval.send({from: creatorAddress, gas: gas + 1000});
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 123);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val});
       const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
@@ -110,7 +110,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       gas = await approval.estimateGas({from: creatorAddress});
       await approval.send({from: creatorAddress, gas: gas + 1000});
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 123);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val});
       receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
