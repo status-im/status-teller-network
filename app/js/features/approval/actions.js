@@ -10,4 +10,3 @@ export const approve = (tokenAddress,  contractToApprove, amount) => {
 };
 
 export const getSNTAllowance = () => ({ type: GET_SNT_ALLOWANCE});
-};
