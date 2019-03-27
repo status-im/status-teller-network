@@ -1,10 +1,29 @@
-import {fork, takeEvery} from 'redux-saga/effects';
-import {doTransaction} from '../../utils/saga';
+/* global web3 */
 
-import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED } from './constants';
+import {fork, put, takeEvery} from 'redux-saga/effects';
+import {doTransaction} from '../../utils/saga';
+import SNT from 'Embark/contracts/SNT';
+import Escrow from 'Embark/contracts/Escrow';
+
+
+import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, GET_SNT_ALLOWANCE, GET_SNT_ALLOWANCE_SUCCEEDED, GET_SNT_ALLOWANCE_FAILED } from './constants';
 
 export function *onApproveToken() {
   yield takeEvery(APPROVE_TOKEN, doTransaction.bind(null, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED));
 }
 
-export default [fork(onApproveToken)];
+export function *doGetSNTAllowance() {
+  try {
+    const allowance = yield SNT.methods.allowance(web3.eth.defaultAccount, Escrow.options.address).call();
+    yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, allowance});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, error: error.message});
+  }
+}
+
+export function *onGetSNTAllowance() {
+  yield takeEvery(GET_SNT_ALLOWANCE, doGetSNTAllowance);
+}
+
+export default [fork(onApproveToken), fork(onGetSNTAllowance)];

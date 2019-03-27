@@ -16,12 +16,14 @@ import FundEscrow from './components/FundEscrow';
 
 import escrow from '../../features/escrow';
 import network from '../../features/network';
+import approval from '../../features/approval';
 
 class Escrow extends Component {
   constructor(props){
     super(props);
     props.getEscrow(props.escrowId);
     props.getFee();
+    props.getSNTAllowance();
   }
 
   state = {
@@ -77,16 +79,18 @@ Escrow.propTypes = {
   getEscrow: PropTypes.func,
   getFee: PropTypes.func,
   fee: PropTypes.string,
-  address: PropTypes.string
+  address: PropTypes.string,
+  sntAllowance: PropTypes.string,
+  getSNTAllowance: PropTypes.func
 };
-
 
 const mapStateToProps = (state, props) => {
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
     escrow: escrow.selectors.getEscrow(state),
-    fee: escrow.selectors.getFee(state)
+    fee: escrow.selectors.getFee(state),
+    sntAllowance: approval.selectors.getSNTAllowance(state)
   };
 };
 
@@ -94,6 +98,7 @@ export default connect(
   mapStateToProps,
   {
     getEscrow: escrow.actions.getEscrow,
-    getFee: escrow.actions.getFee
+    getFee: escrow.actions.getFee,
+    getSNTAllowance: approval.actions.getSNTAllowance
   }
 )(withRouter(Escrow));

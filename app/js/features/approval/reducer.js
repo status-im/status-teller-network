@@ -1,8 +1,9 @@
-import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED } from './constants';
+import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED } from './constants';
 
 const DEFAULT_STATE = {
   error: '',
-  txHash: ''
+  txHash: '',
+  sntAllowance: null
 };
 
 // eslint-disable-next-line complexity
@@ -26,6 +27,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,...{
           error: ''
+        }
+      };
+    case GET_SNT_ALLOWANCE_SUCCEEDED: 
+      return {
+        ...state, ...{
+          sntAllowance: action.allowance
         }
       };
     default:

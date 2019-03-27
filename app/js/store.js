@@ -16,6 +16,7 @@ import escrow from './features/escrow';
 import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
+import approval from './features/approval';
 
 const persistConfig = {
   key: 'teller-network-store',
@@ -32,7 +33,8 @@ function *root() {
     ...escrow.saga,
     ...signature.saga,
     ...arbitration.saga,
-    ...metadata.saga
+    ...metadata.saga,
+    ...approval.saga
   ]);
 }
 
