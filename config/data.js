@@ -28,6 +28,14 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       return generateToken.send({from: main, gas});
     }));
 
+    console.log('Generate Standard Tokens');
+    const weiToken = 100 * Math.pow(10, 18);
+    await Promise.all(addresses.slice(0, 8).map(async (address) => {
+      const generateToken = deps.contracts.StandardToken.methods.mint(address, weiToken.toString());
+      const gas = await generateToken.estimateGas({from: main});
+      return generateToken.send({from: main, gas});
+    }));
+
     console.log('Buy Licenses...');
     await Promise.all(addresses.slice(1, 8).map(async (address) => {
       const buyLicense = deps.contracts.License.methods.buy().encodeABI();

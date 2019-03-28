@@ -1,4 +1,6 @@
 import SNT from 'Embark/contracts/SNT';
+import StandardToken from 'Embark/contracts/StandardToken';
+
 import { zeroAddress } from './address';
 
 export const Networks = {
@@ -581,6 +583,12 @@ export const Tokens = {
       symbol: 'SNT',
       name: "Status Network Token",
       address: SNT.address.toLowerCase(),
+      decimals: 18
+    },
+    {
+      symbol: 'BTC',
+      name: "Bottlecaps",
+      address: StandardToken.options.address,
       decimals: 18
     }
   ],
