@@ -1,4 +1,4 @@
-import { APPROVE_TOKEN, GET_SNT_ALLOWANCE } from './constants';
+import { APPROVE_TOKEN, GET_SNT_ALLOWANCE, GET_TOKEN_ALLOWANCE } from './constants';
 import ERC20Token from 'Embark/contracts/ERC20Token';
 import Escrow from 'Embark/contracts/Escrow';
 
@@ -12,3 +12,6 @@ export const approve = (tokenAddress, amount) => {
 };
 
 export const getSNTAllowance = () => ({ type: GET_SNT_ALLOWANCE});
+
+export const getTokenAllowance = (token) => ({ type: GET_TOKEN_ALLOWANCE, token});
+

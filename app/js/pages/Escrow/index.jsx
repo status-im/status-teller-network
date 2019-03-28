@@ -34,6 +34,7 @@ class Escrow extends Component {
     props.getEscrow(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
+    props.getTokenAllowance(props.escrow.offer.asset);
   }
 
   state = {
@@ -70,8 +71,18 @@ class Escrow extends Component {
     this.props.approve(token, '0');
   }
 
+  getOffer = (escrow, isBuyer) => {
+    const offer = escrow.offer;
+    if(isBuyer){
+      offer.user = escrow.sellerInfo;
+    } else {
+      offer.user = escrow.buyerInfo;
+    }
+    return offer;
+  }
+
   render() {
-    const {escrow, fee, address, sntAllowance, loading, tokens} = this.props;
+    const {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -81,28 +92,32 @@ class Escrow extends Component {
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
     
+    const requiredToken = escrow.tradeAmount;
+    const isTokenApproved = toBN(tokenAllowance).gte(toBN(requiredToken));
+    const shouldResetToken = toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
+
     const isBuyer = false;// escrow.buyer === address;
     
-    const offer = escrow.offer;
-    if(isBuyer){
-      offer.user = escrow.sellerInfo;
-    } else {
-      offer.user = escrow.buyerInfo;
-    }
+    const offer = this.getOffer(escrow, isBuyer);
+    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
 
     // Show token approval UI
     if(showApproveFundsScreen) {
       if((!isSNTapproved || shouldResetSNT)) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
-      
+        
+      /* eslint-disable no-alert */
+
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
-          console.log("Call escrow.fund with SNT amount");
+          alert("Call escrow.fund with SNT amount");
         } else {
-          return <ApproveTokenFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
+          if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;
+
+          alert("Call escrow.approveAndCall with custom token");
         }
       } else {
         // ETH
-        console.log("Call escrow.fund with ETH amount");
+        alert("Call escrow.fund with ETH amount");
       }
     } 
    
@@ -133,7 +148,9 @@ Escrow.propTypes = {
   fee: PropTypes.string,
   address: PropTypes.string,
   sntAllowance: PropTypes.string,
+  tokenAllowance: PropTypes.string,
   getSNTAllowance: PropTypes.func,
+  getTokenAllowance: PropTypes.func,
   tokens: PropTypes.object,
   approve: PropTypes.func,
   loading: PropTypes.bool
@@ -146,6 +163,7 @@ const mapStateToProps = (state, props) => {
     escrow: escrow.selectors.getEscrow(state),
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
+    tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
     loading: approval.selectors.isLoading(state)
   };
@@ -157,6 +175,7 @@ export default connect(
     getEscrow: escrow.actions.getEscrow,
     getFee: escrow.actions.getFee,
     getSNTAllowance: approval.actions.getSNTAllowance,
+    getTokenAllowance: approval.actions.getTokenAllowance,
     approve: approval.actions.approve
   }
 )(withRouter(Escrow));

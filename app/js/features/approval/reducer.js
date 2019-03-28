@@ -1,9 +1,10 @@
-import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED } from './constants';
+import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
 
 const DEFAULT_STATE = {
   error: '',
   txHash: '',
   sntAllowance: null,
+  tokenAllowance: null,
   loading: false
 };
 
@@ -36,6 +37,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           sntAllowance: action.allowance
+        }
+      };
+    case GET_TOKEN_ALLOWANCE_SUCCEEDED: 
+      return {
+        ...state, ...{
+          tokenAllowance: action.allowance
         }
       };
     default:
