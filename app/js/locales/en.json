@@ -113,6 +113,7 @@
     "higherThan": "This field needs to be higher than {{min}}",
     "higherEqThan": "This field needs to be higher or equal than {{min}}",
     "isAddress": "This field needs to be a valid Ethereum address",
+    "isContactCode": "This field needs to be a valid Contact Code",
     "isJSON": "This field needs to be a valid JSON string",
     "isEscrowPaymentSignature": "Missing some of the needed properties. Needed are: `escrowId`, `message` and `type`"
   },

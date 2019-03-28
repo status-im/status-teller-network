@@ -4,7 +4,7 @@ import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {withNamespaces} from "react-i18next";
 import PropTypes from 'prop-types';
-import {required} from "../../validators";
+import {required, isContactCode} from "../../validators";
 
 class EditContact extends Component {
   render() {
@@ -34,7 +34,7 @@ class EditContact extends Component {
                    value={statusContactCode}
                    className="form-control"
                    onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
-                   validations={[required]}/>
+                   validations={[required, isContactCode]}/>
             {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
         </Form>

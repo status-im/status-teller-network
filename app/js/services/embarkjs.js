@@ -17,8 +17,7 @@ export function onReady() {
 export function getEnsAddress(name) {
   return new Promise(async (resolve, reject) => {
     try {
-      if (web3.utils.isAddress(name)|| 
-        contactCodeRegExp.test(name)) {
+      if (contactCodeRegExp.test(name)) {
         return resolve(name);
       }
       if (name.indexOf('.') === -1) {
