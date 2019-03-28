@@ -58,13 +58,13 @@ const PreFund = ({amount, asset, fee, showApproveScreen, showFundButton}) => (
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
     </span>
-    <p className="h2 mt-4">You are about to send</p>
+    <p className="h2 mt-4">{showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
     <p className="h2 text-success">{fromTokenDecimals(amount, asset.decimals)} {asset.symbol}</p>
     { fee !== "0" && <Fragment>
     <p className="h2">+ our fee</p>
     <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
     </Fragment> }
-    <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token' }</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token Transfer(s)' }</Button>
   </React.Fragment>
 );
 
@@ -72,7 +72,8 @@ PreFund.propTypes = {
   amount: PropTypes.string,
   asset: PropTypes.object,
   fee: PropTypes.string,
-  showFundingScreen: PropTypes.func
+  showApproveScreen: PropTypes.func,
+  showFundButton: PropTypes.bool
 };
 
 const Start = ({onClick}) => (
@@ -98,7 +99,6 @@ class CardEscrowSeller extends Component {
 
   componentDidMount(){
     const escrow = this.props.escrow;
-    const showFundButton = this.props.showFundButton;
 
     let step;
     switch(escrow.status){

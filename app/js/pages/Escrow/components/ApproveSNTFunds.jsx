@@ -1,6 +1,7 @@
 /* global web3 */
 import React from 'react';
 import {Row, Col, Button} from "reactstrap";
+import PropTypes from 'prop-types';
 
 const ApproveSNTFunds = ({requiredSNT, sntAllowance, shouldResetSNT, handleApprove, handleReset}) => <div>
   <Row>
@@ -13,12 +14,20 @@ const ApproveSNTFunds = ({requiredSNT, sntAllowance, shouldResetSNT, handleAppro
   <Row className="mt-4">
   <Col xs={3} />
   <Col xs={6}>
-    {shouldResetSNT && <Button color="primary" block onClick={handleReset}>reset allowance</Button>}
-    {!shouldResetSNT && <Button color="primary" block onClick={handleApprove}>approve</Button>}
+    {shouldResetSNT && <Button color="primary" block onClick={handleReset}>Reset allowance</Button>}
+    {!shouldResetSNT && <Button color="primary" block onClick={handleApprove}>Approve</Button>}
 
   </Col>
   <Col xs={3} />
   </Row>
 </div>;
+
+ApproveSNTFunds.propTypes = {
+  requiredSNT: PropTypes.string,
+  sntAllowance: PropTypes.string,
+  shouldResetSNT: PropTypes.bool,
+  handleApprove: PropTypes.func,
+  handleReset: PropTypes.func
+};
 
 export default ApproveSNTFunds;

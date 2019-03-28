@@ -1,6 +1,7 @@
 /* global web3 */
 import React from 'react';
 import {Row, Col, Button} from "reactstrap";
+import PropTypes from 'prop-types';
 
 const ApproveTokenFunds = ({token, requiredToken, tokenAllowance, shouldResetToken, handleApprove, handleReset}) => <div>
   <Row>
@@ -13,12 +14,21 @@ const ApproveTokenFunds = ({token, requiredToken, tokenAllowance, shouldResetTok
   <Row className="mt-4">
   <Col xs={3} />
   <Col xs={6}>
-    {shouldResetToken && <Button color="primary" block onClick={handleReset}>reset allowance</Button>}
-    {!shouldResetToken && <Button color="primary" block onClick={handleApprove}>approve</Button>}
+    {shouldResetToken && <Button color="primary" block onClick={handleReset}>Reset allowance</Button>}
+    {!shouldResetToken && <Button color="primary" block onClick={handleApprove}>Approve</Button>}
 
   </Col>
   <Col xs={3} />
   </Row>
 </div>;
+
+ApproveTokenFunds.propTypes = {
+  token: PropTypes.object,
+  requiredToken: PropTypes.string,
+  tokenAllowance: PropTypes.string,
+  shouldResetToken: PropTypes.bool,
+  handleApprove: PropTypes.func,
+  handleReset: PropTypes.func
+};
 
 export default ApproveTokenFunds;
