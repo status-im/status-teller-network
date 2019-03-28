@@ -99,12 +99,15 @@ class CardEscrowSeller extends Component {
 
   componentDidMount(){
     const escrow = this.props.escrow;
+    const showFundButton = this.props.showFundButton;
+
     let step;
     switch(escrow.status){
       case 'waiting':
       default:
         step = 1;
     }
+
     this.setState({step});
   }
 
