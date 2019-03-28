@@ -25,16 +25,15 @@ import approval from '../../features/approval';
 const {toBN, toChecksumAddress} = web3.utils;
 
 class Escrow extends Component {
-  constructor(props){
-    super(props);
-    this.loadData(props);
+  componentDidMount(){
+    this.loadData(this.props);
   }
 
   loadData(props){
     props.getEscrow(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
-    props.getTokenAllowance(props.escrow.offer.asset);
+    if(props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
   }
 
   state = {
@@ -46,7 +45,7 @@ class Escrow extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.loading && !this.props.loading) { // Reload allowance information
+    if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null)) { // Reload allowance information
       this.loadData(this.props);
     }
   }
@@ -92,14 +91,17 @@ class Escrow extends Component {
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
     
+    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+
     const requiredToken = escrow.tradeAmount;
-    const isTokenApproved = toBN(tokenAllowance).gte(toBN(requiredToken));
-    const shouldResetToken = toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
+    const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
+    const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
     const isBuyer = false;// escrow.buyer === address;
     
     const offer = this.getOffer(escrow, isBuyer);
-    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+
+    let showFundButton = isSNTapproved && isTokenApproved; // TODO: All required tokens approved. Show fund button and call the escrow function. See above   
 
     // Show token approval UI
     if(showApproveFundsScreen) {
@@ -110,20 +112,23 @@ class Escrow extends Component {
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
           alert("Call escrow.fund with SNT amount");
+          showFundButton = true;
         } else {
           if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;
 
           alert("Call escrow.approveAndCall with custom token");
+          showFundButton = true;
         }
       } else {
         // ETH
         alert("Call escrow.fund with ETH amount");
+        showFundButton = true;
       }
-    } 
+    }
    
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller escrow={escrow} fee={fee} showApproveScreen={this.showApproveScreen} /> }
+        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller escrow={escrow} fee={fee} showFundButton={showFundButton} showApproveScreen={this.showApproveScreen} /> }
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>

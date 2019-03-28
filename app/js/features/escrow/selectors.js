@@ -11,7 +11,6 @@ export const getCreateEscrowId = state => state.escrow.createEscrowId;
 export const getTrades = (state) => {
   const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {
-    
     const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
     return {
       ...escrow,
