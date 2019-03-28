@@ -73,7 +73,7 @@ class Escrow extends Component {
   getOffer = (escrow, isBuyer) => {
     const offer = escrow.offer;
     if(isBuyer){
-      offer.user = escrow.sellerInfo;
+      offer.user = escrow.seller;
     } else {
       offer.user = escrow.buyerInfo;
     }
@@ -97,7 +97,7 @@ class Escrow extends Component {
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
-    const isBuyer = false;// escrow.buyer === address;
+    const isBuyer = escrow.buyer === address;
     
     const offer = this.getOffer(escrow, isBuyer);
 

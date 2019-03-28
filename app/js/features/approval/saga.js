@@ -2,6 +2,7 @@
 
 import {fork, put, takeEvery} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
+import {zeroAddress} from '../../utils/address';
 import SNT from 'Embark/contracts/SNT';
 import Escrow from 'Embark/contracts/Escrow';
 import ERC20Token from 'Embark/contracts/ERC20Token';
@@ -24,6 +25,8 @@ export function *doGetSNTAllowance() {
 }
 
 export function *doGetTokenAllowance({token}) {
+  if(token === zeroAddress) return;
+  
   try {
     ERC20Token.options.address = token;
     const allowance = yield ERC20Token.methods.allowance(web3.eth.defaultAccount, Escrow.options.address).call();
