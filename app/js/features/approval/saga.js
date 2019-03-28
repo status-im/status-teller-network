@@ -18,7 +18,7 @@ export function *doGetSNTAllowance() {
     yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, allowance});
   } catch (error) {
     console.error(error);
-    yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, error: error.message});
+    yield put({type: GET_SNT_ALLOWANCE_FAILED, error: error.message});
   }
 }
 

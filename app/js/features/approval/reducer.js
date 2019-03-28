@@ -3,7 +3,8 @@ import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOW
 const DEFAULT_STATE = {
   error: '',
   txHash: '',
-  sntAllowance: null
+  sntAllowance: null,
+  loading: false
 };
 
 // eslint-disable-next-line complexity
@@ -20,13 +21,15 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           error: '',
-          txHash: action.txHash
+          txHash: action.txHash,
+          loading: true
         }
       };
     case APPROVE_SUCCEEDED:
       return {
         ...state,...{
-          error: ''
+          error: '',
+          loading: false
         }
       };
     case GET_SNT_ALLOWANCE_SUCCEEDED: 

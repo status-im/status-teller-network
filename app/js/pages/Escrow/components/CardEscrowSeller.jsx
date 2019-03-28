@@ -53,7 +53,7 @@ const Funding = () => (
   </React.Fragment>
 );
 
-const PreFund = ({amount, asset, fee, showFundingScreen}) => (
+const PreFund = ({amount, asset, fee, showApproveScreen}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
@@ -64,7 +64,7 @@ const PreFund = ({amount, asset, fee, showFundingScreen}) => (
     <p className="h2">+ our fee</p>
     <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
     </Fragment> }
-    <Button color="primary" className="btn-lg mt-3" onClick={showFundingScreen}>Fund</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>Fund</Button>
   </React.Fragment>
 );
 
@@ -116,12 +116,12 @@ class CardEscrowSeller extends Component {
 
   render(){
     const step = this.state.step;
-    const {escrow, fee, showFundingScreen} = this.props;
+    const {escrow, fee, showApproveScreen} = this.props;
 
     let component;
     switch(step){
       case 2:
-        component = <PreFund amount={escrow.tradeAmount} asset={escrow.token} fee={fee} showFundingScreen={showFundingScreen} />;
+        component = <PreFund amount={escrow.tradeAmount} asset={escrow.token} fee={fee} showApproveScreen={showApproveScreen} />;
         break;
       case 1:
       default: 
@@ -140,7 +140,7 @@ class CardEscrowSeller extends Component {
 CardEscrowSeller.propTypes = {
   escrow: PropTypes.object,
   fee: PropTypes.string,
-  showFundingScreen: PropTypes.func
+  showApproveScreen: PropTypes.func
 };
 
 export default CardEscrowSeller;
