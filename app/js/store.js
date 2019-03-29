@@ -4,7 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import { all } from 'redux-saga/effects';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 
 import history from './history';
 import rootReducer from './reducer';
@@ -20,8 +20,8 @@ import metadata from './features/metadata';
 const persistConfig = {
   key: 'teller-network-store',
   storage,
-  stateReconciler: hardSet,
-  blacklist: ['network']
+  stateReconciler: autoMergeLevel2,
+  blacklist: ["network"]
 };
 
 function *root() {
