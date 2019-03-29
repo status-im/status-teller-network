@@ -1,4 +1,3 @@
-/*global web3*/
 import EmbarkJS from 'Embark/EmbarkJS';
 import {contactCodeRegExp} from '../utils/address';
 
