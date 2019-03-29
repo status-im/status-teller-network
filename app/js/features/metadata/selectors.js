@@ -1,3 +1,7 @@
+/* global web3 */
+
+const toChecksumAddress = web3.utils.toChecksumAddress;
+
 import {
   PAYMENT_METHODS, MARKET_TYPES
 } from './constants';
@@ -7,7 +11,7 @@ function enhanceOffer(state, offer) {
     ...offer,
     paymentMethodsForHuman: offer.paymentMethods.map((i) => PAYMENT_METHODS[i]).join(', '),
     rateForHuman: `${offer.margin}% ${MARKET_TYPES[offer.marketType]} CryptoCompare`,
-    token: Object.values(state.network.tokens).find((token) => token.address === offer.asset)
+    token: Object.values(state.network.tokens).find((token) => toChecksumAddress(token.address) === toChecksumAddress(offer.asset))
   };
 }
 

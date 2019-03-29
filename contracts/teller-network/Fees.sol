@@ -56,14 +56,14 @@ contract Fees is Ownable {
     /**
      * @notice Pay fees for a transaction or element id
      */
-    function payFee(uint _id) internal {
+    function payFee(address _from, uint _id) internal {
         if(feePaid[_id]) return;
 
         feePaid[_id] = true;
         feeBalance += feeAmount;
-
-        require(feeToken.allowance(msg.sender, address(this)) >= feeAmount, "Allowance not set for this contract for specified amount");
-        require(feeToken.transferFrom(msg.sender, address(this), feeAmount), "Unsuccessful token transfer");
-    }
+        
+        require(feeToken.allowance(_from, address(this)) >= feeAmount, "Allowance not set for this contract for specified fee");
+        require(feeToken.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
+    }	    
 
 }

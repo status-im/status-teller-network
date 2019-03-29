@@ -53,25 +53,27 @@ const Funding = () => (
   </React.Fragment>
 );
 
-const PreFund = ({amount, asset, fee}) => (
+const PreFund = ({amount, asset, fee, showApproveScreen, showFundButton}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
     </span>
-    <p className="h2 mt-4">You are about to send</p>
+    <p className="h2 mt-4">{showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
     <p className="h2 text-success">{fromTokenDecimals(amount, asset.decimals)} {asset.symbol}</p>
     { fee !== "0" && <Fragment>
     <p className="h2">+ our fee</p>
     <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
     </Fragment> }
-    <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Fund</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token Transfer(s)' }</Button>
   </React.Fragment>
 );
 
 PreFund.propTypes = {
   amount: PropTypes.string,
   asset: PropTypes.object,
-  fee: PropTypes.string
+  fee: PropTypes.string,
+  showApproveScreen: PropTypes.func,
+  showFundButton: PropTypes.bool
 };
 
 const Start = ({onClick}) => (
@@ -97,12 +99,14 @@ class CardEscrowSeller extends Component {
 
   componentDidMount(){
     const escrow = this.props.escrow;
+
     let step;
     switch(escrow.status){
       case 'waiting':
       default:
         step = 1;
     }
+
     this.setState({step});
   }
 
@@ -114,13 +118,15 @@ class CardEscrowSeller extends Component {
   }
 
   render(){
-    const step = this.state.step;
-    const {escrow, fee} = this.props;
+    let step = this.state.step;
+    const {escrow, fee, showApproveScreen, showFundButton} = this.props;
+
+    if(showFundButton) step = 2;
 
     let component;
     switch(step){
       case 2:
-        component = <PreFund amount={escrow.tradeAmount} asset={escrow.token} fee={fee} />;
+        component = <PreFund showFundButton={showFundButton} amount={escrow.tradeAmount} asset={escrow.token} fee={fee} showApproveScreen={showApproveScreen} />;
         break;
       case 1:
       default: 
@@ -138,7 +144,9 @@ class CardEscrowSeller extends Component {
 
 CardEscrowSeller.propTypes = {
   escrow: PropTypes.object,
-  fee: PropTypes.string
+  fee: PropTypes.string,
+  showApproveScreen: PropTypes.func,
+  showFundButton: PropTypes.bool
 };
 
 export default CardEscrowSeller;

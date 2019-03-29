@@ -104,9 +104,13 @@ contract Escrow is Pausable, MessageSigned, Fees {
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
     function fund(uint _escrowId, uint _tokenAmount, uint _expirationTime) public payable whenNotPaused {
+        _fund(msg.sender, _escrowId, _tokenAmount, _expirationTime);
+    }
+
+    function _fund(address _from, uint _escrowId, uint _tokenAmount, uint _expirationTime) internal whenNotPaused {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
-        require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create escrow transactions");
+        require(license.isLicenseOwner(_from), "Must be a valid seller to create escrow transactions");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
@@ -114,23 +118,23 @@ contract Escrow is Pausable, MessageSigned, Fees {
         address token;
         (token, , , , , seller) = metadataStore.offer(trx.offerId);
 
-        require(msg.sender == seller, "Only the seller can fund this escrow");
+        require(_from == seller, "Only the seller can fund this escrow");
         require(trx.status == EscrowStatus.CREATED || trx.status == EscrowStatus.FUNDED, "Invalid escrow status");
+
+        payFee(_from, _escrowId);
 
         if(token == address(0)){
             require(msg.value == _tokenAmount, "ETH amount is required");
         } else {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
             ERC20Token erc20token = ERC20Token(token);
-            require(erc20token.allowance(msg.sender, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
-            require(erc20token.transferFrom(msg.sender, address(this), _tokenAmount), "Unsuccessful token transfer");
+            require(erc20token.allowance(_from, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
+            require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
 
         transactions[_escrowId].tokenAmount += _tokenAmount;
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
-
-        payFee(_escrowId);
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
     }
@@ -468,5 +472,52 @@ contract Escrow is Pausable, MessageSigned, Fees {
     function getTransactionsIdByOfferId(uint _offerId) public view returns(uint[] memory) {
         return transactionsByOfferId[_offerId];
     }
-}
 
+    /**
+     * @notice Support for "approveAndCall". Callable only by the fee token.
+     * @param _from Who approved.
+     * @param _amount Amount being approved, need to be equal `getPrice()`.
+     * @param _token Token being approved, need to be equal `token()`.
+     * @param _data Abi encoded data with selector of `register(bytes32,address,bytes32,bytes32)`.
+     */
+    function receiveApproval(address _from, uint256 _amount, address _token, bytes memory _data) public {
+        require(_amount >= feeAmount, "Amount should include fee");
+        require(_token == address(feeToken), "Wrong token");
+        require(_token == address(msg.sender), "Wrong call");
+        require(_data.length == 100, "Wrong data length");
+
+        bytes4 sig;
+        bytes32 value1;
+        bytes32 value2;
+        bytes32 value3;
+
+        (sig, value1, value2, value3) = abiDecodeRegister(_data);
+
+        if (sig == bytes4(0x111d7d50)){
+            _fund(_from, uint256(value1), uint256(value2), uint256(value3));
+        } else {
+            revert("Wrong method selector");
+        }
+
+    }
+
+    /**
+     * @dev Decodes abi encoded data with selector for "fund".
+     * @param _data Abi encoded data.
+     * @return Decoded registry call.
+     */
+    function abiDecodeRegister(bytes memory _data) private pure returns (
+            bytes4 sig,
+            bytes32 value1,
+            bytes32 value2,
+            bytes32 value3
+        )
+    {
+        assembly {
+            sig := mload(add(_data, add(0x20, 0)))
+            value1 := mload(add(_data, 36))
+            value2 := mload(add(_data, 68))
+            value3 := mload(add(_data, 100))
+        }
+    }
+}

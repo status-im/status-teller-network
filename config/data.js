@@ -28,6 +28,14 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       return generateToken.send({from: main, gas});
     }));
 
+    console.log('Generate Standard Tokens');
+    const weiToken = 100 * Math.pow(10, 18);
+    await Promise.all(addresses.slice(0, 8).map(async (address) => {
+      const generateToken = deps.contracts.StandardToken.methods.mint(address, weiToken.toString());
+      const gas = await generateToken.estimateGas({from: main});
+      return generateToken.send({from: main, gas});
+    }));
+
     console.log('Buy Licenses...');
     await Promise.all(addresses.slice(1, 8).map(async (address) => {
       const buyLicense = deps.contracts.License.methods.buy().encodeABI();
@@ -82,7 +90,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       gas = await approval.estimateGas({from: creatorAddress});
       await approval.send({from: creatorAddress, gas: gas + 1000});
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 123);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val});
       const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
@@ -110,7 +118,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       gas = await approval.estimateGas({from: creatorAddress});
       await approval.send({from: creatorAddress, gas: gas + 1000});
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 123);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val});
       receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
       const created = receipt.events.Created;
