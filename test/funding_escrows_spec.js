@@ -58,7 +58,7 @@ contract("Escrow Funding", function() {
   const {toBN} = web3.utils;
   const value = web3.utils.toWei("0.1", "ether");
 
-  let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 1000;
+  let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
   
   let receipt, escrowId, ethOfferId, tokenOfferId, SNTOfferId;
   
