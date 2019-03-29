@@ -1,0 +1,42 @@
+.arbitrationStatus {
+  border-radius: 4px;
+  background: #000;
+  text-transform: uppercase;
+  color: #fff;
+  font-family: Inter;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 11px;
+  line-height: normal;
+  text-align: center;
+  letter-spacing: 1px;
+  padding: 3px 10px;
+}
+
+.arbitrationStatus.open {
+  background: #44D058;
+}
+
+.arbitrationStatus.resolved {
+  background: #4360DF;
+}
+
+h5 {
+  font-size: 17px !important;
+  font-weight: bold !important;
+  padding-bottom: .8rem !important;
+}
+
+.arbitrationMotive {
+  background: #EEF2F5;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.triangle {
+  width: 20px;
+  height: 8px;
+  background: url(/images/diamond.png) no-repeat bottom center;
+  display: block;
+  margin: 0 0 5px 20px;
+}

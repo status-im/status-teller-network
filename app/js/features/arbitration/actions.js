@@ -1,4 +1,4 @@
-import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED} from './constants';
+import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, LOAD_ARBITRATION} from './constants';
 import Escrow from 'Embark/contracts/Escrow';
 
 export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
@@ -15,4 +15,8 @@ export const resolveDispute = (escrowId, result) => {
     escrowId,
     toSend: Escrow.methods.setArbitrationResult(escrowId, result)
   };
+};
+
+export const loadArbitration = (escrowId) => {
+  return {type: LOAD_ARBITRATION, escrowId};
 };
