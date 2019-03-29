@@ -8,6 +8,7 @@ import network from "../../../features/network";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
 import Loading from '../../../components/Loading';
+import {contactCodeRegExp} from '../../../utils/address';
 
 class Contact extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ class Contact extends Component {
       this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
       return this.props.wizard.next();
     }
+    this.validate(this.props.username, this.props.statusContactCode);
     this.setState({ready: true});
   }
 
@@ -40,7 +42,11 @@ class Contact extends Component {
 
   validate(username, statusContactCode) {
     if (username && statusContactCode) {
-      return this.props.footer.enableNext();
+      if(statusContactCode.startsWith("0x") && !contactCodeRegExp.test(statusContactCode)){
+        this.props.footer.disableNext();
+      } else {
+        return this.props.footer.enableNext();
+      }
     }
     this.props.footer.disableNext();
   }

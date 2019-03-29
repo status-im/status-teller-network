@@ -2,6 +2,7 @@ import React from 'react';
 import Web3 from 'web3';
 import {FormFeedback} from "reactstrap";
 import {NamespacesConsumer} from 'react-i18next';
+import {contactCodeRegExp} from './utils/address';
 
 export const required = (value) => {
   if (!value.toString().trim().length) {
@@ -65,6 +66,14 @@ export const isAddress = (value) => {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.isAddress')}</FormFeedback>}
     </NamespacesConsumer>;
+  }
+};
+
+export const isContactCode = (value) => {
+  if (value.startsWith("0x") && !contactCodeRegExp.test(value)) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.isContactCode')}</FormFeedback>}
+      </NamespacesConsumer>;
   }
 };
 

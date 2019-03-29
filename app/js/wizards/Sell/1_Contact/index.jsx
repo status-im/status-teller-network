@@ -10,6 +10,8 @@ import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 import network from '../../../features/network';
 
+import {contactCodeRegExp} from '../../../utils/address';
+
 class Contact extends Component {
   constructor(props) {
     super(props);
@@ -43,7 +45,11 @@ class Contact extends Component {
 
   validate(username, statusContactCode) {
     if (username && statusContactCode) {
-      return this.props.footer.enableNext();
+      if(statusContactCode.startsWith("0x") && !contactCodeRegExp.test(statusContactCode)){
+        this.props.footer.disableNext();
+      } else {
+        return this.props.footer.enableNext();
+      }
     }
     this.props.footer.disableNext();
   }
