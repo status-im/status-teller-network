@@ -65,6 +65,7 @@ exports[`EditContact should render correctly 1`] = `
         validations={
           Array [
             [Function],
+            [Function],
           ]
         }
       />
