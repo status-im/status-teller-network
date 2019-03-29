@@ -3,7 +3,9 @@ import {
   RESET_CREATE_ESCROW_STATUS,
   LOAD_ESCROWS_SUCCEEDED,
   GET_ESCROW_SUCCEEDED,
-  GET_FEE_SUCCEEDED
+  GET_FEE_SUCCEEDED,
+  FUND_ESCROW_FAILED, FUND_ESCROW_SUCCEEDED, FUND_ESCROW,
+  RESET_FUND_STATUS
   // GET_ESCROWS_FAILED,
   // RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   // CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
@@ -16,6 +18,7 @@ import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
+  fundEscrowStatus: States.none,
   escrows: [],
 
   //Migrate to new UI
@@ -38,6 +41,21 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         createEscrowStatus: States.none
+      };
+    case FUND_ESCROW:
+      return {
+        ...state,
+        fundEscrowStatus: States.pending
+      };
+    case FUND_ESCROW_FAILED:
+      return {
+        ...state,
+        fundEscrowStatus: States.error
+      };
+    case FUND_ESCROW_SUCCEEDED:
+      return {
+        ...state,
+        fundEscrowStatus: States.success
       };
     case CREATE_ESCROW:
       return {
@@ -69,6 +87,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fee: action.fee
+      };
+    case RESET_FUND_STATUS: 
+      return {
+        ...state,
+        fundEscrowStatus: States.none
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

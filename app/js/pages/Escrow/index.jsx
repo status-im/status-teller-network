@@ -33,6 +33,8 @@ class Escrow extends Component {
     props.getEscrow(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
+    props.resetFundingStatus();
+
     if(props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
   }
 
@@ -81,7 +83,7 @@ class Escrow extends Component {
   }
 
   render() {
-    const {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -97,7 +99,7 @@ class Escrow extends Component {
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
-    const isBuyer = escrow.buyer === address;
+    const isBuyer = false; //escrow.buyer === address;
     
     const offer = this.getOffer(escrow, isBuyer);
 
@@ -107,28 +109,27 @@ class Escrow extends Component {
     if(showApproveFundsScreen) {
       if((!isSNTapproved || shouldResetSNT)) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
         
-      /* eslint-disable no-alert */
-
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
-          alert("Call escrow.fund with SNT amount");
           showFundButton = true;
         } else {
           if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;
-
-          alert("Call escrow.approveAndCall with custom token");
           showFundButton = true;
         }
-      } else {
-        // ETH
-        alert("Call escrow.fund with ETH amount");
+      } else { // ETH
         showFundButton = true;
       }
     }
-   
+
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller escrow={escrow} fee={fee} showFundButton={showFundButton} showApproveScreen={this.showApproveScreen} /> }
+        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={fundStatus === "pending"} 
+                                                            showFunded={fundStatus === "success"} 
+                                                            escrow={escrow} 
+                                                            fee={fee} 
+                                                            showFundButton={showFundButton} 
+                                                            showApproveScreen={this.showApproveScreen} 
+                                                            fundAction={() => { fundEscrow(escrow, fee); } } /> }
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
@@ -158,7 +159,10 @@ Escrow.propTypes = {
   getTokenAllowance: PropTypes.func,
   tokens: PropTypes.object,
   approve: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  fundEscrow: PropTypes.func,
+  fundStatus: PropTypes.string,
+  resetFundingStatus: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -170,7 +174,8 @@ const mapStateToProps = (state, props) => {
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
-    loading: approval.selectors.isLoading(state)
+    loading: approval.selectors.isLoading(state),
+    fundStatus: escrow.selectors.getFundEscrowStatus(state)
   };
 };
 
@@ -181,6 +186,8 @@ export default connect(
     getFee: escrow.actions.getFee,
     getSNTAllowance: approval.actions.getSNTAllowance,
     getTokenAllowance: approval.actions.getTokenAllowance,
-    approve: approval.actions.approve
+    approve: approval.actions.approve,
+    fundEscrow: escrow.actions.fundEscrow,
+    resetFundingStatus: escrow.actions.resetFundingStatus
   }
 )(withRouter(Escrow));
