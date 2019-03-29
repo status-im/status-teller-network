@@ -4,10 +4,10 @@ import {
   ADD_USER_RATING, USER_RATING, GET_ESCROW
 } from './constants';
 import Escrow from 'Embark/contracts/Escrow';
-import { addDecimals } from '../../utils/numbers';
+import { toTokenDecimals } from '../../utils/numbers';
 
 export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
-  tradeAmount = addDecimals(tradeAmount, offer.token.decimals);
+  tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
     toSend: Escrow.methods.create(buyerAddress, offer.id, tradeAmount, 1, assetPrice, statusContactCode, '', username)

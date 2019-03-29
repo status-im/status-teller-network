@@ -1,3 +1,5 @@
+/* global web3 */
+
 import moment from 'moment';
 import { fromTokenDecimals } from '../../utils/numbers';
 import { getTradeStatus } from './helpers';
@@ -9,7 +11,8 @@ export const getCreateEscrowId = state => state.escrow.createEscrowId;
 export const getTrades = (state) => {
   const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {
-    const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
+    
+    const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
     return {
       ...escrow,
       token,
@@ -23,7 +26,7 @@ export const getEscrow = (state) => {
   const escrow = state.escrow.escrow;
   if(!escrow) return null;
 
-  const token = Object.values(state.network.tokens).find((token) => token.address === escrow.offer.asset);
+  const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
   return {
     ...escrow,
     token,
@@ -31,6 +34,8 @@ export const getEscrow = (state) => {
     tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
   };
 };
+
+export const getFee = state => state.escrow.fee;
 
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;

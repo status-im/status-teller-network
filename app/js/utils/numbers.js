@@ -15,6 +15,24 @@ export const addDecimals = (value, decimals) => {
   return Math.floor(res).toString(10);
 };
 
+
+const padRight = (number, length) => {
+  var str = String(number);
+  while (str.length < length) {
+    str += '0';
+  }
+  return str;
+};
+
+export const toTokenDecimals = (value, decimals) => {
+  value = value.toString().split('.');
+  const pow = new BN(10, 10).pow(numberToBN(decimals));
+  const int = numberToBN(value[0]).mul(pow);
+  const dec = numberToBN(padRight(value.length > 1 ? value[1] : 0, decimals));
+  if (dec.toString(10).length > pow.toString(10).length) throw new Error('Too many decimal places');
+  return int.add(dec).toString(10);
+};
+
 export const fromTokenDecimals = (value, decimals) => {
   value = new BN(value, 10);
   const pow = new BN(10, 10).pow(numberToBN(decimals));
