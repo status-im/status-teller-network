@@ -68,5 +68,5 @@ export const GET_FEE = 'GET_FEE';
 export const GET_FEE_SUCCEEDED = 'GET_FEE_SUCCEDED';
 export const GET_FEE_FAILED = 'GET_FEE_FAILED';
 
-export const RESET_FUND_STATUS = 'RESET_FUND_STATUS';
+export const RESET_STATUS = 'RESET_FUND_STATUS';
 

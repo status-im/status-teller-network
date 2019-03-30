@@ -5,7 +5,7 @@ import {
   GET_ESCROW_SUCCEEDED,
   GET_FEE_SUCCEEDED,
   FUND_ESCROW_FAILED, FUND_ESCROW_SUCCEEDED, FUND_ESCROW,
-  RESET_FUND_STATUS
+  RESET_STATUS
   // GET_ESCROWS_FAILED,
   // RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   // CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
@@ -88,10 +88,11 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         fee: action.fee
       };
-    case RESET_FUND_STATUS: 
+    case RESET_STATUS: 
       return {
         ...state,
-        fundEscrowStatus: States.none
+        fundEscrowStatus: States.none,
+        createEscrowStatus: States.none
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

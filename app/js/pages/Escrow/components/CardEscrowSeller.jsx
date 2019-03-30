@@ -8,6 +8,8 @@ import { fromTokenDecimals } from '../../../utils/numbers';
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
 
+import escrow from '../../../features/escrow';
+
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
@@ -58,7 +60,7 @@ const PreFund = ({amount, asset, fee, showApproveScreen, showFundButton, fundAct
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
     </span>
-    <p className="h2 mt-4">{showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
+    <p className="h2 mt-4">{!showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
     <p className="h2 text-success">{fromTokenDecimals(amount, asset.decimals)} {asset.symbol}</p>
     { fee !== "0" && <Fragment>
     <p className="h2">+ our fee</p>
@@ -99,16 +101,15 @@ class CardEscrowSeller extends Component {
   }
 
   componentDidMount(){
-    const escrow = this.props.escrow;
-    const showFundButton = this.props.showFundButton;
+    const trade = this.props.escrow;
 
     let step;
 
-    switch(escrow.status){
-      case 'funded':
+    switch(trade.status){
+      case escrow.helpers.tradeStates.funded:
         step = 4;
         break;
-      case 'waiting':
+      case escrow.helpers.tradeStates.waiting:
       default:
         step = 1;
     }
@@ -130,8 +131,6 @@ class CardEscrowSeller extends Component {
     if(showFundButton) step = 2;
     if(showLoading) step = 3;
     if(showFunded) step = 4;
-
-    console.log(showFunded);
 
     let component;
     switch(step){
