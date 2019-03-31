@@ -6,6 +6,9 @@ import { getTradeStatus } from './helpers';
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
+export const getFundEscrowStatus = state => state.escrow.fundEscrowStatus;
+
+
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
 
 export const getTrades = (state) => {

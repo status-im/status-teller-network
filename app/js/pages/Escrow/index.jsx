@@ -1,4 +1,5 @@
 /* global web3 */
+/* eslint-disable complexity */
 import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -22,6 +23,8 @@ import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
 
+import { States } from '../../utils/transaction';
+
 const {toBN, toChecksumAddress} = web3.utils;
 
 class Escrow extends Component {
@@ -33,6 +36,8 @@ class Escrow extends Component {
     props.getEscrow(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
+    props.resetStatus();
+
     if(props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
   }
 
@@ -81,18 +86,18 @@ class Escrow extends Component {
   }
 
   render() {
-    const {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
     if(loading) return <Loading mining={true} />;
 
+    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
     
-    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
-
     const requiredToken = escrow.tradeAmount;
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
@@ -101,34 +106,33 @@ class Escrow extends Component {
     
     const offer = this.getOffer(escrow, isBuyer);
 
-    let showFundButton = isSNTapproved && isTokenApproved; // TODO: All required tokens approved. Show fund button and call the escrow function. See above   
+    let showFundButton = isSNTapproved && isTokenApproved;
 
     // Show token approval UI
     if(showApproveFundsScreen) {
-      if((!isSNTapproved || shouldResetSNT)) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
+      if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
         
-      /* eslint-disable no-alert */
-
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
-          alert("Call escrow.fund with SNT amount");
           showFundButton = true;
         } else {
           if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;
-
-          alert("Call escrow.approveAndCall with custom token");
           showFundButton = true;
         }
-      } else {
-        // ETH
-        alert("Call escrow.fund with ETH amount");
+      } else { // ETH
         showFundButton = true;
       }
     }
-   
+
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller escrow={escrow} fee={fee} showFundButton={showFundButton} showApproveScreen={this.showApproveScreen} /> }
+        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={fundStatus === States.pending} 
+                                                            showFunded={fundStatus === States.success} 
+                                                            escrow={escrow} 
+                                                            fee={fee} 
+                                                            showFundButton={showFundButton} 
+                                                            showApproveScreen={this.showApproveScreen} 
+                                                            fundAction={() => { fundEscrow(escrow, fee); } } /> }
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
@@ -158,7 +162,10 @@ Escrow.propTypes = {
   getTokenAllowance: PropTypes.func,
   tokens: PropTypes.object,
   approve: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  fundEscrow: PropTypes.func,
+  fundStatus: PropTypes.string,
+  resetStatus: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -170,7 +177,8 @@ const mapStateToProps = (state, props) => {
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
-    loading: approval.selectors.isLoading(state)
+    loading: approval.selectors.isLoading(state),
+    fundStatus: escrow.selectors.getFundEscrowStatus(state)
   };
 };
 
@@ -181,6 +189,8 @@ export default connect(
     getFee: escrow.actions.getFee,
     getSNTAllowance: approval.actions.getSNTAllowance,
     getTokenAllowance: approval.actions.getTokenAllowance,
-    approve: approval.actions.approve
+    approve: approval.actions.approve,
+    fundEscrow: escrow.actions.fundEscrow,
+    resetStatus: escrow.actions.resetStatus
   }
 )(withRouter(Escrow));

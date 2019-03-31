@@ -2,7 +2,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
-    const sntToken = 100;
+    const sntToken = 10000000;
     const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
     if (balance !== '0') {
       return;
@@ -21,9 +21,8 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     }));
 
     console.log('Generate SNT...');
-    const weiSnt = sntToken * Math.pow(10, 18);
     await Promise.all(addresses.slice(0, 8).map(async (address) => {
-      const generateToken = deps.contracts.SNT.methods.generateTokens(address, weiSnt.toString());
+      const generateToken = deps.contracts.SNT.methods.generateTokens(address, sntToken + '000000000000000000');
       const gas = await generateToken.estimateGas({from: main});
       return generateToken.send({from: main, gas});
     }));
