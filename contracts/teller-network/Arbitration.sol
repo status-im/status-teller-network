@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "../common/Ownable.sol";
-import "./Escrow.sol";
+import "./Arbitrable.sol";
 
 
 contract Arbitration is Ownable {
@@ -23,7 +23,7 @@ contract Arbitration is Ownable {
 
     address public arbitrator;
     
-    Escrow public escrow;
+    Arbitrable public escrow;
 
     modifier onlyArbitrator {
         require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
@@ -35,7 +35,7 @@ contract Arbitration is Ownable {
     }
 
     function setEscrowAddress(address _escrow) public onlyOwner {
-        escrow = Escrow(_escrow);
+        escrow = Arbitrable(_escrow);
     }
 
     /**

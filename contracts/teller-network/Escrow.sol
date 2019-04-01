@@ -8,12 +8,13 @@ import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
 import "./Arbitration.sol";
+import "./Arbitrable.sol";
 
 /**
  * @title Escrow
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
-contract Escrow is Pausable, MessageSigned, Fees {
+contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     string private constant TRANSACTION_ALREADY_RELEASED = "Transaction already released";
     string private constant TRANSACTION_ALREADY_CANCELED = "Transaction already canceled";
     string private constant TRANSACTION_ALREADY_PAID = "Transaction already paid";
@@ -436,7 +437,7 @@ contract Escrow is Pausable, MessageSigned, Fees {
      * @param _escrowId Id of the escrow
      * @param _releaseFunds Release funds to buyer or cancel escrow
      */
-    function setArbitrationResult(uint _escrowId, bool _releaseFunds) public {
+    function setArbitrationResult(uint _escrowId, bool _releaseFunds) external {
         assert(msg.sender == address(arbitration)); // Only arbitration contract can invoke this
 
         address arbitrator = arbitration.getArbitrator();
