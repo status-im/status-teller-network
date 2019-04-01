@@ -30,7 +30,7 @@ import "../common/Controlled.sol";
 import "./TokenController.sol";
 import "./ApproveAndCallFallBack.sol";
 import "./MiniMeTokenInterface.sol";
-import "./MiniMeTokenFactory.sol";
+import "./TokenFactory.sol";
 
 /**
  * @dev The actual token contract, the default controller is the msg.sender
@@ -84,7 +84,7 @@ contract MiniMeToken is MiniMeTokenInterface, Controlled {
     bool public transfersEnabled;
 
     // The factory used to create new clone tokens
-    MiniMeTokenFactory public tokenFactory;
+    TokenFactory public tokenFactory;
 
 ////////////////
 // Constructor
@@ -116,7 +116,7 @@ contract MiniMeToken is MiniMeTokenInterface, Controlled {
     ) 
         public
     {
-        tokenFactory = MiniMeTokenFactory(_tokenFactory);
+        tokenFactory = TokenFactory(_tokenFactory);
         name = _tokenName;                                 // Set the name
         decimals = _decimalUnits;                          // Set the decimals
         symbol = _tokenSymbol;                             // Set the symbol
@@ -425,14 +425,14 @@ contract MiniMeToken is MiniMeTokenInterface, Controlled {
         if (snapshotBlock == 0) {
             snapshotBlock = block.number;
         }
-        MiniMeToken cloneToken = tokenFactory.createCloneToken(
+        MiniMeToken cloneToken = MiniMeToken(tokenFactory.createCloneToken(
             address(this),
             snapshotBlock,
             _cloneTokenName,
             _cloneDecimalUnits,
             _cloneTokenSymbol,
             _transfersEnabled
-            );
+            ));
 
         cloneToken.changeController(msg.sender);
 

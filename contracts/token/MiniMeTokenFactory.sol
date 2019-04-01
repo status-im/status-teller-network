@@ -1,5 +1,6 @@
 pragma solidity ^0.5.0;
 
+import "./TokenFactory.sol";
 import "./MiniMeToken.sol";
 
 ////////////////
@@ -11,7 +12,7 @@ import "./MiniMeToken.sol";
  *  In solidity this is the way to create a contract from a contract of the
  *  same class
  */
-contract MiniMeTokenFactory {
+contract MiniMeTokenFactory is TokenFactory {
 
     /**
      * @notice Update the DApp by creating a new token with new functionalities
@@ -32,7 +33,7 @@ contract MiniMeTokenFactory {
         uint8 _decimalUnits,
         string memory _tokenSymbol,
         bool _transfersEnabled
-    ) public returns (MiniMeToken) {
+    ) public returns (address payable) {
         MiniMeToken newToken = new MiniMeToken(
             address(this),
             _parentToken,
@@ -44,6 +45,6 @@ contract MiniMeTokenFactory {
             );
 
         newToken.changeController(msg.sender);
-        return newToken;
+        return address(newToken);
     }
 }
