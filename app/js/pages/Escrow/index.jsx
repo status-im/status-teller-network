@@ -23,8 +23,6 @@ import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
 
-import { States } from '../../utils/transaction';
-
 const {toBN, toChecksumAddress} = web3.utils;
 
 class Escrow extends Component {
@@ -96,7 +94,6 @@ class Escrow extends Component {
     const isBuyer = escrow.buyer === address;
     const offer = this.getOffer(escrow, isBuyer);
 
-    /* Move this logic inside CardEscrowSeller */
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
@@ -123,28 +120,20 @@ class Escrow extends Component {
       }
     }
 
-    if(escrow.status === 'released' || escrow.status === 'paid') showFundButton = false;
-
-    let showLoading = fundStatus === States.pending || releaseStatus === States.pending;
-
-    /* end */
-
     return (
       <div className="escrow">
-        { isBuyer && <CardEscrowBuyer   escrow={escrow} 
-                                        showLoading={payStatus === States.pending}
-                                        payAction={() => { payEscrow(escrow.escrowId); }}
-                                        showWaiting={payStatus === States.success || escrow.status === 'released'}  /> }
+        { isBuyer && <CardEscrowBuyer trade={escrow}
+                                   payStatus={payStatus}
+                                   payAction={payEscrow} /> }
 
-        { !isBuyer && <CardEscrowSeller showLoading={showLoading} 
-                                        showFunded={fundStatus === States.success} 
-                                        showRating={releaseStatus === States.success || escrow.status === 'released'}
-                                        escrow={escrow} 
-                                        fee={fee} 
-                                        showFundButton={showFundButton} 
-                                        showApproveScreen={this.showApproveScreen} 
-                                        fundAction={() => { fundEscrow(escrow, fee); } }
-                                        releaseEscrow={() => { releaseEscrow(escrow.escrowId); }} /> }
+        { !isBuyer && <CardEscrowSeller fundStatus={fundStatus}
+                                    releaseStatus={releaseStatus}
+                                    trade={escrow} 
+                                    fee={fee} 
+                                    showFundButton={showFundButton} 
+                                    showApproveScreen={this.showApproveScreen} 
+                                    fundEscrow={fundEscrow}
+                                    releaseEscrow={releaseEscrow} /> }
                                                             
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">

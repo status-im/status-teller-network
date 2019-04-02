@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -7,6 +7,9 @@ import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
+
+import { States } from '../../../utils/transaction';
+import escrow from '../../../features/escrow';
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
@@ -70,23 +73,29 @@ const PreFund = () => (
   </React.Fragment>
 );
 
-const CardEscrowBuyer = ({escrow, showLoading, payAction, showWaiting}) => (
-  <Card>
-    <CardBody className="text-center p-5">
-      {!showLoading && escrow.status === 'waiting' && <PreFund /> } 
-      {!showLoading && escrow.status === 'funded' && !showWaiting && <Funded payAction={payAction} /> } 
-      {!showLoading && (showWaiting || escrow.status === 'paid') && <Unreleased /> } 
-      {!showLoading && escrow.status === 'released' && <Done /> } 
-      {showLoading && <Loading /> }
-    </CardBody>
-  </Card>
-);
+class CardEscrowBuyer extends Component {
+  render(){ 
+    const {trade, payStatus, payAction} = this.props;
+
+    const showLoading = payStatus === States.pending;
+    const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
+
+    return <Card>
+      <CardBody className="text-center p-5">
+        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund /> } 
+        {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> } 
+        {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> } 
+        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done /> } 
+        {showLoading && <Loading /> }
+      </CardBody>
+    </Card>;
+  }
+}
 
 CardEscrowBuyer.propTypes = {
-  escrow: PropTypes.object,
-  showLoading: PropTypes.bool,
-  payAction: PropTypes.func,
-  showWaiting: PropTypes.bool
+  trade: PropTypes.object,
+  payStatus: PropTypes.string,
+  payAction: PropTypes.func
 };
 
 export default CardEscrowBuyer;
