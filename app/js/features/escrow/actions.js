@@ -19,7 +19,7 @@ export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, st
   };
 };
 
-export const fundEscrow = (escrow, feeAmount) => {
+export const fundEscrow = (escrow, _feeAmount) => {
   const token = web3.utils.toChecksumAddress(escrow.offer.asset);
   const expirationTime = Math.floor((new Date()).getTime() / 1000) + (86400 * 2); // TODO: what will be the expiration time?
   let value = escrow.tradeAmount;
@@ -27,7 +27,7 @@ export const fundEscrow = (escrow, feeAmount) => {
   let toSend = Escrow.methods.fund(escrow.escrowId, value, expirationTime);
 
   if(token === zeroAddress){
-    return { 
+    return {
       type: FUND_ESCROW,
       toSend,
       value
@@ -38,10 +38,10 @@ export const fundEscrow = (escrow, feeAmount) => {
     type: FUND_ESCROW,
     toSend
   };
-  
+
   /*
   TODO: attempt to remove SNT approval if token is different from SNT, and send an approveAndCall trx
-  
+
     let SNTAmount = feeAmount;
     if(token === SNT.options.address){
       SNTAmount = toBN(SNTAmount).add(toBN(value)).toString();
@@ -49,7 +49,7 @@ export const fundEscrow = (escrow, feeAmount) => {
 
     const encodedCall = toSend.encodeABI();
     toSend = SNT.methods.approveAndCall(Escrow.options.address, SNTAmount, encodedCall);
-  }*/  
+  }*/
 };
 
 export const resetCreateEscrowStatus = () => ({
