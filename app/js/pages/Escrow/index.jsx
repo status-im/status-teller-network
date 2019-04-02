@@ -86,14 +86,17 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, releaseEscrow, releaseStatus} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
     if(loading) return <Loading mining={true} />;
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+    const isBuyer = escrow.buyer === address;
+    const offer = this.getOffer(escrow, isBuyer);
 
+    /* Move this logic inside CardEscrowSeller */
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
@@ -101,10 +104,6 @@ class Escrow extends Component {
     const requiredToken = escrow.tradeAmount;
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
-
-    const isBuyer = escrow.buyer === address;
-    
-    const offer = this.getOffer(escrow, isBuyer);
 
     let showFundButton = isSNTapproved && isTokenApproved;
 
@@ -124,21 +123,35 @@ class Escrow extends Component {
       }
     }
 
-    if(escrow.status === 'released') showFundButton = false;
+    if(escrow.status === 'released' || escrow.status === 'paid') showFundButton = false;
 
-    const showLoading = fundStatus === States.pending || releaseStatus === States.pending;
+    let showLoading = fundStatus === States.pending || releaseStatus === States.pending;
+
+    /* end */
+
+
+    /* buyer logic */
+    if(isBuyer){
+      showLoading = false;
+
+      showLoading = payStatus === States.pending;
+
+    }
 
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={showLoading} 
-                                                            showFunded={fundStatus === States.success} 
-                                                            showRating={releaseStatus === States.success || escrow.status === 'released'}
-                                                            escrow={escrow} 
-                                                            fee={fee} 
-                                                            showFundButton={showFundButton} 
-                                                            showApproveScreen={this.showApproveScreen} 
-                                                            fundAction={() => { fundEscrow(escrow, fee); } }
-                                                            releaseEscrow={() => { releaseEscrow(escrow.escrowId); }} /> }
+        { isBuyer && <CardEscrowBuyer   escrow={escrow} 
+                                        showLoading={showLoading}
+                                        payAction={() => { payEscrow(escrow.escrowId); }}  /> }
+        { !isBuyer && <CardEscrowSeller showLoading={showLoading} 
+                                        showFunded={fundStatus === States.success} 
+                                        showRating={releaseStatus === States.success || escrow.status === 'released'}
+                                        escrow={escrow} 
+                                        fee={fee} 
+                                        showFundButton={showFundButton} 
+                                        showApproveScreen={this.showApproveScreen} 
+                                        fundAction={() => { fundEscrow(escrow, fee); } }
+                                        releaseEscrow={() => { releaseEscrow(escrow.escrowId); }} /> }
                                                             
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
@@ -174,7 +187,10 @@ Escrow.propTypes = {
   fundStatus: PropTypes.string,
   resetStatus: PropTypes.func,
   releaseStatus: PropTypes.string,
-  releaseEscrow: PropTypes.func
+  releaseEscrow: PropTypes.func,
+  payStatus: PropTypes.string,
+  payEscrow: PropTypes.func
+
 };
 
 const mapStateToProps = (state, props) => {
@@ -188,7 +204,8 @@ const mapStateToProps = (state, props) => {
     tokens: network.selectors.getTokens(state),
     loading: approval.selectors.isLoading(state),
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
-    releaseStatus: escrow.selectors.getReleaseEscrowStatus(state)
+    releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
+    payStatus: escrow.selectors.getPaidEscrowStatus(state)
   };
 };
 
