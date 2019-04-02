@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
@@ -35,15 +37,19 @@ const Releasing = () => (
   </React.Fragment>
 );
 
-const Funded = () => (
+const Funded = ({releaseAction}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <h2 className="mt-4">Funds are in the escrow. Release them when you will get the payment.</h2>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => { console.log("TODO: release funds"); }}>Release funds</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={() => { if(confirm('Sure?')) releaseAction(); }}>Release funds</Button>
   </React.Fragment>
 );
+
+Funded.propTypes = {
+  releaseAction: PropTypes.func
+};
 
 const Funding = () => (
   <React.Fragment>
@@ -101,11 +107,16 @@ class CardEscrowSeller extends Component {
   }
 
   componentDidMount(){
-    const trade = this.props.escrow;
+    this.determineStep(this.props.escrow);
+  }
 
+  determineStep(trade){
     let step;
 
     switch(trade.status){
+      case escrow.helpers.tradeStates.released:
+        step = 5;
+        break;
       case escrow.helpers.tradeStates.funded:
         step = 4;
         break;
@@ -117,25 +128,34 @@ class CardEscrowSeller extends Component {
     this.setState({step});
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.escrow.escrowId !== prevProps.escrow.escrowId) {
+      this.determineStep(this.props.escrow);
+    }
+  }
+
   handleStepClick = () => {
     let step = this.state.step;
     step++;
-
     this.setState({step});
   }
 
   render(){
     let step = this.state.step;
-    const {escrow, fee, showApproveScreen, showFundButton, fundAction, showLoading, showFunded} = this.props;
+    const {escrow, fee, showApproveScreen, showFundButton, fundAction, showLoading, showFunded, releaseEscrow, showRating} = this.props;
 
     if(showFundButton) step = 2;
     if(showLoading) step = 3;
     if(showFunded) step = 4;
+    if(showRating) step = 5;
 
     let component;
     switch(step){
+      case 5: 
+        component = <Done />;
+        break;
       case 4: 
-        component = <Funded />;
+        component = <Funded releaseAction={releaseEscrow} />;
         break;
       case 3:
         component = <Funding />;
@@ -164,7 +184,9 @@ CardEscrowSeller.propTypes = {
   showApproveScreen: PropTypes.func,
   fundAction: PropTypes.func,
   showFundButton: PropTypes.bool,
-  showFunded: PropTypes.bool
+  showFunded: PropTypes.bool,
+  releaseEscrow: PropTypes.func,
+  showRating: PropTypes.bool
 };
 
 export default CardEscrowSeller;
