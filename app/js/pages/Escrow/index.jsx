@@ -86,7 +86,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, releaseEscrow, releaseStatus} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -102,7 +102,7 @@ class Escrow extends Component {
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
-    const isBuyer = escrow.buyer === address;
+    const isBuyer = escrow.buyer !== address;
     
     const offer = this.getOffer(escrow, isBuyer);
 
@@ -111,7 +111,7 @@ class Escrow extends Component {
     // Show token approval UI
     if(showApproveFundsScreen) {
       if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
-        
+      
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
           showFundButton = true;
@@ -124,15 +124,22 @@ class Escrow extends Component {
       }
     }
 
+    if(escrow.status === 'released') showFundButton = false;
+
+    const showLoading = fundStatus === States.pending || releaseStatus === States.pending;
+
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={fundStatus === States.pending} 
+        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={showLoading} 
                                                             showFunded={fundStatus === States.success} 
+                                                            showRating={releaseStatus === States.success || escrow.status === 'released'}
                                                             escrow={escrow} 
                                                             fee={fee} 
                                                             showFundButton={showFundButton} 
                                                             showApproveScreen={this.showApproveScreen} 
-                                                            fundAction={() => { fundEscrow(escrow, fee); } } /> }
+                                                            fundAction={() => { fundEscrow(escrow, fee); } }
+                                                            releaseEscrow={() => { releaseEscrow(escrow.escrowId); }} /> }
+                                                            
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
@@ -165,7 +172,9 @@ Escrow.propTypes = {
   loading: PropTypes.bool,
   fundEscrow: PropTypes.func,
   fundStatus: PropTypes.string,
-  resetStatus: PropTypes.func
+  resetStatus: PropTypes.func,
+  releaseStatus: PropTypes.string,
+  releaseEscrow: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -178,7 +187,8 @@ const mapStateToProps = (state, props) => {
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
     loading: approval.selectors.isLoading(state),
-    fundStatus: escrow.selectors.getFundEscrowStatus(state)
+    fundStatus: escrow.selectors.getFundEscrowStatus(state),
+    releaseStatus: escrow.selectors.getReleaseEscrowStatus(state)
   };
 };
 
@@ -191,6 +201,8 @@ export default connect(
     getTokenAllowance: approval.actions.getTokenAllowance,
     approve: approval.actions.approve,
     fundEscrow: escrow.actions.fundEscrow,
-    resetStatus: escrow.actions.resetStatus
+    resetStatus: escrow.actions.resetStatus,
+    releaseEscrow: escrow.actions.releaseEscrow,
+    payEscrow: escrow.actions.payEscrow
   }
 )(withRouter(Escrow));
