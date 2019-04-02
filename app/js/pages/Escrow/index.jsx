@@ -102,7 +102,7 @@ class Escrow extends Component {
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
-    const isBuyer = escrow.buyer !== address;
+    const isBuyer = escrow.buyer === address;
     
     const offer = this.getOffer(escrow, isBuyer);
 
