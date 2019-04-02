@@ -44,7 +44,7 @@ class Trade extends Component {
 
   componentDidUpdate() {
     if (this.props.createEscrowStatus === States.success) {
-      this.props.resetCreateEscrowStatus();
+      this.props.resetStatus();
       return this.props.history.push('/escrow/' + this.props.escrowId);
     }
   }
@@ -128,7 +128,7 @@ class Trade extends Component {
 Trade.propTypes = {
   history: PropTypes.object,
   setTrade: PropTypes.func,
-  resetCreateEscrowStatus: PropTypes.func,
+  resetStatus: PropTypes.func,
   offer: PropTypes.object,
   address: PropTypes.string,
   currencyQuantity: PropTypes.number,
@@ -168,7 +168,7 @@ export default connect(
   mapStateToProps,
   {
     setTrade: newBuy.actions.setTrade,
-    resetCreateEscrowStatus: escrow.actions.resetCreateEscrowStatus,
+    resetStatus: escrow.actions.resetStatus,
     createEscrow: escrow.actions.createEscrow,
     loadOffers: metadata.actions.loadOffers
   }
