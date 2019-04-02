@@ -5,7 +5,7 @@ import {withInfo} from "@storybook/addon-info";
 import {withKnobs} from '@storybook/addon-knobs';
 import {action} from '@storybook/addon-actions';
 
-import ErrorInformation from '../../app/js/components/ErrorInformation';
+import ErrorInformation from '../../src/js/components/ErrorInformation';
 
 storiesOf('Components/ErrorInformation', module)
   .addDecorator(withKnobs)

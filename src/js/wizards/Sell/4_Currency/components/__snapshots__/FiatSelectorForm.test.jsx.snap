@@ -12,7 +12,6 @@ exports[`FiatSelectorForm should render correctly 1`] = `
       align="justify"
       allowNew={false}
       autoFocus={false}
-      bodyContainer={false}
       caseSensitive={false}
       className="my-3"
       clearButton={false}

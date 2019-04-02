@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import SellerPaymentMethod from '../../../app/js/wizards/Sell/3_PaymentMethods/components/SellerPaymentMethod';
+import SellerPaymentMethod from '../../../src/js/wizards/Sell/3_PaymentMethods/components/SellerPaymentMethod';
 
 const methods = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 

@@ -5,9 +5,9 @@ import {withInfo} from "@storybook/addon-info";
 import {withKnobs, boolean, text} from '@storybook/addon-knobs';
 import {action} from "@storybook/addon-actions";
 
-import BuyButton from '../../app/js/pages/License/components/BuyButton';
-import Info from '../../app/js/pages/License/components/Info';
-import Balance from '../../app/js/pages/License/components/Balance';
+import BuyButton from '../../src/js/pages/License/components/BuyButton';
+import Info from '../../src/js/pages/License/components/Info';
+import Balance from '../../src/js/pages/License/components/Balance';
 
 storiesOf('Pages/License', module)
   .addDecorator(withKnobs)

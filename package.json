@@ -3,13 +3,13 @@
   "version": "0.0.1",
   "description": "",
   "scripts": {
-    "lint": "eslint app/js/",
+    "lint": "eslint src/js/",
     "storybook": "start-storybook -p 9009",
     "build-storybook": "build-storybook",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:contracts": "embark test",
-    "test:unit": "jest app",
+    "test:unit": "jest src",
     "test:watch": "yarn test:unit -- --watch",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -20,12 +20,16 @@
   "license": "ISC",
   "homepage": "",
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/preset-react": "^7.0.0",
     "@storybook/addon-actions": "^4.1.4",
     "@storybook/addon-info": "^4.1.4",
     "@storybook/addon-knobs": "^4.1.4",
     "@storybook/addon-links": "^4.1.4",
     "@storybook/addons": "^4.1.4",
     "@storybook/react": "^4.1.4",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "cypress": "^3.1.4",
     "enzyme": "^3.8.0",
@@ -78,14 +82,14 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/app/__mocks__/fileMock.js",
-      "\\.(css|scss)$": "<rootDir>/app/__mocks__/styleMock.js"
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/__mocks__/fileMock.js",
+      "\\.(css|scss)$": "<rootDir>/src/__mocks__/styleMock.js"
     },
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
     "setupFiles": [
-      "./app/js/setupTests.js"
+      "./src/js/setupTests.js"
     ]
   },
   "eslintConfig": {

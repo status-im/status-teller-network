@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import EditContact from '../../app/js/components/EditContact';
+import EditContact from '../../src/js/components/EditContact';
 
 storiesOf('Components/EditContact', module)
   .add(

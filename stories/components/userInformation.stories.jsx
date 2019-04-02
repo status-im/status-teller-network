@@ -4,8 +4,8 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
-import UserInformation from '../../app/js/components/UserInformation';
-import Address from '../../app/js/components/UserInformation/Address';
+import UserInformation from '../../src/js/components/UserInformation';
+import Address from '../../src/js/components/UserInformation/Address';
 
 storiesOf('Components/UserInformation', module)
 .addDecorator(withKnobs)

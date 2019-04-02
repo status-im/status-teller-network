@@ -5,7 +5,7 @@ import {withInfo} from "@storybook/addon-info";
 import {action} from '@storybook/addon-actions';
 import moment from 'moment';
 
-import ArbitrationList from '../../app/js/components/tmp/ArbitrationList';
+import ArbitrationList from '../../src/js/components/tmp/ArbitrationList';
 
 global.web3 = {
   eth: {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { configure, addDecorator } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { Router } from 'react-router'
-import createMemoryHistory from 'history/createMemoryHistory'
+import { Router } from 'react-router';
+const createMemoryHistory = require("history").createMemoryHistory;
 
 const history = createMemoryHistory();
 
@@ -22,10 +22,10 @@ function loadStories() {
 
 configure(loadStories, module);
 
-import '../app/css/fonts/Inter/inter.css';
-import '../app/css/bootstrap-overrides.scss';
+import '../src/css/fonts/Inter/inter.css';
+import '../src/css/bootstrap-overrides.scss';
 
 // TODO: Move to dedicated component
-import '../app/js/index.scss';
-import '../app/css/Form.scss';
-import '../app/js/i18n';
+import '../src/index.scss';
+import '../src/css/Form.scss';
+import '../src/js/i18n';
