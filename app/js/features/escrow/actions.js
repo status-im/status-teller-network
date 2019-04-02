@@ -10,7 +10,6 @@ import Escrow from 'Embark/contracts/Escrow';
 import { toTokenDecimals } from '../../utils/numbers';
 import { zeroAddress } from '../../utils/address';
 
-
 export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
   return {
@@ -19,7 +18,7 @@ export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, st
   };
 };
 
-export const fundEscrow = (escrow, feeAmount) => {
+export const fundEscrow = (escrow) => {
   const token = web3.utils.toChecksumAddress(escrow.offer.asset);
   const expirationTime = Math.floor((new Date()).getTime() / 1000) + (86400 * 2); // TODO: what will be the expiration time?
   let value = escrow.tradeAmount;
@@ -52,9 +51,9 @@ export const fundEscrow = (escrow, feeAmount) => {
   }*/  
 };
 
-export const resetCreateEscrowStatus = () => ({
-  type: RESET_CREATE_ESCROW_STATUS
-});
+export const releaseEscrow = (escrowId) => ({ type: RELEASE_ESCROW, escrowId, toSend: Escrow.methods.release(escrowId) });
+
+export const payEscrow = (escrowId) => ({ type: PAY_ESCROW, escrowId, toSend: Escrow.methods.pay(escrowId) });
 
 export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
 
@@ -63,10 +62,6 @@ export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 export const getFee = () => ({ type: GET_FEE });
 
 // TODO: Update with new UI
-
-export const releaseEscrow = (escrowId) => ({ type: RELEASE_ESCROW, escrowId, toSend: Escrow.methods.release(escrowId) });
-
-export const payEscrow = (escrowId) => ({ type: PAY_ESCROW, escrowId, toSend: Escrow.methods.pay(escrowId) });
 
 export const payEscrowSignature = (escrowId) => ({ type: PAY_ESCROW_SIGNATURE, escrowId });
 
