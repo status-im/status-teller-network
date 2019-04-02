@@ -11,6 +11,7 @@ import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
 
 import escrow from '../../../features/escrow';
+import { States } from '../../../utils/transaction';
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
@@ -37,18 +38,19 @@ const Releasing = () => (
   </React.Fragment>
 );
 
-const Funded = ({releaseAction}) => (
+const Funded = ({trade, releaseEscrow}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <h2 className="mt-4">Funds are in the escrow. Release them when you will get the payment.</h2>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => { if(confirm('Sure?')) releaseAction(); }}>Release funds</Button>
+    <Button color="primary" className="btn-lg mt-3" onClick={() => { if(confirm('Sure?')) releaseEscrow(trade.escrowId); }}>Release funds</Button>
   </React.Fragment>
 );
 
 Funded.propTypes = {
-  releaseAction: PropTypes.func
+  releaseEscrow: PropTypes.func,
+  trade: PropTypes.object
 };
 
 const Funding = () => (
@@ -61,28 +63,27 @@ const Funding = () => (
   </React.Fragment>
 );
 
-const PreFund = ({amount, asset, fee, showApproveScreen, showFundButton, fundAction}) => (
-  <React.Fragment>
+const PreFund = ({fee, showApproveScreen, showFundButton, fundEscrow, trade}) => (
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={two} alt="two" />
     </span>
     <p className="h2 mt-4">{!showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
-    <p className="h2 text-success">{fromTokenDecimals(amount, asset.decimals)} {asset.symbol}</p>
+    <p className="h2 text-success">{fromTokenDecimals(trade.tradeAmount, trade.token.decimals)} {trade.token.symbol}</p>
     { fee !== "0" && <Fragment>
     <p className="h2">+ our fee</p>
     <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
     </Fragment> }
-    <Button color="primary" className="btn-lg mt-3" onClick={showFundButton ? fundAction : showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token Transfer(s)' }</Button>
-  </React.Fragment>
+    <Button color="primary" className="btn-lg mt-3" onClick={showFundButton ? () => { fundEscrow(trade, fee); } : showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token Transfer(s)' }</Button>
+  </Fragment>
 );
 
 PreFund.propTypes = {
-  amount: PropTypes.string,
-  asset: PropTypes.object,
+  trade: PropTypes.object,
   fee: PropTypes.string,
   showApproveScreen: PropTypes.func,
   showFundButton: PropTypes.bool,
-  fundAction: PropTypes.func
+  fundEscrow: PropTypes.func
 };
 
 const Start = ({onClick}) => (
@@ -107,7 +108,7 @@ class CardEscrowSeller extends Component {
   }
 
   componentDidMount(){
-    this.determineStep(this.props.escrow);
+    this.determineStep(this.props.trade);
   }
 
   determineStep(trade){
@@ -133,8 +134,8 @@ class CardEscrowSeller extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.escrow.escrowId !== prevProps.escrow.escrowId) {
-      this.determineStep(this.props.escrow);
+    if (this.props.trade.escrowId !== prevProps.trade.escrowId) {
+      this.determineStep(this.props.trade);
     }
   }
 
@@ -146,12 +147,18 @@ class CardEscrowSeller extends Component {
 
   render(){
     let step = this.state.step;
-    const {escrow, fee, showApproveScreen, showFundButton, fundAction, showLoading, showFunded, releaseEscrow, showRating} = this.props;
+
+    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus} = this.props;
+    let showFundButton = this.props.showFundButton;
+
+    if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
+      showFundButton = false;
+    }
 
     if(showFundButton) step = 2;
-    if(showLoading) step = 3;
-    if(showFunded) step = 4;
-    if(showRating) step = 5;
+    if(fundStatus === States.pending || releaseStatus === States.pending) step = 3;
+    if(fundStatus === States.success) step = 4;
+    if(releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 5;
 
     let component;
     switch(step){
@@ -159,13 +166,13 @@ class CardEscrowSeller extends Component {
         component = <Done />;
         break;
       case 4: 
-        component = <Funded releaseAction={releaseEscrow} />;
+        component = <Funded trade={trade} releaseEscrow={releaseEscrow} />;
         break;
       case 3:
         component = <Funding />;
         break;
       case 2:
-        component = <PreFund showFundButton={showFundButton} fundAction={fundAction} amount={escrow.tradeAmount} asset={escrow.token} fee={fee} showApproveScreen={showApproveScreen} />;
+        component = <PreFund showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
         break;
       case 1:
       default: 
@@ -182,15 +189,14 @@ class CardEscrowSeller extends Component {
 }
 
 CardEscrowSeller.propTypes = {
-  showLoading: PropTypes.bool,
-  escrow: PropTypes.object,
+  trade: PropTypes.object,
   fee: PropTypes.string,
   showApproveScreen: PropTypes.func,
-  fundAction: PropTypes.func,
+  fundEscrow: PropTypes.func,
   showFundButton: PropTypes.bool,
-  showFunded: PropTypes.bool,
   releaseEscrow: PropTypes.func,
-  showRating: PropTypes.bool
+  fundStatus: PropTypes.string,
+  releaseStatus: PropTypes.string
 };
 
 export default CardEscrowSeller;
