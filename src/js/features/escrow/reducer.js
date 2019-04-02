@@ -72,7 +72,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case PAY_ESCROW_SUCCEEDED:
       return {
         ...state,
-        releaseStatus: States.success
+        payStatus: States.success
       };
     case PAY_ESCROW_FAILED:
       return {
