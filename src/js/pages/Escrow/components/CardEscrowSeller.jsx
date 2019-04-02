@@ -120,6 +120,10 @@ class CardEscrowSeller extends Component {
       case escrow.helpers.tradeStates.funded:
         step = 4;
         break;
+      case escrow.helpers.tradeStates.paid: {
+        step = 4;
+        break;
+      }
       case escrow.helpers.tradeStates.waiting:
       default:
         step = 1;
