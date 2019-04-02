@@ -1,3 +1,3 @@
 module.exports = {
-  enabled: false
+  enabled: true
 };
