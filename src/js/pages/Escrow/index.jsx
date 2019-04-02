@@ -129,20 +129,13 @@ class Escrow extends Component {
 
     /* end */
 
-
-    /* buyer logic */
-    if(isBuyer){
-      showLoading = false;
-
-      showLoading = payStatus === States.pending;
-
-    }
-
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer   escrow={escrow} 
-                                        showLoading={showLoading}
-                                        payAction={() => { payEscrow(escrow.escrowId); }}  /> }
+                                        showLoading={payStatus === States.pending}
+                                        payAction={() => { payEscrow(escrow.escrowId); }}
+                                        showWaiting={payStatus === States.success || escrow.status === 'released'}  /> }
+
         { !isBuyer && <CardEscrowSeller showLoading={showLoading} 
                                         showFunded={fundStatus === States.success} 
                                         showRating={releaseStatus === States.success || escrow.status === 'released'}

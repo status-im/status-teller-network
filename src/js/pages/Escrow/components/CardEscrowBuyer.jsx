@@ -70,12 +70,12 @@ const PreFund = () => (
   </React.Fragment>
 );
 
-const CardEscrowBuyer = ({escrow, showLoading, payAction}) => (
+const CardEscrowBuyer = ({escrow, showLoading, payAction, showWaiting}) => (
   <Card>
     <CardBody className="text-center p-5">
       {!showLoading && escrow.status === 'waiting' && <PreFund /> } 
-      {!showLoading && escrow.status === 'funded' && <Funded payAction={payAction} /> } 
-      {!showLoading && escrow.status === 'paid' && <Unreleased /> } 
+      {!showLoading && escrow.status === 'funded' && !showWaiting && <Funded payAction={payAction} /> } 
+      {!showLoading && (showWaiting || escrow.status === 'paid') && <Unreleased /> } 
       {!showLoading && escrow.status === 'released' && <Done /> } 
       {showLoading && <Loading /> }
     </CardBody>
@@ -85,7 +85,8 @@ const CardEscrowBuyer = ({escrow, showLoading, payAction}) => (
 CardEscrowBuyer.propTypes = {
   escrow: PropTypes.object,
   showLoading: PropTypes.bool,
-  payAction: PropTypes.func
+  payAction: PropTypes.func,
+  showWaiting: PropTypes.bool
 };
 
 export default CardEscrowBuyer;
