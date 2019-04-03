@@ -1,4 +1,5 @@
 /* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
 
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';

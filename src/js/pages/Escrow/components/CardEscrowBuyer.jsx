@@ -1,4 +1,6 @@
 /* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
+
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
