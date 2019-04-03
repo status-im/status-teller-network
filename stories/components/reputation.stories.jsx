@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Reputation from '../../app/js/components/Reputation';
+import Reputation from '../../src/js/components/Reputation';
 
 storiesOf('Components/Reputation', module)
   .add(

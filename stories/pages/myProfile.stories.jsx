@@ -4,9 +4,9 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {withKnobs} from '@storybook/addon-knobs';
 
-import Offers from '../../app/js/pages/MyProfile/components/Offers';
-import Trades from '../../app/js/pages/MyProfile/components/Trades';
-import StatusContactCode from '../../app/js/pages/MyProfile/components/StatusContactCode';
+import Offers from '../../src/js/pages/MyProfile/components/Offers';
+import Trades from '../../src/js/pages/MyProfile/components/Trades';
+import StatusContactCode from '../../src/js/pages/MyProfile/components/StatusContactCode';
 
 storiesOf('Pages/MyProfile', module)
   .addDecorator(withKnobs)

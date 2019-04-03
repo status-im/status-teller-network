@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import SellerAssets from '../../../app/js/wizards/Sell/2_Asset/components/SellerAssets';
+import SellerAssets from '../../../src/js/wizards/Sell/2_Asset/components/SellerAssets';
 
 storiesOf('Wizards/Sell/2_Asset', module)
   .add(

@@ -5,7 +5,7 @@ import {withInfo} from "@storybook/addon-info";
 import {withKnobs, boolean} from '@storybook/addon-knobs';
 import {action} from "@storybook/addon-actions";
 
-import UpdateButton from '../../app/js/pages/EditMyContact/components/UpdateButton';
+import UpdateButton from '../../src/js/pages/EditMyContact/components/UpdateButton';
 
 storiesOf('Pages/EditMyContact', module)
   .addDecorator(withKnobs)

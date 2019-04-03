@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import SellerPosition from '../../../app/js/wizards/Sell/0_Location/components/SellerPosition';
+import SellerPosition from '../../../src/js/wizards/Sell/0_Location/components/SellerPosition';
 
 storiesOf('Wizards/Sell/0_Location', module)
   .add(

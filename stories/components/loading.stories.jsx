@@ -3,7 +3,7 @@ import React from 'react';
 import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 
-import Loading from '../../app/js/components/Loading';
+import Loading from '../../src/js/components/Loading';
 
 storiesOf('Components/Loading', module)
   .add(
