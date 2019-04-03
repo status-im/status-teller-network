@@ -55,7 +55,7 @@ class MarginSelectorForm extends Component {
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
-        {fee !== '0' && <Fragment>
+        {(fee || '0') !== '0' && <Fragment>
           <h3>{t('marginSelectorForm.ourFee')}</h3>
           <div className="border rounded p-3">
             {web3.utils.fromWei(fee, 'ether')} SNT
