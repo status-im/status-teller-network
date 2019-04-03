@@ -1,24 +1,21 @@
 import {
   CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW,
-  RESET_CREATE_ESCROW_STATUS,
   LOAD_ESCROWS_SUCCEEDED,
   GET_ESCROW_SUCCEEDED,
   GET_FEE_SUCCEEDED,
   FUND_ESCROW_FAILED, FUND_ESCROW_SUCCEEDED, FUND_ESCROW,
-  RESET_STATUS
-  // GET_ESCROWS_FAILED,
-  // RELEASE_ESCROW, RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
-  // CANCEL_ESCROW_FAILED, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW, CANCEL_ESCROW_PRE_SUCCESS,
-  // RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION, RATE_TRANSACTION_PRE_SUCCESS,
-  // PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_SIGNATURE_SUCCEEDED, PAY_ESCROW_SIGNATURE_FAILED, PAY_ESCROW, PAY_ESCROW_PRE_SUCCESS,
-  // OPEN_CASE_FAILED, OPEN_CASE_SUCCEEDED, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED, OPEN_CASE, OPEN_CASE_PRE_SUCCESS,
-  // CLOSE_DIALOG, GET_ARBITRATION_BY_ID_SUCCEEDED, GET_ARBITRATION_BY_ID_FAILED
+  RESET_STATUS,
+  RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW, RELEASE_ESCROW_FAILED,
+  PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED
 } from './constants';
 import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
   fundEscrowStatus: States.none,
+  releaseStatus: States.none,
+  payStatus: States.none,
+
   escrows: [],
 
   //Migrate to new UI
@@ -37,11 +34,6 @@ const DEFAULT_STATE = {
 // eslint-disable-next-line complexity
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case RESET_CREATE_ESCROW_STATUS:
-      return {
-        ...state,
-        createEscrowStatus: States.none
-      };
     case FUND_ESCROW:
       return {
         ...state,
@@ -56,6 +48,36 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fundEscrowStatus: States.success
+      };
+    case RELEASE_ESCROW:
+      return {
+        ...state,
+        releaseStatus: States.pending
+      };
+    case RELEASE_ESCROW_SUCCEEDED:
+      return {
+        ...state,
+        releaseStatus: States.success
+      };
+    case RELEASE_ESCROW_FAILED:
+      return {
+        ...state,
+        releaseStatus: States.error
+      };
+    case PAY_ESCROW:
+      return {
+        ...state,
+        payStatus: States.pending
+      };
+    case PAY_ESCROW_SUCCEEDED:
+      return {
+        ...state,
+        payStatus: States.success
+      };
+    case PAY_ESCROW_FAILED:
+      return {
+        ...state,
+        payStatus: States.error
       };
     case CREATE_ESCROW:
       return {
@@ -92,7 +114,9 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fundEscrowStatus: States.none,
-        createEscrowStatus: States.none
+        createEscrowStatus: States.none,
+        payStatus: States.none,
+        releaseStatus: States.none
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

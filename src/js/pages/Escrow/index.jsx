@@ -23,8 +23,6 @@ import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
 
-import { States } from '../../utils/transaction';
-
 const {toBN, toChecksumAddress} = web3.utils;
 
 class Escrow extends Component {
@@ -86,13 +84,15 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
     if(loading) return <Loading mining={true} />;
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+    const isBuyer = escrow.buyer === address;
+    const offer = this.getOffer(escrow, isBuyer);
 
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
@@ -102,16 +102,12 @@ class Escrow extends Component {
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
 
-    const isBuyer = escrow.buyer === address;
-    
-    const offer = this.getOffer(escrow, isBuyer);
-
     let showFundButton = isSNTapproved && isTokenApproved;
 
     // Show token approval UI
     if(showApproveFundsScreen) {
       if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
-        
+      
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
           showFundButton = true;
@@ -126,13 +122,19 @@ class Escrow extends Component {
 
     return (
       <div className="escrow">
-        { isBuyer ? <CardEscrowBuyer /> : <CardEscrowSeller showLoading={fundStatus === States.pending} 
-                                                            showFunded={fundStatus === States.success} 
-                                                            escrow={escrow} 
-                                                            fee={fee} 
-                                                            showFundButton={showFundButton} 
-                                                            showApproveScreen={this.showApproveScreen} 
-                                                            fundAction={() => { fundEscrow(escrow, fee); } } /> }
+        { isBuyer && <CardEscrowBuyer trade={escrow}
+                                   payStatus={payStatus}
+                                   payAction={payEscrow} /> }
+
+        { !isBuyer && <CardEscrowSeller fundStatus={fundStatus}
+                                    releaseStatus={releaseStatus}
+                                    trade={escrow} 
+                                    fee={fee} 
+                                    showFundButton={showFundButton} 
+                                    showApproveScreen={this.showApproveScreen} 
+                                    fundEscrow={fundEscrow}
+                                    releaseEscrow={releaseEscrow} /> }
+                                                            
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
           <Col>
@@ -165,7 +167,12 @@ Escrow.propTypes = {
   loading: PropTypes.bool,
   fundEscrow: PropTypes.func,
   fundStatus: PropTypes.string,
-  resetStatus: PropTypes.func
+  resetStatus: PropTypes.func,
+  releaseStatus: PropTypes.string,
+  releaseEscrow: PropTypes.func,
+  payStatus: PropTypes.string,
+  payEscrow: PropTypes.func
+
 };
 
 const mapStateToProps = (state, props) => {
@@ -178,7 +185,9 @@ const mapStateToProps = (state, props) => {
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
     loading: approval.selectors.isLoading(state),
-    fundStatus: escrow.selectors.getFundEscrowStatus(state)
+    fundStatus: escrow.selectors.getFundEscrowStatus(state),
+    releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
+    payStatus: escrow.selectors.getPaidEscrowStatus(state)
   };
 };
 
@@ -191,6 +200,8 @@ export default connect(
     getTokenAllowance: approval.actions.getTokenAllowance,
     approve: approval.actions.approve,
     fundEscrow: escrow.actions.fundEscrow,
-    resetStatus: escrow.actions.resetStatus
+    resetStatus: escrow.actions.resetStatus,
+    releaseEscrow: escrow.actions.releaseEscrow,
+    payEscrow: escrow.actions.payEscrow
   }
 )(withRouter(Escrow));
