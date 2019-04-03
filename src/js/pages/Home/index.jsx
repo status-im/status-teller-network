@@ -29,7 +29,7 @@ class Home extends Component {
       <div className="home">
         <Row>
           <Col xs={12} className="home-logo">
-            <img src={logo} />
+            <img src={logo} width="200" height="200" />
           </Col>
         </Row>
 
