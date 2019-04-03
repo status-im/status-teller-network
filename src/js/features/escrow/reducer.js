@@ -6,7 +6,8 @@ import {
   FUND_ESCROW_FAILED, FUND_ESCROW_SUCCEEDED, FUND_ESCROW,
   RESET_STATUS,
   RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW, RELEASE_ESCROW_FAILED,
-  PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED
+  PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED,
+  CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -15,6 +16,7 @@ const DEFAULT_STATE = {
   fundEscrowStatus: States.none,
   releaseStatus: States.none,
   payStatus: States.none,
+  cancelStatus: States.none,
 
   escrows: [],
 
@@ -109,6 +111,21 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fee: action.fee
+      };
+    case CANCEL_ESCROW:
+      return {
+        ...state,
+        cancelStatus: States.pending
+      };
+    case CANCEL_ESCROW_SUCCEEDED:
+      return {
+        ...state,
+        cancelStatus: States.success
+      };
+    case CANCEL_ESCROW_FAILED:
+      return {
+        ...state,
+        cancelStatus: States.error
       };
     case RESET_STATUS: 
       return {

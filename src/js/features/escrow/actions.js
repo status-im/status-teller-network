@@ -1,6 +1,6 @@
 /* global web3 */
 import {
-  CREATE_ESCROW, RESET_CREATE_ESCROW_STATUS, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
+  CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
   ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS
 } from './constants';
@@ -61,6 +61,8 @@ export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 export const getFee = () => ({ type: GET_FEE });
 
+export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) });
+
 // TODO: Update with new UI
 
 export const payEscrowSignature = (escrowId) => ({ type: PAY_ESCROW_SIGNATURE, escrowId });
@@ -69,7 +71,6 @@ export const openCase = (escrowId) => ({ type: OPEN_CASE, escrowId, toSend: Escr
 
 export const openCaseSignature = (escrowId) => ({ type: OPEN_CASE_SIGNATURE, escrowId });
 
-export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) });
 
 export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
 

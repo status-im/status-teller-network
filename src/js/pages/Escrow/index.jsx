@@ -18,6 +18,7 @@ import ApproveSNTFunds from './components/ApproveSNTFunds';
 import ApproveTokenFunds from './components/ApproveTokenFunds';
 
 import {zeroAddress} from '../../utils/address';
+import { States } from '../../utils/transaction';
 
 import escrow from '../../features/escrow';
 import network from '../../features/network';
@@ -84,7 +85,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -143,7 +144,7 @@ class Escrow extends Component {
           </Col>
         </Row>
         <OpenChat statusContactCode={offer.user.statusContactCode} />
-        <CancelEscrow/>
+        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />
         <OpenDispute/>
       </div>
     );
@@ -171,11 +172,16 @@ Escrow.propTypes = {
   releaseStatus: PropTypes.string,
   releaseEscrow: PropTypes.func,
   payStatus: PropTypes.string,
-  payEscrow: PropTypes.func
+  payEscrow: PropTypes.func,
+  cancelStatus: PropTypes.string,
+  cancelEscrow: PropTypes.func
 
 };
 
 const mapStateToProps = (state, props) => {
+  const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
+  const approvalLoading = approval.selectors.isLoading(state);
+
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
@@ -184,10 +190,11 @@ const mapStateToProps = (state, props) => {
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
-    loading: approval.selectors.isLoading(state),
+    loading: cancelStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
-    payStatus: escrow.selectors.getPaidEscrowStatus(state)
+    payStatus: escrow.selectors.getPaidEscrowStatus(state),
+    cancelStatus
   };
 };
 
@@ -202,6 +209,7 @@ export default connect(
     fundEscrow: escrow.actions.fundEscrow,
     resetStatus: escrow.actions.resetStatus,
     releaseEscrow: escrow.actions.releaseEscrow,
-    payEscrow: escrow.actions.payEscrow
+    payEscrow: escrow.actions.payEscrow,
+    cancelEscrow: escrow.actions.cancelEscrow
   }
 )(withRouter(Escrow));

@@ -12,6 +12,8 @@ export const getReleaseEscrowStatus = state => state.escrow.releaseStatus;
 
 export const getPaidEscrowStatus = state => state.escrow.payStatus;
 
+export const getCancelEscrowStatus = state => state.escrow.cancelStatus;
+
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
 
 export const getTrades = (state) => {
