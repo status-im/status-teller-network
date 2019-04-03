@@ -11,6 +11,8 @@ import metadata from "../../features/metadata";
 
 import "./index.scss";
 
+import logo from "../../../images/logo.svg";
+
 class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
@@ -26,8 +28,8 @@ class Home extends Component {
     return (
       <div className="home">
         <Row>
-          <Col xs={12}>
-            <p className="text-center home-logo rounded-circle">LOGO</p>
+          <Col xs={12} className="home-logo">
+            <img src={logo} />
           </Col>
         </Row>
 
