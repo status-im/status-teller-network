@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+/* global web3 */
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, InputGroupText} from 'reactstrap';
 import Input from 'react-validation/build/input';
@@ -14,7 +15,7 @@ const BELOW = 1;
 class MarginSelectorForm extends Component {
 
   render() {
-    const {t, currency, margin, marketType, token, prices} = this.props;
+    const {t, currency, margin, marketType, token, prices, fee} = this.props;
 
     const basePrice = prices[token.symbol][currency];
     const marginPrice = (margin || 0) / 100 * basePrice;
@@ -54,10 +55,12 @@ class MarginSelectorForm extends Component {
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
-        <h3>{t('marginSelectorForm.ourFee')}</h3>
-        <div className="border rounded p-3">
-          TODO SNT
-        </div>
+        {(fee || '0') !== '0' && <Fragment>
+          <h3>{t('marginSelectorForm.ourFee')}</h3>
+          <div className="border rounded p-3">
+            {web3.utils.fromWei(fee, 'ether')} SNT
+          </div>
+        </Fragment>}
 
         {!this.props.margin && this.props.margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
@@ -69,6 +72,7 @@ MarginSelectorForm.propTypes = {
   t: PropTypes.func,
   token: PropTypes.object,
   prices: PropTypes.object,
+  fee: PropTypes.string,
   margin: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number

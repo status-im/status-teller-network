@@ -6,6 +6,7 @@ import MarginSelectorForm from './components/MarginSelectorForm';
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import network from '../../../features/network';
+import escrow from '../../../features/escrow';
 import prices from '../../../features/prices';
 import metadata from "../../../features/metadata";
 import {States} from "../../../utils/transaction";
@@ -21,6 +22,8 @@ class Margin extends Component {
       ready: false
     };
     this.validate(props.seller.margin);
+    props.getFee();
+
     props.footer.onPageChange(() => {
       props.setMargin(this.state.margin, this.state.marketType);
     });
@@ -84,7 +87,8 @@ class Margin extends Component {
                               margin={this.state.margin}
                               marginChange={this.marginChange}
                               marketType={this.state.marketType}
-                              marketTypeChange={this.marketTypeChange}/>
+                              marketTypeChange={this.marketTypeChange}
+                              fee={this.props.fee} />
         );
       default:
         return <Fragment/>;
@@ -103,14 +107,17 @@ Margin.propTypes = {
   addOfferStatus: PropTypes.string,
   resetAddOfferStatus: PropTypes.func,
   wizard: PropTypes.object,
-  footer: PropTypes.object
+  footer: PropTypes.object,
+  getFee: PropTypes.func,
+  fee: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
   addOfferStatus: metadata.selectors.getAddOfferStatus(state),
   token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
-  prices: prices.selectors.getPrices(state)
+  prices: prices.selectors.getPrices(state),
+  fee: escrow.selectors.getFee(state)
 });
 
 export default connect(
@@ -118,6 +125,8 @@ export default connect(
   {
     setMargin: newSeller.actions.setMargin,
     addOffer: metadata.actions.addOffer,
-    resetAddOfferStatus: metadata.actions.resetAddOfferStatus
+    resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
+    getFee: escrow.actions.getFee
+
   }
 )(withRouter(Margin));
