@@ -11,6 +11,8 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import { States } from '../../../utils/transaction';
 import escrow from '../../../features/escrow';
 
+import ConfirmDialog from '../../../components/ConfirmDialog';
+
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
@@ -48,15 +50,27 @@ const Loading = () => (
   </React.Fragment>
 );
 
-const Funded = ({payAction}) => (
-  <React.Fragment>
-    <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={two} alt="two" />
-    </span>
-    <h2 className="mt-4">Funds are in the escrow. Send payment to seller.</h2>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => { if(confirm("Are you sure you want this trade marked as paid?")) payAction(); }}>Mark as paid</Button>
-  </React.Fragment>
-);
+class Funded extends Component {
+  state = {
+    displayDialog: false
+  }
+
+  displayDialog = show => () => {
+    this.setState({displayDialog: show});
+  }
+
+  render(){
+    const {payAction} = this.props;
+    return <React.Fragment>
+      <span className="bg-dark text-white p-3 rounded-circle">
+        <img src={two} alt="two" />
+      </span>
+      <h2 className="mt-4">Funds are in the escrow. Send payment to seller.</h2>
+      <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Mark as paid</Button>
+      <ConfirmDialog display={this.state.displayDialog} onConfirm={payAction} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?"   />
+    </React.Fragment>;
+  }
+}
 
 Funded.propTypes = {
   payAction: PropTypes.func

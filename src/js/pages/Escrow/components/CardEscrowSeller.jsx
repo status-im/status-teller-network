@@ -11,6 +11,7 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 
 import escrow from '../../../features/escrow';
 import { States } from '../../../utils/transaction';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
@@ -37,15 +38,27 @@ const Releasing = () => (
   </React.Fragment>
 );
 
-const Funded = ({trade, releaseEscrow}) => (
-  <React.Fragment>
+class Funded extends Component {
+  state = {
+    displayDialog: false
+  }
+
+  displayDialog = show => () => {
+    this.setState({displayDialog: show});
+  }
+
+  render(){
+    const {releaseEscrow} = this.props;
+    return <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <h2 className="mt-4">Funds are in the escrow. Release them when you will get the payment.</h2>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => { if(confirm('Sure?')) releaseEscrow(trade.escrowId); }}>Release funds</Button>
-  </React.Fragment>
-);
+    <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Release funds</Button>
+    <ConfirmDialog display={this.state.displayDialog} onConfirm={releaseEscrow} onCancel={this.displayDialog(false)} title="Release funds" content="Are you sure?" />
+  </React.Fragment>;
+  }
+}
 
 Funded.propTypes = {
   releaseEscrow: PropTypes.func,
@@ -165,7 +178,7 @@ class CardEscrowSeller extends Component {
         component = <Done />;
         break;
       case 4: 
-        component = <Funded trade={trade} releaseEscrow={releaseEscrow} />;
+        component = <Funded trade={trade} releaseEscrow={() => { releaseEscrow(trade.escrowId); }} />;
         break;
       case 3:
         component = <Funding />;
