@@ -1,6 +1,4 @@
-/* eslint-disable no-alert */
-/* eslint-disable no-restricted-globals */
-
+/* eslint-disable no-alert,no-restricted-globals */
 import React from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
