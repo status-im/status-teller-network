@@ -47,15 +47,19 @@ class Funded extends Component {
     this.setState({displayDialog: show});
   }
 
+  releaseEscrow = () => {
+    this.props.releaseEscrow();
+    this.displayDialog(false)();
+  }
+
   render(){
-    const {releaseEscrow} = this.props;
     return <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <h2 className="mt-4">Funds are in the escrow. Release them when you will get the payment.</h2>
     <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Release funds</Button>
-    <ConfirmDialog display={this.state.displayDialog} onConfirm={releaseEscrow} onCancel={this.displayDialog(false)} title="Release funds" content="Are you sure?" />
+    <ConfirmDialog display={this.state.displayDialog} onConfirm={this.releaseEscrow} onCancel={this.displayDialog(false)} title="Release funds" content="Are you sure?" />
   </React.Fragment>;
   }
 }

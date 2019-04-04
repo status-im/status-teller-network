@@ -23,6 +23,7 @@ class CancelEscrow extends Component {
 
   cancelEscrow = () => {
     this.props.cancelEscrow(this.props.trade.escrowId);
+    this.displayDialog(false)();
   }
 
   render(){

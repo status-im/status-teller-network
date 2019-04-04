@@ -59,15 +59,19 @@ class Funded extends Component {
     this.setState({displayDialog: show});
   }
 
+  markAsPaid = () => {
+    this.props.payAction();
+    this.displayDialog(false)();
+  }
+
   render(){
-    const {payAction} = this.props;
     return <React.Fragment>
       <span className="bg-dark text-white p-3 rounded-circle">
         <img src={two} alt="two" />
       </span>
       <h2 className="mt-4">Funds are in the escrow. Send payment to seller.</h2>
       <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Mark as paid</Button>
-      <ConfirmDialog display={this.state.displayDialog} onConfirm={payAction} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?"   />
+      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.markAsPaid} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?"   />
     </React.Fragment>;
   }
 }
