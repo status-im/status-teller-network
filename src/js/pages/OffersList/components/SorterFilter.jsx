@@ -69,6 +69,7 @@ class FilterMenu extends Component {
             <h5 className="mt-4">Asset</h5>
             <FormGroup>
               <Typeahead
+                id="tokenFilter"
                 options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
                 placeholder={'Select'}
                 value={props.tokenFilter}
