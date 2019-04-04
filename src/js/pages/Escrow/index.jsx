@@ -130,7 +130,7 @@ class Escrow extends Component {
                                       payStatus={payStatus}
                                       payAction={payEscrow} /> }
 
-        { isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
+        { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
                                         tokens={tokens}
                                         releaseStatus={releaseStatus}
                                         trade={escrow} 
