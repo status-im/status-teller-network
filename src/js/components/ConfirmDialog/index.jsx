@@ -1,29 +1,21 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Modal, ModalHeader, ModalBody, ModalFooter, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
 
-class ConfirmDialog extends Component {
-
-  onContinue = () => {
-    this.props.onConfirm();
-    this.props.onCancel();
-  }
-
-  render(){
-    return <Modal isOpen={this.props.display} toggle={this.props.onCancel} backdrop={true} >
-    <ModalHeader toggle={this.props.onCancel}>
-      {this.props.title}
+const ConfirmDialog = ({display, onCancel, title, content, onConfirm}) => (
+  <Modal isOpen={display} toggle={onCancel} backdrop={true} >
+    <ModalHeader toggle={onCancel}>
+      {title}
     </ModalHeader>
     <ModalBody>
-      <p>{this.props.content}</p>
+      <p>{content}</p>
     </ModalBody>
     <ModalFooter>
-      <Button onClick={this.props.onCancel}>Cancel</Button>
-      <Button onClick={this.onContinue}>Yes</Button>
+      <Button onClick={onCancel}>Cancel</Button>
+      <Button onClick={onConfirm}>Yes</Button>
     </ModalFooter>
-  </Modal>;
-  }
-}
+  </Modal>
+);
 
 
 ConfirmDialog.defaultProps = {
