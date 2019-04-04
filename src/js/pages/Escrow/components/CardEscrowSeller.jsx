@@ -1,10 +1,11 @@
+/* global web3 */
 /* eslint-disable no-alert,  no-restricted-globals */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
-import { fromTokenDecimals } from '../../../utils/numbers';
+import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -79,23 +80,34 @@ const Funding = () => (
   </React.Fragment>
 );
 
-const PreFund = ({fee, showApproveScreen, showFundButton, fundEscrow, trade}) => (
-  <Fragment>
-    <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={two} alt="two" />
-    </span>
-    <p className="h2 mt-4">{!showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
-    <p className="h2 text-success">{fromTokenDecimals(trade.tradeAmount, trade.token.decimals)} {trade.token.symbol}</p>
-    { fee !== "0" && <Fragment>
-    <p className="h2">+ our fee</p>
-    <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
-    </Fragment> }
-    <Button color="primary" className="btn-lg mt-3" onClick={showFundButton ? () => { fundEscrow(trade, fee); } : showApproveScreen}>{showFundButton ? 'Fund' : 'Approve Token Transfer(s)' }</Button>
-  </Fragment>
-);
+
+class PreFund extends Component {
+  render(){
+    const {fee, showApproveScreen, showFundButton, fundEscrow, trade, tokens} = this.props;
+    const { toBN } = web3.utils;
+    
+    const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
+                          toBN(toTokenDecimals(tokens.SNT.balance, 18)).gte(toBN(fee));
+    return <Fragment>
+      <span className="bg-dark text-white p-3 rounded-circle">
+        <img src={two} alt="two" />
+      </span>
+      <p className="h2 mt-4">{!showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
+      <p className="h2 text-success">{fromTokenDecimals(trade.tradeAmount, trade.token.decimals)} {trade.token.symbol}</p>
+      { fee !== "0" && <Fragment>
+      <p className="h2">+ our fee</p>
+      <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
+      </Fragment> }
+      { showFundButton && <Button color="primary" disabled={!enoughBalance} className="btn-lg mt-3" onClick={() => { fundEscrow(trade, fee); }}>Fund</Button> }
+      { showFundButton && !enoughBalance && <p className="balanceAlert">Not enough balance</p>}
+      { !showFundButton && <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>Approve Token Transfer(s)</Button> }
+    </Fragment>;
+  }
+}
 
 PreFund.propTypes = {
   trade: PropTypes.object,
+  tokens: PropTypes.object,
   fee: PropTypes.string,
   showApproveScreen: PropTypes.func,
   showFundButton: PropTypes.bool,
@@ -164,7 +176,7 @@ class CardEscrowSeller extends Component {
   render(){
     let step = this.state.step;
 
-    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus} = this.props;
+    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus, tokens} = this.props;
     let showFundButton = this.props.showFundButton;
 
     if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
@@ -188,7 +200,7 @@ class CardEscrowSeller extends Component {
         component = <Funding />;
         break;
       case 2:
-        component = <PreFund showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
+        component = <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
         break;
       case 1:
       default: 
@@ -205,6 +217,7 @@ class CardEscrowSeller extends Component {
 }
 
 CardEscrowSeller.propTypes = {
+  tokens: PropTypes.object,
   trade: PropTypes.object,
   fee: PropTypes.string,
   showApproveScreen: PropTypes.func,

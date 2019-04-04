@@ -24,6 +24,8 @@ import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
 
+import "./index.scss";
+
 const {toBN, toChecksumAddress} = web3.utils;
 
 class Escrow extends Component {
@@ -36,6 +38,7 @@ class Escrow extends Component {
     props.getFee();
     props.getSNTAllowance();
     props.resetStatus();
+    props.updateBalances();
 
     if(props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
   }
@@ -124,17 +127,18 @@ class Escrow extends Component {
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
-                                   payStatus={payStatus}
-                                   payAction={payEscrow} /> }
+                                      payStatus={payStatus}
+                                      payAction={payEscrow} /> }
 
-        { !isBuyer && <CardEscrowSeller fundStatus={fundStatus}
-                                    releaseStatus={releaseStatus}
-                                    trade={escrow} 
-                                    fee={fee} 
-                                    showFundButton={showFundButton} 
-                                    showApproveScreen={this.showApproveScreen} 
-                                    fundEscrow={fundEscrow}
-                                    releaseEscrow={releaseEscrow} /> }
+        { isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
+                                        tokens={tokens}
+                                        releaseStatus={releaseStatus}
+                                        trade={escrow} 
+                                        fee={fee} 
+                                        showFundButton={showFundButton} 
+                                        showApproveScreen={this.showApproveScreen} 
+                                        fundEscrow={fundEscrow}
+                                        releaseEscrow={releaseEscrow} /> }
                                                             
         <EscrowDetail escrow={escrow} />
         <Row className="bg-secondary py-4 mt-4">
@@ -174,8 +178,8 @@ Escrow.propTypes = {
   payStatus: PropTypes.string,
   payEscrow: PropTypes.func,
   cancelStatus: PropTypes.string,
-  cancelEscrow: PropTypes.func
-
+  cancelEscrow: PropTypes.func,
+  updateBalances: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -210,6 +214,7 @@ export default connect(
     resetStatus: escrow.actions.resetStatus,
     releaseEscrow: escrow.actions.releaseEscrow,
     payEscrow: escrow.actions.payEscrow,
-    cancelEscrow: escrow.actions.cancelEscrow
+    cancelEscrow: escrow.actions.cancelEscrow,
+    updateBalances: network.actions.updateBalances
   }
 )(withRouter(Escrow));
