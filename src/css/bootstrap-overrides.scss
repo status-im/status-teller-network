@@ -1,6 +1,11 @@
 @import "variable-overrides";
 @import "../../node_modules/bootstrap/scss/bootstrap";
 
+#root {
+  width: 100%;
+  position: absolute;
+}
+
 .btn-primary {
   background-color: $btn-bg-color;
   border-color: $btn-bg-color;
