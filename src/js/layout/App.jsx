@@ -70,12 +70,13 @@ class App extends Component {
   }
 
   render() {
-    if (!this.props.isReady) {
-      return <Loading initial/>;
+    if (this.props.error) {
+      console.error(this.props.error);
+      return <ErrorInformation provider/>;
     }
 
-    if (this.props.error) {
-      return <ErrorInformation provider/>;
+    if (!this.props.isReady) {
+      return <Loading initial/>;
     }
 
     if (!this.props.hasToken) {
