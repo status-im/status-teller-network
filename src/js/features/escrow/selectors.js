@@ -16,6 +16,8 @@ export const getCancelEscrowStatus = state => state.escrow.cancelStatus;
 
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
 
+export const getRatingStatus = state => state.escrow.rateStatus;
+
 export const getTrades = (state) => {
   const escrows = state.escrow.escrows || [];
   return escrows.map((escrow) => {

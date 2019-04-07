@@ -7,7 +7,8 @@ import {
   RESET_STATUS,
   RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW, RELEASE_ESCROW_FAILED,
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED,
-  CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED
+  CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED,
+  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
 
@@ -17,6 +18,7 @@ const DEFAULT_STATE = {
   releaseStatus: States.none,
   payStatus: States.none,
   cancelStatus: States.none,
+  rateStatus: States.none,
 
   escrows: [],
 
@@ -127,13 +129,33 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         cancelStatus: States.error
       };
+    case RATE_TRANSACTION:
+      return {
+        ...state,
+        rateStatus: States.pending
+      };
+    case RATE_TRANSACTION_SUCCEEDED: {
+      const escrow = state.escrow.escrow;
+      escrow.rating = action.rating;
+      return {
+        ...state,
+        escrow,
+        rateStatus: States.success
+      };
+    }
+    case RATE_TRANSACTION_FAILED:
+      return {
+        ...state,
+        rateStatus: States.error
+      };
     case RESET_STATUS: 
       return {
         ...state,
         fundEscrowStatus: States.none,
         createEscrowStatus: States.none,
         payStatus: States.none,
-        releaseStatus: States.none
+        releaseStatus: States.none,
+        rateStatus: States.none
       };
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:

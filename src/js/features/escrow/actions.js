@@ -63,6 +63,10 @@ export const getFee = () => ({ type: GET_FEE });
 
 export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) });
 
+export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
+
+export const resetStatus = () => ({type: RESET_STATUS});
+
 // TODO: Update with new UI
 
 export const payEscrowSignature = (escrowId) => ({ type: PAY_ESCROW_SIGNATURE, escrowId });
@@ -71,13 +75,8 @@ export const openCase = (escrowId) => ({ type: OPEN_CASE, escrowId, toSend: Escr
 
 export const openCaseSignature = (escrowId) => ({ type: OPEN_CASE_SIGNATURE, escrowId });
 
-
-export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
-
 export const closeDialog = () => ({ type: CLOSE_DIALOG });
 
 export const checkUserRating = (address) => ({ type: USER_RATING, address });
 
 export const addUserRating = () => ({ type: ADD_USER_RATING });
-
-export const resetStatus = () => ({type: RESET_STATUS});
