@@ -76,15 +76,10 @@ exports[`MarginSelectorForm should render correctly 1`] = `
     1 
     SNT
      = 
-    NaN
+    140.0000
      
+    USD
   </div>
   <small />
-  <h3 />
-  <div
-    className="border rounded p-3"
-  >
-    TODO SNT
-  </div>
 </Form(t)>
 `;

@@ -24,6 +24,7 @@ exports[`FiatSelectorForm should render correctly 1`] = `
       filterBy={Array []}
       flip={false}
       highlightOnlyResult={false}
+      id="fiatSelector"
       ignoreDiacritics={true}
       inputProps={Object {}}
       isInvalid={false}

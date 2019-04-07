@@ -7,9 +7,10 @@ describe('MarginSelectorForm', () => {
   it('should render correctly', () => {
     const component = shallow(<MarginSelectorForm margin={0}
                                                   token={{symbol: 'SNT'}}
-                                                  prices={{'SNT': {'USD': 1}}}
+                                                  prices={{'SNT': {'USD': 140}}}
                                                   marketType={0}
-                                                  currency={""}
+                                                  currency={"USD"}
+                                                  fee={"0"}
                                                   onMarketTypeChange={() => undefined}
                                                   onMarginChange={() => undefined}/>);
   
