@@ -135,11 +135,8 @@ function reducer(state = DEFAULT_STATE, action) {
         rateStatus: States.pending
       };
     case RATE_TRANSACTION_SUCCEEDED: {
-      const escrow = state.escrow.escrow;
-      escrow.rating = action.rating;
       return {
         ...state,
-        escrow,
         rateStatus: States.success
       };
     }

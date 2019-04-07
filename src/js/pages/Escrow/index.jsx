@@ -88,7 +88,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -128,7 +128,8 @@ class Escrow extends Component {
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
                                       payStatus={payStatus}
-                                      payAction={payEscrow} /> }
+                                      payAction={payEscrow}
+                                      rateTransaction={rateTransaction} /> }
 
         { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
                                         tokens={tokens}

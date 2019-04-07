@@ -17,16 +17,20 @@ import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
-import five from "../../../../images/escrow/05.png";
 
-const Done = () => (
+const Done = ({trade, rateTransaction}) => (
   <React.Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
-    <h2 className="mt-4">Rate your trading experience with this user.</h2>
-    <Reputation reputation={{upCount: 1, downCount: 1}} size="l"/>
+    {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
+    <Reputation reputation={{upCount: 1, downCount: 1}} trade={trade} rateTransaction={rateTransaction} size="l"/>
   </React.Fragment>
 );
+
+Done.propTypes = {
+  trade: PropTypes.object,
+  rateTransaction: PropTypes.func
+};
 
 const Unreleased = () => (
   <React.Fragment>
@@ -93,7 +97,7 @@ const PreFund = () => (
 
 class CardEscrowBuyer extends Component {
   render(){ 
-    const {trade, payStatus, payAction} = this.props;
+    const {trade, payStatus, payAction, rateTransaction} = this.props;
 
     const showLoading = payStatus === States.pending;
     const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
@@ -103,7 +107,7 @@ class CardEscrowBuyer extends Component {
         {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund /> } 
         {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> } 
         {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> } 
-        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done /> } 
+        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> } 
         {showLoading && <Loading /> }
       </CardBody>
     </Card>;
@@ -113,7 +117,8 @@ class CardEscrowBuyer extends Component {
 CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
   payStatus: PropTypes.string,
-  payAction: PropTypes.func
+  payAction: PropTypes.func,
+  rateTransaction: PropTypes.func
 };
 
 export default CardEscrowBuyer;
