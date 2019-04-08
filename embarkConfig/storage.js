@@ -45,6 +45,7 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
+    enabled: false
   },
 
   // merges with the settings in default
