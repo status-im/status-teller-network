@@ -88,7 +88,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -128,7 +128,8 @@ class Escrow extends Component {
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
                                       payStatus={payStatus}
-                                      payAction={payEscrow} /> }
+                                      payAction={payEscrow}
+                                      rateTransaction={rateTransaction} /> }
 
         { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
                                         tokens={tokens}
@@ -179,12 +180,14 @@ Escrow.propTypes = {
   payEscrow: PropTypes.func,
   cancelStatus: PropTypes.string,
   cancelEscrow: PropTypes.func,
-  updateBalances: PropTypes.func
+  updateBalances: PropTypes.func,
+  rateTransaction: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
   const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
   const approvalLoading = approval.selectors.isLoading(state);
+  const ratingStatus = escrow.selectors.getRatingStatus(state);
 
   return {
     address: network.selectors.getAddress(state) || "",
@@ -194,7 +197,7 @@ const mapStateToProps = (state, props) => {
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     tokens: network.selectors.getTokens(state),
-    loading: cancelStatus === States.pending || approvalLoading,
+    loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
     payStatus: escrow.selectors.getPaidEscrowStatus(state),
@@ -215,6 +218,7 @@ export default connect(
     releaseEscrow: escrow.actions.releaseEscrow,
     payEscrow: escrow.actions.payEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
-    updateBalances: network.actions.updateBalances
+    updateBalances: network.actions.updateBalances,
+    rateTransaction: escrow.actions.rateTransaction
   }
 )(withRouter(Escrow));

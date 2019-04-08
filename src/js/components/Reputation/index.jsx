@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-confusing-arrow, multiline-ternary */
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import classnames from "classnames";
@@ -7,22 +8,31 @@ import RatingIcon from "../../ui/RatingIcon";
 
 import './index.scss';
 
-const Reputation = ({reputation, size}) => (
-  <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
-    <span className="left-rating bg-secondary">
-      {reputation.upCount} <RatingIcon isPositiveRating={true}/>
-    </span>
-    <span className="right-rating bg-secondary">
-      {reputation.downCount} <RatingIcon isPositiveRating={false}/>
-    </span>
-  </span>
-);
+class Reputation extends Component {
+  render(){
+    const {size, rateTransaction, trade, reputation} = this.props;
+    const tradeWasRated = trade && trade.rating !== "0";
+    const onClick = rating => tradeWasRated || !rateTransaction || !trade 
+                              ? () => {} 
+                              : () => { rateTransaction(trade.escrowId, rating); };
+
+    return <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
+      <span className="left-rating bg-secondary">
+      {tradeWasRated && reputation.upCount} <RatingIcon isPositiveRating={true} onClick={onClick('5')} />
+      </span>
+      <span className="right-rating bg-secondary">
+      {tradeWasRated && reputation.downCount} <RatingIcon isPositiveRating={false} onClick={onClick('1')} />
+      </span>
+    </span>;
+  }
+}
 
 Reputation.propTypes = {
   t: PropTypes.func,
-  reputation: PropTypes.object,
-  size: PropTypes.string
-
+  size: PropTypes.string,
+  trade: PropTypes.object,
+  rateTransaction: PropTypes.func,
+  reputation: PropTypes.object
 };
 
 export default withNamespaces()(Reputation);
