@@ -5,6 +5,13 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
 
 const dataMigration = require('./data.js');
 
+let secret = {};
+try {
+  secret = require('../.secret.json');
+} catch(err) {
+  console.dir("warning: .secret.json file not found; this is only needed to deploy to testnet or livenet etc..");
+}
+
 module.exports = {
   // default applies to all environments
   default: {
@@ -129,6 +136,20 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
+    deployment: {
+      accounts: [
+        {
+          mnemonic: secret.mnemonic,
+          hdpath: "m/44'/1'/0'/0/",
+          numAddresses: "10"
+        }
+      ],
+      host: `rinkeby.infura.io/${secret.infuraKey}`,
+      port: false,
+      protocol: 'https',
+      type: "rpc"
+    },
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, FEE_AMOUNT)
   },
 
   // merges with the settings in default
