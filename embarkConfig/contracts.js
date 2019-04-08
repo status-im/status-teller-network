@@ -144,7 +144,7 @@ module.exports = {
           numAddresses: "10"
         }
       ],
-      host: "rinkeby.infura.io/#{secret.infuraKey}",
+      host: `rinkeby.infura.io/${secret.infuraKey}`,
       port: false,
       protocol: 'https',
       type: "rpc"
