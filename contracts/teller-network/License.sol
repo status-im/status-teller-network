@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.7;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
@@ -88,9 +88,10 @@ contract License is Ownable, ApproveAndCallFallBack {
     function release() public {
         require(licenseDetails[msg.sender].creationTime > 0, LICENSE_ALREADY_BOUGHT);
         require(licenseDetails[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
-        require(token.transfer(msg.sender, licenseDetails[msg.sender].price), UNSUCCESSFUL_TOKEN_TRANSFER);
 
-        reserveAmount -= licenseDetails[msg.sender].price;
+        uint price = licenseDetails[msg.sender].price
+
+        reserveAmount -= price;
 
         uint256 position = idxLicenseOwners[msg.sender];
         delete idxLicenseOwners[msg.sender];
@@ -100,6 +101,8 @@ contract License is Ownable, ApproveAndCallFallBack {
         licenseOwners.length--;
 
         delete licenseDetails[msg.sender];
+
+        require(token.transfer(msg.sender, price), UNSUCCESSFUL_TOKEN_TRANSFER);
 
         emit Released(msg.sender);
     }

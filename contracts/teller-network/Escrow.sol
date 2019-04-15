@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity 0.5.7;
 
 import "../common/Ownable.sol";
 import "../common/Pausable.sol";
