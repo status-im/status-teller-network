@@ -122,6 +122,10 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         require(_from == seller, "Only the seller can fund this escrow");
         require(trx.status == EscrowStatus.CREATED || trx.status == EscrowStatus.FUNDED, "Invalid escrow status");
 
+        transactions[_escrowId].tokenAmount += _tokenAmount;
+        transactions[_escrowId].expirationTime = _expirationTime;
+        transactions[_escrowId].status = EscrowStatus.FUNDED;
+
         payFee(_from, _escrowId);
 
         if(token == address(0)){
@@ -132,10 +136,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
             require(erc20token.allowance(_from, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
             require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
-
-        transactions[_escrowId].tokenAmount += _tokenAmount;
-        transactions[_escrowId].expirationTime = _expirationTime;
-        transactions[_escrowId].status = EscrowStatus.FUNDED;
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
     }
