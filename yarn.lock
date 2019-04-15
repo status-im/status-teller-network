@@ -1797,6 +1797,13 @@
     "@svgr/plugin-svgo" "^4.2.0"
     loader-utils "^1.2.3"
 
+"@trailofbits/embark-contract-info@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@trailofbits/embark-contract-info/-/embark-contract-info-1.0.0.tgz#e0fe72df8d0465103d00635215d8e74eafb58dd1"
+  integrity sha512-SJ5WmhvZ8QXTiVQMFJFVzGjUSdn2bBevnpHlprE2TD7XX8f3b3/r1oon8tv27x2m5XoSW9Rd6QbHvcYMKGfxdw==
+  dependencies:
+    fs-extra "^7.0.1"
+
 "@types/debug@^0.0.30":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/debug/-/debug-0.0.30.tgz#dc1e40f7af3b9c815013a7860e6252f6352a84df"
