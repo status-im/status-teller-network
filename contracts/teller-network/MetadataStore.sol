@@ -1,4 +1,4 @@
-pragma solidity 0.5.7;
+pragma solidity ^0.5.7;
 
 import "./License.sol";
 import "../common/Ownable.sol";

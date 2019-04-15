@@ -1,4 +1,4 @@
-pragma solidity 0.5.7;
+pragma solidity ^0.5.7;
 
 contract Controlled {
     /// @notice The address of the controller is the only address that can call

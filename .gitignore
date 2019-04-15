@@ -34,3 +34,5 @@ src/embarkArtifacts
 yarn-error.log
 cypress/videos/*
 .secret.json
+
+crytic-export/

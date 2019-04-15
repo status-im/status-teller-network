@@ -1,4 +1,4 @@
-pragma solidity 0.5.7;
+pragma solidity ^0.5.7;
 
 // Abstract contract for the full ERC 20 Token standard
 // https://github.com/ethereum/EIPs/issues/20

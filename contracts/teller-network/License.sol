@@ -1,4 +1,4 @@
-pragma solidity 0.5.7;
+pragma solidity  ^0.5.7;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
@@ -89,7 +89,7 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(licenseDetails[msg.sender].creationTime > 0, LICENSE_ALREADY_BOUGHT);
         require(licenseDetails[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
 
-        uint price = licenseDetails[msg.sender].price
+        uint price = licenseDetails[msg.sender].price;
 
         reserveAmount -= price;
 
