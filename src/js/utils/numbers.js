@@ -43,7 +43,6 @@ export const fromTokenDecimals = (value, decimals) => {
 };
 
 export function formatBalance(balance) {
-  balance = '0.00000000001214325';
   let numericalBalance = parseFloat(balance);
   if (!numericalBalance) {
     return '0';
