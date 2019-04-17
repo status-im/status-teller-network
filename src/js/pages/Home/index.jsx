@@ -25,7 +25,6 @@ class Home extends Component {
   }
 
   render() {
-    console.log({version});
     const isArbitrator = this.props.profile && this.props.profile.isArbitrator;
     const t = this.props.t;
     return (
