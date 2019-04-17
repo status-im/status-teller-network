@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {InputGroupAddon, Input, InputGroupText, InputGroup, FormGroup, Row, Col, Modal, ModalHeader, ModalBody} from 'reactstrap';
+import {InputGroupAddon, Input, InputGroupText, InputGroup, FormGroup, Modal, ModalHeader, ModalBody} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";

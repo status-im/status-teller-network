@@ -55,77 +55,125 @@ exports[`Trades should render correctly 1`] = `
     className="py-2 px-3 shadow-sm"
     tag="div"
   >
-    <div
-      className="d-flex my-1"
+    <Link
       key="0"
+      replace={false}
+      to="/escrow/0"
     >
-      <span
-        className="flex-fill align-self-center"
+      <Row
+        className="my-1"
+        tag="div"
       >
-        <Link
-          replace={false}
-          to="/escrow/0"
+        <Col
+          className="align-self-center pr-0"
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+          xs="3"
         >
           <Identicon
             className="align-middle rounded-circle topCircle border"
-            scale={5}
+            scale={4}
           />
           <Identicon
             className="align-middle rounded-circle bottomCircle border"
-            scale={5}
+            scale={4}
             seed="0x0"
           />
-          <span
-            className="ml-2"
-          >
+        </Col>
+        <Col
+          className="align-self-center"
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+          xs="3"
+        >
+          <span>
             Name
              & 
             Name
           </span>
-        </Link>
-      </span>
-      <span
-        className="flex-fill align-self-center"
-      >
-         
-        SNT
-      </span>
-      <span
-        className="flex-fill align-self-center text-right text-success"
-      >
-        <FontAwesomeIcon
-          border={false}
-          className="mr-2"
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                512,
-                512,
-                Array [],
-                "f111",
-                "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z",
-              ],
-              "iconName": "circle",
-              "prefix": "fas",
-            }
+        </Col>
+        <Col
+          className="align-self-center"
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
           }
-          inverse={false}
-          listItem={false}
-          mask={null}
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          title=""
-          transform={null}
-        />
-        open
-      </span>
-    </div>
+          xs="3"
+        >
+          0
+           
+          SNT
+        </Col>
+        <Col
+          className="align-self-center text-right text-success"
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+          xs="3"
+        >
+          <FontAwesomeIcon
+            border={false}
+            className="mr-2"
+            fixedWidth={false}
+            flip={null}
+            icon={
+              Object {
+                "icon": Array [
+                  512,
+                  512,
+                  Array [],
+                  "f111",
+                  "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z",
+                ],
+                "iconName": "circle",
+                "prefix": "fas",
+              }
+            }
+            inverse={false}
+            listItem={false}
+            mask={null}
+            pull={null}
+            pulse={false}
+            rotation={null}
+            size={null}
+            spin={false}
+            symbol={false}
+            title=""
+            transform={null}
+          />
+          open
+        </Col>
+      </Row>
+    </Link>
   </Card>
 </div>
 `;
