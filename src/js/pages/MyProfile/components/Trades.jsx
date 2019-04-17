@@ -1,31 +1,37 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Card} from 'reactstrap';
+import {Card, Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircle, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import Identicon from "../../../components/UserInformation/Identicon";
+import {formatBalance} from "../../../utils/numbers";
 
 class Trades extends Component {
   renderTrades() {
     return (
       <Card body className="py-2 px-3 shadow-sm">
         {this.props.trades.map((trade, index) => (
-          <div key={index} className="d-flex my-1">
-              <span className="flex-fill align-self-center">
-                <Link to={"/escrow/" + trade.escrowId}>
-                  <Identicon seed={trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
-                  <Identicon seed={trade.offer.owner} scale={5} className="align-middle rounded-circle bottomCircle border"/>
-                  <span className="ml-2">{trade.buyerInfo.username} & {trade.seller.username}</span>
-                </Link>
-              </span>
-              <span className="flex-fill align-self-center">{trade.tokenAmount} {trade.token.symbol}</span>
-              <span className="flex-fill align-self-center text-right text-success">
+          <Link key={index} to={"/escrow/" + trade.escrowId}>
+            <Row className="my-1">
+              <Col className="align-self-center pr-0" xs="3">
+                <Identicon seed={trade.buyer} scale={4} className="align-middle rounded-circle topCircle border"/>
+                <Identicon seed={trade.offer.owner} scale={4}
+                           className="align-middle rounded-circle bottomCircle border"/>
+              </Col>
+              <Col className="align-self-center" xs="3">
+                <span>{trade.buyerInfo.username} & {trade.seller.username}</span>
+              </Col>
+              <Col className="align-self-center" xs="3">
+                {formatBalance(trade.tokenAmount)} {trade.token.symbol}
+              </Col>
+              <Col className="align-self-center text-right text-success" xs="3">
                 <FontAwesomeIcon icon={faCircle} className="mr-2"/>
                 {trade.status}
-              </span>
-          </div>
+              </Col>
+            </Row>
+          </Link>
         ))}
       </Card>
     );
