@@ -9,7 +9,7 @@ import './index.scss';
 
 const fourOFour = ({t, history}) => (
   <div className="error-information with-tip with-button">
-    <img src={errorImage} alt="error image"/>
+    <img src={errorImage} alt="error"/>
     <h2 className="mt-5">
       {t('errorInformation.404.title')}
     </h2>

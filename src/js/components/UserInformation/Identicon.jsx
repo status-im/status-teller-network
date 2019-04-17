@@ -14,7 +14,7 @@ class Identicon extends Component {
       };
 
     const data = new IdenticonJS(seed, options).toString();
-    return <img width={size} height={size} className={className} src={'data:image/svg+xml;base64,' + data} />;
+    return <img alt="identicon" width={size} height={size} className={className} src={'data:image/svg+xml;base64,' + data} />;
   }
 }
 

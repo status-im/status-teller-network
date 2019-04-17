@@ -13,24 +13,24 @@ class CancelEscrow extends Component {
 
   state = {
     displayDialog: false
-  }
+  };
 
   displayDialog = show => (e) => {
     if(e) e.preventDefault();
     this.setState({displayDialog: show});
     return false;
-  }
+  };
 
   cancelEscrow = () => {
     this.props.cancelEscrow(this.props.trade.escrowId);
     this.displayDialog(false)();
-  }
+  };
 
   render(){
     const {trade} = this.props;
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
     return shouldDisplay && <Fragment>
-      <a href="#" onClick={this.displayDialog(true)}>
+      <div onClick={this.displayDialog(true)} className="clickable">
         <Row className="mt-4 text-primary">
           <Col xs="2">
             <RoundedIcon icon={faTimes} bgColor="blue"/>
@@ -39,8 +39,8 @@ class CancelEscrow extends Component {
             <h6 className="m-0">Cancel Trade</h6>
           </Col>
         </Row>
-        
-      </a>
+
+      </div>
       <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?"   />
     </Fragment>;
   }
