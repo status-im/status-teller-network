@@ -9,6 +9,8 @@ import license from "../../features/license";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 
+import { version } from '../../../../package.json';
+
 import "./index.scss";
 
 import logo from "../../../images/logo.svg";
@@ -23,13 +25,14 @@ class Home extends Component {
   }
 
   render() {
+    console.log({version});
     const isArbitrator = this.props.profile && this.props.profile.isArbitrator;
     const t = this.props.t;
     return (
       <div className="home">
         <Row>
           <Col xs={12} className="home-logo">
-            <img src={logo} width="200" height="200" />
+            <img alt="Logo" src={logo} width="200" height="200" />
           </Col>
         </Row>
 
@@ -47,6 +50,7 @@ class Home extends Component {
             <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
           </Col>
         </Row>}
+        <p className="teller-version text-muted">Version: {version}</p>
       </div>
     );
   }
