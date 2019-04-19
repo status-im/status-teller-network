@@ -13,11 +13,7 @@ class SellerAssets extends Component {
   render() {
     return (
       <React.Fragment>
-        <h2>Assets</h2>
-        <p>What assets are you going to sell</p>
-
-        <h3>Assets in your Wallet</h3>
-
+        <h2>What assets are you going to sell</h2>
         <ButtonGroup vertical className="w-100">
           {this.props.availableAssets.map((asset) => (
             <CheckButton active={this.props.selectedAsset === asset.address}

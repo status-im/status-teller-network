@@ -54,15 +54,17 @@ export function formatBalance(balance) {
     return '0';
   }
   if (numericalBalance > 99999) {
-    return '99999+';
+    return '99,999+';
   }
+
   if (numericalBalance < 0.000001) {
     balance = web3.utils.toWei(balance);
     if (balance.length > 6) {
-      return web3.utils.fromWei(balance, 'Gwei').substring(0, 7) + ' Gwei';
+      return parseFloat(web3.utils.fromWei(balance, 'Gwei').substring(0, 7)).toLocaleString() + ' Gwei';
     }
     return balance + ' wei';
   }
-  return parseFloat(numericalBalance.toFixed(6)).toString();
+
+  return parseFloat(numericalBalance).toFixed(6).toLocaleString();
 }
 
