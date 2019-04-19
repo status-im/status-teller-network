@@ -1,3 +1,4 @@
+/*global web3*/
 import BN from 'bn.js';
 import numberToBN from 'number-to-bn';
 
@@ -48,13 +49,20 @@ export const fromTokenDecimals = (value, decimals) => {
 };
 
 export function formatBalance(balance) {
-  balance = parseFloat(balance);
-  if (!balance) {
+  let numericalBalance = parseFloat(balance);
+  if (!numericalBalance) {
     return '0';
   }
-  if (balance > 99999) {
+  if (numericalBalance > 99999) {
     return '99999+';
   }
-  return parseFloat(balance.toFixed(6)).toString();
+  if (numericalBalance < 0.000001) {
+    balance = web3.utils.toWei(balance);
+    if (balance.length > 6) {
+      return web3.utils.fromWei(balance, 'Gwei').substring(0, 7) + ' Gwei';
+    }
+    return balance + ' wei';
+  }
+  return parseFloat(numericalBalance.toFixed(6)).toString();
 }
 
