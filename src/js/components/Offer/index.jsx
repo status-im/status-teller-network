@@ -7,8 +7,6 @@ import Identicon from "../UserInformation/Identicon";
 import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 
-import './index.scss';
-
 const Offer = ({offer, withDetail, prices}) => (
   <Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
     <Col className="p-0">
