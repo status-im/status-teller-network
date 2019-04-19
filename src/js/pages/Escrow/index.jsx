@@ -22,6 +22,7 @@ import { States } from '../../utils/transaction';
 
 import escrow from '../../features/escrow';
 import network from '../../features/network';
+import prices from '../../features/prices';
 import approval from '../../features/approval';
 
 import "./index.scss";
@@ -88,7 +89,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, prices, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -97,6 +98,7 @@ class Escrow extends Component {
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
     const isBuyer = escrow.buyer === address;
     const offer = this.getOffer(escrow, isBuyer);
+    offer.token = token;
 
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
@@ -145,7 +147,7 @@ class Escrow extends Component {
         <Row className="bg-secondary py-4 mt-4">
           <Col>
             <h3 className="mb-3">You are trading with</h3>
-            <Offer offer={offer}/>
+            <Offer offer={offer} prices={prices}/>
           </Col>
         </Row>
         <OpenChat statusContactCode={offer.user.statusContactCode} />
@@ -181,7 +183,8 @@ Escrow.propTypes = {
   cancelStatus: PropTypes.string,
   cancelEscrow: PropTypes.func,
   updateBalances: PropTypes.func,
-  rateTransaction: PropTypes.func
+  rateTransaction: PropTypes.func,
+  prices: PropTypes.object
 };
 
 const mapStateToProps = (state, props) => {
@@ -196,6 +199,7 @@ const mapStateToProps = (state, props) => {
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
+    prices: prices.selectors.getPrices(state),
     tokens: network.selectors.getTokens(state),
     loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
