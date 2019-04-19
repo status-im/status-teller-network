@@ -9,6 +9,7 @@ import Map from '../../components/Map';
 import Offer from './components/Offer';
 
 import metadata from "../../features/metadata";
+import prices from "../../features/prices";
 import newBuy from "../../features/newBuy";
 
 import './index.scss';
@@ -24,7 +25,7 @@ class Profile extends Component {
   };
 
   render() {
-    const profile = this.props.profile;
+    const {profile, prices} = this.props;
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation} address={profile.address} />
@@ -37,6 +38,7 @@ class Profile extends Component {
             <div>
               {profile.offers.map((offer, index) => <Offer key={index}
                                                            offer={offer}
+                                                           prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
           </Col>
@@ -51,13 +53,15 @@ Profile.propTypes = {
   load: PropTypes.func,
   history: PropTypes.object,
   profile: PropTypes.object,
-  setOfferId: PropTypes.func
+  setOfferId: PropTypes.func,
+  prices: PropTypes.object
 };
 
 const mapStateToProps = (state, props) => {
   const address = props.match.params.address;
   return {
-    profile: metadata.selectors.getProfile(state, address)
+    profile: metadata.selectors.getProfile(state, address),
+    prices: prices.selectors.getPrices(state)
   };
 };
 
