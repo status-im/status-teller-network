@@ -8,7 +8,7 @@ import logo from "../../../images/logo-small.svg";
 
 
 const Header = ({profile, history}) => (
-  <header>
+  <header className="border-bottom">
     <Navbar expand="md" className="px-0">
       <NavbarBrand tag={Link} to="/"><img src={logo} alt="Logo" width="32" height="32" /><span className="text-body text-logo">TN</span></NavbarBrand>
       <Nav className="ml-auto" navbar>

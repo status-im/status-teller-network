@@ -85,7 +85,7 @@ class App extends Component {
 
     return (
       <HashRouter>
-        <Container>
+        <Container className="p-0">
           <Header profile={this.props.profile}/>
           <div className="body-content">
           <Switch>
