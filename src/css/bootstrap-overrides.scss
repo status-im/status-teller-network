@@ -105,8 +105,19 @@ $input-icon-height: 20px;
   padding: 11px 36px;
 }
 
-
 .navbar-brand {
   cursor: pointer;
   width: 70%;
+}
+
+.text-black {
+  color: $black;
+}
+
+.text-small {
+  font-size: 13px;
+}
+
+.font-weight-medium {
+  font-weight: 500;
 }

@@ -142,7 +142,7 @@ class OffersList extends Component {
               {PAYMENT_METHODS[paymentMethod]}
               <Button tag={Link}
                       color="link"
-                      className="float-right"
+                      className="float-right p-0"
                       to="/offers/map">On Map
                       <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>

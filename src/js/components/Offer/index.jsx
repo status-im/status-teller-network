@@ -24,7 +24,7 @@ const Offer = ({offer, withDetail, prices}) => (
       {withDetail && <Row>
         <Col>
           <p className="m-0">
-            <span className="border rounded mr-2 p-1 font-weight-normal text-dark">{offer.token.symbol} &rarr; {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+            <span className="border rounded mr-2 p-1 text-black font-weight-medium text-small">{offer.token.symbol} &rarr; {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
           </p>
         </Col>
       </Row>}
