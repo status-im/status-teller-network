@@ -7,6 +7,7 @@ exports[`Reputation should render correctly 1`] = `
   <span
     className="left-rating bg-secondary"
   >
+    1
      
     <RatingIcon
       isPositiveRating={true}
@@ -16,6 +17,7 @@ exports[`Reputation should render correctly 1`] = `
   <span
     className="right-rating bg-secondary"
   >
+    2
      
     <RatingIcon
       isPositiveRating={false}
