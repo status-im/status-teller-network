@@ -12,6 +12,7 @@ import CardEscrowSeller from './components/CardEscrowSeller';
 import CardEscrowBuyer from './components/CardEscrowBuyer';
 import EscrowDetail from './components/EscrowDetail';
 import OpenChat from './components/OpenChat';
+import Profile from './components/Profile';
 import OpenDispute from './components/OpenDispute';
 import Loading from '../../components/Loading';
 import ApproveSNTFunds from './components/ApproveSNTFunds';
@@ -150,7 +151,9 @@ class Escrow extends Component {
             <Offer offer={offer} prices={prices}/>
           </Col>
         </Row>
-        <OpenChat statusContactCode={offer.user.statusContactCode} />
+        <OpenChat statusContactCode={offer.user.statusContactCode} withBuyer={!isBuyer} />
+        <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
+        <hr />
         <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />
         <OpenDispute trade={escrow} />
       </div>

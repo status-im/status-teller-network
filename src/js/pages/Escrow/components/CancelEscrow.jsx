@@ -2,12 +2,10 @@
 import React, {Fragment, Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {faTimes} from "@fortawesome/free-solid-svg-icons";
-
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
-
+import CancelIcon from "../../../../images/close.png";
 
 class CancelEscrow extends Component {
 
@@ -33,10 +31,10 @@ class CancelEscrow extends Component {
       <a href="#" onClick={this.displayDialog(true)}>
         <Row className="mt-4 text-primary">
           <Col xs="2">
-            <RoundedIcon icon={faTimes} bgColor="blue"/>
+            <RoundedIcon image={CancelIcon} bgColor="red"/>
           </Col>
-          <Col xs="10" className="my-auto">
-            <h6 className="m-0">Cancel Trade</h6>
+          <Col xs="10" className="my-auto ">
+            <h6 className="m-0">Cancel trade</h6>
           </Col>
         </Row>
         
