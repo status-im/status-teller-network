@@ -4,12 +4,9 @@ import {Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
 import Reputation from '../Reputation';
 import Identicon from "../UserInformation/Identicon";
+import {truncateTwo} from '../../utils/numbers';
 
-function truncateTwo(num) {   
-  var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
-  num = Number(num.toString().match(re)[0]);
-  return Number(Math.round(num + "e+2")  + "e-2");
-}
+import './index.scss';
 
 const Offer = ({offer, withDetail, prices}) => {
   const price = prices[offer.token.symbol][offer.currency];
