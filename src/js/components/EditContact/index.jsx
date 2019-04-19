@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import {FormGroup, Label, Button} from 'reactstrap';
+import {FormGroup, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Textarea from 'react-validation/build/textarea';
@@ -12,7 +12,7 @@ class EditContact extends Component {
     const {t, username, statusContactCode, isStatus} = this.props;
     return (
       <Fragment>
-        <h2>{t('contactForm.yourName')}</h2>
+        <h2 className="mb-4">{t('contactForm.yourName')}</h2>
         <Form>
           <FormGroup>
             <Input type="text"
