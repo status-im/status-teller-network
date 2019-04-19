@@ -14,19 +14,19 @@ const getTradeStyle = (tradeState) => {
     case tradeStates.waiting:
     case tradeStates.funded:
     case tradeStates.paid:
-      return {text: 'Open', color: '#44D058'};
+      return {text: 'Open', className: 'status-green'};
     case tradeStates.released:
-      return {text: 'Closed', color: '#4360DF'};
+      return {text: 'Closed', className: 'status-blue'};
     case tradeStates.canceled:
-      return {text: 'Canceled', color: '#939BA1'};
+      return {text: 'Canceled', className: 'status-gray'};
     case tradeStates.expired:
-      return {text: 'Expired', color: '#939BA1'};
+      return {text: 'Expired', className: 'status-gray'};
     case tradeStates.arbitration_open:
-      return {text: 'Arbitration', color: '#FF2D55'};
+      return {text: 'Arbitration', className: 'status-red'};
     case tradeStates.arbitration_closed:
-      return {text: 'Resolved', color: '#4360DF'};
+      return {text: 'Resolved', className: 'status-blue'};
     default:
-      return {text: tradeState, color: '#939BA1'};
+      return {text: tradeState, className: 'status-gray'};
   }
 };
 
@@ -50,7 +50,7 @@ class Trades extends Component {
                 {isBuyer ? 'Buy' : 'Sell' } {formatBalance(trade.tokenAmount)} {trade.token.symbol}
               </Col>
               <Col className="align-self-center text-center text-success" xs="4">
-                <span className="p-1 text-uppercase d-inline text-white rounded-sm" style={{backgroundColor: tradeStyle.color}}>{tradeStyle.text}</span>
+                <span className={"p-1 text-uppercase d-inline text-white rounded-sm " + tradeStyle.className}>{tradeStyle.text}</span>
               </Col>
             </Row>
           </Link>;
