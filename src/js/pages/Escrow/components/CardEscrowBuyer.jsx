@@ -84,16 +84,20 @@ Funded.propTypes = {
   payAction: PropTypes.func
 };
 
-const PreFund = () => (
+const PreFund = (statusContactCode) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={one} alt="one" />
     </span>
     <p className="h2 mt-4">Waiting for the seller to fund an escrow</p>
     <p>Notify the seller about the trade using Status encrypted p2p chat</p>
-    <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Open chat</Button>
+    <a href={"https://get.status.im/user/" + statusContactCode} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg" role="button">Open chat</a>
   </React.Fragment>
 );
+
+PreFund.propTypes = {
+  statusContactCode: PropTypes.string
+};
 
 class CardEscrowBuyer extends Component {
   render(){ 
@@ -104,7 +108,7 @@ class CardEscrowBuyer extends Component {
 
     return <Card>
       <CardBody className="text-center p-5">
-        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund /> } 
+        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund statusContactCode={trade.seller.statusContactCode} /> } 
         {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> } 
         {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> } 
         {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> } 

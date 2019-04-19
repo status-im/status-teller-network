@@ -152,7 +152,7 @@ class Escrow extends Component {
         </Row>
         <OpenChat statusContactCode={offer.user.statusContactCode} />
         <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />
-        <OpenDispute/>
+        <OpenDispute trade={escrow} />
       </div>
     );
   }
