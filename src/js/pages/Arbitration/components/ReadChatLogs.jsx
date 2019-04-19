@@ -5,7 +5,7 @@ const ReadChatLogs = () => (
   <Row className="mt-4">
     <Col xs="2">
       <div className="rounded-icon rounded-circle rounded-icon__blue">
-        <img src="images/read-chat.png" className="rounded-icon--icon" height="20" width="20" />
+        <img alt="read chat" src="images/read-chat.png" className="rounded-icon--icon" height="20" width="20" />
       </div>
     </Col>
     <Col xs="10 my-auto">

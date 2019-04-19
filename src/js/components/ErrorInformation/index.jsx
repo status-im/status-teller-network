@@ -9,7 +9,7 @@ import './index.scss';
 
 const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry}) => (
   <div className={classnames("error-information with-tip", {'with-button': !!retry})}>
-    <img src={errorImage} alt="error image"/>
+    <img src={errorImage} alt="error"/>
     <h2 className="mt-5">
       {provider && t('errorInformation.provider.title')}
       {network && t('errorInformation.network.title')}
@@ -39,6 +39,7 @@ ErrorInformation.propTypes = {
   provider: PropTypes.bool,
   network: PropTypes.bool,
   transaction: PropTypes.bool,
+  sntTokenError: PropTypes.bool,
   retry: PropTypes.func
 };
 

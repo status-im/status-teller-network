@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ButtonGroup, Tooltip} from 'reactstrap';
+import {ButtonGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 import CheckButton from '../../../../ui/CheckButton';
 import {TokenImages} from '../../../../utils/images';

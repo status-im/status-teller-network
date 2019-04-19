@@ -1,6 +1,5 @@
 import React from 'react';
 import {Row, Col} from 'reactstrap';
-import PropTypes from 'prop-types';
 
 import exclamationCircle from "../../../../images/exclamation-circle.png";
 import RoundedIcon from "../../../ui/RoundedIcon";

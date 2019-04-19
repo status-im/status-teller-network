@@ -18,7 +18,7 @@ import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
-import five from "../../../../images/escrow/05.png";
+// import five from "../../../../images/escrow/05.png";
 
 const Done = () => (
   <React.Fragment>
@@ -29,29 +29,29 @@ const Done = () => (
   </React.Fragment>
 );
 
-const Releasing = () => (
-  <React.Fragment>
-    <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={five} alt="five" />
-    </span>
-    <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
-    <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-  </React.Fragment>
-);
+// const Releasing = () => (
+//   <React.Fragment>
+//     <span className="bg-dark text-white p-3 rounded-circle">
+//       <img src={five} alt="five" />
+//     </span>
+//     <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
+//     <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
+//   </React.Fragment>
+// );
 
 class Funded extends Component {
   state = {
     displayDialog: false
-  }
+  };
 
   displayDialog = show => () => {
     this.setState({displayDialog: show});
-  }
+  };
 
   releaseEscrow = () => {
     this.props.releaseEscrow();
     this.displayDialog(false)();
-  }
+  };
 
   render(){
     return <React.Fragment>
@@ -85,7 +85,7 @@ class PreFund extends Component {
   render(){
     const {fee, showApproveScreen, showFundButton, fundEscrow, trade, tokens} = this.props;
     const { toBN } = web3.utils;
-    
+
     const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
                           toBN(toTokenDecimals(tokens.SNT.balance, 18)).gte(toBN(fee));
     return <Fragment>
@@ -133,7 +133,7 @@ class CardEscrowSeller extends Component {
 
   state = {
     step: 1
-  }
+  };
 
   componentDidMount(){
     this.determineStep(this.props.trade);
@@ -171,7 +171,7 @@ class CardEscrowSeller extends Component {
     let step = this.state.step;
     step++;
     this.setState({step});
-  }
+  };
 
   render(){
     let step = this.state.step;
@@ -190,10 +190,10 @@ class CardEscrowSeller extends Component {
 
     let component;
     switch(step){
-      case 5: 
+      case 5:
         component = <Done />;
         break;
-      case 4: 
+      case 4:
         component = <Funded trade={trade} releaseEscrow={() => { releaseEscrow(trade.escrowId); }} />;
         break;
       case 3:
@@ -203,10 +203,10 @@ class CardEscrowSeller extends Component {
         component = <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
         break;
       case 1:
-      default: 
+      default:
         component = <Start onClick={this.handleStepClick} />;
     }
-    
+
 
     return <Card>
     <CardBody className="text-center p-5">
