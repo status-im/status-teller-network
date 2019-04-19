@@ -13,7 +13,7 @@ const Offer = ({offer, withDetail, prices}) => (
       <Row className="mb-2">
         <Col xs={2}><Identicon seed={offer.owner} className="rounded-circle border" scale={5}/></Col>
         <Col xs={5}>
-          <p className="seller-name m-0 font-weight-bold">{offer.user.username}</p>
+          <p className="seller-name m-0 font-weight-bold text-black">{offer.user.username}</p>
           <p className="text-dark m-0">{offer.user.location}</p>
         </Col>
         <Col xs={5} className="text-right rating-col">
