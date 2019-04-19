@@ -145,12 +145,6 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow} /> }
                                                             
         <EscrowDetail escrow={escrow} />
-        <Row className="bg-secondary py-4 mt-4">
-          <Col>
-            <h3 className="mb-3">You are trading with</h3>
-            <Offer offer={offer} prices={prices}/>
-          </Col>
-        </Row>
         <OpenChat statusContactCode={offer.user.statusContactCode} withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
