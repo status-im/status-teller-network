@@ -10,29 +10,29 @@ import {formatBalance} from "../../../utils/numbers";
 
 class Trades extends Component {
   renderTrades() {
+    const address = this.props.address;
     return (
       <Card body className="py-2 px-3 shadow-sm">
-        {this.props.trades.map((trade, index) => (
-          <Link key={index} to={"/escrow/" + trade.escrowId}>
-            <Row className="my-1">
-              <Col className="align-self-center pr-0" xs="3">
-                <Identicon seed={trade.buyer} scale={4} className="align-middle rounded-circle topCircle border"/>
-                <Identicon seed={trade.offer.owner} scale={4}
-                           className="align-middle rounded-circle bottomCircle border"/>
+        {this.props.trades.map((trade, index) => {
+          const isBuyer = trade.buyer ===  address;
+          return <Link key={index} to={"/escrow/" + trade.escrowId}>
+            <Row className="my-1 border-bottom">
+              <Col className="align-self-center pr-0" xs="2">
+                <Identicon seed={ isBuyer ? trade.offer.owner : trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
               </Col>
               <Col className="align-self-center" xs="3">
-                <span>{trade.buyerInfo.username} & {trade.seller.username}</span>
+                <span>{isBuyer ? trade.seller.username : trade.buyerInfo.username}</span>
               </Col>
-              <Col className="align-self-center" xs="3">
-                {formatBalance(trade.tokenAmount)} {trade.token.symbol}
+              <Col className="align-self-center" xs="4">
+                {isBuyer ? 'Buy' : 'Sell' } {formatBalance(trade.tokenAmount)} {trade.token.symbol}
               </Col>
               <Col className="align-self-center text-right text-success" xs="3">
                 <FontAwesomeIcon icon={faCircle} className="mr-2"/>
                 {trade.status}
               </Col>
             </Row>
-          </Link>
-        ))}
+          </Link>;
+        })}
       </Card>
     );
   }
@@ -64,7 +64,8 @@ class Trades extends Component {
 
 Trades.propTypes = {
   t: PropTypes.func,
-  trades: PropTypes.array
+  trades: PropTypes.array,
+  address: PropTypes.string
 };
 
 export default withNamespaces()(Trades);
