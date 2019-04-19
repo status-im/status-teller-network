@@ -14,19 +14,19 @@ const getTradeStyle = (tradeState) => {
     case tradeStates.waiting:
     case tradeStates.funded:
     case tradeStates.paid:
-      return {text: 'Open', className: 'status-green'};
+      return {text: 'Open', className: 'bg-success'};
     case tradeStates.released:
-      return {text: 'Closed', className: 'status-blue'};
+      return {text: 'Closed', className: 'bg-primary'};
     case tradeStates.canceled:
-      return {text: 'Canceled', className: 'status-gray'};
+      return {text: 'Canceled', className: 'bg-secondary'};
     case tradeStates.expired:
-      return {text: 'Expired', className: 'status-gray'};
+      return {text: 'Expired', className: 'bg-secondary'};
     case tradeStates.arbitration_open:
-      return {text: 'Arbitration', className: 'status-red'};
+      return {text: 'Arbitration', className: 'bg-danger'};
     case tradeStates.arbitration_closed:
-      return {text: 'Resolved', className: 'status-blue'};
+      return {text: 'Resolved', className: 'bg-primary'};
     default:
-      return {text: tradeState, className: 'status-gray'};
+      return {text: tradeState, className: 'bg-secondary'};
   }
 };
 
