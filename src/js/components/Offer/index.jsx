@@ -5,8 +5,18 @@ import {Link} from "react-router-dom";
 import Reputation from '../Reputation';
 import Identicon from "../UserInformation/Identicon";
 
-const Offer = ({offer, withDetail}) => (
-  <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
+import './index.scss';
+
+function truncateTwo(num) {   
+  var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
+  num = Number(num.toString().match(re)[0]);
+  return Number(Math.round(num + "e+2")  + "e-2");
+}
+
+const Offer = ({offer, withDetail, prices}) => {
+  const price = prices[offer.token.symbol][offer.currency];
+  const calcPrice = offer.marketType === "0" ? price * ((100 + (parseFloat(offer.margin))) / 100) : price * parseFloat(offer.margin) / 100;
+  return <Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${offer.owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
         <Col xs={2}><Identicon seed={offer.owner} className="rounded-circle border" scale={5}/></Col>
@@ -22,15 +32,13 @@ const Offer = ({offer, withDetail}) => (
       {withDetail && <Row>
         <Col>
           <p className="m-0">
-            <span className="border rounded mr-2 font-weight-bold p-1">{offer.token.symbol}</span>
-            <span className="border rounded mr-2 font-weight-bold p-1">{offer.currency}</span>
+            <span className="border rounded mr-2 p-1 price">{offer.token.symbol} &rarr; {truncateTwo(calcPrice)} {offer.currency}</span>
           </p>
         </Col>
       </Row>}
     </Col>
-  </Row>
-
-);
+  </Row>;
+};
 
 Offer.defaultProps = {
   withDetail: false
@@ -38,7 +46,8 @@ Offer.defaultProps = {
 
 Offer.propTypes = {
   offer: PropTypes.object,
-  withDetail: PropTypes.bool
+  withDetail: PropTypes.bool,
+  prices: PropTypes.object
 };
 
 

@@ -8,6 +8,7 @@ import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 import network from '../../features/network';
 import metadata from '../../features/metadata';
+import prices from '../../features/prices';
 import {getLocation} from '../../services/googleMap';
 import {PAYMENT_METHODS, SORT_TYPES} from '../../features/metadata/constants';
 import Offer from '../../components/Offer';
@@ -146,7 +147,7 @@ class OffersList extends Component {
                       <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>
             </h4>
-            {groupedOffers[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer}/>)}
+            {groupedOffers[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer} prices={this.props.prices}/>)}
           </Fragment>
         ))}
       </Fragment>
@@ -158,13 +159,15 @@ OffersList.propTypes = {
   t: PropTypes.func,
   offers: PropTypes.array,
   tokens: PropTypes.array,
-  loadOffers: PropTypes.func
+  loadOffers: PropTypes.func,
+  prices: PropTypes.object
 };
 
 const mapStateToProps = state => {
   return {
     offers: metadata.selectors.getOffersWithUser(state),
-    tokens: Object.values(network.selectors.getTokens(state))
+    tokens: Object.values(network.selectors.getTokens(state)),
+    prices: prices.selectors.getPrices(state)
   };
 };
 
