@@ -12,7 +12,7 @@ const Profile = ({address, withBuyer}) => (
       <RoundedIcon image={ProfileIcon} bgColor="blue"/>
     </Col>
     <Col xs="10 my-auto">
-      <h6 className="m-0">{withBuyer ? 'Buyer' : 'Seller' } profile</h6>
+      <h6 className="m-0 font-weight-normal">{withBuyer ? 'Buyer' : 'Seller' } profile</h6>
     </Col>
   </Row>
 );

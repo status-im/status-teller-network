@@ -59,7 +59,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     License public license;
     MetadataStore public metadataStore;
 
-    event Created(uint indexed offerId, address seller, address indexed buyer, uint indexed escrowId, uint date);
+    event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId, uint date);
     event Funded(uint escrowId, uint expirationTime, uint amount, uint date);
 
     event Paid(uint escrowId, uint date);

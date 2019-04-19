@@ -18,17 +18,18 @@ export const getCreateEscrowId = state => state.escrow.createEscrowId;
 
 export const getRatingStatus = state => state.escrow.rateStatus;
 
-export const getTrades = (state) => {
+export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || [];
-  return escrows.map((escrow) => {
-    const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
-    return {
-      ...escrow,
-      token,
-      status: getTradeStatus(escrow),
-      tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
-    };
-  });
+  return escrows.filter(escrow => escrow.buyer === userAddress || offers.find(x => x === escrow.offerId))
+                .map((escrow) => {
+                  const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
+                  return {
+                    ...escrow,
+                    token,
+                    status: getTradeStatus(escrow),
+                    tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
+                  };
+                });
 };
 
 export const getEscrow = (state) => {

@@ -41,7 +41,7 @@ class MyProfile extends Component {
         </Fragment>}
 
         { !profile.isArbitrator && <Fragment>
-          <Trades trades={this.props.trades}/>
+          <Trades trades={this.props.trades} address={this.props.address}/>
           <Offers offers={profile.offers} location={profile.location} />
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment> }
@@ -62,11 +62,10 @@ MyProfile.propTypes = {
 const mapStateToProps = state => {
   const address = network.selectors.getAddress(state) || '';
   const profile = metadata.selectors.getProfile(state, address) || NULL_PROFILE;
-
   return {
     address,
     profile,
-    trades: escrow.selectors.getTrades(state, profile.offers.map(offer => offer.id)),
+    trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
     disputes: arbitration.selectors.escrows(state)
   };
 };

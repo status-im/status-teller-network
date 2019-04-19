@@ -34,7 +34,7 @@ class CancelEscrow extends Component {
             <RoundedIcon image={CancelIcon} bgColor="red"/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <h6 className="m-0">Cancel trade</h6>
+            <h6 className="m-0 font-weight-normal">Cancel trade</h6>
           </Col>
         </Row>
 
