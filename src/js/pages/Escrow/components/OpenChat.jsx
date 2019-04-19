@@ -1,24 +1,30 @@
 import React from 'react';
 import {Row, Col} from 'reactstrap';
-import {faComment} from "@fortawesome/free-solid-svg-icons";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
+import ChatIcon from "../../../../images/read-chat.png";
 
-const OpenChat = ({statusContactCode}) => (
+
+const OpenChat = ({statusContactCode, withBuyer}) => (
   <a href={"https://get.status.im/user/" + statusContactCode} rel="noopener noreferrer" target="_blank">
   <Row className="mt-4">
     <Col xs="2">
-      <RoundedIcon icon={faComment} bgColor="grey"/>
+      <RoundedIcon image={ChatIcon} bgColor="blue"/>
     </Col>
     <Col xs="10 my-auto">
-      <h5 className="m-0">Open Chat</h5>
+      <h6 className="m-0">Chat with {withBuyer ? 'buyer' : 'seller' }</h6>
     </Col>
   </Row>
   </a>
 );
 
+OpenChat.defaultProps = {
+  withBuyer: false
+};
+
 OpenChat.propTypes = {
-  statusContactCode: PropTypes.string
+  statusContactCode: PropTypes.string,
+  withBuyer: PropTypes.bool
 };
 
 export default OpenChat;
