@@ -91,7 +91,7 @@ const PreFund = (statusContactCode) => (
     </span>
     <p className="h2 mt-4">Waiting for the seller to fund an escrow</p>
     <p>Notify the seller about the trade using Status encrypted p2p chat</p>
-    <a href={"https://get.status.im/user/" + statusContactCode} className="btn btn-primary btn-lg" role="button" aria-disabled="true">Open chat</a>
+    <a href={"https://get.status.im/user/" + statusContactCode} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg" role="button" aria-disabled="true">Open chat</a>
   </React.Fragment>
 );
 
