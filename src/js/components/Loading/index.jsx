@@ -7,7 +7,7 @@ import {withNamespaces} from "react-i18next";
 import "./index.scss";
 
 const Loading = ({t, mining, initial, page, value}) => (
-  <div className="loading text-center">
+  <div className="loading" style={{"textAlign": "center"}}>
     <h3 className="mb-4">
       {value}
       {mining && t('loading.mining')}
