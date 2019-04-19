@@ -5,8 +5,6 @@ import {Link} from "react-router-dom";
 import Reputation from '../Reputation';
 import Identicon from "../UserInformation/Identicon";
 
-import './index.scss';
-
 function truncateTwo(num) {   
   var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
   num = Number(num.toString().match(re)[0]);
@@ -32,7 +30,7 @@ const Offer = ({offer, withDetail, prices}) => {
       {withDetail && <Row>
         <Col>
           <p className="m-0">
-            <span className="border rounded mr-2 p-1 price">{offer.token.symbol} &rarr; {truncateTwo(calcPrice)} {offer.currency}</span>
+            <span className="border rounded mr-2 p-1 font-weight-normal text-dark">{offer.token.symbol} &rarr; {truncateTwo(calcPrice)} {offer.currency}</span>
           </p>
         </Col>
       </Row>}
