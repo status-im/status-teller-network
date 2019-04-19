@@ -12,7 +12,7 @@ const OpenChat = ({statusContactCode, withBuyer}) => (
       <RoundedIcon image={ChatIcon} bgColor="blue"/>
     </Col>
     <Col xs="10 my-auto">
-      <h6 className="m-0">Chat with {withBuyer ? 'buyer' : 'seller' }</h6>
+      <h6 className="m-0 font-weight-normal">Chat with {withBuyer ? 'buyer' : 'seller' }</h6>
     </Col>
   </Row>
   </a>
