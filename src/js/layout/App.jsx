@@ -87,6 +87,7 @@ class App extends Component {
       <HashRouter>
         <Container>
           <Header profile={this.props.profile}/>
+          <div className="body-content">
           <Switch>
             <Route exact path="/" component={Home}/>
 
@@ -126,6 +127,7 @@ class App extends Component {
 
             <Redirect to="/404"/>
           </Switch>
+          </div>
         </Container>
       </HashRouter>
     );

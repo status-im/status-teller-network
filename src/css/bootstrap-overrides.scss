@@ -7,6 +7,27 @@
   position: absolute;
 }
 
+header {
+  padding-left: 15px;
+  padding-right: 15px;
+  border-bottom: 1px solid #EEF2F5;
+  margin-bottom: 20px;
+  height: 65px;
+  width: 100%;
+}
+
+.body-content {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.container {
+  width: 100%;
+  padding: 0;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .btn-primary {
   background-color: $btn-bg-color;
   border-color: $btn-bg-color;
@@ -90,4 +111,10 @@ $input-icon-height: 20px;
 
 .btn {
   padding: 11px 36px;
+}
+
+
+.navbar-brand {
+  cursor: pointer;
+  width: 70%;
 }
