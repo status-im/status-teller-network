@@ -4,9 +4,6 @@ import React, {Component} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {Row, Col} from "reactstrap";
-
-import Offer from '../../components/Offer';
 import CancelEscrow from './components/CancelEscrow';
 import CardEscrowSeller from './components/CardEscrowSeller';
 import CardEscrowBuyer from './components/CardEscrowBuyer';
