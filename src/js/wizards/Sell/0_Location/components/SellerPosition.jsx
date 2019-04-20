@@ -10,10 +10,7 @@ class SellerPosition extends Component {
   render() {
     return (
       <React.Fragment>
-        <h2>Your location</h2>
-        <p>What location do you want to display</p>
-        <p className="text-muted">This position will be displayed to buyers. You can choose to be precise or not.</p>
-
+        <h2 className="mb-4">What location do you want to display</h2>
         <Form>
           <FormGroup>
             <Input type="text" name="location" id="location" placeholder="City, Country"

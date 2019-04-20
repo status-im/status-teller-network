@@ -13,6 +13,8 @@ import {States} from "../../../utils/transaction";
 import ErrorInformation from '../../../components/ErrorInformation';
 import {withRouter} from "react-router-dom";
 
+import "./index.scss";
+
 class Margin extends Component {
   constructor(props) {
     super(props);
