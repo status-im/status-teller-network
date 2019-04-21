@@ -114,7 +114,7 @@ exports[`Trades should render correctly 1`] = `
               "xl",
             ]
           }
-          xs="4"
+          xs="3"
         >
           Buy
            
@@ -123,7 +123,7 @@ exports[`Trades should render correctly 1`] = `
           SNT
         </Col>
         <Col
-          className="align-self-center text-right text-success"
+          className="align-self-center text-center text-success"
           tag="div"
           widths={
             Array [
@@ -134,39 +134,13 @@ exports[`Trades should render correctly 1`] = `
               "xl",
             ]
           }
-          xs="3"
+          xs="4"
         >
-          <FontAwesomeIcon
-            border={false}
-            className="mr-2"
-            fixedWidth={false}
-            flip={null}
-            icon={
-              Object {
-                "icon": Array [
-                  512,
-                  512,
-                  Array [],
-                  "f111",
-                  "M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z",
-                ],
-                "iconName": "circle",
-                "prefix": "fas",
-              }
-            }
-            inverse={false}
-            listItem={false}
-            mask={null}
-            pull={null}
-            pulse={false}
-            rotation={null}
-            size={null}
-            spin={false}
-            symbol={false}
-            title=""
-            transform={null}
-          />
-          open
+          <span
+            className="p-1 text-uppercase d-inline text-white rounded-sm bg-secondary"
+          >
+            open
+          </span>
         </Col>
       </Row>
     </Link>
