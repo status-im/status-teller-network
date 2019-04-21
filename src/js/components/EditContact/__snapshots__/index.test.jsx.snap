@@ -2,33 +2,19 @@
 
 exports[`EditContact should render correctly 1`] = `
 <Fragment>
-  <h2 />
-  <p />
+  <h2
+    className="mb-4"
+  />
   <Form(t)>
     <FormGroup
       tag="div"
     >
-      <Label
-        className="text-dark"
-        for="nickname"
-        tag="label"
-        widths={
-          Array [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-          ]
-        }
-      >
-        Set nickname
-      </Label>
       <Control(s)
         className="form-control"
         id="nickname"
         name="nickname"
         onChange={[Function]}
+        placeholder="Set nickname"
         type="text"
         validations={
           Array [
@@ -40,27 +26,13 @@ exports[`EditContact should render correctly 1`] = `
     <FormGroup
       tag="div"
     >
-      <Label
-        className="text-dark"
-        for="contactCode"
-        tag="label"
-        widths={
-          Array [
-            "xs",
-            "sm",
-            "md",
-            "lg",
-            "xl",
-          ]
-        }
-      >
-        Status contact code or Status ENS name
-      </Label>
       <Control(s)
         className="form-control"
         id="contactCode"
         name="contactCode"
         onChange={[Function]}
+        placeholder="Status contact code or Status ENS name"
+        rows="5"
         type="text"
         validations={
           Array [
