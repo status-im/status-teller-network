@@ -4,21 +4,9 @@ exports[`MarginSelectorForm should render correctly 1`] = `
 <Form(t)>
   <h2 />
   <FormGroup
+    className="mb-0"
     tag="div"
   >
-    <Label
-      for="margin"
-      tag="label"
-      widths={
-        Array [
-          "xs",
-          "sm",
-          "md",
-          "lg",
-          "xl",
-        ]
-      }
-    />
     <InputGroup
       className="full-width-input"
       tag="div"
@@ -55,15 +43,16 @@ exports[`MarginSelectorForm should render correctly 1`] = `
     tag="div"
   >
     <ButtonGroup
-      className="d-flex"
+      className="w-100 marginSelector mb-0"
       role="group"
       tag="div"
+      vertical={true}
     >
-      <MarketButton
+      <CheckButton
         active={true}
         onClick={[Function]}
       />
-      <MarketButton
+      <CheckButton
         active={false}
         onClick={[Function]}
       />

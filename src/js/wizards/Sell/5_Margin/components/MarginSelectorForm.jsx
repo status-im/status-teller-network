@@ -1,13 +1,12 @@
 /* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup, Label, InputGroup, InputGroupAddon, ButtonGroup, InputGroupText} from 'reactstrap';
+import {FormGroup, InputGroup, InputGroupAddon, ButtonGroup, InputGroupText} from 'reactstrap';
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-
+import CheckButton from '../../../../ui/CheckButton';
 import {isNumber, required, lowerThan} from '../../../../validators';
-import MarketButton from '../../../../ui/MarketButton';
 
 const ABOVE = 0;
 const BELOW = 1;
@@ -24,8 +23,7 @@ class MarginSelectorForm extends Component {
     return (
       <Form ref={c => { this.form = c; }}>
         <h2>{t('sellerMarginContainer.title')}</h2>
-        <FormGroup>
-            <Label for="margin">{t('marginSelectorForm.margin')}</Label>
+        <FormGroup className="mb-0">
             <InputGroup className="full-width-input">
               <Input type="number"
                      name="margin"
@@ -39,16 +37,17 @@ class MarginSelectorForm extends Component {
             </InputGroup>
         </FormGroup>
         <FormGroup>
-          <ButtonGroup className="d-flex">
-            <MarketButton onClick={() => this.props.marketTypeChange(ABOVE)} active={marketType === ABOVE}>
+          <ButtonGroup vertical className="w-100 marginSelector mb-0">
+            <CheckButton active={marketType === ABOVE}
+                         onClick={() => this.props.marketTypeChange(ABOVE)}>
               {t('marginSelectorForm.aboveMarket')}
-            </MarketButton>
-            <MarketButton onClick={() => this.props.marketTypeChange(BELOW)} active={marketType === BELOW}>
+            </CheckButton>
+            <CheckButton active={marketType === BELOW}
+                         onClick={() => this.props.marketTypeChange(BELOW)}>
               {t('marginSelectorForm.belowMarket')}
-            </MarketButton>
+            </CheckButton>
           </ButtonGroup>
         </FormGroup>
-
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
         <div className="border rounded p-3">
           1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
@@ -56,7 +55,7 @@ class MarginSelectorForm extends Component {
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
         {(fee || '0') !== '0' && <Fragment>
-          <h3>{t('marginSelectorForm.ourFee')}</h3>
+          <h3 className="mt-4">{t('marginSelectorForm.ourFee')}</h3>
           <div className="border rounded p-3">
             {web3.utils.fromWei(fee, 'ether')} SNT
           </div>
