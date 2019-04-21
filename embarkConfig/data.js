@@ -28,7 +28,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     }));
 
     console.log('Generate Standard Tokens');
-    const weiToken = 100 * Math.pow(10, 18);
+    const weiToken = "5000000000000";
     await Promise.all(addresses.slice(0, 8).map(async (address) => {
       const generateToken = deps.contracts.StandardToken.methods.mint(address, weiToken.toString());
       const gas = await generateToken.estimateGas({from: main});
