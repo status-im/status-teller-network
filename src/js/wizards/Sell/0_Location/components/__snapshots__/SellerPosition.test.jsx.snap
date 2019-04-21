@@ -2,17 +2,11 @@
 
 exports[`SellerPosition should render correctly 1`] = `
 <Fragment>
-  <h2>
-    Your location
-  </h2>
-  <p>
-    What location do you want to display
-  </p>
-  <p
-    className="text-muted"
+  <h2
+    className="mb-4"
   >
-    This position will be displayed to buyers. You can choose to be precise or not.
-  </p>
+    What location do you want to display
+  </h2>
   <Form
     tag="form"
   >

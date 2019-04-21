@@ -61,7 +61,7 @@ exports[`Trades should render correctly 1`] = `
       to="/escrow/0"
     >
       <Row
-        className="my-1"
+        className="my-1 border-bottom"
         tag="div"
       >
         <Col
@@ -76,15 +76,11 @@ exports[`Trades should render correctly 1`] = `
               "xl",
             ]
           }
-          xs="3"
+          xs="2"
         >
           <Identicon
             className="align-middle rounded-circle topCircle border"
-            scale={4}
-          />
-          <Identicon
-            className="align-middle rounded-circle bottomCircle border"
-            scale={4}
+            scale={5}
             seed="0x0"
           />
         </Col>
@@ -104,8 +100,6 @@ exports[`Trades should render correctly 1`] = `
         >
           <span>
             Name
-             & 
-            Name
           </span>
         </Col>
         <Col
@@ -120,8 +114,10 @@ exports[`Trades should render correctly 1`] = `
               "xl",
             ]
           }
-          xs="3"
+          xs="4"
         >
+          Buy
+           
           0
            
           SNT
