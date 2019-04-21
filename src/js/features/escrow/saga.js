@@ -20,9 +20,30 @@ import {
   GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED
 
 } from './constants';
+import {getEnsAddress} from "../../services/embarkjs";
+
+
+export function *createEscrow({user, escrow}) {
+  try {
+    user.statusContactCode = yield getEnsAddress(user.statusContactCode);
+  } catch (error) {
+    yield put({type: CREATE_ESCROW_FAILED, error});
+    return;
+  }
+  const toSend = Escrow.methods.create(
+    user.buyerAddress,
+    escrow.offerId,
+    escrow.tradeAmount,
+    1,
+    escrow.assetPrice,
+    user.statusContactCode,
+    '',
+    user.username);
+  yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
+}
 
 export function *onCreateEscrow() {
-  yield takeEvery(CREATE_ESCROW, doTransaction.bind(null, CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED));
+  yield takeEvery(CREATE_ESCROW, createEscrow);
 }
 
 export function *onReleaseEscrow() {

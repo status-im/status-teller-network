@@ -14,7 +14,16 @@ export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, st
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
-    toSend: Escrow.methods.create(buyerAddress, offer.id, tradeAmount, 1, assetPrice, statusContactCode, '', username)
+    user: {
+      statusContactCode,
+      username,
+      buyerAddress
+    },
+    escrow: {
+      tradeAmount,
+      offerId: offer.id,
+      assetPrice
+    }
   };
 };
 
