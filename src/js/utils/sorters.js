@@ -6,8 +6,8 @@ export function weightedScore(user) {
 
 export function sortByDate(a, b) {
   // Using the id as there is no date in the contract
-  if (a.id < b.id) return -1;
-  if (a.id > b.id) return 1;
+  if (a.id > b.id) return -1;
+  if (a.id < b.id) return 1;
   return 0;
 }
 
