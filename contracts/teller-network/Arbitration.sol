@@ -2,9 +2,10 @@ pragma solidity ^0.5.7;
 
 import "../common/Ownable.sol";
 import "./Arbitrable.sol";
+import "./License.sol";
 
 
-contract Arbitration is Ownable {
+contract Arbitration is Ownable, License {
 
     mapping(uint => ArbitrationCase) public arbitrationCases;
 
@@ -30,22 +31,15 @@ contract Arbitration is Ownable {
         _;
     }
 
-    constructor(address _arbitrator) public {
-        arbitrator = _arbitrator;
+    constructor(address payable _tokenAddress, uint256 _price) 
+        License(_tokenAddress, _price)
+        public {
     }
 
     function setEscrowAddress(address _escrow) public onlyOwner {
         escrow = Arbitrable(_escrow);
     }
 
-    /**
-     * @notice Get Arbitrator
-     * @return arbitrator address
-     */
-    function getArbitrator() public view returns(address){
-        return arbitrator;
-    }
-    
 
     /**
      * @notice Determine if address is arbitrator
@@ -53,19 +47,8 @@ contract Arbitration is Ownable {
      * @return result
      */
     function isArbitrator(address _addr) public view returns(bool){
-        return arbitrator == _addr;
+        return isLicenseOwner(_addr);
     }
-
-    /**
-     * @notice Set address as arbitrator
-     * @param _addr New arbitrator address
-     * @dev Can only be called by the owner of the contract
-     */
-    function setArbitrator(address _addr) public onlyOwner {
-        arbitrator = _addr;
-        emit ArbitratorChanged(_addr);
-    }
-
 
     /**
      * @notice arbitration exists
@@ -112,9 +95,9 @@ contract Arbitration is Ownable {
         emit ArbitrationResolved(_escrowId, _result, msg.sender, block.timestamp);
 
         if(_result == ArbitrationResult.BUYER){
-            escrow.setArbitrationResult(_escrowId, true);
+            escrow.setArbitrationResult(_escrowId, true, msg.sender);
         } else {
-            escrow.setArbitrationResult(_escrowId, false);
+            escrow.setArbitrationResult(_escrowId, false, msg.sender);
         }
     }
 

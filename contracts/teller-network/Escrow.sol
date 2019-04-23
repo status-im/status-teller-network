@@ -436,16 +436,15 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
      * @notice Set arbitration result in favour of the buyer or seller and transfer funds accordingly
      * @param _escrowId Id of the escrow
      * @param _releaseFunds Release funds to buyer or cancel escrow
+     * @param _arbitrator Arbitrator address
      */
-    function setArbitrationResult(uint _escrowId, bool _releaseFunds) external {
+    function setArbitrationResult(uint _escrowId, bool _releaseFunds, address _arbitrator) external {
         assert(msg.sender == address(arbitration)); // Only arbitration contract can invoke this
-
-        address arbitrator = arbitration.getArbitrator();
 
         EscrowTransaction storage trx = transactions[_escrowId];
         address seller;
         (, , , , , seller) = metadataStore.offer(trx.offerId);
-        require(trx.buyer != arbitrator && seller != arbitrator, "Arbitrator cannot be part of transaction");
+        require(trx.buyer != _arbitrator && seller != _arbitrator, "Arbitrator cannot be part of transaction");
         
         if(_releaseFunds){
             _release(_escrowId, trx);
