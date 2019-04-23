@@ -34,7 +34,15 @@ module.exports = {
       host: "localhost",
       port: 5001,
       getUrl: "http://localhost:8080/ipfs/"
-    }
+    },
+    dappConnection: [
+      {
+        provider: "ipfs",
+        host: "192.168.0.6",
+        port: 5001,
+        getUrl: "http://192.168.0.6:8080/ipfs/"
+      }
+    ]
   },
 
   // merges with the settings in default

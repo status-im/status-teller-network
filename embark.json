@@ -14,6 +14,10 @@
     "embarkjs-connector-web3": {},
     "@trailofbits/embark-contract-info": {
       "flags": ""
+    },
+    "embark-status-plugin": {
+      "deviceIp": "192.168.0.3",
+      "name": "Status Teller Network"
     }
   },
   "options": {

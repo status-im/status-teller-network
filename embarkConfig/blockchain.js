@@ -2,7 +2,7 @@ module.exports = {
   // applies to all environments
   default: {
     enabled: true,
-    rpcHost: "localhost", // HTTP-RPC server listening interface (default: "localhost")
+    rpcHost: "0.0.0.0", // HTTP-RPC server listening interface (default: "localhost")
     rpcPort: 8545, // HTTP-RPC server listening port (default: 8545)
     rpcCorsDomain: "auto",  // Comma separated list of domains from which to accept cross origin requests (browser enforced)
                             // When set to "auto", Embark will automatically set the cors to the address of the webserver

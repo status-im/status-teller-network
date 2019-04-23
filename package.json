@@ -52,6 +52,7 @@
     "css-loader": "^2.1.0",
     "embark": "^4.0.2",
     "embark-solium": "0.0.1",
+    "embark-status-plugin": "^1.0.0",
     "embarkjs-connector-web3": "^4.0.0",
     "ethereumjs-util": "^6.0.0",
     "google-geocoder": "^0.2.1",
