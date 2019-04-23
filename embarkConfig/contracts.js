@@ -1,4 +1,6 @@
 const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
+const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
+
 
 const FEE_AMOUNT = "1000000000000000000"; // 1 * Math.pow(10, 18)
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
@@ -69,16 +71,17 @@ module.exports = {
       License: {
         args: [
           "$SNT",
-          "0x0000000000000000000000000000000000000000",
-          LICENSE_PRICE,
-          86400 * 365
+          LICENSE_PRICE
         ]
       },
       "MetadataStore": {
         args: ["$License"]
       },
       Arbitration: {
-        args: ["$accounts[1]"]
+        args: [
+          "$SNT",
+          ARB_LICENSE_PRICE
+        ]
       },
       Escrow: {
         args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],

@@ -27,7 +27,7 @@ config({
       ]
     },
     License: {
-      args: ["$SNT", TestUtils.zeroAddress, 10, 86400 * 365]
+      args: ["$SNT", 10]
     }
   }
 }, (_err, web3_accounts) => {
@@ -43,13 +43,9 @@ contract("License", function () {
 
   });
 
-  it("should set recipient and price on instantiation", async function () {
-    const recipient = await License.methods.getRecipient().call();
-    const price = await License.methods.getPrice().call();
-    const releaseDelay = await License.methods.getReleaseDelay().call();
+  it("should set price on instantiation", async function () {
+    const price = await License.methods.price().call();
     assert.strictEqual(parseInt(price, 10), 10);
-    assert.strictEqual(parseInt(releaseDelay, 10), 86400 * 365);
-    assert.strictEqual(recipient, TestUtils.zeroAddress);
   });
 
 
@@ -106,46 +102,7 @@ contract("License", function () {
 
   it("should allow to set the price if owner", async function() {
     await License.methods.setPrice(10).send({from: accounts[0]});
-    const price = await License.methods.getPrice().call();
+    const price = await License.methods.price().call();
     assert.strictEqual(parseInt(price, 10), 10);
-  });
-
-  it("should not allow set the recipient if not the owner", async function() {
-    try {
-      await License.methods.setRecipient(accounts[1]).send({from: accounts[1]});
-    } catch (error) {
-      assert.ok(error.message.indexOf('revert') > -1);
-    }
-  });
-
-  it("should allow to set the recipient if owner", async function() {
-    await License.methods.setRecipient(accounts[0]).send({from: accounts[0]});
-    const recipient = await License.methods.getRecipient().call();
-    assert.strictEqual(recipient, accounts[0]);
-  });
-
-  it("should not allow to release the license if release delay time hasn't passed", async function () {
-    try {
-      await License.methods.release().send({from: accounts[0]});
-      assert.fail('should have reverted before');
-    } catch(error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Release period not reached.");
-    }
-  });
-
-  it("should allow to release the license once release delay time has passed", async function () {
-      await TestUtils.increaseTime(86400 * 366);
-
-      const balanceBeforeRelease = await SNT.methods.balanceOf(accounts[0]).call();
-      const receipt = await License.methods.release().send({from: accounts[0]});
-      const balanceAfterRelease = await SNT.methods.balanceOf(accounts[0]).call();
-
-      const released = receipt.events.Released;
-      assert(!!released, "Released() not triggered");
-
-      let isLicenseOwner = await License.methods.isLicenseOwner(accounts[0]).call();
-
-      assert(toBN(balanceBeforeRelease).add(toBN(10)), toBN(balanceAfterRelease), "User balance is incorrect");
-      assert.strictEqual(isLicenseOwner, false, "User should not be a seller");
   });
 });
