@@ -28,7 +28,7 @@ config({
       ]
     },
     License: {
-      args: ["$SNT", TestUtils.zeroAddress, 10, 86400 * 365]
+      args: ["$SNT", 10]
     },
     MetadataStore: {
       args: ["$License"]
