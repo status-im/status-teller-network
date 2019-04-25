@@ -117,6 +117,18 @@ class OffersList extends Component {
       groupedOffers[key].sort(sortFunction);
     });
 
+    let groupedOffersByUser = {};
+    Object.keys(groupedOffers).forEach(paymentMethod => {
+      const offersForMethod = groupedOffers[paymentMethod];
+      groupedOffersByUser[paymentMethod] = offersForMethod.reduce((grouped, offer) => {
+        if (!grouped[offer.owner]) {
+          grouped[offer.owner] = [];
+        }
+        grouped[offer.owner].push(offer);
+        return grouped;
+      }, {});
+    });
+
     return (
       <Fragment>
         <h2 className="text-center">
@@ -136,7 +148,7 @@ class OffersList extends Component {
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
-        {Object.keys(groupedOffers).map((paymentMethod) => (
+        {Object.keys(groupedOffersByUser).map((paymentMethod) => (
           <Fragment key={paymentMethod}>
             <h4 className="clearfix mt-5">
               {PAYMENT_METHODS[paymentMethod]}
@@ -147,7 +159,7 @@ class OffersList extends Component {
                       <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>
             </h4>
-            {groupedOffers[paymentMethod].map((offer, index) => <Offer key={`${paymentMethod}${index}`} withDetail offer={offer} prices={this.props.prices}/>)}
+            {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]} prices={this.props.prices}/>)}
           </Fragment>
         ))}
       </Fragment>
