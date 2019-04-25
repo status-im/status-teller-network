@@ -54,13 +54,13 @@ config({
       ]
     },
     License: {
-      args: ["$SNT", TestUtils.zeroAddress, 10, 86400 * 365]
+      args: ["$SNT", 10]
     },
     MetadataStore: {
       args: ["$License"]
     },
     Arbitration: {
-      args: ["$accounts[5]"]
+      args: ["$SNT", 10]
     },
     Escrow: {
       args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
@@ -84,9 +84,9 @@ contract("Escrow", function() {
   const expireTransaction = async() => {
     await TestUtils.increaseTime(1001);
     expirationTime += 1000;
-  }
+  };
 
-  let receipt, escrowId, escrowTokenId, offerId;
+  let receipt, escrowId, escrowTokenId, offerId, ethOfferId, tokenOfferId;
 
   this.timeout(0);
 
@@ -101,7 +101,12 @@ contract("Escrow", function() {
     await SNT.methods.generateTokens(accounts[0], 1000).send();
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
-  
+
+    // Register arbitrator
+    await SNT.methods.generateTokens(arbitrator, 1000).send();
+    const encodedCall2 = Arbitration.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
+
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
@@ -408,13 +413,13 @@ contract("Escrow", function() {
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
 
       receipt = await Escrow.methods.create_and_fund(address, ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      created = receipt.events.Created;
+      const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId; 
 
       const messageToSign = await Escrow.methods.paySignHash(escrowId).call();
       const msgHash = EthUtil.hashPersonalMessage(Buffer.from(EthUtil.stripHexPrefix(messageToSign), 'hex'));
       const signature = EthUtil.ecsign(msgHash, privateKey); 
-      const signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s)
+      const signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s);
 
       receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signatureRPC).send({from: accounts[9]});
 
@@ -561,12 +566,11 @@ contract("Escrow", function() {
     });
   });
 
-
   describe("Transaction arbitration case", async() => {
     beforeEach(async() => {
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      created = receipt.events.Created;
+      const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
     });
 
@@ -603,7 +607,7 @@ contract("Escrow", function() {
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
 
       receipt = await Escrow.methods.create_and_fund(address, ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      created = receipt.events.Created;
+      const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId; 
 
       let messageToSign, msgHash, signature, signatureRPC;
@@ -758,28 +762,6 @@ contract("Escrow", function() {
 
       const nonArbitrator = await Arbitration.methods.isArbitrator(accounts[9]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
-    });
-
-    it("non-owner should not be able to change the arbitrator", async () => {
-      try {
-        receipt = await await Arbitration.methods.setArbitrator(accounts[7]).send({from: accounts[9]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        TestUtils.assertJump(error);
-      }
-    });
-
-    it("owner should be able to change the arbitrator", async() => {
-      const newArbitrator = "0x1122334455667788990011223344556677889900";
-      
-      receipt = await Arbitration.methods.setArbitrator(newArbitrator).send({from: accounts[0]});
-
-      const arbitratorChanged = receipt.events.ArbitratorChanged;
-      assert(!!arbitratorChanged, "ArbitratorChanged() not triggered");
-      assert.equal(arbitratorChanged.returnValues.arbitrator, newArbitrator, "Invalid Arbitrator");
-
-      const isArbitrator = await Arbitration.methods.isArbitrator(newArbitrator).call();
-      assert.equal(isArbitrator, true, "New arbitrator not set correctly");
     });
   });
 

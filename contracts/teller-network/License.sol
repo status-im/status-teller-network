@@ -6,12 +6,10 @@ import "../token/ApproveAndCallFallBack.sol";
 
 /**
 * @title License
-* @dev License contract for buying a license
+* @dev Contract for buying a license
 */
 contract License is Ownable, ApproveAndCallFallBack {
-    address payable private recipient;
-    uint256 private price;
-    uint256 private releaseDelay;
+    uint256 public price;
     string private constant LICENSE_ALREADY_BOUGHT = "License already bought";
     string private constant UNSUCCESSFUL_TOKEN_TRANSFER = "Unsuccessful token transfer";
 
@@ -28,18 +26,10 @@ contract License is Ownable, ApproveAndCallFallBack {
     mapping(address => uint) private idxLicenseOwners;
 
     event Bought(address buyer, uint256 price);
-    event RecipientChanged(address _recipient);
     event PriceChanged(uint256 _price);
-    event Released(address buyer);
-    event ReleaseDelayChanged(uint256 _newDelay);
 
-    uint256 public reserveAmount;
-
-    constructor(address payable _tokenAddress, address payable _recipient, uint256 _price, uint256 _releaseDelay) public {
-        recipient = _recipient;
+    constructor(address payable _tokenAddress, uint256 _price) public {
         price = _price;
-        releaseDelay = _releaseDelay;
-        reserveAmount = 0;
         token = ERC20Token(_tokenAddress);
     }
 
@@ -73,64 +63,11 @@ contract License is Ownable, ApproveAndCallFallBack {
 
         licenseDetails[_owner].price = price;
         licenseDetails[_owner].creationTime = block.timestamp;
-        reserveAmount += price;
 
         uint idx = licenseOwners.push(msg.sender);
         idxLicenseOwners[msg.sender] = idx;
 
         emit Bought(_owner, token.allowance(_owner, address(this)));
-    }
-
-    /**
-    * @dev Release a license and retrieve funds
-    * @notice Only the owner of a license can perform the operation after the release delay time has passed.
-    */
-    function release() public {
-        require(licenseDetails[msg.sender].creationTime > 0, LICENSE_ALREADY_BOUGHT);
-        require(licenseDetails[msg.sender].creationTime + releaseDelay < block.timestamp, "Release period not reached.");
-
-        uint price = licenseDetails[msg.sender].price;
-
-        reserveAmount -= price;
-
-        uint256 position = idxLicenseOwners[msg.sender];
-        delete idxLicenseOwners[msg.sender];
-        address replacer = licenseOwners[licenseOwners.length - 1];
-        licenseOwners[position] = replacer;
-        idxLicenseOwners[replacer] = position;
-        licenseOwners.length--;
-
-        delete licenseDetails[msg.sender];
-
-        require(token.transfer(msg.sender, price), UNSUCCESSFUL_TOKEN_TRANSFER);
-
-        emit Released(msg.sender);
-    }
-
-    /**
-    * @dev Get the recipient of the license
-    * @return address
-    */
-    function getRecipient() public view returns (address) {
-        return recipient;
-    }
-
-    /**
-    * @dev Set the recipient
-    * @param _recipient The new recipient of the license
-    * @notice Only the owner of the contract can perform this action
-    */
-    function setRecipient(address payable _recipient) public onlyOwner {
-        recipient = _recipient;
-        emit RecipientChanged(_recipient);
-    }
-
-    /**
-    * @dev Get the current price of the license
-    * @return uint
-    */
-    function getPrice() public view returns (uint256) {
-        return price;
     }
 
     /**
@@ -144,29 +81,11 @@ contract License is Ownable, ApproveAndCallFallBack {
     }
 
     /**
-    * @dev Get the current release delay time in seconds
-    * @return uint
-    */
-    function getReleaseDelay() public view returns (uint256) {
-        return releaseDelay;
-    }
-
-    /**
      * @dev Get number of license owners
      * @return uint
      */
     function getNumLicenseOwners() public view returns (uint256) {
         return licenseOwners.length;
-    }
-
-    /**
-    * @dev Set the minimum amount of time before a license can be released
-    * @param _releaseDelay The new release delay in seconds
-    * @notice Only the owner of the contract can perform this action
-    */
-    function setReleaseDelay(uint256 _releaseDelay) public onlyOwner {
-        releaseDelay = _releaseDelay;
-        emit ReleaseDelayChanged(releaseDelay);
     }
 
     /**
@@ -181,12 +100,6 @@ contract License is Ownable, ApproveAndCallFallBack {
         } else {
             ERC20Token excessToken = ERC20Token(_token);
             uint256 amount = excessToken.balanceOf(address(this));
-            if(_token == address(token)){
-                require(amount > reserveAmount, "Is not excess");
-                amount -= reserveAmount;
-            } else {
-                require(amount > 0, "No balance");
-            }
             excessToken.transfer(_beneficiary, amount);
         }
     }
@@ -195,7 +108,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     /**
      * @notice Support for "approveAndCall". Callable only by `token()`.
      * @param _from Who approved.
-     * @param _amount Amount being approved, need to be equal `getPrice()`.
+     * @param _amount Amount being approved, need to be equal `price()`.
      * @param _token Token being approved, need to be equal `token()`.
      * @param _data Abi encoded data with selector of `register(bytes32,address,bytes32,bytes32)`.
      */
@@ -225,12 +138,5 @@ contract License is Ownable, ApproveAndCallFallBack {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
         }
-    }
-
-
-    /**
-    * @dev Fallback function
-    */
-    function() external {
     }
 }
