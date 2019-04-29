@@ -20,7 +20,6 @@ import { States } from '../../utils/transaction';
 
 import escrow from '../../features/escrow';
 import network from '../../features/network';
-import prices from '../../features/prices';
 import approval from '../../features/approval';
 
 import "./index.scss";
@@ -87,7 +86,7 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, prices, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
+    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
@@ -101,7 +100,7 @@ class Escrow extends Component {
     const requiredSNT = this.calculateRequiredSNT();
     const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
     const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
-    
+
     const requiredToken = escrow.tradeAmount;
     const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
@@ -111,7 +110,7 @@ class Escrow extends Component {
     // Show token approval UI
     if(showApproveFundsScreen) {
       if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
-      
+
       if(escrow.offer.asset !== zeroAddress) { // A token
         if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
           showFundButton = true;
@@ -134,13 +133,13 @@ class Escrow extends Component {
         { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
                                         tokens={tokens}
                                         releaseStatus={releaseStatus}
-                                        trade={escrow} 
-                                        fee={fee} 
-                                        showFundButton={showFundButton} 
-                                        showApproveScreen={this.showApproveScreen} 
+                                        trade={escrow}
+                                        fee={fee}
+                                        showFundButton={showFundButton}
+                                        showApproveScreen={this.showApproveScreen}
                                         fundEscrow={fundEscrow}
                                         releaseEscrow={releaseEscrow} /> }
-                                                            
+
         <EscrowDetail escrow={escrow} />
         <OpenChat statusContactCode={offer.user.statusContactCode} withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
@@ -177,8 +176,7 @@ Escrow.propTypes = {
   cancelStatus: PropTypes.string,
   cancelEscrow: PropTypes.func,
   updateBalances: PropTypes.func,
-  rateTransaction: PropTypes.func,
-  prices: PropTypes.object
+  rateTransaction: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -193,7 +191,6 @@ const mapStateToProps = (state, props) => {
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
-    prices: prices.selectors.getPrices(state),
     tokens: network.selectors.getTokens(state),
     loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),

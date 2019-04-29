@@ -18,7 +18,7 @@ window.SNT = SNT;
 
 export function *doBuyLicense() {
   try {
-    const price = yield call(License.methods.getPrice().call);
+    const price = yield call(License.methods.price().call);
     const encodedCall = License.methods.buy().encodeABI();
     const toSend = SNT.methods.approveAndCall(License.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
@@ -48,7 +48,7 @@ export function *onBuyLicense() {
 
 export function *loadPrice() {
   try {
-    const price = yield call(License.methods.getPrice().call);
+    const price = yield call(License.methods.price().call);
     yield put({type: LOAD_PRICE_SUCCEEDED, price});
   } catch (error) {
     console.error(error);
