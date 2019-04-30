@@ -2,14 +2,14 @@
 import BN from 'bn.js';
 import numberToBN from 'number-to-bn';
 
-export const truncateTwo = (num) => {   
-  var re = new RegExp('^-?\\d+(?:\.\\d{0,' + (2 || -1) + '})?');
+export const truncateTwo = (num) => {
+  const re = new RegExp('^-?\\d+(?:.\\d{0,' + (2 || -1) + '})?');
   num = Number(num.toString().match(re)[0]);
   return Number(Math.round(num + "e+2")  + "e-2");
 };
 
 const padLeft = (number, length) => {
-  var str = String(number);
+  let str = String(number);
   while (str.length < length) {
       str = '0' + str;
   }
@@ -24,7 +24,7 @@ export const addDecimals = (value, decimals) => {
 
 
 const padRight = (number, length) => {
-  var str = String(number);
+  let str = String(number);
   while (str.length < length) {
     str += '0';
   }

@@ -224,6 +224,8 @@ $container-max-widths: map-merge(
 
 @include _assert-ascending($container-max-widths, "$container-max-widths");
 
+$content-width: 750px;
+
 
 // Grid columns
 //

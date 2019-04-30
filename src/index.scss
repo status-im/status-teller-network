@@ -1,3 +1,5 @@
+@import "css/variable-overrides";
+
 html {
   height: 100%;
 }
@@ -6,6 +8,16 @@ body {
   height: 100%;
   display: flex;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  .container {
+    max-width: none;
+
+    .body-content {
+      max-width: $content-width;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
 
   .v-align-center {
     margin: auto;

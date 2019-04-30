@@ -1,3 +1,5 @@
+@import "../../../css/variable-overrides";
+
 $footer-height: 58px;
 
 .container {
@@ -12,10 +14,18 @@ $footer-height: 58px;
       bottom: 0;
       left: 0;
       height: $footer-height;
+      max-width: $content-width;
+      margin: 0 auto;
 
       .footer-arrow {
         position: relative;
         bottom: 1px;
+      }
+    }
+
+    @media screen and (min-width: 640px) {
+      .footer {
+        position: relative;
       }
     }
   }
