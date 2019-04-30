@@ -27,6 +27,7 @@ class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
+    this.props.getArbitrators();
   }
 
   render() {
@@ -56,7 +57,9 @@ MyProfile.propTypes = {
   trades: PropTypes.array,
   disputes: PropTypes.array,
   loadProfile: PropTypes.func,
-  getDisputedEscrows: PropTypes.func
+  getDisputedEscrows: PropTypes.func,
+  getArbitrators: PropTypes.func,
+  arbitrators: PropTypes.array
 };
 
 const mapStateToProps = state => {
@@ -66,7 +69,8 @@ const mapStateToProps = state => {
     address,
     profile,
     trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
-    disputes: arbitration.selectors.escrows(state)
+    disputes: arbitration.selectors.escrows(state),
+    arbitrators: arbitration.selectors.arbitrators(state)
   };
 };
 
@@ -75,5 +79,6 @@ export default connect(
   mapStateToProps,
   {
     loadProfile: metadata.actions.load,
-    getDisputedEscrows: arbitration.actions.getDisputedEscrows
+    getDisputedEscrows: arbitration.actions.getDisputedEscrows,
+    getArbitrators: arbitration.actions.getArbitrators
   })(MyProfile);

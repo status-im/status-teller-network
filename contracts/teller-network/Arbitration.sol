@@ -21,8 +21,6 @@ contract Arbitration is Ownable, License {
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
-
-    address public arbitrator;
     
     Arbitrable public escrow;
 
