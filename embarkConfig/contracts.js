@@ -152,7 +152,10 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, FEE_AMOUNT)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, FEE_AMOUNT),
+    dappConnection: [
+      "$WEB3"
+    ]
   },
 
   // merges with the settings in default
