@@ -1,7 +1,5 @@
 /*global contract, config, it, assert, before*/
 
-const TestUtils = require("../utils/testUtils");
-
 const License = require('Embark/contracts/License');
 const SNT = require('Embark/contracts/SNT');
 const MetadataStore = require('Embark/contracts/MetadataStore');

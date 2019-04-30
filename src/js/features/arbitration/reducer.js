@@ -6,10 +6,12 @@ import {
   RESOLVE_DISPUTE_PRE_SUCCESS,
   RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_FAILED,
-  LOAD_ARBITRATION_SUCCEEDED
+  LOAD_ARBITRATION_SUCCEEDED,
+  GET_ARBITRATORS_FAILED,
+  GET_ARBITRATORS_SUCCEEDED
 } from './constants';
 
-const DEFAULT_STATE = {escrows: [], arbitration: null};
+const DEFAULT_STATE = {escrows: [], arbitration: null, arbitrators: []};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows = state.escrows;
@@ -35,6 +37,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case GET_DISPUTED_ESCROWS_FAILED:
     case RESOLVE_DISPUTE_FAILED:
+    case GET_ARBITRATORS_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
@@ -59,6 +62,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         arbitration: action.escrow
+      };
+    case GET_ARBITRATORS_SUCCEEDED:
+      return {
+        ...state,
+        arbitrators: action.arbitrators
       };
     default:
       return state;

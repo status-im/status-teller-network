@@ -6,6 +6,7 @@ export const escrows = state => state.arbitration.escrows;
 export const errorGet = state => state.arbitration.errorGet;
 export const loading = state => state.arbitration.loading;
 export const txHash = state => state.arbitration.txHash;
+export const arbitrators = state => state.arbitration.arbitrators;
 
 export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;

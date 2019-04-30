@@ -1,19 +1,36 @@
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
-
 import moment from 'moment';
 
 import {fork, takeEvery, call, put} from 'redux-saga/effects';
 import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
-  RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED
+  RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED, GET_ARBITRATORS, 
+  GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED
 } from './constants';
 import {doTransaction} from "../../utils/saga";
 
+window.Arbitration = Arbitration;
+
+
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
+}
+
+export function *doGetArbitrators() {
+  try {
+    const cnt = yield call(Arbitration.methods.getNumLicenseOwners().call);
+    const arbitrators = [];
+    for(let i = 0; i < cnt; i++){
+      arbitrators.push(yield call(Arbitration.methods.licenseOwners(i).call));
+    }
+    yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_ARBITRATORS_FAILED, error: error.message});
+  }
 }
 
 export function *doGetEscrows() {
@@ -46,6 +63,10 @@ export function *doGetEscrows() {
     console.error(error);
     yield put({type: GET_DISPUTED_ESCROWS_FAILED, error: error.message});
   }
+}
+
+export function *onGetArbitrators() {
+  yield takeEvery(GET_ARBITRATORS, doGetArbitrators);
 }
 
 export function *onGetEscrows() {
@@ -82,4 +103,4 @@ export function *onLoadArbitration() {
   yield takeEvery(LOAD_ARBITRATION, doLoadArbitration);
 }
 
-export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration)];
+export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators)];
