@@ -60,7 +60,7 @@ class Trades extends Component {
                 {isBuyer ? 'Buy' : 'Sell' } {formatBalance(trade.tokenAmount)} {trade.token.symbol}
               </Col>
               <Col className="align-self-center text-center text-success" xs="4">
-                <span className={"p-1 text-uppercase d-inline text-white rounded-sm text-small" + tradeStyle.className}>{tradeStyle.text}</span>
+                <span className={"p-1 text-uppercase d-inline text-white rounded-sm text-small " + tradeStyle.className}>{tradeStyle.text}</span>
               </Col>
             </Row>
           </Link>;
