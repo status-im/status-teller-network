@@ -14,6 +14,7 @@ import fourOFour from '../components/ErrorInformation/404';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import Escrow from '../pages/Escrow';
+import OpenDispute from '../pages/OpenDispute';
 import Arbitration from '../pages/Arbitration';
 import MyProfile from '../pages/MyProfile';
 import EditMyContact from '../pages/EditMyContact';
@@ -98,7 +99,7 @@ class App extends Component {
             <Route exact path="/license" component={License}/>
             <Route exact path="/escrow/:id" component={Escrow}/>
             <Route exact path="/arbitration/:id" component={Arbitration}/>
-
+            <Route exact path="/openCase/:id" component={OpenDispute} />
 
             <Route exact path="/offers/list" component={OffersList}/>
             <Route exact path="/offers/map" component={OffersMap}/>

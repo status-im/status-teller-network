@@ -32,6 +32,15 @@ class MyProfile extends Component {
 
   render() {
     const profile = this.props.profile;
+
+    const trades = this.props.trades.map(x => {
+      const dispute = this.props.disputes.find(y => y.escrowId === x.escrowId);
+      if(dispute){
+        x.arbitration = dispute.arbitration;
+      }
+      return x;
+    });
+
     return (
       <Fragment>
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} address={profile.address} username={profile.username}/>
@@ -42,7 +51,7 @@ class MyProfile extends Component {
         </Fragment>}
 
         { !profile.isArbitrator && <Fragment>
-          <Trades trades={this.props.trades} address={this.props.address}/>
+          <Trades trades={trades} address={this.props.address}/>
           <Offers offers={profile.offers} location={profile.location} />
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment> }

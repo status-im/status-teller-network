@@ -9,8 +9,18 @@ import Identicon from "../../../components/UserInformation/Identicon";
 import {formatBalance} from "../../../utils/numbers";
 import {tradeStates} from "../../../features/escrow/helpers";
 
-const getTradeStyle = (tradeState) => {
-  switch(tradeState){
+const getTradeStyle = (trade) => {
+  if(trade.arbitration){
+    if(trade.arbitration.open){
+      trade.status = tradeStates.arbitration_open;
+    } else {
+      if(trade.arbitration.result !== '0'){
+        trade.status = tradeStates.arbitration_closed;
+      }
+    }
+  }
+
+  switch(trade.status){
     case tradeStates.waiting:
     case tradeStates.funded:
     case tradeStates.paid:
@@ -26,7 +36,7 @@ const getTradeStyle = (tradeState) => {
     case tradeStates.arbitration_closed:
       return {text: 'Resolved', className: 'bg-primary'};
     default:
-      return {text: tradeState, className: 'bg-secondary'};
+      return {text: trade.status, className: 'bg-secondary'};
   }
 };
 
@@ -37,7 +47,7 @@ class Trades extends Component {
       <Card body className="py-2 px-3 shadow-sm">
         {this.props.trades.map((trade, index) => {
           const isBuyer = trade.buyer ===  address;
-          const tradeStyle = getTradeStyle(trade.status);
+          const tradeStyle = getTradeStyle(trade);
           return <Link key={index} to={"/escrow/" + trade.escrowId}>
             <Row className="my-1 border-bottom">
               <Col className="align-self-center pr-0" xs="2">
@@ -50,7 +60,7 @@ class Trades extends Component {
                 {isBuyer ? 'Buy' : 'Sell' } {formatBalance(trade.tokenAmount)} {trade.token.symbol}
               </Col>
               <Col className="align-self-center text-center text-success" xs="4">
-                <span className={"p-1 text-uppercase d-inline text-white rounded-sm " + tradeStyle.className}>{tradeStyle.text}</span>
+                <span className={"p-1 text-uppercase d-inline text-white rounded-sm text-small " + tradeStyle.className}>{tradeStyle.text}</span>
               </Col>
             </Row>
           </Link>;

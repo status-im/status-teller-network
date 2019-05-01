@@ -137,7 +137,7 @@ exports[`Trades should render correctly 1`] = `
           xs="4"
         >
           <span
-            className="p-1 text-uppercase d-inline text-white rounded-sm bg-secondary"
+            className="p-1 text-uppercase d-inline text-white rounded-sm text-small bg-secondary"
           >
             open
           </span>

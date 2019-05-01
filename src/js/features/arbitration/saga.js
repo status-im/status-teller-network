@@ -8,15 +8,16 @@ import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED, GET_ARBITRATORS, 
-  GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED
+  GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED, OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS
 } from './constants';
 import {doTransaction} from "../../utils/saga";
 
-window.Arbitration = Arbitration;
-
-
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
+}
+
+export function *onOpenDispute() {
+  yield takeEvery(OPEN_DISPUTE, doTransaction.bind(null, OPEN_DISPUTE_PRE_SUCCESS, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED));
 }
 
 export function *doGetArbitrators() {
@@ -103,4 +104,4 @@ export function *onLoadArbitration() {
   yield takeEvery(LOAD_ARBITRATION, doLoadArbitration);
 }
 
-export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators)];
+export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators), fork(onOpenDispute)];
