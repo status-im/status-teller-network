@@ -41,12 +41,15 @@ class OpenDispute extends Component {
     this.props.history.push('/profile');
   }
 
+  handleClickDialog = escrowId => () => {
+    this.props.openDispute(escrowId);
+  }
 
   render(){
-    const {escrow, openDispute, loading, receipt} = this.props;
+    const {escrow, loading, receipt} = this.props;
 
-    if(!escrow) return <Loading page={true} />;
-    if(loading) return <Loading mining={true} />;
+    if(!escrow) return <Loading page />;
+    if(loading) return <Loading mining />;
 
     if(receipt) return (
       <div className="text-center p-5">
@@ -58,10 +61,6 @@ class OpenDispute extends Component {
         </p>
     </div>
     );
-
-    const onClickDialog = () => {
-      openDispute(escrow.escrowId);
-    };
 
     return (
       <div className="openDispute">
@@ -79,12 +78,12 @@ class OpenDispute extends Component {
             onChange={this.handleChange}
             validations={[]}
           />
-          <p className="text-muted">The process of resolving your dispute could take up on 5 days. You will be sharing you chat logs with an arbiter.</p>
+          <p className="text-muted">The process of resolving your dispute could take up on 5 days. You will be sharing your chat logs with an arbiter.</p>
           <p className="text-center">
             <Button color="primary" disabled={!this.state.value} onClick={this.displayDialog(true)}>Send</Button>
           </p>
         </Form>
-        <ConfirmDialog display={this.state.displayDialog} onConfirm={onClickDialog} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" />
+        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.handleClickDialog(escrow.escrowId)} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" />
       </div>
     );
   }
