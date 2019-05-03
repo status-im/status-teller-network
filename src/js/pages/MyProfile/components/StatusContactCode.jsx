@@ -6,6 +6,7 @@ import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQrcode} from "@fortawesome/free-solid-svg-icons";
 import QRCode from "qrcode.react";
+import Address from "../../../components/UserInformation/Address";
 
 class StatusContactCode extends Component {
 
@@ -41,7 +42,9 @@ class StatusContactCode extends Component {
           <ModalHeader toggle={this.toggleQRCode}>{t('statusContactCode.title')}</ModalHeader>
           <ModalBody className="text-center">
             <QRCode value={value}/>
-            {value}
+            <p className="overflow-hidden">
+              <Address address={value}/>
+            </p>
           </ModalBody>
         </Modal>
 
