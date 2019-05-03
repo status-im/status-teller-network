@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faCircleNotch, faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -24,6 +24,13 @@ const Done = ({trade, rateTransaction}) => (
     <h2 className="mt-4">Done.</h2>
     {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
     <Reputation reputation={{upCount: 1, downCount: 1}} trade={trade} rateTransaction={rateTransaction} size="l"/>
+  </React.Fragment>
+);
+
+const Canceled = () => (
+  <React.Fragment>
+    <RoundedIcon icon={faTimes} bgColor="grey"/>
+    <h2 className="mt-4">Canceled</h2>
   </React.Fragment>
 );
 
@@ -100,7 +107,7 @@ PreFund.propTypes = {
 };
 
 class CardEscrowBuyer extends Component {
-  render(){ 
+  render(){
     const {trade, payStatus, payAction, rateTransaction} = this.props;
 
     const showLoading = payStatus === States.pending;
@@ -108,10 +115,11 @@ class CardEscrowBuyer extends Component {
 
     return <Card>
       <CardBody className="text-center p-5">
-        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund statusContactCode={trade.seller.statusContactCode} /> } 
-        {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> } 
-        {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> } 
-        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> } 
+        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund statusContactCode={trade.seller.statusContactCode} /> }
+        {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> }
+        {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> }
+        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> }
+        {!showLoading && trade.status === escrow.helpers.tradeStates.canceled && <Canceled/> }
         {showLoading && <Loading /> }
       </CardBody>
     </Card>;
