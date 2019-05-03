@@ -1,17 +1,19 @@
 @import "../../../css/variable-overrides";
 
 .home {
+  padding-bottom: 55px;
+
   .home-logo {
     text-align: center;
-    padding-top: 40px;
+    padding-top: 20px;
   }
 
   .home-headline {
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
   }
 
   .home--footer {
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
   }
 
   .teller-version {
