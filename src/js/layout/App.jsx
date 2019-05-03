@@ -19,6 +19,7 @@ import Arbitration from '../pages/Arbitration';
 import MyProfile from '../pages/MyProfile';
 import EditMyContact from '../pages/EditMyContact';
 import License from '../pages/License';
+import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
 
@@ -96,6 +97,7 @@ class App extends Component {
             <Route exact path="/profile/contact/edit" component={EditMyContact}/>
             <Route exact path="/profile/:address" component={Profile}/>
 
+            <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>
             <Route exact path="/license" component={License}/>
             <Route exact path="/escrow/:id" component={Escrow}/>
             <Route exact path="/arbitration/:id" component={Arbitration}/>

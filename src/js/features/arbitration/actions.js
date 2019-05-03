@@ -1,4 +1,4 @@
-import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE} from './constants';
+import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE} from './constants';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
@@ -24,3 +24,9 @@ export const loadArbitration = (escrowId) => {
 };
 
 export const getArbitrators = () => ({type: GET_ARBITRATORS});
+
+export const buyLicense = () => ({ type: BUY_LICENSE });
+
+export const loadPrice = () => ({ type: LOAD_PRICE });
+
+export const checkLicenseOwner = () => ({ type: CHECK_LICENSE_OWNER });

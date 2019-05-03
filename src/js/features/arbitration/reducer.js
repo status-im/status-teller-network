@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import {
   GET_DISPUTED_ESCROWS_SUCCEEDED,
   GET_DISPUTED_ESCROWS_FAILED,
@@ -12,10 +14,25 @@ import {
   OPEN_DISPUTE_FAILED,
   OPEN_DISPUTE,
   OPEN_DISPUTE_SUCCEEDED,
-  OPEN_DISPUTE_PRE_SUCCESS
+  OPEN_DISPUTE_PRE_SUCCESS,
+  BUY_LICENSE,
+  BUY_LICENSE_FAILED,
+  BUY_LICENSE_PRE_SUCCESS,
+  BUY_LICENSE_SUCCEEDED,
+  LOAD_PRICE_SUCCEEDED,
+  CHECK_LICENSE_OWNER,
+  CHECK_LICENSE_OWNER_FAILED,
+  CHECK_LICENSE_OWNER_SUCCEEDED
 } from './constants';
+import { fromTokenDecimals } from '../../utils/numbers';
 
-const DEFAULT_STATE = {escrows: [], arbitration: null, arbitrators: [], receipt: null};
+
+const DEFAULT_STATE = {
+  escrows: [], arbitration: null, arbitrators: [], licenseOwner: false,
+  receipt: null,
+  price: Number.MAX_SAFE_INTEGER,
+  loading: false,
+  error: ''};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows = state.escrows;
@@ -81,6 +98,44 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         arbitrators: action.arbitrators
+      };
+    case BUY_LICENSE:
+      return {
+        ...state,
+        loading: true,
+        error: ''
+      };
+    case BUY_LICENSE_PRE_SUCCESS:
+      return {
+        ...state,
+        txHash: action.txHash
+      };
+    case BUY_LICENSE_SUCCEEDED:
+      return {
+        ...state,
+        licenseOwner: true,
+        loading: false,
+        error: ''
+      };
+    case LOAD_PRICE_SUCCEEDED:
+      return {
+        ...state,
+        price: fromTokenDecimals(action.price, 18)
+      };
+    case CHECK_LICENSE_OWNER:
+      return {
+        ...state, licenseOwner: false
+      };
+    case CHECK_LICENSE_OWNER_SUCCEEDED:
+      return {
+        ...state, licenseOwner: action.isLicenseOwner
+      };
+    case BUY_LICENSE_FAILED:
+    case CHECK_LICENSE_OWNER_FAILED:
+      return {
+        ...state,
+        error: action.error,
+        loading: false
       };
     default:
       return state;

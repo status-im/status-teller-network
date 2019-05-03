@@ -19,3 +19,7 @@ export const getArbitration = (state) => {
   };
 };
 
+export const isLicenseOwner = state => state.arbitration.licenseOwner;
+export const isLoading = state => state.arbitration.loading;
+export const isError = state => { console.log(state.arbitration); return !!state.arbitration.error; }
+export const getLicensePrice = state => parseInt(state.arbitration.price, 10);
