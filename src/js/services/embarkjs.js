@@ -1,3 +1,4 @@
+/*global web3*/
 import EmbarkJS from '../../embarkArtifacts/embarkjs';
 import {contactCodeRegExp} from '../utils/address';
 
@@ -16,7 +17,8 @@ export function onReady() {
 export function getEnsAddress(name) {
   return new Promise(async (resolve, reject) => {
     try {
-      if (contactCodeRegExp.test(name)) {
+      // TODO check if an address is not correct and we only want contact codes, we need to validate that ENS returns a contact code
+      if (contactCodeRegExp.test(name) || web3.utils.isAddress(name)) {
         return resolve(name);
       }
       if (name.indexOf('.') === -1) {
