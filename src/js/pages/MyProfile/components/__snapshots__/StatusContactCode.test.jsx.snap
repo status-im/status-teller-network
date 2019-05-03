@@ -116,7 +116,14 @@ exports[`StatusContactCode should render correctly 1`] = `
         size={128}
         value="0xkajshdhkjashd"
       />
-      0xkajshdhkjashd
+      <p
+        className="overflow-hidden"
+      >
+        <Address
+          address="0xkajshdhkjashd"
+          compact={false}
+        />
+      </p>
     </ModalBody>
   </Modal>
 </FormGroup>
