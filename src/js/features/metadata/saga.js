@@ -33,7 +33,9 @@ export function *loadUser({address}) {
     const id = yield MetadataStore.methods.addressToUser(address).call();
     user = Object.assign(user, yield MetadataStore.methods.users(id).call());
 
-    yield put({type: LOAD_USER_LOCATION, user, address});
+    if (user.location) {
+      yield put({type: LOAD_USER_LOCATION, user, address});
+    }
     yield put({type: USER_RATING, address});
     yield put({type: LOAD_USER_SUCCEEDED, user, address});
     yield put({type: LOAD_ESCROWS, address});

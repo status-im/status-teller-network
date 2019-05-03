@@ -7,7 +7,7 @@ import escrow from '../../../features/escrow';
 import {Link} from "react-router-dom";
 
 const OpenDispute = ({trade}) => {
-  const shouldDisplay = trade.status !== escrow.helpers.tradeStates.waiting && trade.status !== escrow.helpers.tradeStates.funded;
+  const shouldDisplay = trade.status !== escrow.helpers.tradeStates.waiting && trade.status !== escrow.helpers.tradeStates.funded && trade.status !== escrow.helpers.tradeStates.canceled;
   return shouldDisplay && (
     <Row className="mt-4 text-danger" tag={Link} to={"/openCase/" + trade.escrowId}>
       <Col xs="2">
