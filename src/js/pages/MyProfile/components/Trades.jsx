@@ -85,7 +85,7 @@ class Trades extends Component {
         <div>
           <h3 className="d-inline-block">{t('trades.title')}</h3>
           <span className="float-right">
-            <Link to="/buy" className="float-right">{t('trades.find')} <FontAwesomeIcon icon={faArrowRight}/></Link>
+            <Link to="/offers/list" className="float-right">{t('trades.find')} <FontAwesomeIcon icon={faArrowRight}/></Link>
           </span>
         </div>
         {trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
