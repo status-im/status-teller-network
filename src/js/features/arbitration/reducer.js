@@ -122,10 +122,6 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         price: fromTokenDecimals(action.price, 18)
       };
-    case CHECK_LICENSE_OWNER:
-      return {
-        ...state, licenseOwner: false
-      };
     case CHECK_LICENSE_OWNER_SUCCEEDED:
       return {
         ...state, licenseOwner: action.isLicenseOwner

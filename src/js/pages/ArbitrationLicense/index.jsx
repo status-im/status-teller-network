@@ -7,9 +7,9 @@ import arbitration from "../../features/arbitration";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 
-import Info from './components/Info';
-import BuyButton from './components/BuyButton';
-import Balance from './components/Balance';
+import Info from '../License/components/Info';
+import BuyButton from '../License/components/BuyButton';
+import Balance from '../License/components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 
@@ -44,17 +44,18 @@ class ArbitrationLicense extends Component {
   }
 
   render() {
+    if (this.props.isError) {
+      return <ErrorInformation transaction retry={this.buyLicense}/>;
+    }
+    
     if (this.props.isLoading) {
       return <Loading mining/>;
     }
-    console.log(this.props);
 
     if (!this.props.sntToken) {
       return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
     }
-    if (this.props.isError) {
-      return <ErrorInformation transaction retry={this.buyLicense}/>;
-    }
+    
     return (
       <React.Fragment>
         <Info price={this.props.licensePrice} />
