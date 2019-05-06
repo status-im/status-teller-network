@@ -58,7 +58,7 @@ class Funded extends Component {
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
-    <h2 className="mt-4">Funds are in the escrow. Release them when you will get the payment.</h2>
+    <h2 className="mt-4">{this.props.trade.status === 'paid' ? <Fragment>Payment has been sent by the buyer.<br />Verify and release the funds</Fragment> : "Funds are in the escrow. Release them when you will get the payment." }</h2>
     <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Release funds</Button>
     <ConfirmDialog display={this.state.displayDialog} onConfirm={this.releaseEscrow} onCancel={this.displayDialog(false)} title="Release funds" content="Are you sure?" />
   </React.Fragment>;
