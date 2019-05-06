@@ -47,13 +47,13 @@ class ArbitrationLicense extends Component {
     if (this.props.isError) {
       return <ErrorInformation transaction retry={this.buyLicense}/>;
     }
-    
-    if (this.props.isLoading) {
-      return <Loading mining/>;
-    }
 
     if (!this.props.sntToken) {
       return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
+    }
+
+    if (this.props.isLoading) {
+      return <Loading mining/>;
     }
     
     return (
