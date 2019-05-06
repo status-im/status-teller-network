@@ -139,11 +139,12 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
+    tracking: 'shared.chains.json',
     deployment: {
       accounts: [
         {
           mnemonic: secret.mnemonic,
-          hdpath: "m/44'/1'/0'/0/",
+          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
           numAddresses: "10"
         }
       ],
