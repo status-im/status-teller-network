@@ -51,6 +51,7 @@
     "cryptocompare": "^0.7.0",
     "css-loader": "^2.1.0",
     "embark": "^4.0.2",
+    "embark-solc": "^4.0.2",
     "embark-solium": "0.0.1",
     "embarkjs-connector-web3": "^4.0.0",
     "ethereumjs-util": "^6.0.0",
