@@ -3,21 +3,23 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 
-import license from "../../features/license";
+import arbitration from "../../features/arbitration";
 import network from "../../features/network";
+import metadata from "../../features/metadata";
 
-import Info from './components/Info';
-import BuyButton from './components/BuyButton';
-import Balance from './components/Balance';
+import Info from '../License/components/Info';
+import BuyButton from '../License/components/BuyButton';
+import Balance from '../License/components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
-class License extends Component {
+class ArbitrationLicense extends Component {
   componentDidMount() {
     if (this.props.isLicenseOwner) {
-      return this.props.history.push('/sell');
+      this.props.loadProfile(this.props.address);
+      return this.props.history.push('/');
     }
 
     this.props.checkLicenseOwner();
@@ -27,7 +29,8 @@ class License extends Component {
 
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
-      return this.props.history.push('/sell');
+      this.props.loadProfile(this.props.address);
+      return this.props.history.push('/');
     }
   }
 
@@ -41,17 +44,18 @@ class License extends Component {
   }
 
   render() {
-    if (!this.props.sntToken) {
-      return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
-    }
     if (this.props.isError) {
       return <ErrorInformation transaction retry={this.buyLicense}/>;
     }
-    
+
+    if (!this.props.sntToken) {
+      return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
+    }
+
     if (this.props.isLoading) {
       return <Loading mining/>;
     }
-
+    
     return (
       <React.Fragment>
         <Info price={this.props.licensePrice} />
@@ -64,7 +68,7 @@ class License extends Component {
   }
 }
 
-License.propTypes = {
+ArbitrationLicense.propTypes = {
   history: PropTypes.object,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
@@ -75,25 +79,29 @@ License.propTypes = {
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
-  updateBalance: PropTypes.func
+  updateBalance: PropTypes.func,
+  loadProfile: PropTypes.func,
+  address: PropTypes.string
 };
 
 const mapStateToProps = state => {
   return {
-    isLicenseOwner: license.selectors.isLicenseOwner(state),
-    isLoading: license.selectors.isLoading(state),
-    isError: license.selectors.isError(state),
+    address: network.selectors.getAddress(state) || '',
+    isLicenseOwner: arbitration.selectors.isLicenseOwner(state),
+    isLoading: arbitration.selectors.isLoading(state),
+    isError: arbitration.selectors.isError(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
-    licensePrice: license.selectors.getLicensePrice(state)
+    licensePrice: arbitration.selectors.getLicensePrice(state)
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    buyLicense: license.actions.buyLicense,
-    checkLicenseOwner: license.actions.checkLicenseOwner,
-    loadLicensePrice: license.actions.loadPrice,
-    updateBalance: network.actions.updateBalance
+    buyLicense: arbitration.actions.buyLicense,
+    checkLicenseOwner: arbitration.actions.checkLicenseOwner,
+    loadLicensePrice: arbitration.actions.loadPrice,
+    updateBalance: network.actions.updateBalance,
+    loadProfile: metadata.actions.load
   }
-)(withRouter(License));
+)(withRouter(ArbitrationLicense));

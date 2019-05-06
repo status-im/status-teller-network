@@ -1,16 +1,21 @@
+/* global web3 */
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
+import SNT from '../../../embarkArtifacts/contracts/SNT';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
+import {promiseEventEmitter, doTransaction} from '../../utils/saga';
+import {eventChannel} from "redux-saga";
 
-import {fork, takeEvery, call, put} from 'redux-saga/effects';
+import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED, GET_ARBITRATORS, 
-  GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED, OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS
+  GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED, BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_PRE_SUCCESS, BUY_LICENSE_SUCCEEDED,
+  LOAD_PRICE, LOAD_PRICE_FAILED, LOAD_PRICE_SUCCEEDED, CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
+  OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS
 } from './constants';
-import {doTransaction} from "../../utils/saga";
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
@@ -104,4 +109,63 @@ export function *onLoadArbitration() {
   yield takeEvery(LOAD_ARBITRATION, doLoadArbitration);
 }
 
-export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators), fork(onOpenDispute)];
+
+export function *doBuyLicense() {
+  try {
+    const price = yield call(Arbitration.methods.price().call);
+    const encodedCall = Arbitration.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(Arbitration.options.address, price, encodedCall);
+    const estimatedGas = yield call(toSend.estimateGas);
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000});
+    const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
+    while (true) {
+      const {hash, receipt, error} = yield take(channel);
+      if (hash) {
+        yield put({type: BUY_LICENSE_PRE_SUCCESS, txHash: hash});
+      } else if (receipt) {
+        yield put({type: BUY_LICENSE_SUCCEEDED});
+      } else if (error) {
+        throw error;
+      } else {
+        break;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    yield put({type: BUY_LICENSE_FAILED, error: error.message});
+  }
+}
+
+export function *onBuyLicense() {
+  yield takeEvery(BUY_LICENSE, doBuyLicense);
+}
+
+export function *loadPrice() {
+  try {
+    const price = yield call(Arbitration.methods.price().call);
+    yield put({type: LOAD_PRICE_SUCCEEDED, price});
+  } catch (error) {
+    console.error(error);
+    yield put({type: LOAD_PRICE_FAILED, error: error.message});
+  }
+}
+
+export function *onLoadPrice() {
+  yield takeEvery(LOAD_PRICE, loadPrice);
+}
+
+export function *doCheckLicenseOwner() {
+  try {
+    const isLicenseOwner = yield call(Arbitration.methods.isLicenseOwner(web3.eth.defaultAccount).call);
+    yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner});
+  } catch (error) {
+    console.error(error);
+    yield put({type: CHECK_LICENSE_OWNER_FAILED, error: error.message});
+  }
+}
+
+export function *onCheckLicenseOwner() {
+  yield takeEvery(CHECK_LICENSE_OWNER, doCheckLicenseOwner);
+}
+
+export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators), fork(onBuyLicense), fork(onCheckLicenseOwner), fork(onLoadPrice), fork(onOpenDispute)];
