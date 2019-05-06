@@ -122,7 +122,7 @@ class Escrow extends Component {
         showFundButton = true;
       }
     }
-
+    
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
@@ -141,7 +141,7 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow} /> }
 
         <EscrowDetail escrow={escrow} />
-        <OpenChat statusContactCode={offer.user.statusContactCode} withBuyer={!isBuyer} />
+        <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
         <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />

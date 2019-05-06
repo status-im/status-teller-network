@@ -91,7 +91,7 @@ Funded.propTypes = {
   payAction: PropTypes.func
 };
 
-const PreFund = (statusContactCode) => (
+const PreFund = ({statusContactCode}) => (
   <React.Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={one} alt="one" />
