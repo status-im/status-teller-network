@@ -23,7 +23,7 @@ const Done = ({trade, rateTransaction}) => (
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
     {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
-    <Reputation reputation={{upCount: 1, downCount: 1}} trade={trade} rateTransaction={rateTransaction} size="l"/>
+    <Reputation trade={trade} rateTransaction={rateTransaction} size="l"/>
   </React.Fragment>
 );
 

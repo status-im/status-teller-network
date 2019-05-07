@@ -14,7 +14,7 @@ exports[`Offers should render correctly 1`] = `
       <Link
         className="float-right"
         replace={false}
-        to="/sell"
+        to="/license"
       >
          
         <FontAwesomeIcon
@@ -177,7 +177,7 @@ exports[`Offers should render when empty 1`] = `
       <Link
         className="float-right"
         replace={false}
-        to="/sell"
+        to="/license"
       >
          
         <FontAwesomeIcon
