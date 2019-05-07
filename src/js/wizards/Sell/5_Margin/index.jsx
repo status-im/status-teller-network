@@ -27,7 +27,6 @@ class Margin extends Component {
     props.getFee();
 
     props.footer.show();
-
     props.footer.onPageChange(() => {
       props.setMargin(this.state.margin, this.state.marketType);
     });
