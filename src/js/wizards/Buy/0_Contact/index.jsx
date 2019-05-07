@@ -28,6 +28,7 @@ class Contact extends Component {
   componentDidMount() {
     if (this.props.profile && this.props.profile.username) {
       this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
+      // FIXME: infinite loop between this page and the next
       setTimeout(() => {
         this.props.wizard.next();
       }, 500);
