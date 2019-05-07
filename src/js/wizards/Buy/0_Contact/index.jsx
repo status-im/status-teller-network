@@ -28,10 +28,13 @@ class Contact extends Component {
   componentDidMount() {
     if (this.props.profile && this.props.profile.username) {
       this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
-      return this.props.wizard.next();
+      setTimeout(() => {
+        this.props.wizard.next();
+      }, 500);
+    } else {
+      this.validate(this.props.username, this.props.statusContactCode);
+      this.setState({ready: true});
     }
-    this.validate(this.props.username, this.props.statusContactCode);
-    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {
