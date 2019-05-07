@@ -26,6 +26,8 @@ class Margin extends Component {
     this.validate(props.seller.margin);
     props.getFee();
 
+    props.footer.show();
+
     props.footer.onPageChange(() => {
       props.setMargin(this.state.margin, this.state.marketType);
     });
@@ -33,6 +35,7 @@ class Margin extends Component {
   }
 
   postOffer = () => {
+    this.props.footer.hide();
     this.props.addOffer({...this.props.seller, marketType: this.state.marketType, margin: this.state.margin});
   };
 
