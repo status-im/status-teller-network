@@ -147,7 +147,7 @@ export function *doLoadEscrows({address}) {
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
       const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
       escrow.seller = yield MetadataStore.methods.users(sellerId).call();
-      const buyerId = yield MetadataStore.methods.addressToUser(address).call();
+      const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
       escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
       return escrow;
     }));
