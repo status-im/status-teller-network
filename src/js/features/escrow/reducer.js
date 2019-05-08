@@ -11,6 +11,7 @@ import {
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
+import { escrowStatus } from './helpers';
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
@@ -120,10 +121,15 @@ function reducer(state = DEFAULT_STATE, action) {
         cancelStatus: States.pending
       };
     case CANCEL_ESCROW_SUCCEEDED:
-      return {
-        ...state,
-        cancelStatus: States.success
-      };
+      {
+        const escrows = state.escrows;
+        escrows.find(x => x.escrowId === action.escrowId).status = escrowStatus.CANCELED;
+        return {
+          ...state,
+          escrows,
+          cancelStatus: States.success
+        };
+      }
     case CANCEL_ESCROW_FAILED:
       return {
         ...state,
