@@ -35,6 +35,10 @@ class Contact extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if(!prevProps.apiContactCode && this.props.apiContactCode){
+      this.changeStatusContactCode(this.props.apiContactCode);
+    }
+
     if (prevProps.statusContactCode !== this.props.statusContactCode) {
       this.changeStatusContactCode(this.props.statusContactCode);
     }
@@ -61,6 +65,14 @@ class Contact extends Component {
     this.setState({username});
   };
 
+  getContactCode = () => {
+    if(!this.props.apiContactCode){
+      this.props.getContactCode();
+    } else {
+      this.setState({ statusContactCode: this.props.apiContactCode });
+    }
+  }
+
   render() {
     if (!this.state.ready) {
       return <Loading page/>;
@@ -71,7 +83,7 @@ class Contact extends Component {
                    username={this.state.username}
                    changeStatusContactCode={this.changeStatusContactCode}
                    changeUsername={this.changeUsername}
-                   getContactCode={this.props.getContactCode} />
+                   getContactCode={this.getContactCode} />
     );
   }
 }
@@ -83,6 +95,7 @@ Contact.propTypes = {
   setContactInfo: PropTypes.func,
   username: PropTypes.string,
   statusContactCode: PropTypes.string,
+  apiContactCode: PropTypes.string,
   isStatus: PropTypes.bool,
   getContactCode: PropTypes.func,
   profile: PropTypes.object
@@ -90,6 +103,7 @@ Contact.propTypes = {
 
 const mapStateToProps = state => ({
   statusContactCode: newBuy.selectors.statusContactCode(state),
+  apiContactCode: network.selectors.getStatusContactCode(state),
   username: newBuy.selectors.username(state),
   isStatus: network.selectors.isStatus(state),
   profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
