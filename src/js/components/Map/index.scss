@@ -1,6 +1,13 @@
 $search-field-height: 52px;
 $autocomplete-height: 157px;
 
+.map-error {
+  position: absolute;
+  z-index: 9000;
+  left: 0;
+  right: 0;
+}
+
 .map-component {
   height: 88%;
   position: absolute;

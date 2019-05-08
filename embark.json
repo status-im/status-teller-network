@@ -14,7 +14,8 @@
     "embarkjs-connector-web3": {},
     "@trailofbits/embark-contract-info": {
       "flags": ""
-    }
+    },
+    "embark-solc": {}
   },
   "options": {
     "solc": {

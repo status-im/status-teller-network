@@ -38,14 +38,14 @@ class OffersMap extends Component {
     let {error, coords} = this.state;
     const {t, tokens, usersWithOffers} = this.props;
 
-    if (error && error.indexOf('denied') > -1) {
+    if (error) {
       coords = {
         latitude: 45.492611,
         longitude: -73.617959
       };
-      error = t('map.denied');
-    } else if (error) {
-      return (<Alert color="danger">{error}</Alert>);
+      if (error.indexOf('denied') > -1) {
+        error = t('map.denied');
+      }
     }
 
     if (!coords || !coords.latitude) {
@@ -64,7 +64,7 @@ class OffersMap extends Component {
 
     return (
       <Fragment>
-        {error && <p className="text-danger">{error}</p>}
+        {error && <Alert color="danger" className="map-error">{error}</Alert>}
         <Map error={error} coords={coords} goToProfile={this.goToProfile} markers={markers}/>
       </Fragment>
 
