@@ -64,17 +64,25 @@ class Contact extends Component {
     this.setState({username});
   };
 
+  getContactCode = () => {
+    if(!this.props.statusContactCode){
+      this.props.getContactCode();
+    } else {
+      this.setState({ statusContactCode: this.props.statusContactCode });
+    }
+  }
+
   render() {
     if (!this.state.ready) {
       return <Loading page/>;
     }
 
-    return (<EditContact isStatus={this.props.isStatus}
+    return <EditContact isStatus={this.props.isStatus}
                          statusContactCode={this.state.statusContactCode}
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
-                         getContactCode={this.props.getContactCode}
-                         changeUsername={this.changeUsername}/>);
+                         getContactCode={this.getContactCode}
+                         changeUsername={this.changeUsername}/>;
   }
 }
 

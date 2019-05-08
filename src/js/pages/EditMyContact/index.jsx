@@ -55,6 +55,14 @@ class EditMyContact extends Component {
     this.setState({username});
   };
 
+  getContactCode = () => {
+    if(!this.props.statusContactCode){
+      this.props.getContactCode();
+    } else {
+      this.setState({ statusContactCode: this.props.statusContactCode });
+    }
+  }
+
   render() {
     switch(this.props.updateUserStatus){
       case States.pending:
@@ -68,7 +76,7 @@ class EditMyContact extends Component {
                          statusContactCode={this.state.statusContactCode}
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
-                         getContactCode={this.props.getContactCode}
+                         getContactCode={this.getContactCode}
                          changeUsername={this.changeUsername}/>
             <UpdateButton disabled={this.state.updateDisabled} onClick={this.update}/>
         </Fragment>
