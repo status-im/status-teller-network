@@ -33,6 +33,7 @@ class Margin extends Component {
   }
 
   postOffer = () => {
+    this.props.footer.hide();
     this.props.addOffer({...this.props.seller, marketType: this.state.marketType, margin: this.state.margin});
   };
 
