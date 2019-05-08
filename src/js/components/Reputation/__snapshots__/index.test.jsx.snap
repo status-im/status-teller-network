@@ -8,7 +8,7 @@ exports[`Reputation should render correctly 1`] = `
     className="left-rating bg-secondary"
   >
     1
-     
+     
     <RatingIcon
       isPositiveRating={true}
       onClick={[Function]}
@@ -18,7 +18,7 @@ exports[`Reputation should render correctly 1`] = `
     className="right-rating bg-secondary"
   >
     2
-     
+     
     <RatingIcon
       isPositiveRating={false}
       onClick={[Function]}
