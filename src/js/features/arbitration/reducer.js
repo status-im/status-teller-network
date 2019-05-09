@@ -19,6 +19,7 @@ import {
   BUY_LICENSE_FAILED,
   BUY_LICENSE_PRE_SUCCESS,
   BUY_LICENSE_SUCCEEDED,
+  BUY_LICENSE_CANCEL,
   LOAD_PRICE_SUCCEEDED,
   CHECK_LICENSE_OWNER_FAILED,
   CHECK_LICENSE_OWNER_SUCCEEDED
@@ -57,7 +58,7 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
-    case OPEN_DISPUTE_SUCCEEDED: 
+    case OPEN_DISPUTE_SUCCEEDED:
       return {
         ...state,
         loading: false,
@@ -88,7 +89,7 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
-    case LOAD_ARBITRATION_SUCCEEDED: 
+    case LOAD_ARBITRATION_SUCCEEDED:
       return {
         ...state,
         arbitration: action.escrow
@@ -113,6 +114,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         licenseOwner: true,
+        loading: false,
+        error: ''
+      };
+    case BUY_LICENSE_CANCEL:
+      return {
+        ...state,
         loading: false,
         error: ''
       };

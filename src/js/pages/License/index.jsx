@@ -44,10 +44,10 @@ class License extends Component {
     if (!this.props.sntToken) {
       return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
     }
-    if (this.props.isError) {
-      return <ErrorInformation transaction retry={this.buyLicense}/>;
+    if (this.props.error) {
+      return <ErrorInformation transaction retry={this.buyLicense} message={this.props.error} cancel={this.props.cancelBuyLicense}/>;
     }
-    
+
     if (this.props.isLoading) {
       return <Loading mining/>;
     }
@@ -71,18 +71,19 @@ License.propTypes = {
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
-  isError: PropTypes.bool,
+  error: PropTypes.string,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
-  updateBalance: PropTypes.func
+  updateBalance: PropTypes.func,
+  cancelBuyLicense: PropTypes.func
 };
 
 const mapStateToProps = state => {
   return {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isLoading: license.selectors.isLoading(state),
-    isError: license.selectors.isError(state),
+    error: license.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: license.selectors.getLicensePrice(state)
   };
@@ -92,6 +93,7 @@ export default connect(
   mapStateToProps,
   {
     buyLicense: license.actions.buyLicense,
+    cancelBuyLicense: license.actions.cancelBuyLicense,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     loadLicensePrice: license.actions.loadPrice,
     updateBalance: network.actions.updateBalance

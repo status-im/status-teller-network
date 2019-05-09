@@ -7,7 +7,7 @@ import {Button} from 'reactstrap';
 import errorImage from '../../../images/error.png';
 import './index.scss';
 
-const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry}) => (
+const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry, message, cancel}) => (
   <div className={classnames("error-information with-tip", {'with-button': !!retry})}>
     <img src={errorImage} alt="error"/>
     <h2 className="mt-5">
@@ -16,15 +16,17 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {transaction && t('errorInformation.transaction.title')}
       {sntTokenError && t('errorInformation.sntTokenError.title')}
     </h2>
-    <p className="text-muted">
+    {message && <p className="text-muted mb-2">{message}</p>}
+    <p className="text-muted mb-2">
       {provider && t('errorInformation.provider.tip')}
       {network && t('errorInformation.network.tip')}
       {transaction && t('errorInformation.transaction.tip')}
       {sntTokenError && t('errorInformation.sntTokenError.title')}
     </p>
-    {retry && <p>
-      <Button color="primary" onClick={retry}>{t('errorInformation.retry')}</Button>
-    </p>}
+    <p>
+      {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t('errorInformation.cancel')}</Button>}
+    {retry && <Button color="primary" onClick={retry}>{t('errorInformation.retry')}</Button>}
+    </p>
   </div>
 );
 
@@ -40,7 +42,9 @@ ErrorInformation.propTypes = {
   network: PropTypes.bool,
   transaction: PropTypes.bool,
   sntTokenError: PropTypes.bool,
-  retry: PropTypes.func
+  retry: PropTypes.func,
+  message: PropTypes.string,
+  cancel: PropTypes.func
 };
 
 export default withNamespaces()(ErrorInformation);

@@ -21,5 +21,4 @@ export const getArbitration = (state) => {
 
 export const isLicenseOwner = state => state.arbitration.licenseOwner;
 export const isLoading = state => state.arbitration.loading;
-export const isError = state => !!state.arbitration.error;
 export const getLicensePrice = state => parseInt(state.arbitration.price, 10);
