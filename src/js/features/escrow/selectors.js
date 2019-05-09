@@ -20,7 +20,7 @@ export const getRatingStatus = state => state.escrow.rateStatus;
 
 export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || [];
-  return escrows.filter(escrow => escrow.buyer === userAddress || offers.find(x => x.toString() === escrow.offerId.toString()))
+  return escrows.filter(escrow => escrow.buyer === userAddress || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
                 .map((escrow) => {
                   const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
                   return {
