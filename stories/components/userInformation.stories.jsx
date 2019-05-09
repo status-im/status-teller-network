@@ -12,7 +12,7 @@ storiesOf('Components/UserInformation', module)
   .add(
     "Default",
     withInfo({inline: true})(() => (
-      <UserInformation address={"0x123123123"} username={"Eric"} reputation={{upCount: 432, downCount: 54}}/>
+      <UserInformation identiconSeed={"0x123123123123123123123123123"} username={"Eric"} reputation={{upCount: 432, downCount: 54}}/>
     ))
   )
   .add(
