@@ -7,7 +7,7 @@ import arbitration from "../../features/arbitration";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 
-import Info from '../License/components/Info';
+import Info from './components/Info';
 import BuyButton from '../License/components/BuyButton';
 import Balance from '../License/components/Balance';
 import Loading from '../../components/Loading';
