@@ -81,7 +81,6 @@ exports[`Trades should render correctly 1`] = `
           <Identicon
             className="align-middle rounded-circle topCircle border"
             scale={5}
-            seed="0x0"
           />
         </Col>
         <Col

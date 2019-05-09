@@ -28,7 +28,7 @@ class Profile extends Component {
     const {profile, prices} = this.props;
     return (
       <div className="seller-profile-container">
-        <UserInformation username={profile.username} reputation={profile.reputation} address={profile.address} />
+        <UserInformation username={profile.username} reputation={profile.reputation} identiconSeed={profile.statusContactCode} />
         {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
                                 markers={[profile.coords]}/>}
         <p className="text-muted mt-2">{profile.location}</p>

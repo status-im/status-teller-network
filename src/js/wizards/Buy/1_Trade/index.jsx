@@ -105,7 +105,7 @@ class Trade extends Component {
         return <ErrorInformation transaction retry={this.postEscrow}/>;
       case States.none:
         return (
-          <OfferTrade address={this.props.offer.owner}
+          <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
                       name={this.props.offer.user.username}
                       minFIAT={200}
                       maxFIAT={600}

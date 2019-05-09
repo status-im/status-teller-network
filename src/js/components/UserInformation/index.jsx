@@ -5,10 +5,10 @@ import Reputation from "../Reputation";
 import Address from './Address';
 import Identicon from "./Identicon";
 
-const UserInformation = ({address, username, reputation, isArbitrator}) => (
+const UserInformation = ({identiconSeed, username, reputation, isArbitrator}) => (
   <Row className="border rounded py-4 m-0 text-center shadow-sm">
-    <Col xs="12">
-      <Identicon seed={address} className="rounded-circle border" scale={8} />
+    <Col xs="12"> 
+      <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
       {isArbitrator && <span className="arbiterLabel">Arbiter</span>}
     </Col>
     { !isArbitrator && <Col xs="12">
@@ -16,7 +16,7 @@ const UserInformation = ({address, username, reputation, isArbitrator}) => (
     </Col>}
     <Col xs="12">
       <p className="text-muted">
-        <Address address={address}/>
+        <Address address={identiconSeed}/>
       </p>
     </Col>
     { !isArbitrator && <Col xs="12">
@@ -25,7 +25,7 @@ const UserInformation = ({address, username, reputation, isArbitrator}) => (
   </Row>);
 
 UserInformation.propTypes = {
-  address: PropTypes.string,
+  identiconSeed: PropTypes.string,
   username: PropTypes.string,
   reputation: PropTypes.object,
   isArbitrator: PropTypes.bool
