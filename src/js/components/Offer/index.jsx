@@ -23,8 +23,8 @@ const Offer = ({offer, offers, withDetail, prices}) => {
   }
   return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
     <Col className="p-0">
-      <Row className="mb-2">
-        <Col xs={2}><Identicon seed={owner} className="rounded-circle border" scale={5}/></Col>
+      <Row className="mb-2">  
+        <Col xs={2}><Identicon seed={user.statusContactCode || owner} className="rounded-circle border" scale={5}/></Col>
         <Col xs={5}>
           <p className="seller-name m-0 font-weight-bold text-black">{user.username}</p>
           <p className="text-dark m-0">{user.location}</p>

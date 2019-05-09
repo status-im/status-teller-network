@@ -19,6 +19,7 @@ import "./index.scss";
 const NULL_PROFILE = {
   address: zeroAddress,
   username: '',
+  statusContactCode: '0x0000000000000000000000000000000000000000',
   reputation: {upCount: 0, downCount: 0},
   offers: []
 };
@@ -43,7 +44,7 @@ class MyProfile extends Component {
 
     return (
       <Fragment>
-        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} address={profile.address} username={profile.username}/>
+        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
         
         {profile.isArbitrator && <Fragment>
           <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open)} open={true} showDate={true} />

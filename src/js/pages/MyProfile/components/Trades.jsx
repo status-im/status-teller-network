@@ -51,7 +51,7 @@ class Trades extends Component {
           return <Link key={index} to={"/escrow/" + trade.escrowId}>
             <Row className="my-1 border-bottom">
               <Col className="align-self-center pr-0" xs="2">
-                <Identicon seed={ isBuyer ? trade.offer.owner : trade.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
+                 <Identicon seed={ isBuyer ? trade.seller.statusContactCode : trade.buyerInfo.statusContactCode} scale={5} className="align-middle rounded-circle topCircle border"/>
               </Col>
               <Col className="align-self-center" xs="3">
                 <span>{isBuyer ? trade.seller.username : trade.buyerInfo.username}</span>

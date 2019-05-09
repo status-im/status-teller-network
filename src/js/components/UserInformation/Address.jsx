@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {compactAddress} from "../../utils/address";
 
+import "./Address.scss";
+
 class Address extends Component {
   constructor(props) {
     super(props);
@@ -25,7 +27,7 @@ class Address extends Component {
 
   render() {
     const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address) : this.props.address;
-    return (<span title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
+    return (<span className="addr" title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
                   onMouseOut={this.mouseOutAddress}>{address}
     </span>);
   }

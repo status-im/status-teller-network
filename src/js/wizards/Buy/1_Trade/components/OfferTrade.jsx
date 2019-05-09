@@ -8,12 +8,12 @@ import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 import Identicon from "../../../../components/UserInformation/Identicon";
 
 const OfferTrade = ({
-  address, name, minFIAT, maxFIAT, price, currency, asset, onClick,
+  statusContactCode, name, minFIAT, maxFIAT, price, currency, asset, onClick,
   assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t
 }) => (
   <Row>
     <Col xs="12" className="mt-5 text-center">
-      <h2>Trade amount with <br/><span><Identicon seed={address} className="rounded-circle border"/> {name}</span></h2>
+       <h2>Trade amount with <br/><span><Identicon seed={statusContactCode} className="rounded-circle border"/> {name}</span></h2>
       <p className="mt-3">Min: {minFIAT}{currency.id} - Max: {maxFIAT}{currency.id}</p>
     </Col>
     <Col xs="12" className="mt-4">
@@ -38,7 +38,7 @@ const OfferTrade = ({
 
 OfferTrade.propTypes = {
   t: PropTypes.func,
-  address: PropTypes.string,
+  statusContactCode: PropTypes.string,
   name: PropTypes.string,
   currency: PropTypes.object,
   minFIAT: PropTypes.number,
