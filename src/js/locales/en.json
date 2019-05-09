@@ -178,6 +178,7 @@
   },
   "errorInformation": {
     "retry": "Retry",
+    "cancel": "Back",
     "provider": {
       "title": "Your browser doesn't support web3 standards",
       "tip": "Try using a different browser"

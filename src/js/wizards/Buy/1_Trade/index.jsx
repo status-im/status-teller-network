@@ -69,7 +69,7 @@ class Trade extends Component {
 
   onAssetChange = (assetQuantity) => {
     let currencyQuantity = 0;
-    if(assetQuantity !== ""){ 
+    if(assetQuantity !== ""){
       assetQuantity = parseFloat(assetQuantity);
       currencyQuantity = assetQuantity * this._calcPrice();
       this.validate(currencyQuantity, assetQuantity);
@@ -82,7 +82,7 @@ class Trade extends Component {
 
   onCurrencyChange = (currencyQuantity) => {
     let assetQuantity = 0;
-    if(currencyQuantity !== ""){ 
+    if(currencyQuantity !== ""){
       currencyQuantity = parseFloat(currencyQuantity);
       assetQuantity = currencyQuantity / this._calcPrice();
       this.validate(currencyQuantity, assetQuantity);
@@ -102,7 +102,7 @@ class Trade extends Component {
       case States.pending:
         return <Loading mining/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postEscrow}/>;
+        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetStatus}/>;
       case States.none:
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}

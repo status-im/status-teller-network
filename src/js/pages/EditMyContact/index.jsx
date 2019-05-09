@@ -68,7 +68,7 @@ class EditMyContact extends Component {
       case States.pending:
         return <Loading mining/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.update}/>;
+        return <ErrorInformation transaction retry={this.update} cancel={this.props.resetUpdateUserStatus}/>;
       case States.none:
         return (
           <Fragment>
@@ -82,7 +82,7 @@ class EditMyContact extends Component {
         </Fragment>
         );
       default:
-        return <React.Fragment></React.Fragment>;
+        return <Fragment/>;
     }
   }
 }

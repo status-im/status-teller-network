@@ -1,5 +1,5 @@
 import {
-  BUY_LICENSE_FAILED, BUY_LICENSE, BUY_LICENSE_PRE_SUCCESS,
+  BUY_LICENSE_FAILED, BUY_LICENSE, BUY_LICENSE_PRE_SUCCESS, BUY_LICENSE_CANCEL,
   BUY_LICENSE_SUCCEEDED, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER,
   CHECK_LICENSE_OWNER_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
 } from './constants';
@@ -30,6 +30,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         licenseOwner: true,
+        loading: false,
+        error: ''
+      };
+    case BUY_LICENSE_CANCEL:
+      return {
+        ...state,
         loading: false,
         error: ''
       };

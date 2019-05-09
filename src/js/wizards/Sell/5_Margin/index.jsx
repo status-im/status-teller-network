@@ -81,7 +81,7 @@ class Margin extends Component {
       case States.pending:
         return <Loading mining/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postOffer}/>;
+        return <ErrorInformation transaction retry={this.postOffer} cancel={this.props.resetAddOfferStatus}/>;
       case States.none:
         return (
           <MarginSelectorForm token={this.props.token}

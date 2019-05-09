@@ -44,8 +44,8 @@ class ArbitrationLicense extends Component {
   }
 
   render() {
-    if (this.props.isError) {
-      return <ErrorInformation transaction retry={this.buyLicense}/>;
+    if (this.props.error) {
+      return <ErrorInformation transaction retry={this.buyLicense} message={this.props.error} cancel={this.props.cancelBuyLicense}/>;
     }
 
     if (!this.props.sntToken) {
@@ -55,7 +55,7 @@ class ArbitrationLicense extends Component {
     if (this.props.isLoading) {
       return <Loading mining/>;
     }
-    
+
     return (
       <React.Fragment>
         <Info price={this.props.licensePrice} />
@@ -73,9 +73,10 @@ ArbitrationLicense.propTypes = {
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
   buyLicense: PropTypes.func,
+  cancelBuyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
-  isError: PropTypes.bool,
+  error: PropTypes.bool,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
@@ -89,7 +90,7 @@ const mapStateToProps = state => {
     address: network.selectors.getAddress(state) || '',
     isLicenseOwner: arbitration.selectors.isLicenseOwner(state),
     isLoading: arbitration.selectors.isLoading(state),
-    isError: arbitration.selectors.isError(state),
+    error: arbitration.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: arbitration.selectors.getLicensePrice(state)
   };
@@ -99,6 +100,7 @@ export default connect(
   mapStateToProps,
   {
     buyLicense: arbitration.actions.buyLicense,
+    cancelBuyLicense: arbitration.actions.cancelBuyLicense,
     checkLicenseOwner: arbitration.actions.checkLicenseOwner,
     loadLicensePrice: arbitration.actions.loadPrice,
     updateBalance: network.actions.updateBalance,
