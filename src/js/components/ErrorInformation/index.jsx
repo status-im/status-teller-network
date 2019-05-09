@@ -21,7 +21,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {provider && t('errorInformation.provider.tip')}
       {network && t('errorInformation.network.tip')}
       {transaction && t('errorInformation.transaction.tip')}
-      {sntTokenError && t('errorInformation.sntTokenError.title')}
+      {sntTokenError && t('errorInformation.sntTokenError.tip')}
     </p>
     <p>
       {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t('errorInformation.cancel')}</Button>}

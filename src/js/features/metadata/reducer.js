@@ -27,9 +27,9 @@ function formatOffer(offer) {
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case RESET_ADD_OFFER_STATUS:
-    return {
-      ...state, addOfferStatus: States.none
-    };
+      return {
+        ...state, addOfferStatus: States.none
+      };
     case ADD_OFFER:
       return {
         ...state, addOfferStatus: States.pending
