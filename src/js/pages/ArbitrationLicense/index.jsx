@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
@@ -57,13 +57,13 @@ class ArbitrationLicense extends Component {
     }
 
     return (
-      <React.Fragment>
+      <Fragment>
         <Info price={this.props.licensePrice} />
         <div className="mt-5">
           <Balance value={this.props.sntToken.balance} disabled={!this.enoughBalance()}/>
         </div>
         <BuyButton onClick={this.buyLicense} disabled={!this.enoughBalance()}/>
-      </React.Fragment>
+      </Fragment>
     );
   }
 }
@@ -76,7 +76,7 @@ ArbitrationLicense.propTypes = {
   cancelBuyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
-  error: PropTypes.bool,
+  error: PropTypes.string,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,

@@ -12,12 +12,13 @@ class LicenseInfo extends Component {
       <div className="mt-2">
         <Row>
           <Col xs={12}>
-            <h2 className="text-center">Title about arbitration License</h2>
+            <h2 className="text-center">{t('arbitration.title')}</h2>
           </Col>
         </Row>
 
         <div className="stake-card mt-3 py-3 text-center rounded font-weight-bold">
-          Stake {this.props.price}<br/> for arbitrator license
+          {t('arbitration.stake1', {price: this.props.price})}<br/>
+          {t('arbitration.stake2', {price: this.props.price})}
         </div>
       </div>
     );

@@ -202,5 +202,10 @@
       "back": "Back",
       "home": "Home"
     }
+  },
+  "arbitration": {
+    "title": "Title about arbitration License",
+    "stake1": "Stake {{price}} SNT",
+    "stake2": "for arbitrator license"
   }
 }
