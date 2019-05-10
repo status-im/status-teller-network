@@ -20,16 +20,8 @@ import {
   GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED
 
 } from './constants';
-import {getEnsAddress} from "../../services/embarkjs";
-
 
 export function *createEscrow({user, escrow}) {
-  try {
-    user.statusContactCode = yield getEnsAddress(user.statusContactCode);
-  } catch (error) {
-    yield put({type: CREATE_ESCROW_FAILED, error});
-    return;
-  }
   const toSend = Escrow.methods.create(
     user.buyerAddress,
     escrow.offerId,

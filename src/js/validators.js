@@ -4,6 +4,33 @@ import {FormFeedback} from "reactstrap";
 import {NamespacesConsumer} from 'react-i18next';
 import {contactCodeRegExp} from './utils/address';
 
+export const addressLikeUsername = username => {
+  const length = username.length;
+  const firstIsZero = username[0] === "0";
+  const secondIsX = username[1].toLowerCase() === "x";
+  let isAddress = false;
+  if (length > 12 && firstIsZero && secondIsX) {
+    username.slice(2, 7).split("").forEach(letter => {
+      const code = letter.charCodeAt();
+      // eslint-disable-next-line no-return-assign
+      if ((code >= 48 && code <= 57) || (code >= 97 && code <= 102)) return isAddress = true;
+      isAddress = false;
+    });
+  }
+  return isAddress;
+};
+
+export const validENS = username => {
+  const value = username.toLowerCase().trim();
+
+  if (value !== username.trim()) return false;
+  if (value.length < 4) return false;
+  if (addressLikeUsername(value)) return false;
+
+  return true;
+};
+
+
 export const required = (value) => {
   if (!value.toString().trim().length) {
     return <NamespacesConsumer>
@@ -70,7 +97,7 @@ export const isAddress = (value) => {
 };
 
 export const isContactCode = (value) => {
-  if (value.startsWith("0x") && !contactCodeRegExp.test(value)) {
+  if (!(validENS(value) || (value.startsWith("0x") && contactCodeRegExp.test(value)))){
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.isContactCode')}</FormFeedback>}
       </NamespacesConsumer>;

@@ -15,3 +15,4 @@ export const getTokenByAddress = (state, address) => {
   return state.network.tokens[symbol];
 };
 export const getStatusContactCode = (state) => state.network.contactCode;
+export const getENSError = state => state.network.ensError;

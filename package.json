@@ -54,6 +54,7 @@
     "embark-solc": "^4.0.2",
     "embark-solium": "0.0.1",
     "embarkjs-connector-web3": "^4.0.0",
+    "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.0.0",
     "google-geocoder": "^0.2.1",
     "i18next": "^13.1.2",

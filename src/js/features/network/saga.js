@@ -1,15 +1,17 @@
 /*global web3*/
 
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
+import Resolver from '../../../embarkArtifacts/contracts/Resolver';
+import ethNameHash from 'eth-ens-namehash';
 import { fork, takeEvery, call, put, all, select } from 'redux-saga/effects';
 import {
   INIT, INIT_FAILED, INIT_SUCCEEDED,
   UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED,
-  GET_CONTACT_CODE, GET_CONTACT_CODE_SUCCEEDED, GET_CONTACT_CODE_FAILED
+  GET_CONTACT_CODE, GET_CONTACT_CODE_SUCCEEDED, GET_CONTACT_CODE_FAILED, RESOLVE_ENS_NAME, RESOLVE_ENS_NAME_FAILED, RESOLVE_ENS_NAME_SUCCEEDED
 } from './constants';
 import {FETCH_EXCHANGE_RATE} from '../prices/constants';
 import { onReady } from '../../services/embarkjs';
-import { zeroAddress } from '../../utils/address';
+import { zeroAddress, zeroBytes } from '../../utils/address';
 
 export function *doInit() {
   try {
@@ -80,9 +82,32 @@ export function *onGetStatusCode() {
   yield takeEvery(GET_CONTACT_CODE, getStatusCode);
 }
 
+export function *resolveEnsName({ens}) {
+  try {
+    const hash = ethNameHash.hash(ens);
+    const value = yield Resolver.methods.pubkey(hash).call();
+
+    if(value.x === zeroBytes || value.y === zeroBytes){
+      yield put({type: RESOLVE_ENS_NAME_FAILED, error: "Couldn't resolve ENS name"});
+    } else {
+      const contactCode = "0x04" + value.x.substring(2) + value.y.substring(2);
+      yield put({type: RESOLVE_ENS_NAME_SUCCEEDED, contactCode});
+    }
+  } catch(error) {
+    yield put({type: RESOLVE_ENS_NAME_FAILED, error: "Couldn't resolve ENS name"});
+    console.error(error);
+  }
+}
+
+export function *onResolveEnsName() {
+  yield takeEvery(RESOLVE_ENS_NAME, resolveEnsName);
+}
+
+
 export default [
   fork(onInit),
   fork(onUpdateBalances),
   fork(onUpdateBalance),
-  fork(onGetStatusCode)
+  fork(onGetStatusCode),
+  fork(onResolveEnsName)
 ];

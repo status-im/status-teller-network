@@ -45,7 +45,7 @@ class Contact extends Component {
 
   validate(username, statusContactCode) {
     if (username && statusContactCode) {
-      if(statusContactCode.startsWith("0x") && !contactCodeRegExp.test(statusContactCode)){
+      if(!contactCodeRegExp.test(statusContactCode)){
         this.props.footer.disableNext();
       } else {
         return this.props.footer.enableNext();
@@ -82,7 +82,10 @@ class Contact extends Component {
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
                          getContactCode={this.getContactCode}
-                         changeUsername={this.changeUsername}/>;
+                         changeUsername={this.changeUsername}
+                         resolveENSName={this.props.resolveENSName}
+                         ensError={this.props.ensError}
+                         />;
   }
 }
 
@@ -95,13 +98,16 @@ Contact.propTypes = {
   isStatus: PropTypes.bool,
   getContactCode: PropTypes.func,
   statusContactCode: PropTypes.string,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  resolveENSName: PropTypes.func,
+  ensError: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
   isStatus: network.selectors.isStatus(state),
   statusContactCode: network.selectors.getStatusContactCode(state),
+  ensError: network.selectors.getENSError(state),
   profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
 });
 
@@ -109,6 +115,7 @@ export default connect(
   mapStateToProps,
   {
     setContactInfo: newSeller.actions.setContactInfo,
-    getContactCode: network.actions.getContactCode
+    getContactCode: network.actions.getContactCode,
+    resolveENSName: network.actions.resolveENSName
   }
 )(Contact);
