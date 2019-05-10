@@ -8,6 +8,7 @@ import { withNamespaces } from 'react-i18next';
 import license from "../../features/license";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
+import prices from "../../features/prices";
 
 import { version } from '../../../../package.json';
 
@@ -27,6 +28,8 @@ class Home extends Component {
   render() {
     const isArbitrator = this.props.profile && this.props.profile.isArbitrator;
     const t = this.props.t;
+    const hasPrices = this.props.hasPrices;
+
     return (
       <div className="home">
         <Row>
@@ -43,7 +46,9 @@ class Home extends Component {
 
         {!isArbitrator && <Row className="home--footer">
           <Col xs={6}>
-            <Button tag={Link} color="primary" block to="/offers/list">{t('home.buy')}</Button>
+            <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
+              {hasPrices ? t('home.buy') : t('home.loadingData')}
+            </Button>
           </Col>
           <Col xs={6}>
             <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
@@ -59,7 +64,8 @@ Home.propTypes = {
   t: PropTypes.func,
   checkLicenseOwner: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
-  profile: PropTypes.object
+  profile: PropTypes.object,
+  hasPrices: PropTypes.bool
 };
 
 
@@ -68,7 +74,8 @@ const mapStateToProps = (state) => {
   return {
     address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
-    profile: metadata.selectors.getProfile(state, address)
+    profile: metadata.selectors.getProfile(state, address),
+    hasPrices: prices.selectors.hasPrices(state)
   };
 };
 
