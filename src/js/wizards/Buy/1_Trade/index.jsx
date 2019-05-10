@@ -107,8 +107,8 @@ class Trade extends Component {
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
                       name={this.props.offer.user.username}
-                      minFIAT={200}
-                      maxFIAT={600}
+                      minFIAT={0} // TODO put here real values when we have it set in the contract
+                      maxFIAT={999999}
                       price={this._calcPrice()}
                       asset={this.props.offer.token.symbol}
                       currency={{id: this.props.offer.currency}}
