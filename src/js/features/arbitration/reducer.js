@@ -25,6 +25,7 @@ import {
   CHECK_LICENSE_OWNER_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
+import {RESET_STATE} from "../network/constants";
 
 
 const DEFAULT_STATE = {
@@ -32,7 +33,8 @@ const DEFAULT_STATE = {
   receipt: null,
   price: Number.MAX_SAFE_INTEGER,
   loading: false,
-  error: ''};
+  error: ''
+};
 
 function reducer(state = DEFAULT_STATE, action) {
   let escrows = state.escrows;
@@ -139,6 +141,15 @@ function reducer(state = DEFAULT_STATE, action) {
         error: action.error,
         loading: false
       };
+    case RESET_STATE: {
+      return Object.assign({}, state, {
+        arbitration: null,
+        licenseOwner: false,
+        receipt: null,
+        loading: false,
+        error: ''
+      });
+    }
     default:
       return state;
   }

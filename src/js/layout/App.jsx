@@ -1,3 +1,4 @@
+/*global web3*/
 import React, {Component} from 'react';
 import {HashRouter, Route, Redirect, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
@@ -58,8 +59,12 @@ class App extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
+      if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
+        this.props.resetState();
+      }
       this.props.loadProfile(this.props.address);
       this.props.checkLicenseOwner();
+      this.props.setCurrentUser(web3.eth.defaultAccount);
     }
   }
 
@@ -141,6 +146,7 @@ const mapStateToProps = (state) => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
+    currentUser: metadata.selectors.currentUser(state),
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isReady: network.selectors.isReady(state),
     hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
@@ -160,7 +166,10 @@ App.propTypes = {
   profile: PropTypes.object,
   loadProfile: PropTypes.func,
   checkLicenseOwner: PropTypes.func,
-  isLicenseOwner: PropTypes.bool
+  setCurrentUser: PropTypes.func,
+  resetState: PropTypes.func,
+  isLicenseOwner: PropTypes.bool,
+  currentUser: PropTypes.string
 };
 
 export default connect(
@@ -169,7 +178,9 @@ export default connect(
     fetchPrices: prices.actions.fetchPrices,
     fetchExchangeRates: prices.actions.fetchExchangeRates,
     init: network.actions.init,
+    resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
-    checkLicenseOwner: license.actions.checkLicenseOwner
+    checkLicenseOwner: license.actions.checkLicenseOwner,
+    setCurrentUser: metadata.actions.setCurrentUser
   }
 )(App);
