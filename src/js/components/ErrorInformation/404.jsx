@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter, Link} from "react-router-dom";
 import {withNamespaces} from "react-i18next";
-import {Button, Row, Col} from 'reactstrap';
+import {Button} from 'reactstrap';
 
 import errorImage from '../../../images/error.png';
 import './index.scss';
@@ -16,14 +16,10 @@ const fourOFour = ({t, history}) => (
     <p className="text-muted">
       {t('errorInformation.404.tip')}
     </p>
-    <Row>
-      <Col xs={6}>
-        <Button color="primary" onClick={history.goBack} className="mr-4">{t('errorInformation.404.back')}</Button>
-      </Col>
-      <Col xs={6}>
-        <Button color="primary" tag={Link} to="/">{t('errorInformation.404.home')}</Button>
-      </Col>
-    </Row>
+    <p>
+      <Button color="primary" onClick={history.goBack} className="mr-4">{t('errorInformation.404.back')}</Button>
+      <Button color="primary" tag={Link} to="/">{t('errorInformation.404.home')}</Button>
+    </p>
   </div>
 );
 
