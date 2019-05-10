@@ -4,6 +4,7 @@ import {
   INCLUDE_SIGNATURE_SUCCEEDED,
   INCLUDE_SIGNATURE_FAILED
 } from './constants';
+import {RESET_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {message: null, type: null, escrowId: null, loading: false};
 
@@ -37,6 +38,9 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
+    case RESET_STATE: {
+      return DEFAULT_STATE;
+    }
     default:
       return state;
   }

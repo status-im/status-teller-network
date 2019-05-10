@@ -1,4 +1,5 @@
 import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
+import {RESET_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   error: '',
@@ -33,18 +34,21 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
-    case GET_SNT_ALLOWANCE_SUCCEEDED: 
+    case GET_SNT_ALLOWANCE_SUCCEEDED:
       return {
         ...state, ...{
           sntAllowance: action.allowance
         }
       };
-    case GET_TOKEN_ALLOWANCE_SUCCEEDED: 
+    case GET_TOKEN_ALLOWANCE_SUCCEEDED:
       return {
         ...state, ...{
           tokenAllowance: action.allowance
         }
       };
+    case RESET_STATE: {
+      return DEFAULT_STATE;
+    }
     default:
       return state;
   }

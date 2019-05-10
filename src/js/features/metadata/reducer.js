@@ -2,10 +2,11 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
-  LOAD_USER_LOCATION_SUCCEEDED
+  LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
+import {RESET_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   addOfferStatus: States.none,
@@ -52,6 +53,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case UPDATE_USER:
       return {
         ...state, updateUserStatus: States.pending
+      };
+    case SET_CURRENT_USER:
+      return {
+        ...state, currentUser: action.currentUser
       };
     case UPDATE_USER_SUCCEEDED: {
       return {
@@ -102,6 +107,12 @@ function reducer(state = DEFAULT_STATE, action) {
           }
         }
       };
+    case RESET_STATE: {
+      return Object.assign({}, state, {
+        addOfferStatus: States.none,
+        updateUserStatus: States.none
+      });
+    }
     case CREATE_ESCROW_SUCCEEDED: {
       return {
         ...state,

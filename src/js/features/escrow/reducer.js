@@ -12,6 +12,7 @@ import {
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus } from './helpers';
+import {RESET_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
@@ -160,6 +161,9 @@ function reducer(state = DEFAULT_STATE, action) {
         releaseStatus: States.none,
         rateStatus: States.none
       };
+    case RESET_STATE: {
+      return DEFAULT_STATE;
+    }
     // Migrate to new UI
     // case RELEASE_ESCROW_FAILED:
     // case CANCEL_ESCROW_FAILED:

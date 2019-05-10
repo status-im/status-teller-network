@@ -1,5 +1,5 @@
 import {
-  LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS,
+  LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS
 } from './constants';
 
@@ -20,6 +20,11 @@ export const addOffer = (seller) => ({
     marketType: seller.marketType,
     margin: seller.margin
   }
+});
+
+export const setCurrentUser = (currentUser) => ({
+  type: SET_CURRENT_USER,
+  currentUser
 });
 
 export const resetAddOfferStatus = () => ({

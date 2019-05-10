@@ -6,6 +6,7 @@ import {
   SET_PAYMENT_METHODS,
   SET_CONTACT_INFO
 } from './constants';
+import {RESET_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   asset: '',
@@ -52,6 +53,9 @@ function reducer(state = DEFAULT_STATE, action) {
         username: action.username,
         statusContactCode: action.statusContactCode
       };
+    case RESET_STATE: {
+      return DEFAULT_STATE;
+    }
     default:
       return state;
   }
