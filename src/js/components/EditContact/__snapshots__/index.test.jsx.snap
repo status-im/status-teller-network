@@ -30,6 +30,7 @@ exports[`EditContact should render correctly 1`] = `
         className="form-control"
         id="contactCode"
         name="contactCode"
+        onBlur={[Function]}
         onChange={[Function]}
         placeholder="Status contact code or Status ENS name"
         rows="5"
@@ -40,6 +41,7 @@ exports[`EditContact should render correctly 1`] = `
             [Function],
           ]
         }
+        value="contractCode"
       />
     </FormGroup>
   </Form(t)>

@@ -6,7 +6,7 @@ import EditContact from "./index";
 describe('EditContact', () => {
   it('should render correctly', () => {
     const component = shallow(<EditContact changeNickname={() => undefined} changeContactCode={() => undefined}
-                                           nickname={"nickname"} contractCode={"contractCode"} />);
+                                           resolveENSName={() => undefined} ensError="" nickname={"nickname"} statusContactCode={"contractCode"} />);
 
     expect(component).toMatchSnapshot();
   });
