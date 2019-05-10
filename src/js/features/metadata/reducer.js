@@ -4,7 +4,7 @@ import {
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED
 } from './constants';
-import {USER_RATING_SUCCEEDED} from '../escrow/constants';
+import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
 
 const DEFAULT_STATE = {
@@ -102,6 +102,19 @@ function reducer(state = DEFAULT_STATE, action) {
           }
         }
       };
+    case CREATE_ESCROW_SUCCEEDED: {
+      return {
+        ...state,
+      users: {
+          ...state.users,
+          [action.user.buyerAddress.toLowerCase()]: {
+            ...state.users[action.user.buyerAddress.toLowerCase()],
+            statusContactCode: action.user.statusContactCode,
+            username: action.user.username
+          }
+        }
+      };
+    }
     default:
       return state;
   }
