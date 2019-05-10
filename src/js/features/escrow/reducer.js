@@ -47,7 +47,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case FUND_ESCROW_FAILED:
       return {
         ...state,
-        fundEscrowStatus: States.error
+        fundEscrowStatus: States.failed
       };
     case FUND_ESCROW_SUCCEEDED:
       return {
@@ -67,7 +67,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case RELEASE_ESCROW_FAILED:
       return {
         ...state,
-        releaseStatus: States.error
+        releaseStatus: States.failed
       };
     case PAY_ESCROW:
       return {
@@ -82,17 +82,17 @@ function reducer(state = DEFAULT_STATE, action) {
     case PAY_ESCROW_FAILED:
       return {
         ...state,
-        payStatus: States.error
+        payStatus: States.failed
       };
     case CREATE_ESCROW:
       return {
-        ...state, 
+        ...state,
         createEscrowStatus: States.pending
       };
     case CREATE_ESCROW_FAILED:
       return {
         ...state,
-        createEscrowStatus: States.error
+        createEscrowStatus: States.failed
       };
     case CREATE_ESCROW_SUCCEEDED:
       return {
@@ -100,7 +100,7 @@ function reducer(state = DEFAULT_STATE, action) {
         createEscrowId: action.receipt.events.Created.returnValues.escrowId,
         createEscrowStatus: States.success
       };
-    case GET_ESCROW_SUCCEEDED: 
+    case GET_ESCROW_SUCCEEDED:
       return {
         ...state,
         escrow: action.escrow
@@ -133,7 +133,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case CANCEL_ESCROW_FAILED:
       return {
         ...state,
-        cancelStatus: States.error
+        cancelStatus: States.failed
       };
     case RATE_TRANSACTION:
       return {
@@ -149,9 +149,9 @@ function reducer(state = DEFAULT_STATE, action) {
     case RATE_TRANSACTION_FAILED:
       return {
         ...state,
-        rateStatus: States.error
+        rateStatus: States.failed
       };
-    case RESET_STATUS: 
+    case RESET_STATUS:
       return {
         ...state,
         fundEscrowStatus: States.none,
