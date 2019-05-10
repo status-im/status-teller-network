@@ -1,5 +1,5 @@
 /*global web3*/
-import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED } from './constants';
+import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED, RESOLVE_ENS_NAME_SUCCEEDED, RESOLVE_ENS_NAME_FAILED } from './constants';
 import { Networks, Tokens } from '../../utils/networks';
 import { fromTokenDecimals } from '../../utils/numbers';
 
@@ -13,7 +13,8 @@ const DEFAULT_STATE = {
     id: 0,
     name: ''
   },
-  tokens: {}
+  tokens: {},
+  ensError: ''
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -53,6 +54,19 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         contactCode: action.contactCode
+      };
+    }
+    case RESOLVE_ENS_NAME_SUCCEEDED: {
+      return {
+        ...state,
+        ensError: '',
+        contactCode: action.contactCode
+      };
+    }
+    case RESOLVE_ENS_NAME_FAILED: {
+      return {
+        ...state,
+        ensError: action.error
       };
     }
     default:

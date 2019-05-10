@@ -11,7 +11,6 @@ import {
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
-import {getEnsAddress} from '../../services/embarkjs';
 import {getLocation} from '../../services/googleMap';
 
 export function *loadUser({address}) {
@@ -103,12 +102,6 @@ export function *onLoad() {
 }
 
 export function *addOffer({user, offer}) {
-  try {
-    user.statusContactCode = yield getEnsAddress(user.statusContactCode);
-  } catch (error) {
-    yield put({type: ADD_OFFER_FAILED, error});
-    return;
-  }
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
     user.statusContactCode,
@@ -127,8 +120,6 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  user.statusContactCode = yield getEnsAddress(user.statusContactCode);
-
   const toSend = MetadataStore.methods.updateUser(
     user.statusContactCode,
     user.location,

@@ -77,7 +77,10 @@ class EditMyContact extends Component {
                          username={this.state.username}
                          changeStatusContactCode={this.changeStatusContactCode}
                          getContactCode={this.getContactCode}
-                         changeUsername={this.changeUsername}/>
+                         changeUsername={this.changeUsername}
+                         resolveENSName={this.props.resolveENSName}
+                         ensError={this.props.ensError}
+                         />
             <UpdateButton disabled={this.state.updateDisabled} onClick={this.update}/>
         </Fragment>
         );
@@ -97,7 +100,9 @@ EditMyContact.propTypes = {
   resetUpdateUserStatus: PropTypes.func,
   getContactCode: PropTypes.func,
   isStatus: PropTypes.bool,
-  statusContactCode: PropTypes.string
+  statusContactCode: PropTypes.string,
+  resolveENSName: PropTypes.func,
+  ensError: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -107,6 +112,7 @@ const mapStateToProps = state => {
     profile: metadata.selectors.getProfile(state, address),
     updateUserStatus: metadata.selectors.getUpdateUserStatus(state),
     isStatus: network.selectors.isStatus(state),
+    ensError: network.selectors.getENSError(state),
     statusContactCode: network.selectors.getStatusContactCode(state)
   };
 };
@@ -117,6 +123,7 @@ export default connect(
     loadProfile: metadata.actions.load,
     updateUser: metadata.actions.updateUser,
     resetUpdateUserStatus: metadata.actions.resetUpdateUserStatus,
-    getContactCode: network.actions.getContactCode
+    getContactCode: network.actions.getContactCode,
+    resolveENSName: network.actions.resolveENSName
   }
 )(withRouter(EditMyContact));

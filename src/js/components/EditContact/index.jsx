@@ -5,11 +5,25 @@ import Input from 'react-validation/build/input';
 import Textarea from 'react-validation/build/textarea';
 import {withNamespaces} from "react-i18next";
 import PropTypes from 'prop-types';
-import {required, isContactCode} from "../../validators";
+import {required, isContactCode, validENS} from "../../validators";
+
+const domain = ".stateofus.eth";
 
 class EditContact extends Component {
+  handleContactCodeChange = (e) => {
+    const statusContactCode = e.target.value.toLowerCase();
+    this.props.changeStatusContactCode(statusContactCode);
+  }
+
+  handleContactCodeBlur = (e) => {
+    const statusContactCode = e.target.value.toLowerCase();
+    if(validENS(statusContactCode) && statusContactCode.indexOf(domain) === -1){
+      this.props.changeStatusContactCode(statusContactCode + domain);
+    }
+  }
+
   render() {
-    const {t, username, statusContactCode, isStatus} = this.props;
+    const {t, username, statusContactCode, isStatus, ensError} = this.props;
     return (
       <Fragment>
         <h2 className="mb-4">{t('contactForm.yourName')}</h2>
@@ -31,16 +45,24 @@ class EditContact extends Component {
                    rows="5"
                    placeholder="Status contact code or Status ENS name"
                    value={statusContactCode}
+                   onBlur={this.handleContactCodeBlur}
                    className="form-control"
-                   onChange={(e) => this.props.changeStatusContactCode(e.target.value)}
+                   onChange={this.handleContactCodeChange}
                    validations={[required, isContactCode]}/>
+            {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
             {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
+          {statusContactCode.indexOf(domain) > -1 && <p className="text-center">
+            <Button color="primary" onClick={(e) => this.props.resolveENSName(statusContactCode)}>
+              Resolve ENS name
+            </Button>
+          </p>}
         </Form>
       </Fragment>
     );
   }
 }
+
 
 EditContact.propTypes = {
   t: PropTypes.func,
@@ -49,7 +71,9 @@ EditContact.propTypes = {
   getContactCode: PropTypes.func,
   username: PropTypes.string,
   statusContactCode: PropTypes.string,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  resolveENSName: PropTypes.func,
+  ensError: PropTypes.string
 };
 
 
