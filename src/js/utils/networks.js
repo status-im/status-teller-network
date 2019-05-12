@@ -1,5 +1,7 @@
 import SNT from '../../embarkArtifacts/contracts/SNT';
 import StandardToken from '../../embarkArtifacts/contracts/StandardToken';
+import DAI from '../../embarkArtifacts/contracts/DAI';
+import MKR from '../../embarkArtifacts/contracts/MKR';
 
 import { zeroAddress } from './address';
 
@@ -590,9 +592,20 @@ export const Tokens = {
       name: "Bitcoin",
       address: StandardToken.options.address,
       decimals: 18
+    },
+    {
+      symbol: 'DAI',
+      name: 'DAI',
+      address: DAI.address.toLowerCase(),
+      decimals: 18
+    },
+    {
+      symbol: 'MKR',
+      name: "MKR",
+      address: MKR.address.toLowerCase(),
+      decimals: 18
     }
   ],
-
   'rinkeby': [
     {
       symbol: 'ETH',

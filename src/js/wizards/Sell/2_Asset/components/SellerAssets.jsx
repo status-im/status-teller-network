@@ -19,7 +19,7 @@ class SellerAssets extends Component {
             <CheckButton active={this.props.selectedAsset === asset.address}
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
-              <img src={TokenImages[`${asset.symbol}.png`]} alt={asset.name + ' icon'} className="mr-3"/>
+              <img src={TokenImages[`${asset.symbol}.png`] || TokenImages[`generic.png`]} alt={asset.name + ' icon'} className="mr-3"/>
               {formatBalance(asset.balance)} {asset.symbol}
             </CheckButton>
           ))}
