@@ -7,7 +7,7 @@ import {withNamespaces} from 'react-i18next';
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import {API_KEY} from '../../services/googleMap';
 
-import SearchBar from '../SearchBar';
+import SearchBar from './SearchBar';
 
 import CustomInfoWindow from './CustomInfoWindow';
 import dot from '../../../images/Ellipse.png';
