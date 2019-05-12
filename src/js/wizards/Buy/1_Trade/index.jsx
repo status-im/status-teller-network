@@ -13,8 +13,8 @@ import Loading from '../../../components/Loading';
 import ErrorInformation from '../../../components/ErrorInformation';
 import OfferTrade from './components/OfferTrade';
 
-const MIN = 200;
-const MAX = 600;
+const MIN = 0;
+const MAX = 999999;
 const ABOVE = '0';
 
 class Trade extends Component {
@@ -107,8 +107,8 @@ class Trade extends Component {
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
                       name={this.props.offer.user.username}
-                      minFIAT={0} // TODO put here real values when we have it set in the contract
-                      maxFIAT={999999}
+                      minFIAT={MIN} // TODO put here real values when we have it set in the contract
+                      maxFIAT={MAX}
                       price={this._calcPrice()}
                       asset={this.props.offer.token.symbol}
                       currency={{id: this.props.offer.currency}}
