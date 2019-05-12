@@ -15,19 +15,22 @@ import './index.scss';
 
 export class Map extends Component {
   constructor(props) {
+    const coords = props.coords || {};
     super(props);
+
     this.state = {
       activeMarkers: {},
-      center: {lat: props.coords.latitude, lng: props.coords.longitude}
+      center: {lat: coords.latitude, lng: coords.longitude},
+      error: props.error
     };
   }
 
   onMarkerClick(markerIndex) {
     const activeMarkers = this.state.activeMarkers;
+
     if (activeMarkers[markerIndex]) {
       activeMarkers[markerIndex] = false;
       delete activeMarkers[markerIndex];
-
     } else {
       activeMarkers[markerIndex] = true;
     }
@@ -70,8 +73,16 @@ export class Map extends Component {
   };
 
   render() {
-    let {goToProfile, markerOnly, markers} = this.props;
+    let {goToProfile, markerOnly, markers, error} = this.props;
     let {center, activeMarkers} = this.state;
+
+    if (error) {
+      return (
+        <div>
+          {error}
+        </div>
+      );
+    }
 
     return (
       <GoogleMap
@@ -99,7 +110,8 @@ export class Map extends Component {
                           address={marker.address} onClick={() => goToProfile(marker.address)}/>}
           </Marker>);
         })}
-      </GoogleMap>);
+      </GoogleMap>
+      );
   }
 }
 
