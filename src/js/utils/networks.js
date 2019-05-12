@@ -587,7 +587,7 @@ export const Tokens = {
     },
     {
       symbol: 'BTC',
-      name: "Bottlecaps",
+      name: "Bitcoin",
       address: StandardToken.options.address,
       decimals: 18
     }
