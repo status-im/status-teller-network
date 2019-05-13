@@ -44,16 +44,23 @@ class Home extends Component {
           </Col>
         </Row>
 
-        {!isArbitrator && <Row className="home--footer">
-          <Col xs={6}>
-            <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
-              {hasPrices ? t('home.buy') : t('home.loadingData')}
-            </Button>
-          </Col>
-          <Col xs={6}>
-            <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
-          </Col>
-        </Row>}
+        {!isArbitrator && <React.Fragment>
+          <Row className="home--footer">
+            <Col xs={6}>
+              <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
+                {hasPrices ? t('home.buy') : t('home.loadingData')}
+              </Button>
+            </Col>
+            <Col xs={6}>
+              <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12} className="text-right text-small">
+              <Link to="/arbitrator/license">Be an arbitrator?</Link>
+            </Col>
+          </Row>
+        </React.Fragment>}
         <p className="teller-version text-muted">Version: {version}</p>
       </div>
     );
