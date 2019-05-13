@@ -63,7 +63,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         updateUserStatus: States.success,
         users: {...state.users, [action.receipt.from.toLowerCase()]: {
-          ...state.users[action.address.toLowerCase()],
+          ...state.users[action.receipt.from.toLowerCase()],
           ...action.user
         }}
       };
