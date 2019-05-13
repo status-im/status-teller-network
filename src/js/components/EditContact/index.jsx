@@ -13,18 +13,18 @@ class EditContact extends Component {
   handleContactCodeChange = (e) => {
     const statusContactCode = e.target.value.toLowerCase();
     this.props.changeStatusContactCode(statusContactCode);
-  }
+  };
 
   handleContactCodeBlur = (e) => {
     const statusContactCode = e.target.value.toLowerCase();
     if(validENS(statusContactCode) && !this.isStatusENSDomain(statusContactCode) && !this.isENSName(statusContactCode)){
       this.props.changeStatusContactCode(statusContactCode + domain);
     }
-  }
+  };
 
-  isENSName = (statusContactCode) => statusContactCode.endsWith(".eth")
-  
-  isStatusENSDomain = (statusContactCode) => statusContactCode.indexOf(domain) > -1
+  isENSName = (statusContactCode) => statusContactCode.endsWith(".eth");
+
+  isStatusENSDomain = (statusContactCode) => statusContactCode.indexOf(domain) > -1;
 
   render() {
     const {t, username, statusContactCode, isStatus, ensError} = this.props;
@@ -54,10 +54,10 @@ class EditContact extends Component {
                    onChange={this.handleContactCodeChange}
                    validations={[required, isContactCode]}/>
             {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
-            {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
+            {isStatus && <Button className="input-icon p-0" color="link" onClick={(_e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
           {this.isENSName(statusContactCode) && <p className="text-center">
-            <Button color="primary" onClick={(e) => this.props.resolveENSName(statusContactCode)}>
+            <Button color="primary" onClick={(_e) => this.props.resolveENSName(statusContactCode)}>
               Resolve ENS name
             </Button>
           </p>}

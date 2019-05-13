@@ -9,6 +9,7 @@ import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
 import Loading from '../../../components/Loading';
 import {contactCodeRegExp} from '../../../utils/address';
+import DOMPurify from 'dompurify';
 
 class Contact extends Component {
   constructor(props) {
@@ -21,13 +22,13 @@ class Contact extends Component {
     this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
     props.footer.onPageChange(() => {
-      props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
+      props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
   }
 
   componentDidMount() {
     if (this.props.profile && this.props.profile.username) {
-      this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
       // FIXME: infinite loop between this page and the next
       setTimeout(() => {
         this.props.wizard.next();
