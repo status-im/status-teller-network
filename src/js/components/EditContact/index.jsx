@@ -17,9 +17,7 @@ class EditContact extends Component {
 
   handleContactCodeBlur = (e) => {
     const statusContactCode = e.target.value.toLowerCase();
-    if(validENS(statusContactCode) && 
-       !this.isStatusENSDomain(domain) && 
-       !this.isENSName(domain)){
+    if(validENS(statusContactCode) && !this.isStatusENSDomain(statusContactCode) && !this.isENSName(statusContactCode)){
       this.props.changeStatusContactCode(statusContactCode + domain);
     }
   }
