@@ -40,7 +40,7 @@ $menu-width: 85%;
 
   &.open {
     width: $menu-width;
-    padding: 24px $filter-menu-padding-x;
+    padding: 24px;
 
     .btn {
       .fa-check {
@@ -50,10 +50,10 @@ $menu-width: 85%;
   }
 
   .filter-menu-content {
-    width: $menu-width - ($filter-menu-padding-x * 2);
+    width: $menu-width - ($filter-menu-padding-x * 4);
     overflow: hidden;
     position: fixed;
-    max-width: 340px;
+    max-width: 350px;
     height: 100%;
   }
 
