@@ -24,6 +24,7 @@ const Done = ({trade, rateTransaction}) => (
     <h2 className="mt-4">Done.</h2>
     {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
     <Reputation trade={trade} rateTransaction={rateTransaction} size="l"/>
+    <p className="text-muted mb-0 mt-4">Thank you for using Status Teller Network</p>
   </React.Fragment>
 );
 

@@ -1,5 +1,4 @@
 /* global web3 */
-/* eslint-disable no-alert,  no-restricted-globals */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
@@ -7,7 +6,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
 import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
-import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
 
 import escrow from '../../../features/escrow';
@@ -18,26 +16,15 @@ import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
-// import five from "../../../../images/escrow/05.png";
 
 const Done = () => (
   <React.Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
-    <h2 className="mt-4">Rate your trading experience with this user.</h2>
-    <Reputation reputation={{upCount: 1, downCount: 1}} size="l"/>
+    <p className="m-0 font-weight-bold">Trade complete. Funds are now in the buyer&apos;s wallet</p>
+    <p className="m-0 text-muted">Thank you for using Status Teller Network</p>
   </React.Fragment>
 );
-
-// const Releasing = () => (
-//   <React.Fragment>
-//     <span className="bg-dark text-white p-3 rounded-circle">
-//       <img src={five} alt="five" />
-//     </span>
-//     <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
-//     <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-//   </React.Fragment>
-// );
 
 class Funded extends Component {
   state = {
