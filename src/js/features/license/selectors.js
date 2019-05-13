@@ -10,4 +10,4 @@ export const getLicensePrice = state => {
     return "price_error";
   }
   return parseInt(state.license.price, 10);
-}
+};
