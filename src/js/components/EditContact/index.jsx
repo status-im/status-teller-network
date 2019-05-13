@@ -5,7 +5,7 @@ import Input from 'react-validation/build/input';
 import Textarea from 'react-validation/build/textarea';
 import {withNamespaces} from "react-i18next";
 import PropTypes from 'prop-types';
-import {required, isContactCode, validENS} from "../../validators";
+import {required, isContactCode, validENS} from "./validators";
 
 const domain = ".stateofus.eth";
 
@@ -18,11 +18,15 @@ class EditContact extends Component {
   handleContactCodeBlur = (e) => {
     const statusContactCode = e.target.value.toLowerCase();
     if(validENS(statusContactCode) && 
-       statusContactCode.indexOf(domain) === -1 && 
-       !statusContactCode.endsWith(".eth")){
+       !this.isStatusENSDomain(domain) && 
+       !this.isENSName(domain)){
       this.props.changeStatusContactCode(statusContactCode + domain);
     }
   }
+
+  isENSName = (statusContactCode) => statusContactCode.endsWith(".eth")
+  
+  isStatusENSDomain = (statusContactCode) => statusContactCode.indexOf(domain) > -1
 
   render() {
     const {t, username, statusContactCode, isStatus, ensError} = this.props;
@@ -54,7 +58,7 @@ class EditContact extends Component {
             {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
             {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
-          {statusContactCode.endsWith(".eth") && <p className="text-center">
+          {this.isENSName(statusContactCode) && <p className="text-center">
             <Button color="primary" onClick={(e) => this.props.resolveENSName(statusContactCode)}>
               Resolve ENS name
             </Button>
@@ -64,7 +68,6 @@ class EditContact extends Component {
     );
   }
 }
-
 
 EditContact.propTypes = {
   t: PropTypes.func,
@@ -77,6 +80,5 @@ EditContact.propTypes = {
   resolveENSName: PropTypes.func,
   ensError: PropTypes.string
 };
-
 
 export default withNamespaces()(EditContact);

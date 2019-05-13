@@ -17,11 +17,9 @@ const ConfirmDialog = ({display, onCancel, title, content, onConfirm}) => (
   </Modal>
 );
 
-
 ConfirmDialog.defaultProps = {
   display: false
 };
-
 
 ConfirmDialog.propTypes = {
   onCancel: PropTypes.func,
