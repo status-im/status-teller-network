@@ -1,6 +1,6 @@
 /*global web3*/
 import React, {Component} from 'react';
-import {HashRouter, Route, Redirect, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import {Container} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -127,13 +127,11 @@ class App extends Component {
               ]}/>
             }
 
-            <Route path="/404" component={fourOFour}/>
-
             <Route path="/tmp/escrows" component={EscrowsContainer}/>
             <Route path="/tmp/signature" component={SignatureContainer}/>
             <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
 
-            <Redirect to="/404"/>
+            <Route component={fourOFour}/>
           </Switch>
           </div>
         </Container>
