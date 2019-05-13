@@ -17,7 +17,9 @@ class EditContact extends Component {
 
   handleContactCodeBlur = (e) => {
     const statusContactCode = e.target.value.toLowerCase();
-    if(validENS(statusContactCode) && statusContactCode.indexOf(domain) === -1){
+    if(validENS(statusContactCode) && 
+       statusContactCode.indexOf(domain) === -1 && 
+       !statusContactCode.endsWith(".eth")){
       this.props.changeStatusContactCode(statusContactCode + domain);
     }
   }
@@ -52,7 +54,7 @@ class EditContact extends Component {
             {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
             {isStatus && <Button className="input-icon p-0" color="link" onClick={(e) => this.props.getContactCode()}>Give access</Button>}
           </FormGroup>
-          {statusContactCode.indexOf(domain) > -1 && <p className="text-center">
+          {statusContactCode.endsWith(".eth") && <p className="text-center">
             <Button color="primary" onClick={(e) => this.props.resolveENSName(statusContactCode)}>
               Resolve ENS name
             </Button>
