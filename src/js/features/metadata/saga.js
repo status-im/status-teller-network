@@ -1,5 +1,6 @@
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
+import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
@@ -7,7 +8,7 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
-  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED
+  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -72,10 +73,44 @@ export function *loadOffers({address}) {
       const size = yield MetadataStore.methods.offersSize().call();
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
+    const loadedUsers = [];
+
+    let allReleased;
+    let releasedEscrows;
+    if (!address) {
+      allReleased = yield Escrow.getPastEvents('Released', {fromBlock: 1});
+      releasedEscrows = allReleased.map(e => e.returnValues.escrowId);
+    }
 
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call();
-      yield put({type: LOAD_USER, address: offer.owner});
+
+      if (!loadedUsers.includes(offer.owner)) {
+        loadedUsers.push(offer.owner);
+        yield put({type: LOAD_USER, address: offer.owner});
+      }
+
+      if (address) {
+        // return now as we only have the data of a few offers so we can't calculate the nb of trades
+        return {...offer, id};
+      }
+
+      // Get all escrows of that offer
+      const createdTrades = yield Escrow.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
+      let nbReleasedTrades = 0;
+      createdTrades.forEach(tradeEvent => {
+        if (releasedEscrows.includes(tradeEvent.returnValues.escrowId)) {
+          nbReleasedTrades++;
+        }
+      });
+
+      yield put({
+        type: LOAD_USER_TRADE_NUMBER_SUCCEEDED,
+        address: offer.owner,
+        nbReleasedTrades: nbReleasedTrades,
+        nbCreatedTrades: createdTrades.length
+      });
+
       return {...offer, id};
     }));
 

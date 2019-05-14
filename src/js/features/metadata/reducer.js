@@ -2,7 +2,7 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
-  LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER
+  LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
@@ -78,6 +78,17 @@ function reducer(state = DEFAULT_STATE, action) {
           ...state.users[action.address.toLowerCase()],
           ...action.user
         }}
+      };
+    case LOAD_USER_TRADE_NUMBER_SUCCEEDED:
+      return {
+        ...state, users: {
+          ...state.users,
+          [action.address.toLowerCase()]: {
+            ...state.users[action.address.toLowerCase()],
+            nbReleasedTrades: action.nbReleasedTrades,
+            nbCreatedTrades: action.nbCreatedTrades
+          }
+        }
       };
     case LOAD_USER_LOCATION_SUCCEEDED:
       return {
