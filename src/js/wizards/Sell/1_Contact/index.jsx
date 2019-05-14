@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import DOMPurify from "dompurify";
 
 import EditContact from '../../../components/EditContact';
 import Loading from '../../../components/Loading';
@@ -22,7 +23,7 @@ class Contact extends Component {
     };
     this.validate(props.seller.username, props.seller.statusContactCode);
     props.footer.onPageChange(() => {
-      props.setContactInfo({username: this.state.username, statusContactCode: this.state.statusContactCode});
+      props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
   }
 
@@ -31,7 +32,7 @@ class Contact extends Component {
       return this.props.wizard.previous();
     }
     if (this.props.profile && this.props.profile.username) {
-      this.props.setContactInfo({username: this.props.profile.username, statusContactCode: this.props.profile.statusContactCode});
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
       return this.props.wizard.next();
     }
     this.setState({ready: true});

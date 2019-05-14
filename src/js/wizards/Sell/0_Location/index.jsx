@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import DOMPurify from 'dompurify';
 
 import SellerPosition from './components/SellerPosition';
 import Loading from '../../../components/Loading';
@@ -17,13 +18,13 @@ class Location extends Component {
     };
     this.validate(props.seller.location);
     this.props.footer.onPageChange(() => {
-      this.props.setLocation(this.state.location);
+      this.props.setLocation(DOMPurify.sanitize(this.state.location));
     });
   }
 
   componentDidMount() {
     if (this.props.profile && this.props.profile.location) {
-      this.props.setLocation(this.props.profile.location);
+      this.props.setLocation(DOMPurify.sanitize(this.props.profile.location));
       this.props.wizard.next();
     } else {
       this.setState({ready: true});

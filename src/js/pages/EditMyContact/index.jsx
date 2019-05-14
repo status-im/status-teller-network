@@ -11,6 +11,7 @@ import ErrorInformation from '../../components/ErrorInformation';
 import EditContact from '../../components/EditContact';
 import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
+import DOMPurify from "dompurify";
 
 class EditMyContact extends Component {
   constructor(props) {
@@ -38,7 +39,11 @@ class EditMyContact extends Component {
   }
 
   update = () => {
-    this.props.updateUser({...this.state, location: this.props.profile.location});
+    this.props.updateUser({
+      username: DOMPurify.sanitize(this.state.username),
+      statusContactCode: DOMPurify.sanitize(this.state.statusContactCode),
+      location: DOMPurify.sanitize(this.props.profile.location)
+    });
   };
 
   validate(username, statusContactCode) {

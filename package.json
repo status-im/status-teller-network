@@ -50,6 +50,7 @@
     "connected-react-router": "^6.0.0",
     "cryptocompare": "^0.7.0",
     "css-loader": "^2.1.0",
+    "dompurify": "^1.0.10",
     "embark": "^4.0.2",
     "embark-solc": "^4.0.2",
     "embark-solium": "0.0.1",
