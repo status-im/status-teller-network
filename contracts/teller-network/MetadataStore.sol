@@ -91,7 +91,7 @@ contract MetadataStore is Ownable,MessageSigned {
         string memory _username
     ) public returns(address payable){
         address _user = recoverAddress(keccak256(abi.encodePacked(address(this), _statusContactCode, _location, _username)), _signature);
-        address payable user = address(uint160(_user));
+        address payable user = address(uint160(_user)); 
 
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
@@ -109,6 +109,25 @@ contract MetadataStore is Ownable,MessageSigned {
     }
 
     /**
+     * @notice Calculates `keccak256(address(this),_statusContactCode,_location, _username)` used in signature
+     * @param _statusContactCode The address of the status contact code
+     * @param _location The location on earth
+     * @param _username The username of the user
+     * @return signatureHash which can be signed by user as a Ethereum Signed Message.
+     */
+    function generateSignature(bytes memory _statusContactCode, string memory _location, string memory _username) public view returns(bytes32 signatureHash){
+        signatureHash = keccak256(
+            abi.encodePacked(
+                address(this),
+                _statusContactCode,
+                _location,
+                _username
+            )
+        );
+    }
+
+
+    /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
     * @param _signature users's signature
@@ -120,6 +139,7 @@ contract MetadataStore is Ownable,MessageSigned {
     * @param _marketType Above or Below
     * @param _margin The margin for the user from 0 to 100
     */
+
     function addOffer(
         address _asset,
         bytes memory _signature,                
