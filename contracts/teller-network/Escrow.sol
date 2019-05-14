@@ -120,7 +120,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         (token, , , , , seller) = metadataStore.offer(trx.offerId);
 
         require(_from == seller, "Only the seller can fund this escrow");
-        require(trx.status == EscrowStatus.CREATED || trx.status == EscrowStatus.FUNDED, "Invalid escrow status");
+        require(trx.status == EscrowStatus.CREATED, "Invalid escrow status");
 
         transactions[_escrowId].tokenAmount += _tokenAmount;
         transactions[_escrowId].expirationTime = _expirationTime;
