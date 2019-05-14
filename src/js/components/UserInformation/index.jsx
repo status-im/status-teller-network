@@ -11,9 +11,9 @@ const UserInformation = ({identiconSeed, username, reputation, isArbitrator}) =>
       <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
       {isArbitrator && <span className="arbiterLabel">Arbiter</span>}
     </Col>
-    { !isArbitrator && <Col xs="12">
+    <Col xs="12">
       <h4 className="font-weight-bold">{username}</h4>
-    </Col>}
+    </Col>
     <Col xs="12">
       <p className="text-muted">
         <Address address={identiconSeed}/>

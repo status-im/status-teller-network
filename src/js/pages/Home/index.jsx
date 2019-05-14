@@ -26,7 +26,6 @@ class Home extends Component {
   }
 
   render() {
-    const isArbitrator = this.props.profile && this.props.profile.isArbitrator;
     const t = this.props.t;
     const hasPrices = this.props.hasPrices;
 
@@ -44,7 +43,7 @@ class Home extends Component {
           </Col>
         </Row>
 
-        {!isArbitrator && <React.Fragment>
+        <React.Fragment>
           <Row className="home--footer">
             <Col xs={6}>
               <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
@@ -60,7 +59,7 @@ class Home extends Component {
               <Link to="/arbitrator/license">Be an arbitrator?</Link>
             </Col>
           </Row>
-        </React.Fragment>}
+        </React.Fragment>
         <p className="teller-version text-muted">Version: {version}</p>
       </div>
     );

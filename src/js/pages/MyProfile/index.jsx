@@ -32,8 +32,8 @@ class MyProfile extends Component {
   }
 
   render() {
-    const profile = this.props.profile;
-
+    
+    const {profile, address} = this.props;
     const trades = this.props.trades.map(x => {
       const dispute = this.props.disputes.find(y => y.escrowId === x.escrowId);
       if(dispute){
@@ -42,20 +42,21 @@ class MyProfile extends Component {
       return x;
     });
 
+
     return (
       <Fragment>
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
         
         {profile.isArbitrator && <Fragment>
-          <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open)} open={true} showDate={true} />
-          <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open)} open={false} showDate={false} />
+          <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && x.seller !== address && x.buyer !== address)} open={true} showDate={true} />
+          <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && x.seller !== address && x.buyer !== address)} open={false} showDate={false} />
         </Fragment>}
 
-        { !profile.isArbitrator && <Fragment>
+        <Fragment>
           <Trades trades={trades} address={this.props.address}/>
           <Offers offers={profile.offers} location={profile.location} />
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
-        </Fragment> }
+        </Fragment>
       </Fragment>
     );
   }
