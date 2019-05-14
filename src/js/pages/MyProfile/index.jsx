@@ -51,11 +51,11 @@ class MyProfile extends Component {
           <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open)} open={false} showDate={false} />
         </Fragment>}
 
-        { !profile.isArbitrator && <Fragment>
+        <Fragment>
           <Trades trades={trades} address={this.props.address}/>
           <Offers offers={profile.offers} location={profile.location} />
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
-        </Fragment> }
+        </Fragment>
       </Fragment>
     );
   }
