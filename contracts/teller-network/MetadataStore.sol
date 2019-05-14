@@ -2,12 +2,13 @@ pragma solidity ^0.5.7;
 
 import "./License.sol";
 import "../common/Ownable.sol";
+import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
 * @dev Metadata store
 */
-contract MetadataStore is Ownable {
+contract MetadataStore is Ownable,MessageSigned {
 
     enum PaymenMethods {Cash,BankTransfer,InternationalWire}
     enum MarketType {Above, Below}
@@ -84,11 +85,14 @@ contract MetadataStore is Ownable {
     }
 
     function addOrUpdateUser(
-        address _user,
+        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
-    ) public {
+    ) public returns(address payable){
+        address _user = recoverAddress(keccak256(abi.encodePacked(address(this), _statusContactCode, _location, _username)), _signature);
+        address payable user = address(uint160(_user));
+
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
             uint256 userId = users.push(user) - 1;
@@ -100,11 +104,14 @@ contract MetadataStore is Ownable {
             tmpUser.location = _location;
             tmpUser.username = _username;
         }
+
+        return user;
     }
 
     /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
+    * @param _signature users's signature
     * @param _statusContactCode The address of the status contact code
     * @param _location The location on earth
     * @param _currency The currency the user want to receive (USD, EUR...)
@@ -115,6 +122,7 @@ contract MetadataStore is Ownable {
     */
     function addOffer(
         address _asset,
+        bytes memory _signature,                
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -126,8 +134,9 @@ contract MetadataStore is Ownable {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
 
-        this.addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
-        
+        address _user = this.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
+        require(_user == msg.sender,"Message sender doesn't match with the signature owner"); 
+
         Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
