@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import IdenticonJS from 'identicon.js';
+import {zeroAddress} from '../../utils/address';
 
 class Identicon extends Component {
   render() {
-    const {className, seed, scale} = this.props;
+    let {className, seed, scale} = this.props;
+    if (!seed) {
+      seed = zeroAddress;
+    }
     const size = 8 * (scale || 4);
     const options = {
         background: [255, 255, 255, 255],

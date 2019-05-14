@@ -26,6 +26,9 @@ class Address extends Component {
   }
 
   render() {
+    if (!this.props.address) {
+      return null;
+    }
     const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address) : this.props.address;
     return (<span className="addr" title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
                   onMouseOut={this.mouseOutAddress}>{address}
