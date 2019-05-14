@@ -51,6 +51,7 @@ function reducer(state = DEFAULT_STATE, action) {
         fundEscrowStatus: States.failed
       };
     case FUND_ESCROW_SUCCEEDED:
+      state.escrow.status = escrowStatus.FUNDED;
       return {
         ...state,
         fundEscrowStatus: States.success
@@ -61,6 +62,7 @@ function reducer(state = DEFAULT_STATE, action) {
         releaseStatus: States.pending
       };
     case RELEASE_ESCROW_SUCCEEDED:
+      state.escrow.status = escrowStatus.RELEASED;
       return {
         ...state,
         releaseStatus: States.success
@@ -76,6 +78,7 @@ function reducer(state = DEFAULT_STATE, action) {
         payStatus: States.pending
       };
     case PAY_ESCROW_SUCCEEDED:
+      state.escrow.status = escrowStatus.PAID;
       return {
         ...state,
         payStatus: States.success
@@ -123,6 +126,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case CANCEL_ESCROW_SUCCEEDED:
       {
+        state.escrow.status = escrowStatus.CANCELED;
         const escrows = state.escrows;
         escrows.find(x => x.escrowId === action.escrowId).status = escrowStatus.CANCELED;
         return {
