@@ -9,6 +9,7 @@ import TradeParticipant from './components/TradeParticipant';
 import EscrowDetail from './components/EscrowDetail';
 import ReadChatLogs from './components/ReadChatLogs';
 import Loading from '../../components/Loading';
+import ErrorInformation from '../../components/ErrorInformation';
 
 import arbitration from '../../features/arbitration';
 import network from '../../features/network';
@@ -39,11 +40,13 @@ class Arbitration extends Component {
   }
 
   render() {
-    const {escrow} = this.props;
+    const {escrow, address} = this.props;
 
     if(!escrow){
       return <Loading/>;
     }
+
+    if(escrow.buyer === address || escrow.seller === address) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
     
     const status = getArbitrationStatus(escrow.arbitration.result);
 
