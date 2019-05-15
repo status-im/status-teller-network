@@ -48,6 +48,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         TradeType tradeType;
         uint assetPrice;
         EscrowStatus status;
+        address arbitrator;
     }
 
     enum TradeType {FIAT, CRYPTO}
@@ -111,7 +112,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     function _fund(address _from, uint _escrowId, uint _tokenAmount, uint _expirationTime) internal whenNotPaused {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
-        require(license.isLicenseOwner(_from), "Must be a valid seller to create escrow transactions");
+        require(license.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
@@ -172,8 +173,9 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         uint8 _tradeType,
         uint _assetPrice
     ) private returns(uint escrowId) {
-        require(msg.sender == _buyer || msg.sender == metadataStore.getOfferOwner(_offerId), "Must participate in the trade");
-        require(license.isLicenseOwner(msg.sender), "Must be a valid seller to create escrow transactions");
+        address seller = metadataStore.getOfferOwner(_offerId);
+        require(msg.sender == _buyer || msg.sender == seller, "Must participate in the trade");
+        require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
 
         escrowId = transactions.length++;
 
@@ -186,7 +188,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
             tradeAmount: _tradeAmount,
             tradeType: TradeType(_tradeType),
             assetPrice: _assetPrice,
-            status: EscrowStatus.CREATED
+            status: EscrowStatus.CREATED,
+            arbitrator: metadataStore.getArbitrator(_offerId)
         });
         transactionsByOfferId[_offerId].push(escrowId);
         emit Created(_offerId, msg.sender, _buyer, escrowId, block.timestamp);
@@ -429,6 +432,17 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
             _cancel(_escrowId, trx);
         }
     }
+
+    /**
+     * @notice Get arbitrator
+     * @param _escrowId Id of the escrow
+     * @return Arbitrator address
+     */
+    function getArbitrator(uint _escrowId) external view returns(address) {
+        EscrowTransaction storage trx = transactions[_escrowId];
+        return trx.arbitrator;
+    }
+
 
     /**
      * @notice Obtain message hash to be signed for opening a case

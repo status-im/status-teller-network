@@ -263,6 +263,11 @@ contract MetadataStore is Ownable {
         return (offers[_id].asset);
     }
 
+    function getArbitrator(uint256 _id) public view returns (address) {
+        require(_id < offers.length, "Invalid offer id");
+        return (offers[_id].arbitrator);
+    }
+
     /**
     * @dev Get the size of the users
     */
