@@ -25,11 +25,14 @@ config({
         true
       ]
     },
+    Arbitration: {
+      args: ["$SNT", 10]
+    },
     License: {
       args: ["$SNT", 10]
     },
     MetadataStore: {
-      args: ["$License"]
+      args: ["$License", "$Arbitration"]
     }
   }
 }, (_err, web3_accounts) => {
@@ -43,7 +46,7 @@ contract("MetadataStore", function () {
 
   it("should not allow to add new user when not license owner", async function () {
     try {
-      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
+      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1, accounts[9]).send();
     } catch(error) {
       const usersSize = await MetadataStore.methods.usersSize().call();
       assert.strictEqual(usersSize, '0');
@@ -53,7 +56,7 @@ contract("MetadataStore", function () {
   it("should allow to add new user and offer when license owner", async function () {
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send();
-    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send();
+    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
     assert.strictEqual(usersSize, '1');
     const offersSize = await MetadataStore.methods.offersSize().call();
@@ -61,7 +64,7 @@ contract("MetadataStore", function () {
   });
 
   it("should allow to add new offer only when already a user", async function () {
-    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1).send();
+    await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
     assert.strictEqual(usersSize, '1');
     const offersSize = await MetadataStore.methods.offersSize().call();
@@ -70,7 +73,7 @@ contract("MetadataStore", function () {
 
   it("should not allow to add new offer when margin is more than 100", async function () {
     try {
-      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 101).send();
+      await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "USD", "Iuri", [0], 0, 101, accounts[9]).send();
     } catch(error) {
       const usersSize = await MetadataStore.methods.usersSize().call();
       assert.strictEqual(usersSize, '1');
@@ -78,7 +81,7 @@ contract("MetadataStore", function () {
   });
 
   it("should allow to update a user and offer", async function () {
-    await MetadataStore.methods.updateOffer(0, SNT.address, License.address, "Paris", "EUR", "Iuri", [0], 0, 1).send();
+    await MetadataStore.methods.updateOffer(0, SNT.address, License.address, "Paris", "EUR", "Iuri", [0], 0, 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
     assert.strictEqual(usersSize, '1');
     const user = await MetadataStore.methods.users(0).call();
@@ -98,7 +101,7 @@ contract("MetadataStore", function () {
   });
 
   it("should allow to delete an offer", async function () {
-    const receipt = await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1).send();
+    const receipt = await MetadataStore.methods.addOffer(SNT.address, License.address, "London", "EUR", "Iuri", [0], 0, 1, accounts[9]).send();
     const offerAdded = receipt.events.OfferAdded;
     const offerId = offerAdded.returnValues.offerId;
 
