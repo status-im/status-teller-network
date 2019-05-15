@@ -9,6 +9,7 @@ import license from "../../features/license";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 import prices from "../../features/prices";
+import arbitrator from "../../features/arbitration";
 
 import { version } from '../../../../package.json';
 
@@ -19,6 +20,7 @@ import logo from "../../../images/logo.svg";
 class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
+    this.props.checkIsArbitrator();
   }
 
   sellUrl(){
@@ -28,6 +30,7 @@ class Home extends Component {
   render() {
     const t = this.props.t;
     const hasPrices = this.props.hasPrices;
+    const isArbitrator = this.props.isArbitrator;
 
     return (
       <div className="home">
@@ -54,11 +57,13 @@ class Home extends Component {
               <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
             </Col>
           </Row>
-          <Row>
-            <Col xs={12} className="text-right text-small">
-              <Link to="/arbitrator/license">Be an arbitrator?</Link>
-            </Col>
+          { !isArbitrator && (
+            <Row>
+              <Col xs={12} className="text-right text-small">
+                <Link to="/arbitrator/license">Be an arbitrator?</Link>
+              </Col>
           </Row>
+          )}
         </React.Fragment>
         <p className="teller-version text-muted">Version: {version}</p>
       </div>
@@ -69,6 +74,8 @@ class Home extends Component {
 Home.propTypes = {
   t: PropTypes.func,
   checkLicenseOwner: PropTypes.func,
+  checkIsArbitrator: PropTypes.func,
+  isArbitrator: PropTypes.bool,
   isLicenseOwner: PropTypes.bool,
   profile: PropTypes.object,
   hasPrices: PropTypes.bool
@@ -80,6 +87,7 @@ const mapStateToProps = (state) => {
   return {
     address,
     isLicenseOwner: license.selectors.isLicenseOwner(state),
+    isArbitrator: arbitrator.selectors.isLicenseOwner(state),
     profile: metadata.selectors.getProfile(state, address),
     hasPrices: prices.selectors.hasPrices(state)
   };
@@ -88,6 +96,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    checkLicenseOwner: license.actions.checkLicenseOwner
+    checkLicenseOwner: license.actions.checkLicenseOwner,
+    checkIsArbitrator: arbitrator.actions.checkLicenseOwner
   }
 )(withNamespaces()(Home));
