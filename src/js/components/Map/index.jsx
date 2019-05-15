@@ -25,6 +25,14 @@ export class Map extends Component {
     };
   }
 
+  componentDidUpdate(oldProps) {
+    if (oldProps.coords.latitude !== this.props.coords.latitude || oldProps.coords.longitude !== this.props.coords.longitude) {
+      this.setState({
+        center: {lat: this.props.coords.latitude, lng: this.props.coords.longitude}
+      });
+    }
+  }
+
   onMarkerClick(markerIndex) {
     const activeMarkers = this.state.activeMarkers;
 
@@ -121,7 +129,8 @@ Map.propTypes = {
   coords: PropTypes.object.isRequired,
   google: PropTypes.object,
   markerOnly: PropTypes.bool,
-  markers: PropTypes.array
+  markers: PropTypes.array,
+  error: PropTypes.string
 };
 
 export default compose(

@@ -2,8 +2,6 @@ import React, {Component, Fragment} from 'react';
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 import {withRouter} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
 import {Alert} from "reactstrap";
 
@@ -38,18 +36,14 @@ class OffersMap extends Component {
     let {error, coords} = this.state;
     const {t, tokens, usersWithOffers} = this.props;
 
-    if (error) {
+    if (error || !coords || !coords.latitude) {
       coords = {
         latitude: 45.492611,
         longitude: -73.617959
       };
-      if (error.indexOf('denied') > -1) {
+      if (error && error.indexOf('denied') > -1) {
         error = t('map.denied');
       }
-    }
-
-    if (!coords || !coords.latitude) {
-      return <p><FontAwesomeIcon icon={faSpinner} spin/>{t('map.loading')}</p>;
     }
 
     const markers = usersWithOffers.filter(user => user.offers.length && user.coords).map(user => ({
