@@ -25,6 +25,15 @@
     "continue": "Next",
     "emptyLabel": "No matches found."
   },
+  "sellerArbitratorContainer": {
+    "title": "Select an arbitrator for this offer"
+  },
+  "arbitratorSelectorForm": {
+    "selectValid": "Select a valid arbitrator to move to the next page",
+    "placeholder": "0x0000...0000",
+    "continue": "Next",
+    "emptyLabel": "No matches found."
+  },
   "sellerMarginContainer": {
     "title": "What margin do you want to use for your rate?"
   },
