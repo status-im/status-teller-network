@@ -4,7 +4,8 @@ import {
   SET_ASSET,
   SET_LOCATION,
   SET_PAYMENT_METHODS,
-  SET_CONTACT_INFO
+  SET_CONTACT_INFO,
+  SET_ARBITRATOR
 } from './constants';
 import {RESET_STATE} from "../network/constants";
 
@@ -14,6 +15,7 @@ const DEFAULT_STATE = {
   location: '',
   currency: '',
   username: '',
+  arbitrator: '',
   paymentMethods: [],
   marketType: 0,
   margin: 0
@@ -30,6 +32,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         asset: action.asset
+      };
+    case SET_ARBITRATOR:
+      return {
+        ...state,
+        arbitrator: action.arbitrator
       };
     case SET_LOCATION:
       return {
