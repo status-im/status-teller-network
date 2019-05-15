@@ -13,6 +13,7 @@ import prices from "../../features/prices";
 import newBuy from "../../features/newBuy";
 
 import './index.scss';
+import Loading from "../../components/Loading";
 
 class Profile extends Component {
   componentDidMount() {
@@ -26,6 +27,7 @@ class Profile extends Component {
 
   render() {
     const {profile, prices} = this.props;
+    if(!profile || !prices) return <Loading page={true} />;
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation}
@@ -34,7 +36,7 @@ class Profile extends Component {
         {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
                                 markers={[profile.coords]}/>}
         <p className="text-muted mt-2">{profile.location}</p>
-        <Row>
+        {profile.offers.length > 0 && <Row>
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
@@ -44,7 +46,7 @@ class Profile extends Component {
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
           </Col>
-        </Row>
+        </Row>}
       </div>
     );
   }
