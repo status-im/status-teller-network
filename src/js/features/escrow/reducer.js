@@ -53,6 +53,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case FUND_ESCROW_SUCCEEDED:
       return {
         ...state,
+        escrow: {
+          ...state.escrow,
+          status: escrowStatus.FUNDED
+        },
         fundEscrowStatus: States.success
       };
     case RELEASE_ESCROW:
@@ -63,6 +67,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case RELEASE_ESCROW_SUCCEEDED:
       return {
         ...state,
+        escrow: {
+          ...state.escrow,
+          status: escrowStatus.RELEASED
+        },
         releaseStatus: States.success
       };
     case RELEASE_ESCROW_FAILED:
@@ -78,6 +86,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case PAY_ESCROW_SUCCEEDED:
       return {
         ...state,
+        escrow: {
+          ...state.escrow,
+          status: escrowStatus.PAID
+        },
         payStatus: States.success
       };
     case PAY_ESCROW_FAILED:
@@ -128,6 +140,10 @@ function reducer(state = DEFAULT_STATE, action) {
         return {
           ...state,
           escrows,
+          escrow: {
+            ...state.escrow,
+            status: escrowStatus.CANCELED
+          },
           cancelStatus: States.success
         };
       }
