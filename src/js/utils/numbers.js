@@ -40,7 +40,7 @@ export const toTokenDecimals = (value, decimals) => {
   return int.add(dec).toString(10);
 };
 
-export const fromTokenDecimals = (value, decimals) => {
+export const fromTokenDecimals = (value, decimals = 18) => {
   value = new BN(value, 10);
   const pow = new BN(10, 10).pow(numberToBN(decimals));
   const int = value.div(pow);

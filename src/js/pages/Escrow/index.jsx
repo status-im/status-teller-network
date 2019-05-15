@@ -90,6 +90,7 @@ class Escrow extends Component {
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow) return <Loading page={true} />;
+    if(!sntAllowance) return <Loading page={true} />;
     if(loading) return <Loading mining={true} />;
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
@@ -122,7 +123,7 @@ class Escrow extends Component {
         showFundButton = true;
       }
     }
-    
+
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
