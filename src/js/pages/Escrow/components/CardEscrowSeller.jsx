@@ -16,6 +16,7 @@ import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
+import Loading from "../../../components/Loading";
 
 const Done = () => (
   <React.Fragment>
@@ -72,6 +73,10 @@ class PreFund extends Component {
   render(){
     const {fee, showApproveScreen, showFundButton, fundEscrow, trade, tokens} = this.props;
     const { toBN } = web3.utils;
+
+    if (!trade.token || !trade.token.balance) {
+      return <Loading page={true}/>; // Wait for trade to be populated
+    }
 
     const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
                           toBN(toTokenDecimals(tokens.SNT.balance, 18)).gte(toBN(fee));

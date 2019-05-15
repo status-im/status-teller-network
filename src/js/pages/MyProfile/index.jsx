@@ -15,6 +15,7 @@ import StatusContactCode from './components/StatusContactCode';
 import { zeroAddress } from '../../utils/address';
 
 import "./index.scss";
+import Loading from "../../components/Loading";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -32,8 +33,9 @@ class MyProfile extends Component {
   }
 
   render() {
-    
     const {profile, address} = this.props;
+    if(!profile) return <Loading page={true} />;
+
     const trades = this.props.trades.map(x => {
       const dispute = this.props.disputes.find(y => y.escrowId === x.escrowId);
       if(dispute){
@@ -46,7 +48,7 @@ class MyProfile extends Component {
     return (
       <Fragment>
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
-        
+
         {profile.isArbitrator && <Fragment>
           <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && x.seller !== address && x.buyer !== address)} open={true} showDate={true} />
           <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && x.seller !== address && x.buyer !== address)} open={false} showDate={false} />
