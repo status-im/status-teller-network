@@ -1,6 +1,8 @@
-module.exports = async (licensePrice, feeAmount, deps) => {
+module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
+
+    const arbitrator = addresses[9];
     const main = addresses[0];
     const sntToken = 10000000;
     const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
@@ -21,7 +23,7 @@ module.exports = async (licensePrice, feeAmount, deps) => {
     }));
 
     console.log('Generate SNT...');
-    await Promise.all(addresses.slice(0, 8).map(async (address) => {
+    await Promise.all(addresses.map(async (address) => {
       const generateToken = deps.contracts.SNT.methods.generateTokens(address, sntToken + '000000000000000000');
       const gas = await generateToken.estimateGas({from: main});
       return generateToken.send({from: main, gas});
@@ -34,6 +36,18 @@ module.exports = async (licensePrice, feeAmount, deps) => {
       const gas = await generateToken.estimateGas({from: main});
       return generateToken.send({from: main, gas});
     }));
+
+    console.log("Buy arbitration license");
+    {
+      console.log(deps.contracts.Arbitration._address);
+      console.log(arbitrationLicensePrice);
+
+      const buyLicense = deps.contracts.Arbitration.methods.buy().encodeABI();
+      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.Arbitration._address, arbitrationLicensePrice, buyLicense);
+
+      const gas = await toSend.estimateGas({from: arbitrator});
+      await toSend.send({from: arbitrator, gas});
+    }
 
     console.log('Buy Licenses...');
     await Promise.all(addresses.slice(1, 8).map(async (address) => {
@@ -64,7 +78,8 @@ module.exports = async (licensePrice, feeAmount, deps) => {
         usernames[Math.floor(Math.random() * usernames.length)],
         [paymentMethods[Math.floor(Math.random() * paymentMethods.length)]],
         marketTypes[Math.floor(Math.random() * marketTypes.length)],
-        Math.floor(Math.random() * 100)
+        Math.floor(Math.random() * 100),
+        arbitrator
       );
 
       const gas = await addOffer.estimateGas({from: address});

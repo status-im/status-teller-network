@@ -75,7 +75,7 @@ module.exports = {
         ]
       },
       "MetadataStore": {
-        args: ["$License"]
+        args: ["$License", "$Arbitration"]
       },
       Arbitration: {
         args: [
@@ -219,7 +219,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, FEE_AMOUNT)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT)
   },
 
   // merges with the settings in default
