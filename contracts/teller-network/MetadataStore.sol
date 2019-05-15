@@ -63,9 +63,11 @@ contract MetadataStore is Ownable {
         PaymenMethods[] paymentMethods;
         MarketType marketType;
         address payable owner;
+        address arbitrator;
     }
 
     address public license;
+    address public arbitration;
     User[] public users;
     Offer[] public offers;
 
@@ -75,12 +77,17 @@ contract MetadataStore is Ownable {
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
     mapping(address => uint256[]) public addressToOffers;
 
-    constructor(address _license) public {
+    constructor(address _license, address _arbitration) public {
         license = _license;
+        arbitration = _arbitration;
     }
 
     function setLicense(address _license) public onlyOwner {
         license = _license;
+    }
+
+    function setArbitration(address _arbitration) public onlyOwner {
+        arbitration = _arbitration;
     }
 
     function addOrUpdateUser(
@@ -112,6 +119,7 @@ contract MetadataStore is Ownable {
     * @param _paymentMethods The list of the payment methods the user accept
     * @param _marketType Above or Below
     * @param _margin The margin for the user from 0 to 100
+    * @param _arbitrator The arbitrator used by the offer
     */
     function addOffer(
         address _asset,
@@ -121,14 +129,15 @@ contract MetadataStore is Ownable {
         string memory _username,
         PaymenMethods[] memory _paymentMethods,
         MarketType _marketType,
-        uint8 _margin
+        uint8 _margin,
+        address _arbitrator
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
 
         this.addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
         
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender);
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender, _arbitrator);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
@@ -169,6 +178,7 @@ contract MetadataStore is Ownable {
     * @param _paymentMethods The list of the payment methods the user accept
     * @param _marketType Above or Below
     * @param _margin The margin for the user from 0 to 100
+    * @param _arbitrator The arbitrator used by the offer
     */
     function updateOffer(
         uint256 _offerId,
@@ -179,7 +189,8 @@ contract MetadataStore is Ownable {
         string memory _username,
         PaymenMethods[] memory _paymentMethods,
         MarketType _marketType,
-        uint8 _margin
+        uint8 _margin,
+        address _arbitrator
     ) public {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
@@ -195,8 +206,11 @@ contract MetadataStore is Ownable {
         offers[_offerId].paymentMethods = _paymentMethods;
         offers[_offerId].marketType = _marketType;
         offers[_offerId].margin = _margin;
+        offers[_offerId].arbitrator = _arbitrator;
 
-        emit OfferUpdated(msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin);
+        emit OfferUpdated(
+            msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
+        );
     }
 
     /**
@@ -223,7 +237,8 @@ contract MetadataStore is Ownable {
         uint8 margin,
         PaymenMethods[] memory paymentMethods,
         MarketType marketType,
-        address payable owner
+        address payable owner,
+        address arbitrator
     ) {
         require(_id < offers.length, "Invalid offer id");
 
@@ -233,8 +248,19 @@ contract MetadataStore is Ownable {
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].marketType,
-            offers[_id].owner
+            offers[_id].owner,
+            offers[_id].arbitrator
         );
+    }
+
+    function getOfferOwner(uint256 _id) public view returns (address) {
+        require(_id < offers.length, "Invalid offer id");
+        return (offers[_id].owner);
+    }
+
+    function getAsset(uint256 _id) public view returns (address) {
+        require(_id < offers.length, "Invalid offer id");
+        return (offers[_id].asset);
     }
 
     /**
