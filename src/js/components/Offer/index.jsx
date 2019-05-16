@@ -37,7 +37,7 @@ const Offer = ({offer, offers, withDetail, prices}) => {
       {withDetail && <Row>
         <Col>
           <p className="m-0">
-            {offers.map((offer, index) => <span key={`offer-${index}`} className="border rounded mr-2 p-1 text-black font-weight-medium text-small">
+            {offers.map((offer, index) => <span key={`offer-${index}`} className="border d-inline-block rounded mr-2 p-1 text-black font-weight-medium text-small">
               {offer.token.symbol} &rarr; {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
             </span>)}
           </p>
