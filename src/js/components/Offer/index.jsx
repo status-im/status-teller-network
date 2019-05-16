@@ -30,7 +30,7 @@ const Offer = ({offer, offers, withDetail, prices}) => {
           <p className="text-dark m-0">{user.location}</p>
         </Col>
         <Col xs={5} className="text-right rating-col">
-          <p className="text-dark m-0 text-right mb-1">{user.nbReleasedTrades} trade{user.nbReleasedTrades > 1 && 's'}</p>
+          <p className="text-dark m-0 text-right mb-1">{user.nbReleasedTrades} trade{user.nbReleasedTrades !== 1 && 's'}</p>
           <Reputation reputation={{upCount: user.upCount, downCount: user.downCount}} size="s"/>
         </Col>
       </Row>
