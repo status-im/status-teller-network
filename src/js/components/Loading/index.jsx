@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import {withNamespaces} from "react-i18next";
+import TxHash from '../../ui/TxHash';
 
 import "./index.scss";
 
@@ -15,7 +16,7 @@ const Loading = ({t, mining, initial, page, value, txHash}) => (
       {page && t('loading.page')}
     </h3>
     <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-    {txHash && <p className="text-muted mb-0 mt-3 text-break">Transaction Hash: {txHash}</p>}
+    {txHash && <p className="text-muted mb-0 mt-3 text-break">{t('transaction.hash')}: <TxHash value={txHash}/></p>}
   </div>
 );
 
