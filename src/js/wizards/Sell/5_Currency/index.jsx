@@ -33,7 +33,7 @@ class Currency extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.paymentMethods.length) {
+    if (!this.props.seller.arbitrator) {
       this.props.wizard.previous();
     } else {
       this.setState({ready: true});

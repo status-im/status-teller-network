@@ -20,7 +20,7 @@ const FIAT = 0;
 const CRYPTO = 1;
 
 let accounts;
-let arbitrator;
+let arbitrator, arbitrator2;
 let deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_revert/snapshot to reset state between tests
 
 const feeAmount = '10';
@@ -57,7 +57,7 @@ config({
       args: ["$SNT", 10]
     },
     MetadataStore: {
-      args: ["$License"]
+      args: ["$License", "$Arbitration"]
     },
     Arbitration: {
       args: ["$SNT", 10]
@@ -72,6 +72,7 @@ config({
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
   arbitrator = accounts[5];
+  arbitrator2 = accounts[6];
 });
 
 contract("Escrow", function() {
@@ -102,14 +103,16 @@ contract("Escrow", function() {
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
 
-    // Register arbitrator
+    // Register arbitrators
     await SNT.methods.generateTokens(arbitrator, 1000).send();
+    await SNT.methods.generateTokens(arbitrator2, 1000).send();
     const encodedCall2 = Arbitration.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
+    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator2});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -584,6 +587,8 @@ contract("Escrow", function() {
     });
 
     it("random account cannot open a case for an existing escrow", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+
       try {
         await Escrow.methods.openCase(escrowId).send({from: accounts[3]});
         assert.fail('should have reverted before');
@@ -634,11 +639,26 @@ contract("Escrow", function() {
     const ARBITRATION_SOLVED_SELLER = 2;
 
     it("non arbitrators cannot resolve a case", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
+
       try {
         receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only arbitrators can invoke this function");        
+      } 
+    });
+
+    it("non selected arbitrator cannot resolve a case", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId).send({from: accounts[1]});
+
+      try {
+        receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid escrow arbitrator");
       }    
     });
 

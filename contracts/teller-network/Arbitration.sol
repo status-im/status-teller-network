@@ -24,11 +24,6 @@ contract Arbitration is Ownable, License {
     
     Arbitrable public escrow;
 
-    modifier onlyArbitrator {
-        require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
-        _;
-    }
-
     constructor(address payable _tokenAddress, uint256 _price) 
         License(_tokenAddress, _price)
         public {
@@ -77,9 +72,12 @@ contract Arbitration is Ownable, License {
      * @param _escrowId Id of the escrow
      * @param _result Result of the arbitration
      */
-    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public onlyArbitrator {
+    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public {
         require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
+        require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
+        require(escrow.getArbitrator(_escrowId) == msg.sender, "Invalid escrow arbitrator");
+
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;

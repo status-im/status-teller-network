@@ -18,7 +18,8 @@ export const addOffer = (seller) => ({
     currency: seller.currency,
     paymentMethods: seller.paymentMethods,
     marketType: seller.marketType,
-    margin: seller.margin
+    margin: seller.margin,
+    arbitrator: seller.arbitrator
   }
 });
 

@@ -3,6 +3,7 @@ const TestUtils = require("../utils/testUtils");
 
 const License = embark.require('Embark/contracts/License');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
+const Arbitration = embark.require('Embark/contracts/Arbitration');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
@@ -38,7 +39,10 @@ config({
       args: ["$SNT", 10]
     },
     MetadataStore: {
-      args: ["$License"]
+      args: ["$License", "$Arbitration"]
+    },
+    Arbitration: {
+      args: ["$SNT", 10]
     },
     Escrow: {
       args: ["$License", "$accounts[5]", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount]
@@ -60,7 +64,7 @@ contract("Escrow Funding", function() {
 
   let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
   
-  let receipt, escrowId, ethOfferId, tokenOfferId, SNTOfferId;
+  let receipt, escrowId, ethOfferId, tokenOfferId, SNTOfferId, arbitrator;
   
   this.timeout(0);
 
@@ -69,14 +73,20 @@ contract("Escrow Funding", function() {
     await SNT.methods.generateTokens(accounts[0], 100000000).send();
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
-  
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
+      
+    // Register arbitrators
+    arbitrator = accounts[9];
+    await SNT.methods.generateTokens(arbitrator, 1000).send();
+    const encodedCall2 = Arbitration.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
+
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 

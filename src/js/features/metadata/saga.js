@@ -145,7 +145,8 @@ export function *addOffer({user, offer}) {
     user.username,
     offer.paymentMethods,
     offer.marketType,
-    offer.margin
+    offer.margin,
+    offer.arbitrator
   );
   yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend});
 }

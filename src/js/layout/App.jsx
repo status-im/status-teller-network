@@ -33,8 +33,9 @@ import SellLocation from '../wizards/Sell/0_Location';
 import SellContact from '../wizards/Sell/1_Contact';
 import SellAsset from '../wizards/Sell/2_Asset';
 import SellPaymentMethods from '../wizards/Sell/3_PaymentMethods';
-import SellCurrency from '../wizards/Sell/4_Currency';
-import SellMargin from '../wizards/Sell/5_Margin';
+import SellArbitrator from '../wizards/Sell/4_SelectArbitrator';
+import SellCurrency from '../wizards/Sell/5_Currency';
+import SellMargin from '../wizards/Sell/6_Margin';
 
 // Tmp
 import EscrowsContainer from '../pages/tmp/EscrowsContainer';
@@ -122,6 +123,7 @@ class App extends Component {
                 {path: '/sell/contact', component: SellContact},
                 {path: '/sell/asset', component: SellAsset},
                 {path: '/sell/payment-methods', component: SellPaymentMethods},
+                {path: '/sell/arbitrator', component: SellArbitrator},
                 {path: '/sell/currency', component: SellCurrency},
                 {path: '/sell/margin', component: SellMargin, nextLabel: 'Post the offer'}
               ]}/>
