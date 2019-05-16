@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck, faStop} from "@fortawesome/free-solid-svg-icons";
+import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
 import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -18,13 +18,15 @@ import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
 import Loading from "../../../components/Loading";
 
+import Dispute from "./Dispute";
+
 const Done = () => (
-  <React.Fragment>
+  <Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
     <p className="m-0 font-weight-bold">Trade complete. Funds are now in the buyer&apos;s wallet</p>
     <p className="m-0 text-muted">Thank you for using Status Teller Network</p>
-  </React.Fragment>
+  </Fragment>
 );
 
 class Funded extends Component {
@@ -42,14 +44,14 @@ class Funded extends Component {
   };
 
   render(){
-    return <React.Fragment>
+    return <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <h2 className="mt-4">{this.props.trade.status === 'paid' ? <Fragment>Payment has been sent by the buyer.<br />Verify and release the funds</Fragment> : "Funds are in the escrow. Release them when you will get the payment." }</h2>
     <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Release funds</Button>
     <ConfirmDialog display={this.state.displayDialog} onConfirm={this.releaseEscrow} onCancel={this.displayDialog(false)} title="Release funds" content="Are you sure?" cancelText="Not yet" />
-  </React.Fragment>;
+  </Fragment>;
   }
 }
 
@@ -59,13 +61,13 @@ Funded.propTypes = {
 };
 
 const Funding = () => (
-  <React.Fragment>
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={three} alt="three" />
     </span>
     <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
     <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-  </React.Fragment>
+  </Fragment>
 );
 
 
@@ -107,27 +109,21 @@ PreFund.propTypes = {
 };
 
 const Start = ({onClick}) => (
-  <React.Fragment>
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={one} alt="one" />
     </span>
     <h2 className="mt-4">Waiting for you to fund the escrow</h2>
     <p>Before accepting the payment you must put the assets into an escrow</p>
     <Button color="primary" className="btn-lg mt-3" onClick={onClick}>Start</Button>
-  </React.Fragment>
+  </Fragment>
 );
 
 Start.propTypes = {
   onClick: PropTypes.func
 };
 
-const Dispute = () => (
-  <React.Fragment>
-    <RoundedIcon icon={faStop} bgColor="red"/>
-    <h2 className="mt-4">Disputed</h2>
-    <p>A dispute has been opened for this trade</p>
-  </React.Fragment>
-);
+
 
 class CardEscrowSeller extends Component {
 
@@ -183,7 +179,7 @@ class CardEscrowSeller extends Component {
       showFundButton = false;
     }
 
-    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result !== "0")){
+    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result.toString() !== "0")){
       return (
         <Card>
           <CardBody className="text-center p-5">
