@@ -39,7 +39,7 @@ class CancelEscrow extends Component {
         </Row>
 
       </div>
-      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?"   />
+      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?" cancelText="No" />
     </Fragment>;
   }
 }
