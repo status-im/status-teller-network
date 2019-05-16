@@ -40,7 +40,7 @@ export const fundEscrow = (escrow) => {
       toSend,
       value,
       escrowId: escrow.escrowId
-    }
+    };
   }
 
   return {

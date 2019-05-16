@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import network from "../../features/network";
+import {getNetwork} from "../../features/network/selectors";
 import {connect} from "react-redux";
 
 const etherScanUrls = {
@@ -26,7 +26,7 @@ TxHash.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  network: network.selectors.getNetwork(state)
+  network: getNetwork(state)
 });
 
 export default connect(
