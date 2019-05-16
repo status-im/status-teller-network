@@ -12,7 +12,7 @@ const Offer = ({offer, prices, onClick, disabled}) => (
       <p className="font-weight-bold"><img src={TokenImages[`${offer.token.symbol}.png`] || TokenImages[`generic.png`]} alt="asset icon" className="mr-2"/>{offer.token.symbol}</p>
     </Col>
     <Col xs="8" className="v-align-center text-right">
-      <Button color={disabled ? "secondary p-2" : "primary p-2" } disabled={disabled} onClick={onClick}>Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</Button>
+      <Button color={disabled ? "secondary" : "primary" } className="p-2" disabled={disabled} onClick={onClick}>Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</Button>
     </Col>
   </Row>
 );

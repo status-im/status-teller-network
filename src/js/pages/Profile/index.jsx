@@ -19,10 +19,12 @@ import Loading from "../../components/Loading";
 
 class Profile extends Component {
   componentDidMount() {
-    this.props.load(this.props.match.params.address);
     if(web3.utils.toChecksumAddress(this.props.match.params.address) === this.props.address){
       this.props.history.push('/profile');
+      return;
     }
+
+    this.props.load(this.props.match.params.address);
   }
 
   offerClick = (offerId) => {
