@@ -1,5 +1,5 @@
 /* eslint-disable no-alert, no-restricted-globals */
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -18,21 +18,23 @@ import two from "../../../../images/escrow/02.png";
 import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
 
+import Dispute from "./Dispute";
+
 const Done = ({trade, rateTransaction}) => (
-  <React.Fragment>
+  <Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
     {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
     <Reputation trade={trade} rateTransaction={rateTransaction} size="l"/>
     <p className="text-muted mb-0 mt-4">Thank you for using Status Teller Network</p>
-  </React.Fragment>
+  </Fragment>
 );
 
 const Canceled = () => (
-  <React.Fragment>
+  <Fragment>
     <RoundedIcon icon={faTimes} bgColor="grey"/>
     <h2 className="mt-4">Canceled</h2>
-  </React.Fragment>
+  </Fragment>
 );
 
 Done.propTypes = {
@@ -41,25 +43,25 @@ Done.propTypes = {
 };
 
 const Unreleased = () => (
-  <React.Fragment>
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={four} alt="four" />
     </span>
     <p className="h2 mt-4">Waiting for the seller to release the funds</p>
     <p>Notify the seller about the trade using Status encrypted p2p chat</p>
     <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Open chat</Button>
-  </React.Fragment>
+  </Fragment>
 );
 
 
 const Loading = () => (
-  <React.Fragment>
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={three} alt="three" />
     </span>
     <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
     <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-  </React.Fragment>
+  </Fragment>
 );
 
 class Funded extends Component {
@@ -77,14 +79,14 @@ class Funded extends Component {
   }
 
   render(){
-    return <React.Fragment>
+    return <Fragment>
       <span className="bg-dark text-white p-3 rounded-circle">
         <img src={two} alt="two" />
       </span>
       <h2 className="mt-4">Funds are in the escrow. Send payment to seller.</h2>
       <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Mark as paid</Button>
       <ConfirmDialog display={this.state.displayDialog} onConfirm={this.markAsPaid} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?" cancelText="Not yet" />
-    </React.Fragment>;
+    </Fragment>;
   }
 }
 
@@ -93,26 +95,39 @@ Funded.propTypes = {
 };
 
 const PreFund = ({statusContactCode}) => (
-  <React.Fragment>
+  <Fragment>
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={one} alt="one" />
     </span>
     <p className="h2 mt-4">Waiting for the seller to fund an escrow</p>
     <p>Notify the seller about the trade using Status encrypted p2p chat</p>
     <a href={"https://get.status.im/user/" + statusContactCode} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg" role="button">Open chat</a>
-  </React.Fragment>
+  </Fragment>
 );
 
 PreFund.propTypes = {
   statusContactCode: PropTypes.string
 };
 
+
 class CardEscrowBuyer extends Component {
   render(){
-    const {trade, payStatus, payAction, rateTransaction} = this.props;
+    const {trade, payStatus, payAction, rateTransaction, arbitrationDetails} = this.props;
 
     const showLoading = payStatus === States.pending;
     const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
+
+    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result.toString() !== "0")){
+      return (
+        <Card>
+          <CardBody className="text-center p-5">
+            <Dispute />
+          </CardBody>
+        </Card>
+      );
+    }
+
+    // TODO: display arbitration results?
 
     return <Card>
       <CardBody className="text-center p-5">
@@ -131,7 +146,8 @@ CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
   payStatus: PropTypes.string,
   payAction: PropTypes.func,
-  rateTransaction: PropTypes.func
+  rateTransaction: PropTypes.func,
+  arbitrationDetails: PropTypes.object
 };
 
 export default CardEscrowBuyer;
