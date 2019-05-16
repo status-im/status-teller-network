@@ -21,6 +21,7 @@ import { States } from '../../utils/transaction';
 import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
+import arbitration from '../../features/arbitration';
 
 import "./index.scss";
 
@@ -33,6 +34,7 @@ class Escrow extends Component {
 
   loadData(props){
     props.getEscrow(props.escrowId);
+    props.loadArbitration(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
     props.resetStatus();
@@ -86,11 +88,13 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
+    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow || !sntAllowance) return <Loading page={true} />;
     if(loading) return <Loading mining={true} />;
+
+    const arbitrationDetails = arbitration.arbitration;
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
     const isBuyer = escrow.buyer === address;
@@ -128,7 +132,8 @@ class Escrow extends Component {
         { isBuyer && <CardEscrowBuyer trade={escrow}
                                       payStatus={payStatus}
                                       payAction={payEscrow}
-                                      rateTransaction={rateTransaction} /> }
+                                      rateTransaction={rateTransaction}
+                                      arbitrationDetails={arbitrationDetails} /> }
 
         { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
                                         tokens={tokens}
@@ -138,14 +143,15 @@ class Escrow extends Component {
                                         showFundButton={showFundButton}
                                         showApproveScreen={this.showApproveScreen}
                                         fundEscrow={fundEscrow}
-                                        releaseEscrow={releaseEscrow} /> }
+                                        releaseEscrow={releaseEscrow}
+                                        arbitrationDetails={arbitrationDetails} /> }
 
         <EscrowDetail escrow={escrow} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
         <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />
-        <OpenDispute trade={escrow} />
+        {(!arbitrationDetails ||!arbitrationDetails.open) && <OpenDispute trade={escrow}  /> }
       </div>
     );
   }
@@ -154,6 +160,7 @@ class Escrow extends Component {
 Escrow.propTypes = {
   history: PropTypes.object,
   escrow: PropTypes.object,
+  arbitration: PropTypes.object,
   escrowId: PropTypes.string,
   getEscrow: PropTypes.func,
   getFee: PropTypes.func,
@@ -176,7 +183,8 @@ Escrow.propTypes = {
   cancelStatus: PropTypes.string,
   cancelEscrow: PropTypes.func,
   updateBalances: PropTypes.func,
-  rateTransaction: PropTypes.func
+  rateTransaction: PropTypes.func,
+  loadArbitration: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -188,6 +196,7 @@ const mapStateToProps = (state, props) => {
     address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
     escrow: escrow.selectors.getEscrow(state),
+    arbitration: arbitration.selectors.getArbitration(state) || {},
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
@@ -214,6 +223,7 @@ export default connect(
     payEscrow: escrow.actions.payEscrow,
     cancelEscrow: escrow.actions.cancelEscrow,
     updateBalances: network.actions.updateBalances,
-    rateTransaction: escrow.actions.rateTransaction
+    rateTransaction: escrow.actions.rateTransaction,
+    loadArbitration: arbitration.actions.loadArbitration
   }
 )(withRouter(Escrow));

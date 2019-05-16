@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {faCircleNotch, faCheck, faTimes, faStop} from "@fortawesome/free-solid-svg-icons";
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -107,12 +107,32 @@ PreFund.propTypes = {
   statusContactCode: PropTypes.string
 };
 
+const Dispute = () => (
+  <React.Fragment>
+    <RoundedIcon icon={faStop} bgColor="red"/>
+    <h2 className="mt-4">Disputed</h2>
+    <p>A dispute has been opened for this trade</p>
+  </React.Fragment>
+);
+
 class CardEscrowBuyer extends Component {
   render(){
-    const {trade, payStatus, payAction, rateTransaction} = this.props;
+    const {trade, payStatus, payAction, rateTransaction, arbitrationDetails} = this.props;
 
     const showLoading = payStatus === States.pending;
     const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
+
+    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result !== "0")){
+      return (
+        <Card>
+          <CardBody className="text-center p-5">
+            <Dispute />
+          </CardBody>
+        </Card>
+      );
+    }
+
+    // TODO: display arbitration results?
 
     return <Card>
       <CardBody className="text-center p-5">
@@ -131,7 +151,8 @@ CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
   payStatus: PropTypes.string,
   payAction: PropTypes.func,
-  rateTransaction: PropTypes.func
+  rateTransaction: PropTypes.func,
+  arbitrationDetails: PropTypes.object
 };
 
 export default CardEscrowBuyer;

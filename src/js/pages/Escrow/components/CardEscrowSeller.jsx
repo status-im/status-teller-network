@@ -3,7 +3,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faCircleNotch, faCheck, faStop} from "@fortawesome/free-solid-svg-icons";
 import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -121,6 +121,14 @@ Start.propTypes = {
   onClick: PropTypes.func
 };
 
+const Dispute = () => (
+  <React.Fragment>
+    <RoundedIcon icon={faStop} bgColor="red"/>
+    <h2 className="mt-4">Disputed</h2>
+    <p>A dispute has been opened for this trade</p>
+  </React.Fragment>
+);
+
 class CardEscrowSeller extends Component {
 
   state = {
@@ -168,12 +176,23 @@ class CardEscrowSeller extends Component {
   render(){
     let step = this.state.step;
 
-    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus, tokens} = this.props;
+    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus, tokens, arbitrationDetails} = this.props;
     let showFundButton = this.props.showFundButton;
 
     if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
       showFundButton = false;
     }
+
+    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result !== "0")){
+      return (
+        <Card>
+          <CardBody className="text-center p-5">
+            <Dispute />
+          </CardBody>
+        </Card>
+      );
+    }
+
 
     if(showFundButton) step = 2;
     if(fundStatus === States.pending || releaseStatus === States.pending) step = 3;
@@ -217,7 +236,8 @@ CardEscrowSeller.propTypes = {
   showFundButton: PropTypes.bool,
   releaseEscrow: PropTypes.func,
   fundStatus: PropTypes.string,
-  releaseStatus: PropTypes.string
+  releaseStatus: PropTypes.string,
+  arbitrationDetails: PropTypes.object
 };
 
 export default CardEscrowSeller;
