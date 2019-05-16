@@ -2,11 +2,11 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
 import RoundedIcon from "../../../ui/RoundedIcon";
+import Mining from "./Mining";
 
 import escrow from '../../../features/escrow';
 import { States } from '../../../utils/transaction';
@@ -14,7 +14,6 @@ import ConfirmDialog from '../../../components/ConfirmDialog';
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
-import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
 import Loading from "../../../components/Loading";
 
@@ -59,17 +58,6 @@ Funded.propTypes = {
   releaseEscrow: PropTypes.func,
   trade: PropTypes.object
 };
-
-const Funding = () => (
-  <Fragment>
-    <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={three} alt="three" />
-    </span>
-    <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
-    <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-  </Fragment>
-);
-
 
 class PreFund extends Component {
   render(){
@@ -191,20 +179,24 @@ class CardEscrowSeller extends Component {
 
 
     if(showFundButton) step = 2;
-    if(fundStatus === States.pending || releaseStatus === States.pending) step = 3;
+    if(fundStatus === States.pending) step = 3;
     if(fundStatus === States.success) step = 4;
-    if(releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 5;
+    if(releaseStatus === States.pending) step = 5;
+    if(releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
 
     let component;
     switch(step){
-      case 5:
+      case 6:
         component = <Done />;
+        break;
+      case 5:
+        component = <Mining txHash={trade.txHash} number={5}  />;
         break;
       case 4:
         component = <Funded trade={trade} releaseEscrow={() => { releaseEscrow(trade.escrowId); }} />;
         break;
       case 3:
-        component = <Funding />;
+        component = <Mining txHash={trade.txHash} number={5} />;
         break;
       case 2:
         component = <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;

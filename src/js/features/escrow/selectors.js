@@ -32,8 +32,8 @@ export const getTrades = (state, userAddress, offers) => {
                 });
 };
 
-export const getEscrow = (state) => {
-  const escrow = state.escrow.escrow;
+export const getEscrowById = (state, escrowId) => {
+  const escrow = state.escrow.escrows.find(escrow => escrow.escrowId === escrowId);
   if(!escrow) return null;
 
   const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));

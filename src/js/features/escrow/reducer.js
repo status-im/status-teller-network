@@ -21,32 +21,23 @@ const DEFAULT_STATE = {
   payStatus: States.none,
   cancelStatus: States.none,
   rateStatus: States.none,
-
   escrows: [],
-
-  //Migrate to new UI
-  message: null,
-  type: null,
-  escrowId: null,
-  escrow: null,
-  loading: false,
-  error: '',
-  txHash: '',
-  txHashList: '',
-  loadingList: false,
   fee: '0'
 };
 
 // eslint-disable-next-line complexity
 function reducer(state = DEFAULT_STATE, action) {
   let escrowIdInArray = -1;
-  let miningFalseEscrowsObject = [...state.escrows];
+  let escrowsClone = [...state.escrows];
   if (action.escrowId) {
     escrowIdInArray = state.escrows.findIndex(escrow => escrow.escrowId === action.escrowId);
-    miningFalseEscrowsObject[escrowIdInArray] = {
-      ...state.escrows[escrowIdInArray],
-      mining: false
-    };
+    if (escrowIdInArray > -1) {
+      escrowsClone[escrowIdInArray] = {
+        ...state.escrows[escrowIdInArray],
+        mining: false,
+        txHash: ''
+      };
+    }
   }
 
   switch (action.type) {
@@ -59,23 +50,14 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fundEscrowStatus: States.failed,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case FUND_ESCROW_SUCCEEDED:
+      escrowsClone[escrowIdInArray].status = escrowStatus.FUNDED;
       return {
         ...state,
-        escrow: {
-          ...state.escrow,
-          status: escrowStatus.FUNDED
-        },
         fundEscrowStatus: States.success,
-        escrows: {
-          ...state.escrows,
-          [escrowIdInArray]: {
-            ...state.escrows[escrowIdInArray],
-            mining: false
-          }
-        }
+        escrows: escrowsClone
       };
     case PAY_ESCROW_PRE_SUCCESS:
     case CANCEL_ESCROW_PRE_SUCCESS:
@@ -99,20 +81,17 @@ function reducer(state = DEFAULT_STATE, action) {
         releaseStatus: States.pending
       };
     case RELEASE_ESCROW_SUCCEEDED:
+      escrowsClone[escrowIdInArray].status = escrowStatus.RELEASED;
       return {
         ...state,
-        escrow: {
-          ...state.escrow,
-          status: escrowStatus.RELEASED
-        },
         releaseStatus: States.success,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case RELEASE_ESCROW_FAILED:
       return {
         ...state,
         releaseStatus: States.failed,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case PAY_ESCROW:
       return {
@@ -120,14 +99,11 @@ function reducer(state = DEFAULT_STATE, action) {
         payStatus: States.pending
       };
     case PAY_ESCROW_SUCCEEDED:
+      escrowsClone[escrowIdInArray].status = escrowStatus.PAID;
       return {
         ...state,
-        escrow: {
-          ...state.escrow,
-          status: escrowStatus.PAID
-        },
         payStatus: States.success,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case PAY_ESCROW_FAILED:
       return {
@@ -143,19 +119,23 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         createEscrowStatus: States.failed,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case CREATE_ESCROW_SUCCEEDED:
       return {
         ...state,
         createEscrowId: action.receipt.events.Created.returnValues.escrowId,
         createEscrowStatus: States.success,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case GET_ESCROW_SUCCEEDED:
+      if (!escrowIdInArray) {
+        escrowIdInArray = escrowsClone.length;
+      }
+      escrowsClone[escrowIdInArray] = action.escrow;
       return {
         ...state,
-        escrow: action.escrow
+        escrows: escrowsClone
       };
     case LOAD_ESCROWS_SUCCEEDED:
       return {
@@ -174,15 +154,11 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case CANCEL_ESCROW_SUCCEEDED:
       {
-        const escrows = miningFalseEscrowsObject;
-        escrows.find(x => x.escrowId === action.escrowId).status = escrowStatus.CANCELED;
+
+        escrowsClone[escrowIdInArray].status = escrowStatus.CANCELED;
         return {
           ...state,
-          escrows,
-          escrow: {
-            ...state.escrow,
-            status: escrowStatus.CANCELED
-          },
+          escrows: escrowsClone,
           cancelStatus: States.success
         };
       }
@@ -190,7 +166,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         cancelStatus: States.failed,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case RATE_TRANSACTION:
       return {
@@ -201,14 +177,14 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         rateStatus: States.success,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     }
     case RATE_TRANSACTION_FAILED:
       return {
         ...state,
         rateStatus: States.failed,
-        escrows: miningFalseEscrowsObject
+        escrows: escrowsClone
       };
     case RESET_STATUS:
       return {
