@@ -19,8 +19,8 @@ export const getCreateEscrowId = state => state.escrow.createEscrowId;
 export const getRatingStatus = state => state.escrow.rateStatus;
 
 export const getTrades = (state, userAddress, offers) => {
-  const escrows = state.escrow.escrows || [];
-  return escrows.filter(escrow => escrow.buyer === userAddress || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
+  const escrows = state.escrow.escrows || {};
+  return Object.values(escrows).filter(escrow => escrow.buyer === userAddress || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
                 .map((escrow) => {
                   const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
                   return {
@@ -33,7 +33,7 @@ export const getTrades = (state, userAddress, offers) => {
 };
 
 export const getEscrowById = (state, escrowId) => {
-  const escrow = state.escrow.escrows.find(escrow => escrow.escrowId === escrowId);
+  const escrow = state.escrow.escrows[escrowId];
   if(!escrow) return null;
 
   const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
@@ -46,14 +46,14 @@ export const getEscrowById = (state, escrowId) => {
 };
 
 export const getFee = state => state.escrow.fee;
+export const txHash = state => state.escrow.txHash;
 
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;
 export const isLoading = state => state.escrow.loading;
-export const txHash = state => state.escrow.txHash;
 export const txHashList = state => state.escrow.txHashList;
-export const escrows = state => state.escrow.escrows.map(escrow => {
+export const escrows = state => Object.values(state.escrow.escrows).map(escrow => {
   escrow.rating = (typeof escrow.rating === 'string') ? parseInt(escrow.rating, 10) : escrow.rating;
   if (!escrow.expirationTime.unix) {
     escrow.expirationTime = moment(escrow.expirationTime * 1000);
