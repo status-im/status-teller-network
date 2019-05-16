@@ -19,9 +19,9 @@ const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbR
         <Address address={identiconSeed}/>
       </p>
     </Col>
-    { !isArbitrator && <Col xs="12">
+    <Col xs="12">
       <Reputation reputation={reputation}/>
-    </Col>}
+    </Col>
     {(nbReleasedTrades || nbReleasedTrades === 0) && <Col xs="12" className="text-muted text-small mt-3">{nbReleasedTrades} completed trade{nbReleasedTrades > 1 && 's'}</Col>}
     {(nbCreatedTrades || nbCreatedTrades === 0) && <Col xs="12" className="text-muted text-small">{nbCreatedTrades} created trade{nbCreatedTrades > 1 && 's'}</Col>}
   </Row>);
