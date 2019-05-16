@@ -176,6 +176,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         address seller = metadataStore.getOfferOwner(_offerId);
         require(msg.sender == _buyer || msg.sender == seller, "Must participate in the trade");
         require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
+        require(seller != _buyer, "Seller and Buyer must be different");
 
         escrowId = transactions.length++;
 

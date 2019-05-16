@@ -1,3 +1,4 @@
+/* global web3 */
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -11,12 +12,18 @@ import Offer from './components/Offer';
 import metadata from "../../features/metadata";
 import prices from "../../features/prices";
 import newBuy from "../../features/newBuy";
+import network from "../../features/network";
 
 import './index.scss';
 import Loading from "../../components/Loading";
 
 class Profile extends Component {
   componentDidMount() {
+    if(web3.utils.toChecksumAddress(this.props.match.params.address) === this.props.address){
+      this.props.history.push('/profile');
+      return;
+    }
+
     this.props.load(this.props.match.params.address);
   }
 
@@ -26,7 +33,7 @@ class Profile extends Component {
   };
 
   render() {
-    const {profile, prices} = this.props;
+    const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
     return (
       <div className="seller-profile-container">
@@ -40,7 +47,8 @@ class Profile extends Component {
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
-              {profile.offers.map((offer, index) => <Offer key={index}
+              {profile.offers.map((offer, index) => <Offer disabled={web3.utils.toChecksumAddress(profile.address) === address}
+                                                           key={index}
                                                            offer={offer}
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
@@ -58,13 +66,16 @@ Profile.propTypes = {
   history: PropTypes.object,
   profile: PropTypes.object,
   setOfferId: PropTypes.func,
-  prices: PropTypes.object
+  prices: PropTypes.object,
+  address: PropTypes.string
 };
 
 const mapStateToProps = (state, props) => {
-  const address = props.match.params.address;
+  const userAddress = props.match.params.address;
+  const address = network.selectors.getAddress(state) || '';
   return {
-    profile: metadata.selectors.getProfile(state, address),
+    address,
+    profile: metadata.selectors.getProfile(state, userAddress),
     prices: prices.selectors.getPrices(state)
   };
 };
