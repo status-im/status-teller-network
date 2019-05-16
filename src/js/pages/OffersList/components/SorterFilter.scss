@@ -56,12 +56,7 @@ $menu-width: 85%;
     max-width: 350px;
     height: 100%;
     padding-bottom: 50px;
-  }
-
-  @media (max-width: 767px) {
-    .filter-menu-content {
-      overflow-y: scroll;
-    }
+    overflow-y: auto;
   }
 
   .btn {
