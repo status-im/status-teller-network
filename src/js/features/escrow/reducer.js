@@ -13,6 +13,7 @@ import {
 import { States } from '../../utils/transaction';
 import { escrowStatus } from './helpers';
 import {RESET_STATE} from "../network/constants";
+import merge from 'merge';
 
 const DEFAULT_STATE = {
   createEscrowStatus: States.none,
@@ -21,7 +22,6 @@ const DEFAULT_STATE = {
   payStatus: States.none,
   cancelStatus: States.none,
   rateStatus: States.none,
-  escrows: {},
   fee: '0'
 };
 
@@ -61,15 +61,14 @@ function reducer(state = DEFAULT_STATE, action) {
     case RATE_TRANSACTION_PRE_SUCCESS:
     case RELEASE_ESCROW_PRE_SUCCESS:
     case FUND_ESCROW_PRE_SUCCESS: {
-      const newEscrows = [...state.escrows];
-      newEscrows[escrowId] = {
+      escrowsClone[escrowId] = {
         ...state.escrows[escrowId],
         mining: true,
         txHash: action.txHash
       };
       return {
         ...state,
-        escrows: newEscrows
+        escrows: escrowsClone
       };
     }
     case RELEASE_ESCROW:
@@ -147,7 +146,7 @@ function reducer(state = DEFAULT_STATE, action) {
       }
       return {
         ...state,
-        escrows: Object.assign({}, state.escrows, action.escrows)
+        escrows: merge.recursive(state.escrows, action.escrows)
       };
     case GET_FEE_SUCCEEDED:
       return {

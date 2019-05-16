@@ -10,6 +10,9 @@ import {formatBalance} from "../../../utils/numbers";
 import {tradeStates} from "../../../features/escrow/helpers";
 
 const getTradeStyle = (trade) => {
+  if (trade.mining) {
+    return {text: 'Mining', className: 'bg-info'};
+  }
   if(trade.arbitration){
     if(trade.arbitration.open){
       trade.status = tradeStates.arbitration_open;
@@ -22,11 +25,13 @@ const getTradeStyle = (trade) => {
 
   switch(trade.status){
     case tradeStates.waiting:
+      return {text: 'Open', className: 'bg-primary'};
     case tradeStates.funded:
+      return {text: 'Funded', className: 'bg-primary'};
     case tradeStates.paid:
-      return {text: 'Open', className: 'bg-success'};
+      return {text: 'Paid', className: 'bg-primary'};
     case tradeStates.released:
-      return {text: 'Closed', className: 'bg-primary'};
+      return {text: 'Done', className: 'bg-success'};
     case tradeStates.canceled:
       return {text: 'Canceled', className: 'bg-secondary'};
     case tradeStates.expired:

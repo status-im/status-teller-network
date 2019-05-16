@@ -2,7 +2,9 @@
 
 import moment from 'moment';
 import { fromTokenDecimals } from '../../utils/numbers';
-import { getTradeStatus } from './helpers';
+import { getTradeStatus, tradeStates } from './helpers';
+
+const unimportantStates = [tradeStates.canceled, tradeStates.expired, tradeStates.released];
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
@@ -29,7 +31,19 @@ export const getTrades = (state, userAddress, offers) => {
                     status: getTradeStatus(escrow),
                     tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
                   };
-                });
+                })
+    .sort((a, b) => {
+      if (unimportantStates.includes(a.status)) {
+        if (unimportantStates.includes(b.status)) {
+          return (parseInt(a.escrowId, 10) < parseInt(b.escrowId, 10)) ? 1 : -1;
+        }
+        return 1;
+      }
+      if (unimportantStates.includes(b.status)) {
+        return -1;
+      }
+      return (parseInt(a.escrowId, 10) < parseInt(b.escrowId, 10)) ? 1 : -1;
+    });
 };
 
 export const getEscrowById = (state, escrowId) => {
