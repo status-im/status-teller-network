@@ -1,4 +1,4 @@
-import React, {Fragment} from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
@@ -20,14 +20,14 @@ const Mining = ({txHash, number}) => {
     default: image = three;
   }
 
-  return (<Fragment>
+  return (<div className="text-center p-3">
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={image} alt="three"/>
     </span>
       <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
       <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
-      {txHash && <p className="text-muted mb-0 mt-3">Transaction Hash: {txHash}</p>}
-    </Fragment>);
+      {txHash && <p className="text-muted mb-0 mt-3 text-break">Transaction Hash: {txHash}</p>}
+    </div>);
 };
 Mining.propTypes = {
   txHash: PropTypes.string,

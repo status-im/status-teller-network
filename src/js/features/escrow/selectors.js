@@ -47,6 +47,9 @@ export const getTrades = (state, userAddress, offers) => {
 };
 
 export const getEscrowById = (state, escrowId) => {
+  if (!state.escrow.escrows) {
+    return null;
+  }
   const escrow = state.escrow.escrows[escrowId];
   if(!escrow) return null;
 

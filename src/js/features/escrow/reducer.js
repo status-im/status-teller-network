@@ -31,7 +31,7 @@ function reducer(state = DEFAULT_STATE, action) {
   let escrowsClone = {...state.escrows};
   if (action.escrowId) {
     escrowsClone[action.escrowId] = {
-      ...state.escrows[action.escrowId],
+      ...escrowsClone[action.escrowId],
       mining: false,
       txHash: ''
     };
@@ -132,7 +132,11 @@ function reducer(state = DEFAULT_STATE, action) {
         txHash: ''
       };
     case GET_ESCROW_SUCCEEDED:
-      escrowsClone[escrowId] = action.escrow;
+      if (state.escrows[escrowId]) {
+        escrowsClone[escrowId] = merge.recursive(action.escrow, state.escrows[escrowId]);
+      } else {
+        escrowsClone[escrowId] = action.escrow;
+      }
       return {
         ...state,
         escrows: escrowsClone

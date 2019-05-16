@@ -68,8 +68,8 @@ class PreFund extends Component {
       return <Loading page={true}/>; // Wait for trade to be populated
     }
 
-    const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
-                          toBN(toTokenDecimals(tokens.SNT.balance, 18)).gte(toBN(fee));
+    const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance || 0, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
+                          toBN(toTokenDecimals(tokens.SNT.balance || 0, 18)).gte(toBN(fee));
     return <Fragment>
       <span className="bg-dark text-white p-3 rounded-circle">
         <img src={two} alt="two" />
@@ -179,9 +179,9 @@ class CardEscrowSeller extends Component {
 
 
     if(showFundButton) step = 2;
-    if(fundStatus === States.pending) step = 3;
+    if(fundStatus === States.pending || (trade.mining && trade.status === escrow.helpers.tradeStates.waiting)) step = 3;
     if(fundStatus === States.success) step = 4;
-    if(releaseStatus === States.pending) step = 5;
+    if(releaseStatus === States.pending || (trade.mining && (trade.status === escrow.helpers.tradeStates.funded || trade.status === escrow.helpers.tradeStates.paid))) step = 5;
     if(releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
 
     let component;
@@ -196,7 +196,7 @@ class CardEscrowSeller extends Component {
         component = <Funded trade={trade} releaseEscrow={() => { releaseEscrow(trade.escrowId); }} />;
         break;
       case 3:
-        component = <Mining txHash={trade.txHash} number={5} />;
+        component = <Mining txHash={trade.txHash} number={3} />;
         break;
       case 2:
         component = <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
