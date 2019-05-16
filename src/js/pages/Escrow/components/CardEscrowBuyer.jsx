@@ -83,7 +83,7 @@ class Funded extends Component {
       </span>
       <h2 className="mt-4">Funds are in the escrow. Send payment to seller.</h2>
       <Button color="primary" className="btn-lg mt-3" onClick={this.displayDialog(true)}>Mark as paid</Button>
-      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.markAsPaid} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?"   />
+      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.markAsPaid} onCancel={this.displayDialog(false)} title="Mark as paid" content="Are you sure you want this trade marked as paid?" cancelText="Not yet" />
     </React.Fragment>;
   }
 }

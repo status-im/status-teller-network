@@ -67,7 +67,7 @@ class OpenDispute extends Component {
         <h2>Open dispute</h2>
         <p>Describe details of your trade</p>
         <Form>
-          <Textarea 
+          <Textarea
             type="text"
             name="disputeDetails"
             id="disputeDetails"
@@ -83,7 +83,7 @@ class OpenDispute extends Component {
             <Button color="primary" disabled={!this.state.value} onClick={this.displayDialog(true)}>Send</Button>
           </p>
         </Form>
-        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.handleClickDialog(escrow.escrowId)} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" />
+        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.handleClickDialog(escrow.escrowId)} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" cancelText="No" />
       </div>
     );
   }
