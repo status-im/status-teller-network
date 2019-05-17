@@ -122,6 +122,7 @@ exports[`StatusContactCode should render correctly 1`] = `
         <Address
           address="0xkajshdhkjashd"
           compact={false}
+          length={10}
         />
       </p>
     </ModalBody>
