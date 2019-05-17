@@ -150,7 +150,7 @@ class Escrow extends Component {
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
-        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} />
+        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} />
         {(!arbitrationDetails ||!arbitrationDetails.open) && <OpenDispute trade={escrow}  /> }
       </div>
     );

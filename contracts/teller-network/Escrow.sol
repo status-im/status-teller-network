@@ -310,17 +310,22 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         EscrowTransaction storage trx = transactions[_escrowId];
         require(trx.expirationTime < block.timestamp, "Transaction has not expired");
         require(trx.status == EscrowStatus.FUNDED || trx.status == EscrowStatus.CREATED, "Only transactions in created or funded state can be canceled");
-        _cancel(_escrowId, trx);
+        _cancel(_escrowId, trx, false);
     }
 
     /**
      * @dev Cancel transaction and send funds back to seller
      * @param _escrowId Id of the escrow
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
+     * @param _ignoreExpiration Determines if the require rule for expiration time will apply or not
      */
-    function _cancel(uint _escrowId, EscrowTransaction storage trx) private {
+    function _cancel(uint _escrowId, EscrowTransaction storage trx, bool _ignoreExpiration) private {
         if(trx.status == EscrowStatus.FUNDED){
             require(msg.sender == metadataStore.getOfferOwner(trx.offerId), "Only seller can cancel transaction");
+
+            if(!_ignoreExpiration){
+                require(trx.expirationTime < block.timestamp, "Can only be canceled after expiration");
+            }
 
             address token = metadataStore.getAsset(trx.offerId);
             if(token == address(0)){
@@ -346,7 +351,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
         EscrowTransaction storage trx = transactions[_escrowId];
         require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
-        _cancel(_escrowId, trx);
+        _cancel(_escrowId, trx, true);
     }
 
     /**
@@ -430,7 +435,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         if(_releaseFunds){
             _release(_escrowId, trx);
         } else {
-            _cancel(_escrowId, trx);
+            _cancel(_escrowId, trx, true);
         }
     }
 
