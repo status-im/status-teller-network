@@ -71,8 +71,8 @@ config({
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
-  arbitrator = accounts[5];
-  arbitrator2 = accounts[6];
+  arbitrator = accounts[8];
+  arbitrator2 = accounts[9];
 });
 
 contract("Escrow", function() {
@@ -780,7 +780,7 @@ contract("Escrow", function() {
       const isArbitrator = await Arbitration.methods.isArbitrator(arbitrator).call();
       assert.equal(isArbitrator, true, "Invalid arbitrator");
 
-      const nonArbitrator = await Arbitration.methods.isArbitrator(accounts[9]).call();
+      const nonArbitrator = await Arbitration.methods.isArbitrator(accounts[5]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
     });
   });
