@@ -29,7 +29,7 @@ class Address extends Component {
     if (!this.props.address) {
       return null;
     }
-    const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address) : this.props.address;
+    const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address, this.props.charLength) : this.props.address;
     return (<span className="addr" title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
                   onMouseOut={this.mouseOutAddress}>{address}
     </span>);
@@ -37,12 +37,14 @@ class Address extends Component {
 }
 
 Address.defaultProps = {
-  compact: false
+  compact: false,
+  charLength: 4
 };
 
 Address.propTypes = {
   address: PropTypes.string,
-  compact: PropTypes.bool
+  compact: PropTypes.bool,
+  charLength: PropTypes.number
 };
 
 export default Address;

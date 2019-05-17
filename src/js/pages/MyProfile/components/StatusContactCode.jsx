@@ -43,7 +43,7 @@ class StatusContactCode extends Component {
           <ModalBody className="text-center">
             <QRCode value={value}/>
             <p className="overflow-hidden">
-              <Address address={value}/>
+              <Address address={value} charLength={10} />
             </p>
           </ModalBody>
         </Modal>

@@ -16,7 +16,7 @@ const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbR
     </Col>
     <Col xs="12">
       <p className="text-muted">
-        <Address address={identiconSeed}/>
+        <Address address={identiconSeed} charLength={10} />
       </p>
     </Col>
     <Col xs="12">
