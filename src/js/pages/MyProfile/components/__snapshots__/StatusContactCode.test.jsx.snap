@@ -121,6 +121,7 @@ exports[`StatusContactCode should render correctly 1`] = `
       >
         <Address
           address="0xkajshdhkjashd"
+          charLength={10}
           compact={false}
         />
       </p>
