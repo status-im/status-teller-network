@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import newSeller from "../../../features/newSeller";
 import arbitration from "../../../features/arbitration";
+import network from "../../../features/network";
 import ArbitratorSelectorForm from "./components/ArbitratorSelectorForm";
 
 class SelectArbitrator extends Component {
@@ -47,7 +48,7 @@ class SelectArbitrator extends Component {
     return (
       <ArbitratorSelectorForm 
         value={this.state.selectedArbitrator}
-        arbitrators={this.props.arbitrators}
+        arbitrators={this.props.arbitrators.filter(x => x !== this.props.address)}
         changeArbitrator={this.changeArbitrator} 
       />);
   }
@@ -57,12 +58,14 @@ SelectArbitrator.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
   seller: PropTypes.object,
+  address: PropTypes.string,
   arbitrators: PropTypes.array,
   setArbitrator: PropTypes.func,
   getArbitrators: PropTypes.func
 };
 
 const mapStateToProps = state => ({
+  address: network.selectors.getAddress(state) || '',
   seller: newSeller.selectors.getNewSeller(state),
   arbitrators: arbitration.selectors.arbitrators(state)
 });
