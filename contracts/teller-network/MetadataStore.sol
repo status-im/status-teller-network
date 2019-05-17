@@ -134,6 +134,7 @@ contract MetadataStore is Ownable {
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
+        require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
         this.addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
         

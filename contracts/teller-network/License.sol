@@ -20,10 +20,11 @@ contract License is Ownable, ApproveAndCallFallBack {
         uint creationTime;
     }
 
-    mapping(address => LicenseDetails) private licenseDetails;
+    mapping(address => LicenseDetails) public licenseDetails;
 
     address[] public licenseOwners;
-    mapping(address => uint) private idxLicenseOwners;
+
+    mapping(address => uint) public idxLicenseOwners;
 
     event Bought(address buyer, uint256 price);
     event PriceChanged(uint256 _price);
@@ -61,13 +62,15 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(token.allowance(_owner, address(this)) >= price, "Allowance not set for this contract to expected price");
         require(token.transferFrom(_owner, address(this), price), UNSUCCESSFUL_TOKEN_TRANSFER);
 
-        licenseDetails[_owner].price = price;
-        licenseDetails[_owner].creationTime = block.timestamp;
+        licenseDetails[_owner] = LicenseDetails({
+            price: price,
+            creationTime: block.timestamp
+        });
 
-        uint idx = licenseOwners.push(msg.sender);
-        idxLicenseOwners[msg.sender] = idx;
+        uint idx = licenseOwners.push(_owner);
+        idxLicenseOwners[_owner] = idx;
 
-        emit Bought(_owner, token.allowance(_owner, address(this)));
+        emit Bought(_owner, price);
     }
 
     /**
@@ -134,7 +137,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeRegister(bytes memory _data) private pure returns(bytes4 sig) {
+    function abiDecodeRegister(bytes memory _data) public pure returns(bytes4 sig) {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
         }
