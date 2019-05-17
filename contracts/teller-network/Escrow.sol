@@ -67,7 +67,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     event Released(uint escrowId, uint date);
     event Canceled(uint escrowId, uint date);
     event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating, uint date);
-   
+
 
     /**
      * @notice Create a new escrow
@@ -193,7 +193,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
             arbitrator: metadataStore.getArbitrator(_offerId)
         });
         transactionsByOfferId[_offerId].push(escrowId);
-        emit Created(_offerId, msg.sender, _buyer, escrowId, block.timestamp);
+        emit Created(_offerId, seller, _buyer, escrowId, block.timestamp);
         return escrowId;
     }
 
@@ -426,7 +426,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.buyer != _arbitrator && metadataStore.getOfferOwner(trx.offerId) != _arbitrator, "Arbitrator cannot be part of transaction");
-        
+
         if(_releaseFunds){
             _release(_escrowId, trx);
         } else {

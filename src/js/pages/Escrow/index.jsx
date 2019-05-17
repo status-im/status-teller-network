@@ -88,11 +88,11 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction} = this.props;
+    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction, approvalTxHash} = this.props;
     const {showApproveFundsScreen} = this.state;
 
-    if(!escrow || !sntAllowance) return <Loading page={true} />;
-    if(loading) return <Loading mining={true} />;
+    if(!escrow || (!sntAllowance && sntAllowance !== 0)) return <Loading page={true} />;
+    if(loading) return <Loading mining={true} txHash={escrow.txHash || approvalTxHash}/>;
 
     const arbitrationDetails = arbitration.arbitration;
 
@@ -181,6 +181,7 @@ Escrow.propTypes = {
   payStatus: PropTypes.string,
   payEscrow: PropTypes.func,
   cancelStatus: PropTypes.string,
+  approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
@@ -191,15 +192,17 @@ const mapStateToProps = (state, props) => {
   const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
   const approvalLoading = approval.selectors.isLoading(state);
   const ratingStatus = escrow.selectors.getRatingStatus(state);
+  const escrowId = props.match.params.id.toString();
 
   return {
     address: network.selectors.getAddress(state) || "",
-    escrowId:  props.match.params.id.toString(),
-    escrow: escrow.selectors.getEscrow(state),
+    escrowId:  escrowId,
+    escrow: escrow.selectors.getEscrowById(state, escrowId),
     arbitration: arbitration.selectors.getArbitration(state) || {},
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
+    approvalTxHash: approval.selectors.txHash(state),
     tokens: network.selectors.getTokens(state),
     loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),

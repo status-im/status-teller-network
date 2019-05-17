@@ -100,7 +100,7 @@ class Trade extends Component {
 
     switch(this.props.createEscrowStatus){
       case States.pending:
-        return <Loading mining/>;
+        return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
         return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetStatus}/>;
       case States.none:
@@ -135,6 +135,7 @@ Trade.propTypes = {
   assetQuantity: PropTypes.number,
   footer: PropTypes.object,
   statusContactCode: PropTypes.string,
+  txHash: PropTypes.string,
   username: PropTypes.string,
   loadOffers: PropTypes.func,
   offerId: PropTypes.number,
@@ -153,6 +154,7 @@ const mapStateToProps = (state) => {
   return {
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
     escrowId: escrow.selectors.getCreateEscrowId(state),
+    txHash: escrow.selectors.txHash(state),
     statusContactCode: newBuy.selectors.statusContactCode(state),
     username: newBuy.selectors.username(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),

@@ -13,6 +13,12 @@ storiesOf('Components/Loading', module)
     ))
   )
   .add(
+    "Mining + Hash",
+    withInfo({inline: true})(() => (
+      <Loading mining txHash="0xcc21e58519f0c048267b020911d3f6822ffd63a5b1ce7ea4c506fddfb78699ad" />
+    ))
+  )
+  .add(
     "Page",
     withInfo({inline: true})(() => (
       <Loading page />

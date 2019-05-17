@@ -2,11 +2,11 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch, faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 
 import Reputation from '../../../components/Reputation';
 import RoundedIcon from "../../../ui/RoundedIcon";
+import Mining from "./Mining";
 
 import { States } from '../../../utils/transaction';
 import escrow from '../../../features/escrow';
@@ -15,7 +15,6 @@ import ConfirmDialog from '../../../components/ConfirmDialog';
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
-import three from "../../../../images/escrow/03.png";
 import four from "../../../../images/escrow/04.png";
 
 import Dispute from "./Dispute";
@@ -50,17 +49,6 @@ const Unreleased = () => (
     <p className="h2 mt-4">Waiting for the seller to release the funds</p>
     <p>Notify the seller about the trade using Status encrypted p2p chat</p>
     <Button color="primary" className="btn-lg mt-3" onClick={() => {}}>Open chat</Button>
-  </Fragment>
-);
-
-
-const Loading = () => (
-  <Fragment>
-    <span className="bg-dark text-white p-3 rounded-circle">
-      <img src={three} alt="three" />
-    </span>
-    <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
-    <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
   </Fragment>
 );
 
@@ -136,7 +124,7 @@ class CardEscrowBuyer extends Component {
         {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> }
         {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> }
         {!showLoading && trade.status === escrow.helpers.tradeStates.canceled && <Canceled/> }
-        {showLoading && <Loading /> }
+        {showLoading && <Mining txHash={trade.txHash} /> }
       </CardBody>
     </Card>;
   }
