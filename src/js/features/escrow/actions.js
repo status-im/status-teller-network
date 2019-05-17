@@ -39,14 +39,16 @@ export const fundEscrow = (escrow) => {
       type: FUND_ESCROW,
       toSend,
       value,
-      escrowId: escrow.escrowId
+      escrowId: escrow.escrowId,
+      expirationTime
     };
   }
 
   return {
     type: FUND_ESCROW,
     toSend,
-    escrowId: escrow.escrowId
+    escrowId: escrow.escrowId,
+    expirationTime
   };
 
   /*

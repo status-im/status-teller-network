@@ -50,6 +50,7 @@ function reducer(state = DEFAULT_STATE, action) {
         escrows: escrowsClone
       };
     case FUND_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].expirationTime = action.expirationTime;
       escrowsClone[escrowId].status = escrowStatus.FUNDED;
       return {
         ...state,
