@@ -50,8 +50,8 @@ class MyProfile extends Component {
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
 
         {profile.isArbitrator && <Fragment>
-          <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && x.seller !== address && x.buyer !== address)} open={true} showDate={true} />
-          <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && x.seller !== address && x.buyer !== address)} open={false} showDate={false} />
+          <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && x.seller !== address && x.buyer !== address && x.arbitrator === address)} open={true} showDate={true} />
+          <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && x.seller !== address && x.buyer !== address && x.arbitrator === address)} open={false} showDate={false} />
         </Fragment>}
 
         <Fragment>
