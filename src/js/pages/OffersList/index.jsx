@@ -1,3 +1,4 @@
+/* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -86,7 +87,7 @@ class OffersList extends Component {
   };
 
   render() {
-    let filteredOffers = this.props.offers;
+    let filteredOffers = this.props.offers.filter(x => web3.utils.toChecksumAddress(x.arbitrator) !== this.props.address);
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
@@ -172,11 +173,13 @@ OffersList.propTypes = {
   offers: PropTypes.array,
   tokens: PropTypes.array,
   loadOffers: PropTypes.func,
-  prices: PropTypes.object
+  prices: PropTypes.object,
+  address: PropTypes.string
 };
 
 const mapStateToProps = state => {
   return {
+    address: network.selectors.getAddress(state) || '',
     offers: metadata.selectors.getOffersWithUser(state),
     tokens: Object.values(network.selectors.getTokens(state)),
     prices: prices.selectors.getPrices(state)
