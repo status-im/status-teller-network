@@ -61,7 +61,7 @@ class Trade extends Component {
   }
 
   validate(currencyQuantity, assetQuantity) {
-    if (currencyQuantity < 0 || assetQuantity < 0 || currencyQuantity < MIN || currencyQuantity > this.props.sellerBalance || MAX) {
+    if (currencyQuantity < 0 || assetQuantity < 0 || assetQuantity > (this.props.sellerBalance || MAX)) {
       this.setState({disabled: true});
       return;
     }
