@@ -70,9 +70,9 @@ class Arbitration extends Component {
   };
 
   resolveDispute = () => {
-    this.setState({displayDialog: false, display: false});
+    this.setState({displayDialog: false, displayUsers: false});
 
-    this.props.resolveDispute(this.props.escrow.escrowId, this.state.selectedUser === this.props.escrow.buyer ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER )
+    this.props.resolveDispute(this.props.escrow.escrowId, this.state.selectedUser === this.props.escrow.buyer ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER);
   }
 
   render() {
