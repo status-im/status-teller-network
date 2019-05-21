@@ -4,7 +4,7 @@ import {
   CHECK_LICENSE_OWNER_SUCCEEDED, GET_LICENSE_OWNERS_SUCCCEDED, GET_LICENSE_OWNERS_FAILED, LOAD_PRICE_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
-import {RESET_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   licenseOwner: false,
@@ -69,6 +69,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         licenseOwnersError: action.error
       };
+    case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;
     }

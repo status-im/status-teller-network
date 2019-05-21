@@ -6,7 +6,7 @@ import {
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
-import {RESET_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   addOfferStatus: States.none,
@@ -137,6 +137,8 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     }
+    case PURGE_STATE:
+      return DEFAULT_STATE;
     default:
       return state;
   }
