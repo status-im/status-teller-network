@@ -1,5 +1,5 @@
 import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
-import {RESET_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   error: '',
@@ -46,6 +46,7 @@ function reducer(state = DEFAULT_STATE, action) {
           tokenAllowance: action.allowance
         }
       };
+    case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;
     }

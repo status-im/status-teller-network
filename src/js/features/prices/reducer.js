@@ -1,19 +1,23 @@
 import { FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED } from './constants';
+import {PURGE_STATE} from '../network/constants';
 
 function reducer(state = {}, action) {
   switch (action.type) {
-  case FETCH_PRICES_SUCCEEDED:
-    return {
-      ...state,
-      ...action.data
-    };
-  case FETCH_PRICES_FAILED:
-    return {
-      ...state,
-      ...{error: action.error}
-    };
-  default:
-    return state;
+    case FETCH_PRICES_SUCCEEDED:
+      return {
+        ...state,
+        ...action.data
+      };
+    case FETCH_PRICES_FAILED:
+      return {
+        ...state,
+        ...{error: action.error}
+      };
+
+    case PURGE_STATE:
+      return {};
+    default:
+      return state;
   }
 }
 

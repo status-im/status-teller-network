@@ -12,7 +12,7 @@ import {
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus } from './helpers';
-import {RESET_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import merge from 'merge';
 
 const DEFAULT_STATE = {
@@ -205,6 +205,7 @@ function reducer(state = DEFAULT_STATE, action) {
         releaseStatus: States.none,
         rateStatus: States.none
       };
+    case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;
     }

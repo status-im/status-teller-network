@@ -7,7 +7,7 @@ import {
   SET_CONTACT_INFO,
   SET_ARBITRATOR
 } from './constants';
-import {RESET_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   asset: '',
@@ -60,6 +60,7 @@ function reducer(state = DEFAULT_STATE, action) {
         username: action.username,
         statusContactCode: action.statusContactCode
       };
+    case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;
     }

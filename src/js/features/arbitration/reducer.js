@@ -25,8 +25,7 @@ import {
   CHECK_LICENSE_OWNER_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
-import {RESET_STATE} from "../network/constants";
-
+import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
   escrows: [], arbitration: null, arbitrators: [], licenseOwner: false,
@@ -150,6 +149,8 @@ function reducer(state = DEFAULT_STATE, action) {
         error: ''
       });
     }
+    case PURGE_STATE:
+      return DEFAULT_STATE;
     default:
       return state;
   }
