@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {Button, Col, Row, Modal, ModalBody, ButtonGroup} from "reactstrap";
+import {Button, Col, Row, Modal, ModalBody, ButtonGroup, ModalFooter} from "reactstrap";
 
 import ContactUser from './components/ContactUser';
 import TradeParticipant from './components/TradeParticipant';
@@ -46,9 +46,6 @@ class Arbitration extends Component {
     displayDialog: false
   }
 
-  componentDidMount() {
-  }
-
   openSolveDisputeDialog = () => {
     this.setState({displayUsers: true});
   }
@@ -86,11 +83,11 @@ class Arbitration extends Component {
       return <Loading/>;
     }
 
-    if(loading) return <Loading mining={true} />;
-
     if(escrow.buyer === address || escrow.seller === address) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
     if(escrow.arbitrator !== address) return <ErrorInformation message="You are not the arbitrator of this dispute"/>;
     
+    if(loading) return <Loading mining={true} />;
+
     const status = getArbitrationStatus(escrow.arbitration.result);
     return (
       <div className="escrow">
@@ -134,6 +131,9 @@ class Arbitration extends Component {
                   <Button color="primary" onClick={this.displayDialog(true)} disabled={selectedUser === null}>Resolve dispute</Button>
                 </p>
               </ModalBody>
+              <ModalFooter>
+                <Button onClick={this.handleClose}>Cancel</Button>
+              </ModalFooter>
             </Modal>
             <ConfirmDialog display={this.state.displayDialog} onConfirm={this.resolveDispute} onCancel={this.displayDialog(false)} title="Resolve dispute" content="Are you sure?" cancelText="No" />
           </Fragment>
