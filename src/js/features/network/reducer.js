@@ -46,7 +46,7 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case UPDATE_BALANCE_SUCCEEDED: {
       const balance = fromTokenDecimals(action.value, action.token.decimals);
-      if (action.address) {
+      if (action.address && action.address !== state.address) {
         return {
           ...state, tokens: {
             ...state.tokens, [action.token.symbol]: {
