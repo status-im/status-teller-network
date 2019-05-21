@@ -100,7 +100,6 @@ class OffersList extends Component {
       filteredOffers = filteredOffers.filter((offer) => offer.asset === this.state.tokenFilter);
     }
 
-
     let groupedOffers = filteredOffers.reduce((grouped, offer) => {
       offer.paymentMethods.forEach((paymentMethod) => (
         (grouped[paymentMethod] || (grouped[paymentMethod] = [])).push(offer)
@@ -160,7 +159,9 @@ class OffersList extends Component {
                       <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>
             </h4>
-            {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]} prices={this.props.prices}/>)}
+            {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer
+              key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]}
+              prices={this.props.prices} userAddress={this.props.address}/>)}
           </Fragment>
         ))}
       </Fragment>

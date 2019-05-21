@@ -6,8 +6,9 @@ import Reputation from '../Reputation';
 import Identicon from "../UserInformation/Identicon";
 import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
+import classnames from 'classnames';
 
-const Offer = ({offer, offers, withDetail, prices}) => {
+const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;
   let owner;
   if (!offer) {
@@ -21,12 +22,16 @@ const Offer = ({offer, offers, withDetail, prices}) => {
     owner = offer.owner;
     offers = [offer];
   }
+  const isOwner = userAddress.toLowerCase() === owner.toLowerCase();
   return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
         <Col xs={2}><Identicon seed={user.statusContactCode || owner} className="rounded-circle border" scale={5}/></Col>
         <Col xs={5}>
-          <p className="seller-name m-0 font-weight-bold text-black">{user.username}</p>
+          <p className={classnames('seller-name', 'm-0', 'font-weight-bold', {
+            'text-black': !isOwner,
+            'text-success': isOwner
+          })}>{user.username}</p>
           <p className="text-dark m-0">{user.location}</p>
         </Col>
         <Col xs={5} className="text-right rating-col">
@@ -55,7 +60,8 @@ Offer.propTypes = {
   offer: PropTypes.object,
   withDetail: PropTypes.bool,
   prices: PropTypes.object,
-  offers: PropTypes.array
+  offers: PropTypes.array,
+  userAddress: PropTypes.string
 };
 
 
