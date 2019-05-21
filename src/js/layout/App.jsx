@@ -23,6 +23,7 @@ import License from '../pages/License';
 import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
+import Settings from '../pages/Settings';
 
 // Buy
 import BuyContact from '../wizards/Buy/0_Contact';
@@ -98,6 +99,8 @@ class App extends Component {
           <div className="body-content">
           <Switch>
             <Route exact path="/" component={Home}/>
+
+            <Route exact path="/settings" component={Settings}/>
 
             <Route exact path="/profile" component={MyProfile}/>
             <Route exact path="/profile/contact/edit" component={EditMyContact}/>

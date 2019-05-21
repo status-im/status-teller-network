@@ -65,7 +65,7 @@ class Home extends Component {
           </Row>
           )}
         </React.Fragment>
-        <p className="teller-version text-muted">Version: {version}</p>
+        <p className="teller-version text-muted"><Link to="/settings">Settings</Link> | Version: {version}</p>
       </div>
     );
   }
