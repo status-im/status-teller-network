@@ -38,19 +38,30 @@ class Trade extends Component {
     if (isNaN(this.props.offerId)) {
       return this.props.history.push('/');
     }
-    this.props.loadOffers();
+    this.props.loadOffers(this.props.offer.owner); // TODO Change this to only load the right offer
+    this.getSellerBalance();
+
     this.setState({ready: true});
   }
 
-  componentDidUpdate() {
+  getSellerBalance() {
+    if (this.props.offer && this.props.offer.token) {
+      this.props.updateBalance(this.props.offer.token.symbol, this.props.offer.owner);
+    }
+  }
+
+  componentDidUpdate(oldProps) {
     if (this.props.createEscrowStatus === States.success) {
       this.props.resetStatus();
       return this.props.history.push('/escrow/' + this.props.escrowId);
     }
+    if ((this.props.offer && !oldProps.offer) || (this.props.offer.token && !oldProps.offer.token)) {
+      this.getSellerBalance();
+    }
   }
 
   validate(currencyQuantity, assetQuantity) {
-    if (currencyQuantity < 0 || assetQuantity < 0 || currencyQuantity < MIN || currencyQuantity > MAX) {
+    if (currencyQuantity < 0 || assetQuantity < 0 || currencyQuantity < MIN || currencyQuantity > this.props.sellerBalance || MAX) {
       this.setState({disabled: true});
       return;
     }
@@ -65,7 +76,7 @@ class Trade extends Component {
     const marginPrice = this.props.offer.margin / 100 * this.props.price;
     const calcPrice = this.props.price + (this.props.offer.marketType === ABOVE ? marginPrice : -marginPrice);
     return calcPrice;
-  }
+  };
 
   onAssetChange = (assetQuantity) => {
     let currencyQuantity = 0;
@@ -94,7 +105,7 @@ class Trade extends Component {
   };
 
   render() {
-    if (!this.state.ready || !this.props.offer) {
+    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance) {
       return <Loading page/>;
     }
 
@@ -107,8 +118,8 @@ class Trade extends Component {
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
                       name={this.props.offer.user.username}
-                      minFIAT={MIN} // TODO put here real values when we have it set in the contract
-                      maxFIAT={MAX}
+                      minToken={MIN} // TODO put here real values when we have it set in the contract
+                      maxToken={this.props.sellerBalance}
                       price={this._calcPrice()}
                       asset={this.props.offer.token.symbol}
                       currency={{id: this.props.offer.currency}}
@@ -140,9 +151,11 @@ Trade.propTypes = {
   loadOffers: PropTypes.func,
   offerId: PropTypes.number,
   createEscrow: PropTypes.func,
+  updateBalance: PropTypes.func,
   createEscrowStatus: PropTypes.string,
   escrowId: PropTypes.string,
-  price: PropTypes.number
+  price: PropTypes.number,
+  sellerBalance: PropTypes.number
 };
 
 const mapStateToProps = (state) => {
@@ -160,6 +173,7 @@ const mapStateToProps = (state) => {
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
     address: network.selectors.getAddress(state),
+    sellerBalance: network.selectors.getBalance(state, offer.token.symbol, offer.owner),
     offer,
     offerId,
     price
@@ -172,6 +186,7 @@ export default connect(
     setTrade: newBuy.actions.setTrade,
     resetStatus: escrow.actions.resetStatus,
     createEscrow: escrow.actions.createEscrow,
+    updateBalance: network.actions.updateBalance,
     loadOffers: metadata.actions.loadOffers
   }
 )(withRouter(Trade));
