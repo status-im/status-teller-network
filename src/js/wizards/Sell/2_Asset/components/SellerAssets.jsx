@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CheckButton from '../../../../ui/CheckButton';
 import {TokenImages} from '../../../../utils/images';
 import {formatBalance} from '../../../../utils/numbers';
+import {addressCompare} from '../../../../utils/address';
 
 class SellerAssets extends Component {
   selectAsset(selectedAsset) {
@@ -16,7 +17,7 @@ class SellerAssets extends Component {
         <h2>What assets are you going to sell</h2>
         <ButtonGroup vertical className="w-100">
           {this.props.availableAssets.map((asset) => (
-            <CheckButton active={this.props.selectedAsset === asset.address}
+            <CheckButton active={addressCompare(this.props.selectedAsset, asset.address)}
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
               <img src={TokenImages[`${asset.symbol}.png`] || TokenImages[`generic.png`]} alt={asset.name + ' icon'} className="mr-3"/>

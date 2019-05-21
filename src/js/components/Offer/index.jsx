@@ -7,6 +7,7 @@ import Identicon from "../UserInformation/Identicon";
 import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
+import {addressCompare} from '../../utils/address';
 
 const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;
@@ -22,7 +23,7 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
     owner = offer.owner;
     offers = [offer];
   }
-  const isOwner = userAddress.toLowerCase() === owner.toLowerCase();
+  const isOwner = addressCompare(userAddress, owner);
   return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
     <Col className="p-0">
       <Row className="mb-2">

@@ -1,4 +1,3 @@
-/* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -16,7 +15,7 @@ import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
 import {sortByDate, sortByRating} from '../../utils/sorters';
-
+import {addressCompare} from '../../utils/address';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 
@@ -87,7 +86,7 @@ class OffersList extends Component {
   };
 
   render() {
-    let filteredOffers = this.props.offers.filter(x => web3.utils.toChecksumAddress(x.arbitrator) !== this.props.address);
+    let filteredOffers = this.props.offers.filter(x => !addressCompare(x.arbitrator, this.props.address));
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
