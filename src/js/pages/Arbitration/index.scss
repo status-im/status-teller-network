@@ -13,6 +13,10 @@
   padding: 3px 10px;
 }
 
+.arbitrationDialog button svg {
+  margin-top: 10px !important;
+}
+
 .arbitrationStatus.open {
   background: #44D058;
 }
