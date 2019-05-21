@@ -1,5 +1,5 @@
 import { FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED } from './constants';
-import {PURGE_STATE} from '../network/constants'
+import {PURGE_STATE} from '../network/constants';
 
 function reducer(state = {}, action) {
   switch (action.type) {

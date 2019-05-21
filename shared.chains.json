@@ -56,6 +56,22 @@
       "0xacd7275dcc7397adf479da0aa10e7adc0cbea8eb4f0d7f1fa6fc8af0c40d8eaf": {
         "name": "Escrow",
         "address": "0x257662a1866615f5c0E4A9D7633a3e317218e71A"
+      },
+      "0xefee7af745628c05176c41ac2b2405381b955e4e1adba0fa215725886952baa1": {
+        "name": "Arbitration",
+        "address": "0x9CA3431aC0841b77b08c7eaD74C3fca5dcEeCf5A"
+      },
+      "0xf5fd1b8de657b9575e8c060c28dc3408b227204bc6f4a6669ba47f69a6ada385": {
+        "name": "License",
+        "address": "0xB280d7dd9804C90B2466bB6da2cDfC77eA35120d"
+      },
+      "0xb6f7a024add470a4104ae7e6af00e64b5734bc5cfcfd27622523f31822b2b120": {
+        "name": "MetadataStore",
+        "address": "0x03450CD2DdfC8678B91EaCE1a81761597722F1cc"
+      },
+      "0xdf14773a44b2fa0ab93d7e6db5a13acdba12ed9d5d2e4a43f76364b122bc00ce": {
+        "name": "Escrow",
+        "address": "0xd477BD120F2E75b4b1f7cf7E85eEB1Af10B45619"
       }
     }
   }
