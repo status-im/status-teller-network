@@ -83,13 +83,26 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     case RESOLVE_DISPUTE_SUCCEEDED:
+    {
+      const arbitration = state.arbitration;
+      arbitration.arbitration.open = false;
+      arbitration.arbitration.result = action.result;
+
+      const currentEscrow = escrows.find(x => x.escrowId === action.escrowId);
+      if(currentEscrow) {
+        currentEscrow.arbitration.open = false;
+        currentEscrow.arbitration.result = action.result;
+      }
+
       return {
         ...state, ...{
           escrows,
+          arbitration,
           errorGet: '',
           loading: false
         }
       };
+    }
     case LOAD_ARBITRATION_SUCCEEDED:
       return {
         ...state,

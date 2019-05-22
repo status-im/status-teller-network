@@ -14,6 +14,7 @@ export const resolveDispute = (escrowId, result) => {
   return {
     type: RESOLVE_DISPUTE,
     escrowId,
+    result,
     toSend: Arbitration.methods.setArbitrationResult(escrowId, result)
   };
 };
