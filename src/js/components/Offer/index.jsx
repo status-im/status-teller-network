@@ -12,18 +12,24 @@ import {addressCompare} from '../../utils/address';
 const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;
   let owner;
+  let arbitrator;
+
   if (!offer) {
     if (!offers) {
       throw new Error('Component needs either offer or offers');
     }
     user = offers[0].user;
     owner = offers[0].owner;
+    arbitrator = offers[0].arbitrator;
   } else {
     user = offer.user;
     owner = offer.owner;
+    arbitrator = offer.arbitrator;
     offers = [offer];
   }
   const isOwner = addressCompare(userAddress, owner);
+  const isArbitrator = addressCompare(userAddress, arbitrator);
+
   return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
     <Col className="p-0">
       <Row className="mb-2">
@@ -31,7 +37,8 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
         <Col xs={5}>
           <p className={classnames('seller-name', 'm-0', 'font-weight-bold', {
             'text-black': !isOwner,
-            'text-success': isOwner
+            'text-success': isOwner,
+            'text-warning': isArbitrator
           })}>{user.username}</p>
           <p className="text-dark m-0">{user.location}</p>
         </Col>
@@ -49,6 +56,7 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
           </p>
         </Col>
       </Row>}
+      {isArbitrator && <span className="text-warning text-small">You are an arbitrator for this offer</span>}
     </Col>
   </Row>);
 };

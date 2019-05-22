@@ -48,7 +48,7 @@ class Profile extends Component {
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
-              {profile.offers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address)}
+              {profile.offers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address) || addressCompare(offer.arbitrator, address)}
                                                            key={index}
                                                            offer={offer}
                                                            prices={prices}
