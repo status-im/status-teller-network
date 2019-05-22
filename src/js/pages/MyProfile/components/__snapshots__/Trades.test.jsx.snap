@@ -115,7 +115,7 @@ exports[`Trades should render correctly 1`] = `
           }
           xs="3"
         >
-          Buy
+          Sell
            
           0
            
