@@ -36,7 +36,6 @@ const DEFAULT_STATE = {
 };
 
 function reducer(state = DEFAULT_STATE, action) {
-  let escrows = state.escrows;
   switch (action.type) {
     case GET_DISPUTED_ESCROWS:
       return {
@@ -83,13 +82,28 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     case RESOLVE_DISPUTE_SUCCEEDED:
+    {
+      const escrowsClone = {...state.escrows};
+      const currentEscrow = escrowsClone.find(x => x.escrowId === action.escrowId);
+      if(currentEscrow) {
+        currentEscrow.arbitration.open = false;
+        currentEscrow.arbitration.result = action.result;
+      }
+
       return {
         ...state, ...{
-          escrows,
+          escrows: escrowsClone,
+          arbitration: {
+            arbitration: {
+              open: false,
+              result: action.result
+            }
+          },
           errorGet: '',
           loading: false
         }
       };
+    }
     case LOAD_ARBITRATION_SUCCEEDED:
       return {
         ...state,
