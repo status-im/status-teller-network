@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {FormGroup} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import {withNamespaces} from 'react-i18next';
+import {compactAddress} from '../../../../utils/address';
 
 class ArbitratorSelectorForm extends Component {
   onInputChange = (text) => {
@@ -28,6 +29,14 @@ class ArbitratorSelectorForm extends Component {
       defaultSelectedValue.push(arbitrator);
     }
 
+    const arbitratorStrings = this.props.arbitrators.map(arbitratorAddr => {
+      const user = this.props.users[arbitratorAddr];
+      if (!user) {
+        return arbitratorAddr + ' - Loading...';
+      }
+      return `${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
+    });
+
     return (
       <Fragment>
         <h2>{t('sellerArbitratorContainer.title')}</h2>
@@ -35,7 +44,7 @@ class ArbitratorSelectorForm extends Component {
           <Typeahead className="my-3"
             id="fiatSelector"
             onChange={this.onChange}
-            options={this.props.arbitrators}
+            options={arbitratorStrings}
             placeholder={t("arbitratorSelectorForm.placeholder")}
             onInputChange={this.onInputChange}
             submitFormOnEnter={true}
@@ -53,6 +62,7 @@ ArbitratorSelectorForm.propTypes = {
   t: PropTypes.func,
   value: PropTypes.string,
   arbitrators: PropTypes.array,
+  users: PropTypes.object,
   changeArbitrator: PropTypes.func
 };
 
