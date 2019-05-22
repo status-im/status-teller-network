@@ -7,6 +7,7 @@ import {
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
+import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   addOfferStatus: States.none,
@@ -20,8 +21,8 @@ function formatOffer(offer) {
     ...offer,
     id: parseInt(offer.id, 10),
     paymentMethods: offer.paymentMethods.map((i) => parseInt(i, 10)),
-    owner: offer.owner.toLowerCase(),
-    asset: offer.asset.toLowerCase()
+    owner: toChecksumAddress(offer.owner),
+    asset: toChecksumAddress(offer.asset)
   };
 }
 
@@ -39,7 +40,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         addOfferStatus: States.success,
-        users: {...state.users, [action.receipt.from.toLowerCase()]: action.user}
+        users: {...state.users, [toChecksumAddress(action.receipt.from)]: action.user}
       };
     }
     case ADD_OFFER_FAILED:
@@ -62,8 +63,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         updateUserStatus: States.success,
-        users: {...state.users, [action.receipt.from.toLowerCase()]: {
-          ...state.users[action.receipt.from.toLowerCase()],
+        users: {...state.users, [toChecksumAddress(action.receipt.from)]: {
+          ...state.users[toChecksumAddress(action.receipt.from)],
           ...action.user
         }}
       };
@@ -74,8 +75,8 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_USER_SUCCEEDED:
       return {
-        ...state, users: {...state.users, [action.address.toLowerCase()]: {
-          ...state.users[action.address.toLowerCase()],
+        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
+          ...state.users[toChecksumAddress(action.address)],
           ...action.user
         }}
       };
@@ -83,8 +84,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, users: {
           ...state.users,
-          [action.address.toLowerCase()]: {
-            ...state.users[action.address.toLowerCase()],
+          [toChecksumAddress(action.address)]: {
+            ...state.users[toChecksumAddress(action.address)],
             nbReleasedTrades: action.nbReleasedTrades,
             nbCreatedTrades: action.nbCreatedTrades
           }
@@ -92,8 +93,8 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_USER_LOCATION_SUCCEEDED:
       return {
-        ...state, users: {...state.users, [action.address.toLowerCase()]: {
-            ...state.users[action.address.toLowerCase()],
+        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
+            ...state.users[toChecksumAddress(action.address)],
             coords: action.coords
           }
         }
@@ -110,8 +111,8 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case USER_RATING_SUCCEEDED:
       return  {
-        ...state, users: {...state.users, [action.address.toLowerCase()]: {
-            ...state.users[action.address.toLowerCase()],
+        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
+            ...state.users[toChecksumAddress(action.address)],
             downCount: action.downCount,
             upCount: action.upCount,
             voteCount: action.voteCount
@@ -129,8 +130,8 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
       users: {
           ...state.users,
-          [action.user.buyerAddress.toLowerCase()]: {
-            ...state.users[action.user.buyerAddress.toLowerCase()],
+          [toChecksumAddress(action.user.buyerAddress)]: {
+            ...state.users[toChecksumAddress(action.user.buyerAddress)],
             statusContactCode: action.user.statusContactCode,
             username: action.user.username
           }
