@@ -15,7 +15,6 @@ import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
 import {sortByDate, sortByRating} from '../../utils/sorters';
-import {addressCompare} from '../../utils/address';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 
