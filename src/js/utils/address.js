@@ -15,6 +15,6 @@ export const zeroBytes = zeroAddress + '000000000000000000000000';
 export const contactCodeRegExp = /^0x[0-9a-fA-F]{130}$/;
 
 export const addressCompare = (address1, address2) => {
-  if(address1 === "" || address2 === "") return false;
+  if(!address1 || !address2) return false;
   return web3.utils.toChecksumAddress(address1) === web3.utils.toChecksumAddress(address2);
 };
