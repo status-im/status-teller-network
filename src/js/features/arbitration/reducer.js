@@ -84,11 +84,8 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case RESOLVE_DISPUTE_SUCCEEDED:
     {
-      const arbitration = state.arbitration;
-      arbitration.arbitration.open = false;
-      arbitration.arbitration.result = action.result;
-
-      const currentEscrow = escrows.find(x => x.escrowId === action.escrowId);
+      const escrowsClone = {...state.escrows};
+      const currentEscrow = escrowsClone.find(x => x.escrowId === action.escrowId);
       if(currentEscrow) {
         currentEscrow.arbitration.open = false;
         currentEscrow.arbitration.result = action.result;
@@ -96,8 +93,13 @@ function reducer(state = DEFAULT_STATE, action) {
 
       return {
         ...state, ...{
-          escrows,
-          arbitration,
+          escrows: escrowsClone,
+          arbitration: {
+            arbitration: {
+              open: false,
+              result: action.result
+            }
+          },
           errorGet: '',
           loading: false
         }
