@@ -4,6 +4,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
+import {addressCompare} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
@@ -193,7 +194,7 @@ export function *checkUserRating({address}) {
   try {
     address = address || web3.eth.defaultAccount;
     const state = yield select();
-    const offers = Object.values(state.metadata.offers).filter(offer => offer.owner === address.toLowerCase());
+    const offers = Object.values(state.metadata.offers).filter(offer => addressCompare(offer.owner, address));
     if (!offers.length) {
       return yield put({type: USER_RATING_SUCCEEDED, userRating: -1, address, downCount: 0, upCount: 0, voteCount: 0});
     }

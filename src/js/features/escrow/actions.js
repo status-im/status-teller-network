@@ -55,7 +55,7 @@ export const fundEscrow = (escrow) => {
   TODO: attempt to remove SNT approval if token is different from SNT, and send an approveAndCall trx
 
     let SNTAmount = feeAmount;
-    if(token === SNT.options.address){
+    if(addressCompare(token, SNT.options.address)){
       SNTAmount = toBN(SNTAmount).add(toBN(value)).toString();
     }
 

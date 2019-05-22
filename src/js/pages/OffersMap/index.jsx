@@ -9,6 +9,7 @@ import Map from '../../components/Map';
 import license from "../../features/license";
 import metadata from "../../features/metadata";
 import network from "../../features/network";
+import {addressCompare} from '../../utils/address';
 
 class OffersMap extends Component {
   constructor(props) {
@@ -50,7 +51,7 @@ class OffersMap extends Component {
       name: user.username,
       address: user.address,
       assets: user.offers.map(offer => {
-        return Object.values(tokens).find(token => token.address === offer.asset).symbol;
+        return Object.values(tokens).find(token => addressCompare(token.address, offer.asset)).symbol;
       }),
       lat: user.coords.lat,
       lng: user.coords.lng

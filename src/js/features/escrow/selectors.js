@@ -1,7 +1,6 @@
-/* global web3 */
-
 import moment from 'moment';
 import { fromTokenDecimals } from '../../utils/numbers';
+import { addressCompare } from '../../utils/address';
 import { getTradeStatus, tradeStates } from './helpers';
 
 const unimportantStates = [tradeStates.canceled, tradeStates.expired, tradeStates.released];
@@ -22,9 +21,9 @@ export const getRatingStatus = state => state.escrow.rateStatus;
 
 export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || {};
-  return Object.values(escrows).filter(escrow => escrow.buyer === userAddress || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
+  return Object.values(escrows).filter(escrow => addressCompare(escrow.buyer, userAddress) || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
                 .map((escrow) => {
-                  const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
+                  const token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, escrow.offer.asset));
                   return {
                     ...escrow,
                     token,
@@ -53,7 +52,7 @@ export const getEscrowById = (state, escrowId) => {
   const escrow = state.escrow.escrows[escrowId];
   if(!escrow) return null;
 
-  const token = Object.values(state.network.tokens).find((token) => web3.utils.toChecksumAddress(token.address) === web3.utils.toChecksumAddress(escrow.offer.asset));
+  const token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, escrow.offer.asset));
   return {
     ...escrow,
     token,

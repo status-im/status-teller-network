@@ -1,4 +1,3 @@
-/* global web3 */
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -14,12 +13,14 @@ import prices from "../../features/prices";
 import newBuy from "../../features/newBuy";
 import network from "../../features/network";
 
+import {addressCompare} from "../../utils/address";
+
 import './index.scss';
 import Loading from "../../components/Loading";
 
 class Profile extends Component {
   componentDidMount() {
-    if(web3.utils.toChecksumAddress(this.props.match.params.address) === this.props.address){
+    if(addressCompare(this.props.match.params.address, this.props.address)){
       this.props.history.push('/profile');
       return;
     }
@@ -47,7 +48,7 @@ class Profile extends Component {
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
-              {profile.offers.map((offer, index) => <Offer disabled={web3.utils.toChecksumAddress(profile.address) === address}
+              {profile.offers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address)}
                                                            key={index}
                                                            offer={offer}
                                                            prices={prices}

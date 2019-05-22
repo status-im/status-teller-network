@@ -5,6 +5,7 @@ import newSeller from "../../../features/newSeller";
 import arbitration from "../../../features/arbitration";
 import network from "../../../features/network";
 import ArbitratorSelectorForm from "./components/ArbitratorSelectorForm";
+import {addressCompare} from '../../../utils/address';
 
 class SelectArbitrator extends Component {
   constructor(props) {
@@ -48,7 +49,7 @@ class SelectArbitrator extends Component {
     return (
       <ArbitratorSelectorForm 
         value={this.state.selectedArbitrator}
-        arbitrators={this.props.arbitrators.filter(x => x !== this.props.address)}
+        arbitrators={this.props.arbitrators.filter(x => !addressCompare(x, this.props.address))}
         changeArbitrator={this.changeArbitrator} 
       />);
   }

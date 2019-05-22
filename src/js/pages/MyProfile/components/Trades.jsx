@@ -8,6 +8,7 @@ import {faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import Identicon from "../../../components/UserInformation/Identicon";
 import {formatBalance} from "../../../utils/numbers";
 import {tradeStates} from "../../../features/escrow/helpers";
+import {addressCompare} from "../../../utils/address";
 
 const getTradeStyle = (trade) => {
   if (trade.mining) {
@@ -51,7 +52,7 @@ class Trades extends Component {
     return (
       <Card body className="py-2 px-3 shadow-sm">
         {this.props.trades.map((trade, index) => {
-          const isBuyer = trade.buyer ===  address;
+          const isBuyer = addressCompare(trade.buyer, address);
           const tradeStyle = getTradeStyle(trade);
           return <Link key={index} to={"/escrow/" + trade.escrowId}>
             <Row className="my-1 border-bottom">

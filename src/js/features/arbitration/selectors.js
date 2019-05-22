@@ -1,4 +1,5 @@
 import { fromTokenDecimals } from '../../utils/numbers';
+import {addressCompare} from '../../utils/address';
 
 export const receipt = state => state.arbitration.receipt;
 export const error = state => state.arbitration.error;
@@ -12,7 +13,7 @@ export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;
   if (!arbitration) return null;
 
-  const token = Object.values(state.network.tokens).find((token) => token.address.toLowerCase() === arbitration.offer.asset.toLowerCase());
+  const token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, arbitration.offer.asset));
   if(!token) return null;
 
   return {

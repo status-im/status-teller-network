@@ -15,7 +15,7 @@ import Loading from '../../components/Loading';
 import ApproveSNTFunds from './components/ApproveSNTFunds';
 import ApproveTokenFunds from './components/ApproveTokenFunds';
 
-import {zeroAddress} from '../../utils/address';
+import {zeroAddress, addressCompare} from '../../utils/address';
 import { States } from '../../utils/transaction';
 
 import escrow from '../../features/escrow';
@@ -25,7 +25,7 @@ import arbitration from '../../features/arbitration';
 
 import "./index.scss";
 
-const {toBN, toChecksumAddress} = web3.utils;
+const {toBN} = web3.utils;
 
 class Escrow extends Component {
   componentDidMount(){
@@ -59,9 +59,9 @@ class Escrow extends Component {
 
   calculateRequiredSNT = () => {
     const {escrow, tokens, fee} = this.props;
-    const asset = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
+    const asset = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
 
-    if(toChecksumAddress(asset.address) !== toChecksumAddress(tokens.SNT.address)){
+    if(!addressCompare(asset.address, tokens.SNT.address)){
       return fee; // Only snt fee must be paid
     }
 
@@ -96,8 +96,8 @@ class Escrow extends Component {
 
     const arbitrationDetails = arbitration.arbitration;
 
-    const token = Object.keys(tokens).map(t => tokens[t]).find(x => toChecksumAddress(x.address) === toChecksumAddress(escrow.offer.asset));
-    const isBuyer = escrow.buyer === address;
+    const token = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
+    const isBuyer = addressCompare(escrow.buyer, address);
     const offer = this.getOffer(escrow, isBuyer);
     offer.token = token;
 
@@ -116,7 +116,7 @@ class Escrow extends Component {
       if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
 
       if(escrow.offer.asset !== zeroAddress) { // A token
-        if(toChecksumAddress(escrow.offer.asset) === toChecksumAddress(tokens.SNT.address)){
+        if(addressCompare(escrow.offer.asset, tokens.SNT.address)){
           showFundButton = true;
         } else {
           if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;

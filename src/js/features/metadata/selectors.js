@@ -1,14 +1,13 @@
-/* global web3 */
 import {PAYMENT_METHODS, MARKET_TYPES} from './constants';
+import {addressCompare} from '../../utils/address';
 
-const toChecksumAddress = web3.utils.toChecksumAddress;
 
 function enhanceOffer(state, offer) {
   return {
     ...offer,
     paymentMethodsForHuman: offer.paymentMethods.map((i) => PAYMENT_METHODS[i]).join(', '),
     rateForHuman: `${offer.margin}% ${MARKET_TYPES[offer.marketType]} CryptoCompare`,
-    token: Object.values(state.network.tokens).find((token) => toChecksumAddress(token.address) === toChecksumAddress(offer.asset))
+    token: Object.values(state.network.tokens).find((token) => addressCompare(token.address, offer.asset))
   };
 }
 
@@ -19,7 +18,7 @@ export const getProfile = (state, address) => {
     return null;
   }
 
-  const offers = Object.values(state.metadata.offers).filter((offer) => offer.owner === lAddress) || [];
+  const offers = Object.values(state.metadata.offers).filter((offer) => addressCompare(offer.owner, lAddress)) || [];
   return {
     address: lAddress,
     ...state.metadata.users[lAddress],
@@ -56,6 +55,6 @@ export const getUsersWithOffers = (state) => {
   return Object.keys(state.metadata.users).map((address) => ({
     ...state.metadata.users[address],
     address,
-    offers: Object.values(state.metadata.offers).filter(offer => offer.owner === address)
+    offers: Object.values(state.metadata.offers).filter(offer => addressCompare(offer.owner, address))
   }));
 };

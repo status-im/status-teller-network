@@ -18,6 +18,8 @@ import CheckButton from '../../ui/CheckButton';
 import Identicon from "../../components/UserInformation/Identicon";
 import ConfirmDialog from "../../components/ConfirmDialog";
 
+import {addressCompare} from "../../utils/address";
+
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
 
 import './index.scss';
@@ -72,7 +74,7 @@ class Arbitration extends Component {
   resolveDispute = () => {
     this.setState({displayDialog: false, displayUsers: false});
 
-    this.props.resolveDispute(this.props.escrow.escrowId, this.state.selectedUser === this.props.escrow.buyer ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER);
+    this.props.resolveDispute(this.props.escrow.escrowId, addressCompare(this.state.selectedUser, this.props.escrow.buyer) ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER);
   }
 
   render() {
@@ -83,8 +85,8 @@ class Arbitration extends Component {
       return <Loading/>;
     }
 
-    if(escrow.buyer === address || escrow.seller === address) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
-    if(escrow.arbitrator !== address) return <ErrorInformation message="You are not the arbitrator of this dispute"/>;
+    if(addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
+    if(!addressCompare(escrow.arbitrator, address)) return <ErrorInformation message="You are not the arbitrator of this dispute"/>;
     
     if(loading) return <Loading mining={true} />;
 
@@ -118,11 +120,11 @@ class Arbitration extends Component {
                 <h2 className="text-center">Your decision</h2>
                 <p className="text-center">{escrow.tokenAmount} {escrow.token.symbol} goes to:</p>
                 <ButtonGroup vertical className="w-100">
-                  <CheckButton active={selectedUser === escrow.buyer} size="l" onClick={this.selectUser(escrow.buyer)}>
+                  <CheckButton active={addressCompare(selectedUser, escrow.buyer)} size="l" onClick={this.selectUser(escrow.buyer)}>
                     <Identicon seed={escrow.buyerInfo.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
                     {escrow.buyerInfo.username}
                   </CheckButton>
-                  <CheckButton active={selectedUser === escrow.seller} size="l" onClick={this.selectUser(escrow.seller)}>
+                  <CheckButton active={addressCompare(selectedUser, escrow.seller)} size="l" onClick={this.selectUser(escrow.seller)}>
                     <Identicon seed={escrow.sellerInfo.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
                     {escrow.sellerInfo.username}
                   </CheckButton>
