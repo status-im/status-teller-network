@@ -36,7 +36,6 @@ const DEFAULT_STATE = {
 };
 
 function reducer(state = DEFAULT_STATE, action) {
-  let escrows = state.escrows;
   switch (action.type) {
     case GET_DISPUTED_ESCROWS:
       return {
