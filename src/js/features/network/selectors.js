@@ -10,9 +10,9 @@ export const getBalance = (state, symbol, address) => {
     return null;
   }
   if (!address || addressCompare(address, state.network.address)) {
-    return parseInt(state.network.tokens[symbol].balance, 10);
+    return state.network.tokens[symbol].balance;
   }
-  return state.network.tokens[symbol].balances ? parseInt(state.network.tokens[symbol].balances[address], 10) : null;
+  return state.network.tokens[symbol].balances ? state.network.tokens[symbol].balances[address] : null;
 };
 export const getTokensWithPositiveBalance = (state) => (
   Object.values(state.network.tokens).filter((token) => token.balance > 0)
