@@ -58,3 +58,5 @@ export const getUsersWithOffers = (state) => {
     offers: Object.values(state.metadata.offers).filter(offer => addressCompare(offer.owner, address))
   }));
 };
+
+export const getAllUsers = state => state.metadata.users;

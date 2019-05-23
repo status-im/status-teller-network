@@ -1,9 +1,10 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
-  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS
+  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER
 } from './constants';
 
 export const load = (address) => ({type: LOAD, address});
+export const loadUserOnly = (address) => ({type: LOAD_USER, address});
 export const loadOffers = (address) => ({ type: LOAD_OFFERS, address });
 
 export const addOffer = (seller) => ({

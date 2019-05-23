@@ -1,7 +1,7 @@
 /* global web3 */
 export function compactAddress(addr, numberOfChars) {
 
-  if(addr.length <= 5 + (numberOfChars * 2)){  //   5 represents these chars 0x... 
+  if(addr.length <= 5 + (numberOfChars * 2)){  //   5 represents these chars 0x...
     return addr;
   }
 
@@ -14,7 +14,11 @@ export const zeroBytes = zeroAddress + '000000000000000000000000';
 
 export const contactCodeRegExp = /^0x[0-9a-fA-F]{130}$/;
 
+export const toChecksumAddress = (address) => {
+  return web3.utils.toChecksumAddress(address);
+};
+
 export const addressCompare = (address1, address2) => {
   if(!address1 || !address2) return false;
-  return web3.utils.toChecksumAddress(address1) === web3.utils.toChecksumAddress(address2);
+  return toChecksumAddress(address1) === toChecksumAddress(address2);
 };

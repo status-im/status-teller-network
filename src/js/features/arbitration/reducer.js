@@ -26,6 +26,7 @@ import {
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
+import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   escrows: [], arbitration: null, arbitrators: [], licenseOwner: false,
@@ -112,7 +113,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_ARBITRATORS_SUCCEEDED:
       return {
         ...state,
-        arbitrators: action.arbitrators
+        arbitrators: action.arbitrators.map(arbitratorAddr => toChecksumAddress(arbitratorAddr))
       };
     case BUY_LICENSE:
       return {
