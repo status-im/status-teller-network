@@ -179,11 +179,20 @@ function reducer(state = DEFAULT_STATE, action) {
         escrows: escrowsClone
       };
     case RATE_TRANSACTION:
+      escrowsClone[action.escrowId] = {
+        ...escrowsClone[action.escrowId],
+        rating: action.rating
+      };
       return {
         ...state,
-        rateStatus: States.pending
+        rateStatus: States.pending,
+        escrows: escrowsClone
       };
     case RATE_TRANSACTION_SUCCEEDED: {
+      escrowsClone[action.escrowId] = {
+        ...escrowsClone[action.escrowId],
+        rating: action.rating
+      };
       return {
         ...state,
         rateStatus: States.success,
@@ -191,6 +200,10 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case RATE_TRANSACTION_FAILED:
+      escrowsClone[action.escrowId] = {
+        ...escrowsClone[action.escrowId],
+        rating: 0
+      };
       return {
         ...state,
         rateStatus: States.failed,

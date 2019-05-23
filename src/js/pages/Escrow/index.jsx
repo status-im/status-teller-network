@@ -88,7 +88,8 @@ class Escrow extends Component {
   }
 
   render() {
-    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus, cancelEscrow, releaseEscrow, releaseStatus, payStatus, payEscrow, rateTransaction, approvalTxHash} = this.props;
+    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus,
+      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow || (!sntAllowance && sntAllowance !== 0)) return <Loading page={true} />;
@@ -133,6 +134,7 @@ class Escrow extends Component {
                                       payStatus={payStatus}
                                       payAction={payEscrow}
                                       rateTransaction={rateTransaction}
+                                      rateStatus={rateStatus}
                                       arbitrationDetails={arbitrationDetails} /> }
 
         { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
@@ -179,6 +181,7 @@ Escrow.propTypes = {
   releaseStatus: PropTypes.string,
   releaseEscrow: PropTypes.func,
   payStatus: PropTypes.string,
+  rateStatus: PropTypes.string,
   payEscrow: PropTypes.func,
   cancelStatus: PropTypes.string,
   approvalTxHash: PropTypes.string,
@@ -208,6 +211,7 @@ const mapStateToProps = (state, props) => {
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
     payStatus: escrow.selectors.getPaidEscrowStatus(state),
+    rateStatus: escrow.selectors.getRatingStatus(state),
     cancelStatus
   };
 };

@@ -19,15 +19,21 @@ import four from "../../../../images/escrow/04.png";
 
 import Dispute from "./Dispute";
 
-const Done = ({trade, rateTransaction}) => (
+const Done = ({trade, rateTransaction, rateStatus}) => (
   <Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
     <h2 className="mt-4">Done.</h2>
     {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
-    <Reputation trade={trade} rateTransaction={rateTransaction} size="l"/>
+    <Reputation trade={trade} rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null} size="l"/>
     <p className="text-muted mb-0 mt-4">Thank you for using Status Teller Network</p>
   </Fragment>
 );
+
+Done.propTypes = {
+  trade: PropTypes.object,
+  rateTransaction: PropTypes.func,
+  rateStatus: PropTypes.string
+};
 
 const Canceled = () => (
   <Fragment>
@@ -35,11 +41,6 @@ const Canceled = () => (
     <h2 className="mt-4">Canceled</h2>
   </Fragment>
 );
-
-Done.propTypes = {
-  trade: PropTypes.object,
-  rateTransaction: PropTypes.func
-};
 
 const Unreleased = () => (
   <Fragment>
@@ -100,7 +101,7 @@ PreFund.propTypes = {
 
 class CardEscrowBuyer extends Component {
   render(){
-    const {trade, payStatus, payAction, rateTransaction, arbitrationDetails} = this.props;
+    const {trade, payStatus, payAction, rateTransaction, arbitrationDetails, rateStatus} = this.props;
 
     const showLoading = payStatus === States.pending;
     const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
@@ -122,7 +123,7 @@ class CardEscrowBuyer extends Component {
         {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund statusContactCode={trade.seller.statusContactCode} /> }
         {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> }
         {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> }
-        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} /> }
+        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} rateStatus={rateStatus} /> }
         {!showLoading && trade.status === escrow.helpers.tradeStates.canceled && <Canceled/> }
         {showLoading && <Mining txHash={trade.txHash} /> }
       </CardBody>
@@ -133,6 +134,7 @@ class CardEscrowBuyer extends Component {
 CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
   payStatus: PropTypes.string,
+  rateStatus: PropTypes.string,
   payAction: PropTypes.func,
   rateTransaction: PropTypes.func,
   arbitrationDetails: PropTypes.object

@@ -155,7 +155,7 @@ Trade.propTypes = {
   createEscrowStatus: PropTypes.string,
   escrowId: PropTypes.string,
   price: PropTypes.number,
-  sellerBalance: PropTypes.number
+  sellerBalance: PropTypes.string
 };
 
 const mapStateToProps = (state) => {

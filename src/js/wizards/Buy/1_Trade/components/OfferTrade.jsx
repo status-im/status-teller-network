@@ -48,8 +48,14 @@ OfferTrade.propTypes = {
   statusContactCode: PropTypes.string,
   name: PropTypes.string,
   currency: PropTypes.object,
-  minToken: PropTypes.number,
-  maxToken: PropTypes.number,
+  minToken: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  maxToken: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   asset: PropTypes.string,
   onClick: PropTypes.func,
   price: PropTypes.number,
