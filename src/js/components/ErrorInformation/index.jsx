@@ -25,7 +25,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
     </p>
     <p>
       {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t('errorInformation.cancel')}</Button>}
-    {retry && <Button color="primary" onClick={retry}>{t('errorInformation.retry')}</Button>}
+      {retry && <Button color="primary" onClick={retry}>{t('errorInformation.retry')}</Button>}
     </p>
   </div>
 );

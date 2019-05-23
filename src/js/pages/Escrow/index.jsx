@@ -24,6 +24,7 @@ import approval from '../../features/approval';
 import arbitration from '../../features/arbitration';
 
 import "./index.scss";
+import ErrorInformation from "../../components/ErrorInformation";
 
 const {toBN} = web3.utils;
 
@@ -67,15 +68,15 @@ class Escrow extends Component {
 
     // SNT trade amount + fee
     return toBN(fee).add(toBN(escrow.tradeAmount)).toString();
-  }
+  };
 
   handleApprove = (amount, token) => () => {
     this.props.approve(token, amount);
-  }
+  };
 
   handleReset = token => () => {
     this.props.approve(token, '0');
-  }
+  };
 
   getOffer = (escrow, isBuyer) => {
     const offer = escrow.offer;
@@ -85,11 +86,11 @@ class Escrow extends Component {
       offer.user = escrow.buyerInfo;
     }
     return offer;
-  }
+  };
 
   render() {
     let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus,
-      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash} = this.props;
+      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, approvalError} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow || (!sntAllowance && sntAllowance !== 0)) return <Loading page={true} />;
@@ -114,6 +115,11 @@ class Escrow extends Component {
 
     // Show token approval UI
     if(showApproveFundsScreen) {
+      if (approvalError) {
+        return <ErrorInformation message={approvalError}
+                                 retry={(!isSNTapproved || shouldResetSNT) ? this.handleApprove(requiredSNT, tokens.SNT.address) : this.handleApprove(requiredToken, token.address)}
+                                 transaction={true} cancel={this.props.cancelApproval}/>;
+      }
       if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
 
       if(escrow.offer.asset !== zeroAddress) { // A token
@@ -169,6 +175,7 @@ Escrow.propTypes = {
   fee: PropTypes.string,
   address: PropTypes.string,
   sntAllowance: PropTypes.string,
+  approvalError: PropTypes.string,
   tokenAllowance: PropTypes.string,
   getSNTAllowance: PropTypes.func,
   getTokenAllowance: PropTypes.func,
@@ -186,6 +193,7 @@ Escrow.propTypes = {
   cancelStatus: PropTypes.string,
   approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
+  cancelApproval: PropTypes.func,
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
   loadArbitration: PropTypes.func
@@ -206,6 +214,7 @@ const mapStateToProps = (state, props) => {
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     approvalTxHash: approval.selectors.txHash(state),
+    approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
     loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
@@ -224,6 +233,7 @@ export default connect(
     getSNTAllowance: approval.actions.getSNTAllowance,
     getTokenAllowance: approval.actions.getTokenAllowance,
     approve: approval.actions.approve,
+    cancelApproval: approval.actions.cancelApproval,
     fundEscrow: escrow.actions.fundEscrow,
     resetStatus: escrow.actions.resetStatus,
     releaseEscrow: escrow.actions.releaseEscrow,
