@@ -39,9 +39,7 @@ import SellCurrency from '../wizards/Sell/5_Currency';
 import SellMargin from '../wizards/Sell/6_Margin';
 
 // Tmp
-import EscrowsContainer from '../pages/tmp/EscrowsContainer';
 import SignatureContainer from '../pages/tmp/SignatureContainer';
-import ArbitrationContainer from '../pages/tmp/ArbitrationContainer';
 
 import prices from '../features/prices';
 import network from '../features/network';
@@ -132,9 +130,7 @@ class App extends Component {
               ]}/>
             }
 
-            <Route path="/tmp/escrows" component={EscrowsContainer}/>
             <Route path="/tmp/signature" component={SignatureContainer}/>
-            <Route path="/tmp/arbitration" component={ArbitrationContainer}/>
 
             <Route component={fourOFour}/>
           </Switch>

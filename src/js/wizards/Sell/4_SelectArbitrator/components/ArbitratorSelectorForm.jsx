@@ -6,35 +6,31 @@ import {withNamespaces} from 'react-i18next';
 import {compactAddress} from '../../../../utils/address';
 
 class ArbitratorSelectorForm extends Component {
-  onInputChange = (text) => {
-    const arbitrator = this.props.arbitrators.find(x => x === text);
-    if (arbitrator) {
-      this.props.changeArbitrator(arbitrator);
-    }
-
-  };
-
   onChange = (items) => {
     if(items.length){
       const item = items[0];
-      this.props.changeArbitrator(item);
+      const index = item.substring(0, item.indexOf(' - '));
+      this.props.changeArbitrator(this.props.arbitrators[parseInt(index, 10)]);
     }
   };
 
   render() {
     const {t, value} = this.props;
     let defaultSelectedValue = [];
-    if (value) {
-      const arbitrator = this.props.arbitrators.find(x => x === value);
-      defaultSelectedValue.push(arbitrator);
-    }
 
-    const arbitratorStrings = this.props.arbitrators.map(arbitratorAddr => {
+    const arbitratorStrings = this.props.arbitrators.map((arbitratorAddr, index) => {
       const user = this.props.users[arbitratorAddr];
+
+      let text;
       if (!user) {
-        return arbitratorAddr + ' - Loading...';
+        text = arbitratorAddr + ' - Loading...';
+      } else {
+        text = `${index} - ${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
       }
-      return `${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
+      if (value && value === arbitratorAddr) {
+        defaultSelectedValue.push(text);
+      }
+      return text;
     });
 
     return (
@@ -46,7 +42,6 @@ class ArbitratorSelectorForm extends Component {
             onChange={this.onChange}
             options={arbitratorStrings}
             placeholder={t("arbitratorSelectorForm.placeholder")}
-            onInputChange={this.onInputChange}
             submitFormOnEnter={true}
             emptyLabel={t("arbitratorSelectorForm.emptyLabel")}
             defaultSelected={defaultSelectedValue}
