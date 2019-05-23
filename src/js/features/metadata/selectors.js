@@ -1,6 +1,5 @@
 import {PAYMENT_METHODS, MARKET_TYPES} from './constants';
-import {addressCompare} from '../../utils/address';
-
+import {addressCompare, toChecksumAddress} from '../../utils/address';
 
 function enhanceOffer(state, offer) {
   return {
@@ -12,7 +11,10 @@ function enhanceOffer(state, offer) {
 }
 
 export const getProfile = (state, address) => {
-  const lAddress = address.toLowerCase();
+  if (!address) {
+    return null;
+  }
+  const lAddress = toChecksumAddress(address);
 
   if (!state.metadata.users[lAddress]) {
     return null;
