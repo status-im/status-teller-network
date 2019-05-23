@@ -1,4 +1,4 @@
-import { APPROVE_TOKEN, GET_SNT_ALLOWANCE, GET_TOKEN_ALLOWANCE } from './constants';
+import { APPROVE_TOKEN, GET_SNT_ALLOWANCE, GET_TOKEN_ALLOWANCE, CANCEL_APPROVE_TOKEN } from './constants';
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
@@ -10,6 +10,8 @@ export const approve = (tokenAddress, amount) => {
     toSend: ERC20Token.methods.approve(Escrow.options.address, amount)
   };
 };
+
+export const cancelApproval = () => ({ type: CANCEL_APPROVE_TOKEN});
 
 export const getSNTAllowance = () => ({ type: GET_SNT_ALLOWANCE});
 

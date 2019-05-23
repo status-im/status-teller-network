@@ -1,4 +1,4 @@
-import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
+import { APPROVE_SUCCEEDED, APPROVE_FAILED, APPROVE_PRE_SUCCEEDED, GET_SNT_ALLOWANCE_SUCCEEDED, GET_TOKEN_ALLOWANCE_SUCCEEDED, CANCEL_APPROVE_TOKEN} from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
@@ -17,6 +17,14 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, ...{
           error: action.error,
           txHash: ''
+        }
+      };
+    case CANCEL_APPROVE_TOKEN:
+      return {
+        ...state, ...{
+          error: '',
+          txHash: '',
+          loading: false
         }
       };
     case APPROVE_PRE_SUCCEEDED:
