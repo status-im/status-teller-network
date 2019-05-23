@@ -16,6 +16,7 @@ import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import merge from 'merge';
 
 const DEFAULT_STATE = {
+  escrows: {},
   createEscrowStatus: States.none,
   fundEscrowStatus: States.none,
   releaseStatus: States.none,

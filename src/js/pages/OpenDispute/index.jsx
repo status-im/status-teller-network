@@ -12,7 +12,7 @@ import successImage from '../../../images/success.png';
 
 class OpenDispute extends Component {
   state = {
-    value: '',
+    motive: '',
     displayDialog: false
   }
 
@@ -30,7 +30,7 @@ class OpenDispute extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({value: e.target.value});
+    this.setState({motive: e.target.value});
   }
 
   displayDialog = show => () => {
@@ -42,7 +42,7 @@ class OpenDispute extends Component {
   }
 
   handleClickDialog = escrowId => () => {
-    this.props.openDispute(escrowId);
+    this.props.openDispute(escrowId, this.state.motive);
   }
 
   render(){
@@ -74,13 +74,13 @@ class OpenDispute extends Component {
             rows="7"
             placeholder="What has happened?"
             className="form-control mb-2"
-            value={this.state.value}
+            value={this.state.motive}
             onChange={this.handleChange}
             validations={[]}
           />
-          <p className="text-muted">The process of resolving your dispute could take up on 5 days. You will be sharing your chat logs with an arbiter.</p>
+          <p className="text-muted">The process of resolving your dispute could take up to 5 days.</p>
           <p className="text-center">
-            <Button color="primary" disabled={!this.state.value} onClick={this.displayDialog(true)}>Send</Button>
+            <Button color="primary" disabled={!this.state.motive} onClick={this.displayDialog(true)}>Send</Button>
           </p>
         </Form>
         <ConfirmDialog display={this.state.displayDialog} onConfirm={this.handleClickDialog(escrow.escrowId)} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" cancelText="No" />

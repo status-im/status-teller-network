@@ -178,7 +178,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
         require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(metadataStore.getArbitrator(_offerId) != _buyer, "Cannot buy offers where buyer is arbitrator");
-        
+
         escrowId = transactions.length++;
 
         transactions[escrowId] = EscrowTransaction({
@@ -391,14 +391,14 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
      * @param _escrowId Id of the escrow
      * @dev Consider using Aragon Court for this.
      */
-    function openCase(uint _escrowId) public {
+    function openCase(uint _escrowId, string memory motive) public {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!arbitration.exists(_escrowId), "Case already exist");
         require(trx.buyer == msg.sender || metadataStore.getOfferOwner(trx.offerId) == msg.sender, "Only a buyer or seller can open a case");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        arbitration.openCase(_escrowId, msg.sender);
+        arbitration.openCase(_escrowId, msg.sender, motive);
     }
 
     /**
@@ -407,7 +407,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCase(uint _escrowId, bytes calldata _signature) external {
+    function openCaseWithSignature(uint _escrowId, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!arbitration.exists(_escrowId), "Case already exist");
@@ -417,7 +417,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
 
         require(trx.buyer == senderAddress || metadataStore.getOfferOwner(trx.offerId) == senderAddress, "Only a buyer or seller can open a case");
 
-        arbitration.openCase(_escrowId, msg.sender);
+        // FIXME get actual motive from the signature if possible
+        arbitration.openCase(_escrowId, msg.sender, '');
     }
 
     /**

@@ -14,6 +14,7 @@ contract Arbitration is Ownable, License {
         address openBy;
         address arbitrator;
         ArbitrationResult result;
+        string motive;
     }
 
     event ArbitratorChanged(address arbitrator);
@@ -21,10 +22,10 @@ contract Arbitration is Ownable, License {
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
-    
+
     Arbitrable public escrow;
 
-    constructor(address payable _tokenAddress, uint256 _price) 
+    constructor(address payable _tokenAddress, uint256 _price)
         License(_tokenAddress, _price)
         public {
     }
@@ -53,14 +54,15 @@ contract Arbitration is Ownable, License {
     }
 
 
-    function openCase(uint _escrowId, address _openBy) public {
+    function openCase(uint _escrowId, address _openBy, string memory motive) public {
         assert(msg.sender == address(escrow)); // Only the escrow address can open cases
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: _openBy,
             arbitrator: address(0),
-            result: ArbitrationResult.UNSOLVED
+            result: ArbitrationResult.UNSOLVED,
+            motive: motive
         });
 
         emit ArbitrationRequired(_escrowId, block.timestamp);

@@ -7,7 +7,6 @@ import {Button, Col, Row, Modal, ModalBody, ButtonGroup, ModalFooter} from "reac
 import ContactUser from './components/ContactUser';
 import TradeParticipant from './components/TradeParticipant';
 import EscrowDetail from './components/EscrowDetail';
-import ReadChatLogs from './components/ReadChatLogs';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 
@@ -26,9 +25,9 @@ import './index.scss';
 
 const getArbitrationStatus = status => {
   switch(status){
-    case ARBITRATION_UNSOLVED: 
+    case ARBITRATION_UNSOLVED:
       return "open";
-    case ARBITRATION_SOLVED_BUYER: 
+    case ARBITRATION_SOLVED_BUYER:
     case ARBITRATION_SOLVED_SELLER:
       return "resolved";
     default:
@@ -87,23 +86,20 @@ class Arbitration extends Component {
 
     if(addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
     if(!addressCompare(escrow.arbitrator, address)) return <ErrorInformation message="You are not the arbitrator of this dispute"/>;
-    
+
     if(loading) return <Loading mining={true} />;
 
     const status = getArbitrationStatus(escrow.arbitration.result);
     return (
       <div className="escrow">
         <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
-        <div className="arbitrationMotive">
-          TODO: Add arbitration motive here
-        </div>
+        <p className="arbitrationMotive mt-3 mb-0">{escrow.arbitration.motive}</p>
         <span className="triangle" />
         <TradeParticipant address={escrow.arbitration.openBy} info={escrow.arbitration.openBy === escrow.buyer ? escrow.buyerInfo : escrow.sellerInfo} />
         <EscrowDetail escrow={escrow} />
         <h5 className="mt-4">Trade participants</h5>
         <TradeParticipant address={escrow.buyer} info={escrow.buyerInfo} />
         <TradeParticipant address={escrow.seller} info={escrow.sellerInfo} />
-        <ReadChatLogs/>
         <ContactUser username={escrow.buyerInfo.username} seed={escrow.buyer} statusContactCode={escrow.buyerInfo.statusContactCode} />
         <ContactUser username={escrow.sellerInfo.username} seed={escrow.seller} statusContactCode={escrow.sellerInfo.statusContactCode}  />
         {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
