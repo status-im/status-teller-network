@@ -19,7 +19,7 @@ export const resolveDispute = (escrowId, result) => {
   };
 };
 
-export const openDispute = (escrowId) => ({type: OPEN_DISPUTE, escrowId, toSend: Escrow.methods.openCase(escrowId)});
+export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: Escrow.methods.openCase(escrowId, motive || '')});
 
 export const loadArbitration = (escrowId) => {
   return {type: LOAD_ARBITRATION, escrowId};
