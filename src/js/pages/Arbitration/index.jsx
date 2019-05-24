@@ -151,6 +151,12 @@ class Arbitration extends Component {
     return (
       <div className="escrow">
         <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
+
+        {escrow.arbitration.result.toString() !== "0" && <Fragment>
+          <h3>Dispute resolved</h3>
+          <p><span className="font-weight-bold">Winner:</span> {escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER ? 'Buyer' : 'Seller'}</p>
+        </Fragment>}
+
         <p className="arbitrationMotive mt-3 mb-0">{escrow.arbitration.motive}</p>
         <span className="triangle"><img src={bubbleTriangle} alt="buble-triangle"/></span>
         <TradeParticipant address={escrow.arbitration.openBy}
@@ -159,8 +165,8 @@ class Arbitration extends Component {
         <EscrowDetail escrow={escrow}/>
 
         <h3 className="mt-4">Trade participants</h3>
-        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true}/>
-        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false}/>
+        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true} winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER}/>
+        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false} winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER}/>
 
         <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode} isBuyer={true}/>
         <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode} isBuyer={false}/>

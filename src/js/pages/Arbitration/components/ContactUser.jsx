@@ -6,7 +6,7 @@ import classnames from "classnames";
 
 const ContactUser = ({username, statusContactCode, isBuyer}) => (
   <a href={"https://get.status.im/user/" + statusContactCode} rel="noopener noreferrer" target="_blank">
-    <Row className="mt-4 gutterBottom">
+    <Row className="mt-3 gutterBottom">
       <Col xs="2">
         <div className="rounded-icon rounded-circle rounded-icon__blue">
           <Identicon seed={statusContactCode} className="rounded-circle border" scale={5}/>

@@ -40,11 +40,12 @@ body {
     text-transform: uppercase;
     position: relative;
     display: block;
-    margin: -14px auto 0 auto;
-    width: 73px;
+    max-width: 73px;
     background: #fff;
-    padding: 3px;
+    padding: 3px 5px;
     text-align: center;
+    top: -14px;
+    margin: 0 auto;
   }
 }
 
