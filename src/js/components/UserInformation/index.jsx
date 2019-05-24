@@ -9,7 +9,7 @@ const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbR
   <Row className="border rounded py-4 m-0 text-center shadow-sm">
     <Col xs="12">
       <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
-      {isArbitrator && <span className="arbiterLabel">Arbiter</span>}
+      {isArbitrator && <span className="icon-badge">Arbiter</span>}
     </Col>
     <Col xs="12">
       <h4 className="font-weight-bold">{username}</h4>

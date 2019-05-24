@@ -1,8 +1,10 @@
+@import "../../../css/variable-overrides";
+
 .arbitrationStatus {
   border-radius: 4px;
-  background: #000;
+  background: $black;
   text-transform: uppercase;
-  color: #fff;
+  color: $white;
   font-weight: bold;
   font-size: 11px;
   letter-spacing: 1px;
@@ -16,21 +18,15 @@
 }
 
 .arbitrationStatus.open {
-  background: #44D058;
+  background: $success;
 }
 
 .arbitrationStatus.resolved {
-  background: #4360DF;
-}
-
-h5 {
-  font-size: 17px !important;
-  font-weight: bold !important;
-  padding-bottom: .8rem !important;
+  background: $primary;
 }
 
 .arbitrationMotive {
-  background: #EEF2F5;
+  background: $secondary;
   border-radius: 8px;
   padding: 10px;
 }
@@ -41,4 +37,11 @@ h5 {
   top: -15px;
   left: 18px;
   margin-bottom: -8px;
+}
+
+body .seller-text {
+  background-color: $gray-300;
+}
+body .buyer-text {
+  background-color: $gray-100;
 }
