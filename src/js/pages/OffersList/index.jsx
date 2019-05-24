@@ -17,6 +17,7 @@ import Loading from '../../components/Loading';
 import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
+import {addressCompare} from "../../utils/address";
 
 class OffersList extends Component {
   constructor(props) {
@@ -90,12 +91,9 @@ class OffersList extends Component {
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
     }
-    if (this.state.paymentMethodFilter !== -1) {
-      filteredOffers = filteredOffers.filter((offer) => offer.paymentMethods.includes(this.state.paymentMethodFilter));
-    }
 
     if (this.state.tokenFilter !== '') {
-      filteredOffers = filteredOffers.filter((offer) => offer.asset === this.state.tokenFilter);
+      filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
 
     let groupedOffers = filteredOffers.reduce((grouped, offer) => {
@@ -116,9 +114,14 @@ class OffersList extends Component {
     });
 
     let groupedOffersByUser = {};
+    let sellers = {};
     Object.keys(groupedOffers).forEach(paymentMethod => {
+      if (this.state.paymentMethodFilter !== -1 && paymentMethod.toString() !== this.state.paymentMethodFilter.toString()) {
+        return;
+      }
       const offersForMethod = groupedOffers[paymentMethod];
       groupedOffersByUser[paymentMethod] = offersForMethod.reduce((grouped, offer) => {
+        sellers[offer.owner] = true;
         if (!grouped[offer.owner]) {
           grouped[offer.owner] = [];
         }
@@ -130,7 +133,7 @@ class OffersList extends Component {
     return (
       <Fragment>
         <h2 className="text-center">
-          We found {this.props.offers.length} sellers worldwide <FontAwesomeIcon icon={faGlobe}/>
+          We found {Object.keys(sellers).length} sellers worldwide <FontAwesomeIcon icon={faGlobe}/>
         </h2>
 
         <SorterFilter paymentMethods={PAYMENT_METHODS}
@@ -154,7 +157,7 @@ class OffersList extends Component {
                       color="link"
                       className="float-right p-0"
                       to="/offers/map">On Map
-                      <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
+                <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
               </Button>
             </h4>
             {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer
