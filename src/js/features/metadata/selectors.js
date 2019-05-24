@@ -62,3 +62,5 @@ export const getUsersWithOffers = (state) => {
 };
 
 export const getAllUsers = state => state.metadata.users;
+
+export const getAddOfferTx = state => state.metadata.addOfferTx;

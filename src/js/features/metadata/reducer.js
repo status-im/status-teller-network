@@ -1,6 +1,6 @@
 import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
-  ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS,
+  ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED
 } from './constants';
@@ -11,6 +11,7 @@ import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   addOfferStatus: States.none,
+  addOfferTx: '',
   updateUserStatus: States.none,
   users: {},
   offers: {}
@@ -30,11 +31,20 @@ function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case RESET_ADD_OFFER_STATUS:
       return {
-        ...state, addOfferStatus: States.none
+        ...state,
+        addOfferStatus: States.none,
+        addOfferTx: ''
       };
     case ADD_OFFER:
       return {
-        ...state, addOfferStatus: States.pending
+        ...state,
+        addOfferStatus: States.pending,
+        addOfferTx: ''
+      };
+    case ADD_OFFER_PRE_SUCCESS:
+      return {
+        ...state,
+        addOfferTx: action.txHash
       };
     case ADD_OFFER_SUCCEEDED: {
       return {
