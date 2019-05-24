@@ -17,6 +17,7 @@ import Loading from '../../components/Loading';
 import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
+import {addressCompare} from "../../utils/address";
 
 class OffersList extends Component {
   constructor(props) {
@@ -92,7 +93,7 @@ class OffersList extends Component {
     }
 
     if (this.state.tokenFilter !== '') {
-      filteredOffers = filteredOffers.filter((offer) => offer.asset === this.state.tokenFilter);
+      filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
 
     let groupedOffers = filteredOffers.reduce((grouped, offer) => {
