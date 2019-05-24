@@ -3,14 +3,12 @@
   background: #000;
   text-transform: uppercase;
   color: #fff;
-  font-family: Inter;
-  font-style: normal;
   font-weight: bold;
   font-size: 11px;
-  line-height: normal;
-  text-align: center;
   letter-spacing: 1px;
   padding: 3px 10px;
+  position: relative;
+  top: -3px;
 }
 
 .arbitrationDialog button svg {
@@ -38,9 +36,9 @@ h5 {
 }
 
 .triangle {
-  width: 20px;
-  height: 8px;
-  background: url(/images/diamond.png) no-repeat bottom center;
   display: block;
-  margin: 0 0 5px 20px;
+  position: relative;
+  top: -15px;
+  left: 18px;
+  margin-bottom: -8px;
 }
