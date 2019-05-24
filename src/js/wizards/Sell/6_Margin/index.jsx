@@ -38,7 +38,7 @@ class Margin extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.seller.currency) {
+    if (!this.props.seller.currency && this.props.addOfferStatus !== States.success) {
       this.props.wizard.previous();
     } else {
       this.setState({ready: true});
