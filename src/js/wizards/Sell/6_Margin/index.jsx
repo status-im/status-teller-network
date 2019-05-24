@@ -38,7 +38,7 @@ class Margin extends Component {
   };
 
   componentDidMount() {
-    if (!this.props.seller.currency) {
+    if (!this.props.seller.currency && this.props.addOfferStatus !== States.success) {
       this.props.wizard.previous();
     } else {
       this.setState({ready: true});
@@ -79,7 +79,7 @@ class Margin extends Component {
 
     switch(this.props.addOfferStatus){
       case States.pending:
-        return <Loading mining/>;
+        return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
         return <ErrorInformation transaction retry={this.postOffer} cancel={this.props.resetAddOfferStatus}/>;
       case States.none:
@@ -112,7 +112,8 @@ Margin.propTypes = {
   wizard: PropTypes.object,
   footer: PropTypes.object,
   getFee: PropTypes.func,
-  fee: PropTypes.string
+  fee: PropTypes.string,
+  txHash: PropTypes.string
 };
 
 const mapStateToProps = state => ({
@@ -120,7 +121,8 @@ const mapStateToProps = state => ({
   addOfferStatus: metadata.selectors.getAddOfferStatus(state),
   token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
   prices: prices.selectors.getPrices(state),
-  fee: escrow.selectors.getFee(state)
+  fee: escrow.selectors.getFee(state),
+  txHash: metadata.selectors.getAddOfferTx(state)
 });
 
 export default connect(

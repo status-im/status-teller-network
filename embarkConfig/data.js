@@ -120,10 +120,10 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
       await rate.send({from: buyerAddress, gas: gas + 1000});
     }));
 
-    
+
     console.log('Creating arbitrations');
 
-    
+
     await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;
@@ -141,8 +141,8 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
       const pay = deps.contracts.Escrow.methods.pay(escrowId);
       gas = await pay.estimateGas({from: buyerAddress});
       receipt = await pay.send({from: buyerAddress, gas: gas + 1000});
-      
-      const openCase = deps.contracts.Escrow.methods.openCase(escrowId);
+
+      const openCase = deps.contracts.Escrow.methods.openCase(escrowId, 'My Motive is...');
       gas = await openCase.estimateGas({from: buyerAddress});
       receipt = await openCase.send({from: buyerAddress, gas: gas + 1000});
     }));
