@@ -48,16 +48,10 @@ export function *doGetEscrows() {
       const escrowId = events[i].returnValues.escrowId;
 
       const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-      const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-      const buyer = yield MetadataStore.methods.users(buyerId).call();
       const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
-      const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
-      const seller = yield MetadataStore.methods.users(sellerId).call();
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
-      escrow.buyerInfo = buyer;
-      escrow.sellerInfo = seller;
       escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowId).call);
       escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
 
@@ -82,20 +76,13 @@ export function *onGetEscrows() {
 export function *doLoadArbitration({escrowId}) {
   try {
     const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-    const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-    const buyer = yield MetadataStore.methods.users(buyerId).call();
     const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
-    const sellerId = yield MetadataStore.methods.addressToUser(offer.owner).call();
-    const seller = yield MetadataStore.methods.users(sellerId).call();
 
     const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
 
-    // TODO: remove buyer info from here, we should get it from the state
     escrow.createDate = moment(events[0].returnValues.date * 1000).format("DD.MM.YY");
     escrow.escrowId = escrowId;
     escrow.seller = offer.owner;
-    escrow.buyerInfo = buyer;
-    escrow.sellerInfo = seller;
     escrow.offer = offer;
     escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowId).call);
 
