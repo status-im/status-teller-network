@@ -93,7 +93,9 @@ class Escrow extends Component {
       cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, approvalError} = this.props;
     const {showApproveFundsScreen} = this.state;
 
-    if(!escrow || (!sntAllowance && sntAllowance !== 0)) return <Loading page={true} />;
+    if(!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration) {
+      return <Loading page={true} />;
+    }
     if(loading) return <Loading mining={true} txHash={escrow.txHash || approvalTxHash}/>;
 
     const arbitrationDetails = arbitration.arbitration;

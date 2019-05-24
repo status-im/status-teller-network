@@ -39,7 +39,7 @@ const getTradeStyle = (trade, isBuyer) => {
     case tradeStates.expired:
       return {text: 'Expired', className: 'bg-secondary'};
     case tradeStates.arbitration_open:
-      return {text: 'Arbitration', className: 'bg-danger'};
+      return {text: 'Arbitration', className: 'bg-warning'};
     case tradeStates.arbitration_closed: {
       let className;
       if (trade.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER) {
