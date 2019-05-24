@@ -32,6 +32,20 @@ body {
   .clickable {
     cursor: pointer;
   }
+
+  .icon-badge {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 140px;
+    font-size: 10px;
+    text-transform: uppercase;
+    position: relative;
+    display: block;
+    margin: -14px auto 0 auto;
+    width: 73px;
+    background: #fff;
+    padding: 3px;
+    text-align: center;
+  }
 }
 
 body > div {

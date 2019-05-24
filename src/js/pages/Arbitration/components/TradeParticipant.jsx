@@ -4,12 +4,18 @@ import {Row, Col} from 'reactstrap';
 import {Link} from "react-router-dom";
 import Reputation from '../../../components/Reputation';
 import Identicon from "../../../components/UserInformation/Identicon";
+import classnames from 'classnames';
 
-const TradeParticipant = ({profile, address}) => (
+const TradeParticipant = ({profile, address, isBuyer}) => (
   <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" tag={Link} to={`/profile/` + address}>
     <Col className="p-0">
-      <Row className="mb-2">
-        <Col xs={2}><Identicon seed={profile.statusContactCode} className="rounded-circle border" scale={5}/></Col>
+      <Row>
+        <Col xs={2} className="text-center">
+          <Identicon seed={profile.statusContactCode} className="rounded-circle border" scale={5}/>
+          <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer})}>
+            {isBuyer ? 'Buyer' : 'Seller'}
+          </span>
+        </Col>
         <Col xs={5}>
           <p className="seller-name m-0 font-weight-bold">{profile.username}</p>
           <p className="text-dark m-0">{profile.location}</p>
@@ -27,7 +33,8 @@ const TradeParticipant = ({profile, address}) => (
 
 TradeParticipant.propTypes = {
   profile: PropTypes.object,
-  address: PropTypes.string
+  address: PropTypes.string,
+  isBuyer: PropTypes.bool
 };
 
 

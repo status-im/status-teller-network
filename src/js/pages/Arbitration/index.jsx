@@ -24,6 +24,7 @@ import {addressCompare} from "../../utils/address";
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
 
 import './index.scss';
+import classnames from "classnames";
 
 const getArbitrationStatus = status => {
   switch(status){
@@ -94,9 +95,47 @@ class Arbitration extends Component {
     this.props.resolveDispute(this.props.escrow.escrowId, addressCompare(this.state.selectedUser, this.props.escrow.buyer) ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER);
   };
 
+  renderAccountInfo(userInfo, isBuyer) {
+    return (<Fragment>
+      <span className="text-center float-left mr-3">
+                      <Identicon seed={userInfo.statusContactCode} className="rounded-circle border" scale={5}/>
+                      <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer})}>{isBuyer ? 'Buyer' : 'Seller'}</span>
+                    </span>
+      <span className="d-inline-block pt-2">{userInfo.username}</span>
+    </Fragment>);
+  }
+
+  renderModal() {
+    const {escrow, buyerInfo, sellerInfo} = this.props;
+    const {displayUsers, selectedUser} = this.state;
+
+    return (<Modal isOpen={displayUsers} toggle={this.handleClose} backdrop={true} className="arbitrationDialog">
+      <ModalBody>
+        <h2 className="text-center">Your decision</h2>
+        <p className="text-center">{escrow.tokenAmount} {escrow.token.symbol} goes to:</p>
+        <ButtonGroup vertical className="w-100">
+          <CheckButton active={addressCompare(selectedUser, escrow.buyer)} size="l"
+                       onClick={this.selectUser(escrow.buyer)}>
+            {this.renderAccountInfo(buyerInfo, true)}
+          </CheckButton>
+          <CheckButton active={addressCompare(selectedUser, escrow.seller)} size="l"
+                       onClick={this.selectUser(escrow.seller)}>
+            {this.renderAccountInfo(sellerInfo, false)}
+          </CheckButton>
+        </ButtonGroup>
+        <p className="text-center">
+          <Button color="primary" onClick={this.displayDialog(true)} disabled={selectedUser === null}>Resolve
+            dispute</Button>
+        </p>
+      </ModalBody>
+      <ModalFooter>
+        <Button onClick={this.handleClose}>Cancel</Button>
+      </ModalFooter>
+    </Modal>);
+  }
+
   render() {
     const {escrow, address, loading, buyerInfo, sellerInfo} = this.props;
-    const {displayUsers, selectedUser} = this.state;
 
     if(!escrow || !buyerInfo || !sellerInfo){
       return <Loading/>;
@@ -108,22 +147,23 @@ class Arbitration extends Component {
     if(loading) return <Loading mining={true} />;
 
     const status = getArbitrationStatus(escrow.arbitration.result);
+    const openedByBuyer = addressCompare(escrow.arbitration.openBy, escrow.buyer);
     return (
       <div className="escrow">
         <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
         <p className="arbitrationMotive mt-3 mb-0">{escrow.arbitration.motive}</p>
         <span className="triangle"><img src={bubbleTriangle} alt="buble-triangle"/></span>
         <TradeParticipant address={escrow.arbitration.openBy}
-                          profile={escrow.arbitration.openBy === escrow.buyer ? buyerInfo : sellerInfo}/>
+                          profile={openedByBuyer ? buyerInfo : sellerInfo} isBuyer={openedByBuyer}/>
 
         <EscrowDetail escrow={escrow}/>
 
-        <h5 className="mt-4">Trade participants</h5>
-        <TradeParticipant address={escrow.buyer} profile={buyerInfo}/>
-        <TradeParticipant address={escrow.seller} profile={sellerInfo}/>
+        <h3 className="mt-4">Trade participants</h3>
+        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true}/>
+        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false}/>
 
-        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode}/>
-        <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode}/>
+        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode} isBuyer={true}/>
+        <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode} isBuyer={false}/>
 
         {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
           <Fragment>
@@ -135,28 +175,8 @@ class Arbitration extends Component {
               <Col xs={3} />
             </Row>
 
-            <Modal isOpen={displayUsers} toggle={this.handleClose} backdrop={true} className="arbitrationDialog" >
-              <ModalBody>
-                <h2 className="text-center">Your decision</h2>
-                <p className="text-center">{escrow.tokenAmount} {escrow.token.symbol} goes to:</p>
-                <ButtonGroup vertical className="w-100">
-                  <CheckButton active={addressCompare(selectedUser, escrow.buyer)} size="l" onClick={this.selectUser(escrow.buyer)}>
-                    <Identicon seed={buyerInfo.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
-                    {buyerInfo.username}
-                  </CheckButton>
-                  <CheckButton active={addressCompare(selectedUser, escrow.seller)} size="l" onClick={this.selectUser(escrow.seller)}>
-                    <Identicon seed={sellerInfo.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
-                    {sellerInfo.username}
-                  </CheckButton>
-                </ButtonGroup>
-                <p className="text-center">
-                  <Button color="primary" onClick={this.displayDialog(true)} disabled={selectedUser === null}>Resolve dispute</Button>
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button onClick={this.handleClose}>Cancel</Button>
-              </ModalFooter>
-            </Modal>
+            {this.renderModal()}
+
             <ConfirmDialog display={this.state.displayDialog} onConfirm={this.resolveDispute} onCancel={this.displayDialog(false)} title="Resolve dispute" content="Are you sure?" cancelText="No" />
           </Fragment>
         )}
