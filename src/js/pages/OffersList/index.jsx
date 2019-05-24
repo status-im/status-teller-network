@@ -90,9 +90,6 @@ class OffersList extends Component {
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
     }
-    if (this.state.paymentMethodFilter !== -1) {
-      filteredOffers = filteredOffers.filter((offer) => offer.paymentMethods.includes(this.state.paymentMethodFilter));
-    }
 
     if (this.state.tokenFilter !== '') {
       filteredOffers = filteredOffers.filter((offer) => offer.asset === this.state.tokenFilter);
@@ -146,22 +143,27 @@ class OffersList extends Component {
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
-        {Object.keys(groupedOffersByUser).map((paymentMethod) => (
-          <Fragment key={paymentMethod}>
-            <h4 className="clearfix mt-5">
-              {PAYMENT_METHODS[paymentMethod]}
-              <Button tag={Link}
-                      color="link"
-                      className="float-right p-0"
-                      to="/offers/map">On Map
-                      <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
-              </Button>
-            </h4>
-            {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer
-              key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]}
-              prices={this.props.prices} userAddress={this.props.address}/>)}
-          </Fragment>
-        ))}
+        {Object.keys(groupedOffersByUser).map((paymentMethod) => {
+          if (this.state.paymentMethodFilter !== -1 && paymentMethod.toString() !== this.state.paymentMethodFilter.toString()) {
+            return;
+          }
+          return (
+            <Fragment key={paymentMethod}>
+              <h4 className="clearfix mt-5">
+                {PAYMENT_METHODS[paymentMethod]}
+                <Button tag={Link}
+                        color="link"
+                        className="float-right p-0"
+                        to="/offers/map">On Map
+                  <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
+                </Button>
+              </h4>
+              {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer
+                key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]}
+                prices={this.props.prices} userAddress={this.props.address}/>)}
+            </Fragment>
+          );
+        })}
       </Fragment>
     );
   }
