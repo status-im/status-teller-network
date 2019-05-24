@@ -17,6 +17,7 @@ import metadata from '../../features/metadata';
 import CheckButton from '../../ui/CheckButton';
 import Identicon from "../../components/UserInformation/Identicon";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import bubbleTriangle from "../../../images/diamond.png";
 
 import {addressCompare} from "../../utils/address";
 
@@ -111,14 +112,19 @@ class Arbitration extends Component {
       <div className="escrow">
         <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
         <p className="arbitrationMotive mt-3 mb-0">{escrow.arbitration.motive}</p>
-        <span className="triangle" />{/* FIXME should be like a comic book bubble */}
-        <TradeParticipant address={escrow.arbitration.openBy} profile={escrow.arbitration.openBy === escrow.buyer ? buyerInfo : sellerInfo} />
-        <EscrowDetail escrow={escrow} />
+        <span className="triangle"><img src={bubbleTriangle} alt="buble-triangle"/></span>
+        <TradeParticipant address={escrow.arbitration.openBy}
+                          profile={escrow.arbitration.openBy === escrow.buyer ? buyerInfo : sellerInfo}/>
+
+        <EscrowDetail escrow={escrow}/>
+
         <h5 className="mt-4">Trade participants</h5>
-        <TradeParticipant address={escrow.buyer} profile={buyerInfo} />
-        <TradeParticipant address={escrow.seller} profile={sellerInfo} />
-        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode} />
-        <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode}  />
+        <TradeParticipant address={escrow.buyer} profile={buyerInfo}/>
+        <TradeParticipant address={escrow.seller} profile={sellerInfo}/>
+
+        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode}/>
+        <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode}/>
+
         {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
           <Fragment>
             <Row className="mt-4">
@@ -128,6 +134,7 @@ class Arbitration extends Component {
               </Col>
               <Col xs={3} />
             </Row>
+
             <Modal isOpen={displayUsers} toggle={this.handleClose} backdrop={true} className="arbitrationDialog" >
               <ModalBody>
                 <h2 className="text-center">Your decision</h2>
