@@ -103,6 +103,7 @@ exports[`Trades should render correctly 1`] = `
         </Col>
         <Col
           className="align-self-center"
+          md={4}
           tag="div"
           widths={
             Array [
@@ -123,6 +124,7 @@ exports[`Trades should render correctly 1`] = `
         </Col>
         <Col
           className="align-self-center text-center text-success"
+          md={3}
           tag="div"
           widths={
             Array [
