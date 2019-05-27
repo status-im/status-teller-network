@@ -11,7 +11,7 @@ export const arbitrators = state => state.arbitration.arbitrators;
 
 export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;
-  if (!arbitration) return null;
+  if (!arbitration || !arbitration.offer) return null;
 
   const token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, arbitration.offer.asset));
   if(!token) return null;

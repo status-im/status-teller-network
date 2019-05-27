@@ -16,6 +16,8 @@ import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
 import four from "../../../../images/escrow/04.png";
 import Loading from "../../../components/Loading";
+import ResolvedDispute from "./ResolvedDispute";
+import {ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../../features/arbitration/constants";
 
 import Dispute from "./Dispute";
 
@@ -111,8 +113,6 @@ Start.propTypes = {
   onClick: PropTypes.func
 };
 
-
-
 class CardEscrowSeller extends Component {
 
   state = {
@@ -167,43 +167,44 @@ class CardEscrowSeller extends Component {
       showFundButton = false;
     }
 
-    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result.toString() !== "0")){
-      return (
-        <Card>
-          <CardBody className="text-center p-5">
-            <Dispute />
-          </CardBody>
-        </Card>
-      );
-    }
-
-
-    if(showFundButton) step = 2;
-    if(fundStatus === States.pending || (trade.mining && trade.status === escrow.helpers.tradeStates.waiting)) step = 3;
-    if(fundStatus === States.success) step = 4;
-    if(releaseStatus === States.pending || (trade.mining && (trade.status === escrow.helpers.tradeStates.funded || trade.status === escrow.helpers.tradeStates.paid))) step = 5;
-    if(releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
+    if (showFundButton) step = 2;
+    if (fundStatus === States.pending || (trade.mining && trade.status === escrow.helpers.tradeStates.waiting)) step = 3;
+    if (fundStatus === States.success) step = 4;
+    if (releaseStatus === States.pending || (trade.mining && (trade.status === escrow.helpers.tradeStates.funded || trade.status === escrow.helpers.tradeStates.paid))) step = 5;
+    if (releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
+    if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") step = 10;
+    if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) step = 11;
 
     let component;
-    switch(step){
+    switch (step) {
+      case 10:
+        component = <Dispute/>;
+        break;
+      case 11:
+        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_SELLER} isBuyer={false}/>;
+        break;
       case 6:
-        component = <Done />;
+        component = <Done/>;
         break;
       case 5:
-        component = <Mining txHash={trade.txHash} number={5}  />;
+        component = <Mining txHash={trade.txHash} number={5}/>;
         break;
       case 4:
-        component = <Funded trade={trade} releaseEscrow={() => { releaseEscrow(trade.escrowId); }} />;
+        component = <Funded trade={trade} releaseEscrow={() => {
+          releaseEscrow(trade.escrowId);
+        }}/>;
         break;
       case 3:
-        component = <Mining txHash={trade.txHash} number={3} />;
+        component = <Mining txHash={trade.txHash} number={3}/>;
         break;
       case 2:
-        component = <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee} showApproveScreen={showApproveScreen} />;
+        component =
+          <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee}
+                   showApproveScreen={showApproveScreen}/>;
         break;
       case 1:
       default:
-        component = <Start onClick={this.handleStepClick} />;
+        component = <Start onClick={this.handleStepClick}/>;
     }
 
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-alert, no-restricted-globals */
+/* eslint-disable no-restricted-globals */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
@@ -18,6 +18,8 @@ import two from "../../../../images/escrow/02.png";
 import four from "../../../../images/escrow/04.png";
 
 import Dispute from "./Dispute";
+import ResolvedDispute from "./ResolvedDispute";
+import {ARBITRATION_SOLVED_BUYER, ARBITRATION_UNSOLVED} from "../../../features/arbitration/constants";
 
 const Done = ({trade, rateTransaction, rateStatus}) => (
   <Fragment>
@@ -106,26 +108,38 @@ class CardEscrowBuyer extends Component {
     const showLoading = payStatus === States.pending;
     const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
 
-    if(arbitrationDetails && (arbitrationDetails.open || arbitrationDetails.result.toString() !== "0")){
-      return (
-        <Card>
-          <CardBody className="text-center p-5">
-            <Dispute />
-          </CardBody>
-        </Card>
-      );
+    let component;
+    if (showLoading) {
+      component = <Mining txHash={trade.txHash}/>;
+    } else {
+      if (trade.status === escrow.helpers.tradeStates.waiting) {
+        component = <PreFund statusContactCode={trade.seller.statusContactCode}/>;
+      }
+      if (trade.status === escrow.helpers.tradeStates.funded && !showWaiting) {
+        component = <Funded payAction={() => {
+          payAction(trade.escrowId);
+        }}/>;
+      }
+      if (((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid)) {
+        component = <Unreleased/>;
+      }
+      if (trade.status === escrow.helpers.tradeStates.released) {
+        component = <Done trade={trade} rateTransaction={rateTransaction} rateStatus={rateStatus}/>;
+      }
+      if (trade.status === escrow.helpers.tradeStates.canceled) {
+        component = <Canceled/>;
+      }
+      if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") {
+        component = <Dispute/>;
+      }
+      if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) {
+        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_BUYER} isBuyer={true}/>;
+      }
     }
-
-    // TODO: display arbitration results?
 
     return <Card>
       <CardBody className="text-center p-5">
-        {!showLoading && trade.status === escrow.helpers.tradeStates.waiting && <PreFund statusContactCode={trade.seller.statusContactCode} /> }
-        {!showLoading && trade.status === escrow.helpers.tradeStates.funded && !showWaiting && <Funded payAction={() => { payAction(trade.escrowId); }}  /> }
-        {!showLoading && ((showWaiting && trade.status !== escrow.helpers.tradeStates.released) || trade.status === escrow.helpers.tradeStates.paid) && <Unreleased /> }
-        {!showLoading && trade.status === escrow.helpers.tradeStates.released && <Done trade={trade} rateTransaction={rateTransaction} rateStatus={rateStatus} /> }
-        {!showLoading && trade.status === escrow.helpers.tradeStates.canceled && <Canceled/> }
-        {showLoading && <Mining txHash={trade.txHash} /> }
+        {component}
       </CardBody>
     </Card>;
   }
