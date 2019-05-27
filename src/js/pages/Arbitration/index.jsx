@@ -152,7 +152,7 @@ class Arbitration extends Component {
       <div className="escrow">
         <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
 
-        {escrow.arbitration.result.toString() !== "0" && <Fragment>
+        {escrow.arbitration.result.toString() !== ARBITRATION_UNSOLVED && <Fragment>
           <h3>Dispute resolved</h3>
           <p><span className="font-weight-bold">Winner:</span> {escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER ? 'Buyer' : 'Seller'}</p>
         </Fragment>}

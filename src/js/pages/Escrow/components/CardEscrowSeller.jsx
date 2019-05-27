@@ -17,7 +17,7 @@ import two from "../../../../images/escrow/02.png";
 import four from "../../../../images/escrow/04.png";
 import Loading from "../../../components/Loading";
 import ResolvedDispute from "./ResolvedDispute";
-import {ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
+import {ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../../features/arbitration/constants";
 
 import Dispute from "./Dispute";
 
@@ -173,7 +173,7 @@ class CardEscrowSeller extends Component {
     if (releaseStatus === States.pending || (trade.mining && (trade.status === escrow.helpers.tradeStates.funded || trade.status === escrow.helpers.tradeStates.paid))) step = 5;
     if (releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
     if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") step = 10;
-    if (arbitrationDetails && arbitrationDetails.result.toString() !== "0") step = 11;
+    if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) step = 11;
 
     let component;
     switch (step) {
@@ -181,7 +181,7 @@ class CardEscrowSeller extends Component {
         component = <Dispute/>;
         break;
       case 11:
-        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_SELLER}/>;
+        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_SELLER} isBuyer={false}/>;
         break;
       case 6:
         component = <Done/>;

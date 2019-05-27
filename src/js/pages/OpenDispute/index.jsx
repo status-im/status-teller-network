@@ -9,6 +9,7 @@ import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import arbitration from '../../features/arbitration';
 import successImage from '../../../images/success.png';
+import {ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
 
 class OpenDispute extends Component {
   state = {
@@ -23,7 +24,7 @@ class OpenDispute extends Component {
 
   componentDidUpdate() {
     if (this.props.escrow.arbitration) {
-      if(this.props.escrow.arbitration.open || this.props.escrow.arbitration.result !== "0"){
+      if(this.props.escrow.arbitration.open || this.props.escrow.arbitration.result !== ARBITRATION_UNSOLVED){
         this.props.history.push('/');
       }
     }

@@ -19,7 +19,7 @@ import four from "../../../../images/escrow/04.png";
 
 import Dispute from "./Dispute";
 import ResolvedDispute from "./ResolvedDispute";
-import {ARBITRATION_SOLVED_BUYER} from "../../../features/arbitration/constants";
+import {ARBITRATION_SOLVED_BUYER, ARBITRATION_UNSOLVED} from "../../../features/arbitration/constants";
 
 const Done = ({trade, rateTransaction, rateStatus}) => (
   <Fragment>
@@ -132,8 +132,8 @@ class CardEscrowBuyer extends Component {
       if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") {
         component = <Dispute/>;
       }
-      if (arbitrationDetails && arbitrationDetails.result.toString() !== "0") {
-        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_BUYER}/>;
+      if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) {
+        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_BUYER} isBuyer={true}/>;
       }
     }
 

@@ -1,5 +1,7 @@
+import {ARBITRATION_UNSOLVED} from "../arbitration/constants";
+
 export const tradeStates = {
-  released: 'released', 
+  released: 'released',
   funded: 'funded',
   paid: 'paid',
   arbitration_open: 'arbitration_open',
@@ -23,7 +25,7 @@ export function getTradeStatus(trade) {
     case escrowStatus.FUNDED: return tradeStates.funded;
     case escrowStatus.PAID: {
       if(trade.arbitration && trade.arbitration.open){
-        if(trade.arbitration.result !== "0"){
+        if(trade.arbitration.result !== ARBITRATION_UNSOLVED){
           return tradeStates.arbitration_closed;
         }
         return tradeStates.arbitration_open;
