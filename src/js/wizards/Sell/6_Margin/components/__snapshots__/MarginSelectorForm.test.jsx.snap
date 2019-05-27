@@ -7,56 +7,104 @@ exports[`MarginSelectorForm should render correctly 1`] = `
     className="mb-0"
     tag="div"
   >
-    <InputGroup
-      className="full-width-input"
+    <Row
       tag="div"
     >
-      <Control(s)
-        className="form-control prepend"
-        id="margin"
-        name="margin"
-        onChange={[Function]}
-        placeholder="0"
-        type="number"
-        validations={
+      <Col
+        tag="div"
+        widths={
           Array [
-            [Function],
-            [Function],
-            [Function],
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
           ]
         }
-        value={0}
-      />
-      <InputGroupAddon
-        addonType="append"
-        tag="div"
+        xs={9}
       >
-        <InputGroupText
-          tag="span"
+        <ComponentEnhancer(undefined)
+          activeDotStyle={Object {}}
+          className="mb-3 p-4"
+          defaultValue={0}
+          disabled={false}
+          dotStyle={Object {}}
+          dots={false}
+          handle={[Function]}
+          handleStyle={
+            Array [
+              Object {},
+            ]
+          }
+          included={true}
+          marks={Object {}}
+          max={100}
+          min={-100}
+          onAfterChange={[Function]}
+          onBeforeChange={[Function]}
+          onChange={[Function]}
+          prefixCls="rc-slider"
+          railStyle={Object {}}
+          step={1}
+          trackStyle={
+            Array [
+              Object {},
+            ]
+          }
+          value={0}
+          vertical={false}
+        />
+      </Col>
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <InputGroup
+          className="full-width-input"
+          tag="div"
         >
-          %
-        </InputGroupText>
-      </InputGroupAddon>
-    </InputGroup>
-  </FormGroup>
-  <FormGroup
-    tag="div"
-  >
-    <ButtonGroup
-      className="w-100 marginSelector mb-0"
-      role="group"
-      tag="div"
-      vertical={true}
+          <Control(s)
+            className="form-control prepend"
+            id="margin"
+            name="margin"
+            onChange={[Function]}
+            placeholder="0"
+            type="number"
+            validations={
+              Array [
+                [Function],
+                [Function],
+                [Function],
+              ]
+            }
+            value={0}
+          />
+          <InputGroupAddon
+            addonType="append"
+            tag="div"
+          >
+            <InputGroupText
+              tag="span"
+            >
+              %
+            </InputGroupText>
+          </InputGroupAddon>
+        </InputGroup>
+      </Col>
+    </Row>
+    <p
+      className="text-muted"
     >
-      <CheckButton
-        active={true}
-        onClick={[Function]}
-      />
-      <CheckButton
-        active={false}
-        onClick={[Function]}
-      />
-    </ButtonGroup>
+      A negative margin means you sell assets for less than what they are worth
+    </p>
   </FormGroup>
   <h3 />
   <div

@@ -1,17 +1,32 @@
 /* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup, InputGroup, InputGroupAddon, ButtonGroup, InputGroupText} from 'reactstrap';
+import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from 'reactstrap';
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import CheckButton from '../../../../ui/CheckButton';
 import {isNumber, required, lowerThan} from '../../../../validators';
+import Slider from 'rc-slider/lib/Slider';
+import 'rc-slider/assets/index.css';
+import './MarginSelectorForm.scss';
 
 const ABOVE = 0;
 const BELOW = 1;
 
 class MarginSelectorForm extends Component {
+  onMarginChange = (value) => {
+    if (value < 0) {
+      if (this.props.marketType === ABOVE) {
+        this.props.marketTypeChange(BELOW);
+      }
+      value *= -1;
+    } else {
+      if (this.props.marketType === BELOW) {
+        this.props.marketTypeChange(ABOVE);
+      }
+    }
+    this.props.marginChange(value);
+  };
 
   render() {
     const {t, currency, margin, marketType, token, prices, fee} = this.props;
@@ -19,35 +34,36 @@ class MarginSelectorForm extends Component {
     const basePrice = prices[token.symbol][currency];
     const marginPrice = (margin || 0) / 100 * basePrice;
     const calcPrice = basePrice + (marketType === ABOVE ? marginPrice : -marginPrice);
+    const adjustedMargin = (marketType === ABOVE) ? margin : margin * -1;
 
     return (
-      <Form ref={c => { this.form = c; }}>
+      <Form ref={c => {
+        this.form = c;
+      }}>
         <h2>{t('sellerMarginContainer.title')}</h2>
         <FormGroup className="mb-0">
-            <InputGroup className="full-width-input">
-              <Input type="number"
-                     name="margin"
-                     id="margin"
-                     placeholder="0"
-                     className="form-control prepend"
-                     value={margin}
-                     onChange={(e) => this.props.marginChange(e.target.value)}
-                     validations={[required, isNumber, lowerThan.bind(null, 100)]} />
-              <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
-            </InputGroup>
+          <Row>
+            <Col xs={9}>
+              <Slider className="mb-3 p-4" min={-100} max={100} defaultValue={0}
+                      onChange={(value) => this.onMarginChange(value)} value={adjustedMargin}/>
+            </Col>
+            <Col>
+              <InputGroup className="full-width-input">
+                <Input type="number"
+                       name="margin"
+                       id="margin"
+                       placeholder="0"
+                       className="form-control prepend"
+                       value={adjustedMargin}
+                       onChange={(e) => this.onMarginChange(e.target.value)}
+                       validations={[required, isNumber, lowerThan.bind(null, 100)]}/>
+                <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
+              </InputGroup>
+            </Col>
+          </Row>
+          <p className="text-muted">A negative margin means you sell assets for less than what they are worth</p>
         </FormGroup>
-        <FormGroup>
-          <ButtonGroup vertical className="w-100 marginSelector mb-0">
-            <CheckButton active={marketType === ABOVE}
-                         onClick={() => this.props.marketTypeChange(ABOVE)}>
-              {t('marginSelectorForm.aboveMarket')}
-            </CheckButton>
-            <CheckButton active={marketType === BELOW}
-                         onClick={() => this.props.marketTypeChange(BELOW)}>
-              {t('marginSelectorForm.belowMarket')}
-            </CheckButton>
-          </ButtonGroup>
-        </FormGroup>
+
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
         <div className="border rounded p-3">
           1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
@@ -61,7 +77,7 @@ class MarginSelectorForm extends Component {
           </div>
         </Fragment>}
 
-        {!this.props.margin && this.props.margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
+        {!margin && margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
     );
   }
