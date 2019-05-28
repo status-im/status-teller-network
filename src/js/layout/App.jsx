@@ -24,6 +24,7 @@ import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
 import Settings from '../pages/Settings';
+import BackButton from '../ui/BackButton';
 
 // Buy
 import BuyContact from '../wizards/Buy/0_Contact';
@@ -95,6 +96,7 @@ class App extends Component {
         <Container className="p-0">
           <Header profile={this.props.profile}/>
           <div className="body-content">
+            <BackButton/>
           <Switch>
             <Route exact path="/" component={Home}/>
 
