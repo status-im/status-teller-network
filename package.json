@@ -66,6 +66,7 @@
     "moment": "^2.23.0",
     "number-to-bn": "^1.7.0",
     "qrcode.react": "^0.9.3",
+    "rc-slider": "^8.6.11",
     "react": "^16.8.2",
     "react-bootstrap-typeahead": "^3.3.0",
     "react-copy-to-clipboard": "^5.0.1",

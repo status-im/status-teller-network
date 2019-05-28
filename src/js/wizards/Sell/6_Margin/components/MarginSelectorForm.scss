@@ -1,0 +1,21 @@
+@import "../../../../../css/variable-overrides";
+$slider-height: 10px;
+
+.rc-slider {
+  .rc-slider-rail {
+    height: $slider-height;
+    background-color: $secondary;
+  }
+
+  .rc-slider-track {
+    height: $slider-height;
+    background-color: $primary;
+  }
+
+  .rc-slider-handle{
+    height: 30px;
+    width: 30px;
+    margin-top: -11px;
+    border-color: $primary;
+  }
+}
