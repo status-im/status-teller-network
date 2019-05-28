@@ -18,6 +18,7 @@ contract Arbitration is Ownable, License {
     }
 
     event ArbitratorChanged(address arbitrator);
+    event ArbitrationCanceled(uint escrowId, uint date);
     event ArbitrationRequired(uint escrowId, uint date);
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
 
@@ -54,8 +55,29 @@ contract Arbitration is Ownable, License {
     }
 
 
+    /**
+     * @notice cancel arbitration
+     * @param _escrowId Escrow to cancel
+     */
+    function cancelArbitration(uint _escrowId) public {
+        require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
+        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open, "Arbitration already solved or not open");
+        arbitrationCases[_escrowId] = ArbitrationCase({
+            open: false,
+            openBy: address(0),
+            arbitrator: address(0),
+            result: ArbitrationResult.UNSOLVED,
+            motive: ""
+        });
+
+        emit ArbitrationCanceled(_escrowId, block.timestamp);
+    }
+
+
     function openCase(uint _escrowId, address _openBy, string memory motive) public {
         assert(msg.sender == address(escrow)); // Only the escrow address can open cases
+        require(!arbitrationCases[_escrowId].open, "Arbitration already open");
+        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Arbitration already solved");
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,

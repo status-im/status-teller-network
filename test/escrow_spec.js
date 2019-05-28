@@ -662,6 +662,23 @@ contract("Escrow", function() {
       }
     });
 
+    it("should allow whoever opened an arbitration to cancel it", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+
+      try {
+        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[0]}); 
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
+      }
+
+      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]}); 
+      const arbitrationCanceled = receipt.events.ArbitrationCanceled;
+      assert(!!arbitrationCanceled, "ArbitrationCanceled() not triggered");
+      assert.equal(arbitrationCanceled.returnValues.escrowId, escrowId, "Invalid escrowId");
+    });
+
     it("should transfer to buyer if case is solved in their favor", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
@@ -679,6 +696,19 @@ contract("Escrow", function() {
 
       const released = receipt.events.Canceled;
       assert(!!released, "Canceled() not triggered");
+    });
+
+    it("cannot cancel a solved arbitration", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
+
+      try {
+        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]}); 
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");
+      }
     });
 
   });
