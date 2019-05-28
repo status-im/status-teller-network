@@ -17,9 +17,9 @@ class EditMyContact extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.profile.username || '',
-      statusContactCode: props.profile.statusContactCode || '',
-      updateDisabled: !props.profile.username || !props.profile.statusContactCode
+      username: props.profile ? props.profile.username || '' : '',
+      statusContactCode: props.profile ? props.profile.statusContactCode || '' : '',
+      updateDisabled: props.profile ? !props.profile.username || !props.profile.statusContactCode : true
     };
   }
 
@@ -28,6 +28,14 @@ class EditMyContact extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if(!prevProps.profile && this.props.profile){
+      this.setState({
+        username: this.props.profile.username || '',
+        statusContactCode: this.props.profile.statusContactCode || '',
+        updateDisabled: !this.props.profile.username || !this.props.profile.statusContactCode
+      });
+    }
+
     if (this.props.updateUserStatus === States.success) {
       this.props.resetUpdateUserStatus();
       this.props.history.push('/profile');
@@ -40,6 +48,7 @@ class EditMyContact extends Component {
 
   update = () => {
     this.props.updateUser({
+      address: this.props.address,
       username: DOMPurify.sanitize(this.state.username),
       statusContactCode: DOMPurify.sanitize(this.state.statusContactCode),
       location: DOMPurify.sanitize(this.props.profile.location)
@@ -69,6 +78,13 @@ class EditMyContact extends Component {
   }
 
   render() {
+    console.log(this.props);
+    console.log(this.state);
+
+    if(!this.props.profile){
+      return <Loading />;
+    }
+
     switch(this.props.updateUserStatus){
       case States.pending:
         return <Loading mining/>;

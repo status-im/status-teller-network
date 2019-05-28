@@ -45,7 +45,11 @@ config({
       args: ["$SNT", 10]
     },
     Escrow: {
-      args: ["$License", "$accounts[5]", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount]
+      args: ["$License", "$accounts[5]", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      onDeploy: [
+        "Arbitration.methods.setEscrowAddress('$Escrow').send()",
+        "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
+      ]
     },
     StandardToken: {
     }

@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import {withRouter} from "react-router-dom";
 
 import metadata from '../../features/metadata';
 import network from '../../features/network';
@@ -30,6 +31,12 @@ class MyProfile extends Component {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
     this.props.getArbitrators();
+  }
+
+  componentDidUpdate(){
+    if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.statusContactCode){
+      this.props.history.push("/profile/contact/edit");
+    }
   }
 
   render() {
@@ -65,6 +72,7 @@ class MyProfile extends Component {
 }
 
 MyProfile.propTypes = {
+  history: PropTypes.object,
   address: PropTypes.string,
   profile: PropTypes.object,
   trades: PropTypes.array,
@@ -93,4 +101,4 @@ export default connect(
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     getArbitrators: arbitration.actions.getArbitrators
-  })(MyProfile);
+  })(withRouter(MyProfile));

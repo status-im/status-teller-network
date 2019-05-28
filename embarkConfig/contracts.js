@@ -85,7 +85,10 @@ module.exports = {
       },
       Escrow: {
         args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
-        onDeploy: ["Arbitration.methods.setEscrowAddress('$Escrow').send()"]
+        onDeploy: [
+          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
+          "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
+        ]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
