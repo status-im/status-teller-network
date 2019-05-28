@@ -5,6 +5,7 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import CancelEscrow from './components/CancelEscrow';
+import CancelDispute from './components/CancelDispute';
 import CardEscrowSeller from './components/CardEscrowSeller';
 import CardEscrowBuyer from './components/CardEscrowBuyer';
 import EscrowDetail from './components/EscrowDetail';
@@ -24,6 +25,7 @@ import approval from '../../features/approval';
 import arbitration from '../../features/arbitration';
 
 import "./index.scss";
+import { ARBITRATION_UNSOLVED } from '../../features/arbitration/constants';
 import ErrorInformation from "../../components/ErrorInformation";
 
 const {toBN} = web3.utils;
@@ -90,7 +92,8 @@ class Escrow extends Component {
 
   render() {
     let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus,
-      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, approvalError} = this.props;
+      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, 
+      approvalError, cancelDispute} = this.props;
     const {showApproveFundsScreen} = this.state;
 
     if(!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration) {
@@ -161,6 +164,7 @@ class Escrow extends Component {
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
         <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} />
+        {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) && <CancelDispute trade={escrow} cancelDispute={cancelDispute} /> }
         {(!arbitrationDetails ||!arbitrationDetails.open) && <OpenDispute trade={escrow}  /> }
       </div>
     );
@@ -195,6 +199,7 @@ Escrow.propTypes = {
   cancelStatus: PropTypes.string,
   approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
+  cancelDispute: PropTypes.func,
   cancelApproval: PropTypes.func,
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
@@ -204,9 +209,10 @@ Escrow.propTypes = {
 const mapStateToProps = (state, props) => {
   const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
   const approvalLoading = approval.selectors.isLoading(state);
+  const arbitrationLoading = arbitration.selectors.isLoading(state);
   const ratingStatus = escrow.selectors.getRatingStatus(state);
   const escrowId = props.match.params.id.toString();
-
+  
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  escrowId,
@@ -218,7 +224,7 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading,
+    loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
     fundStatus: escrow.selectors.getFundEscrowStatus(state),
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
     payStatus: escrow.selectors.getPaidEscrowStatus(state),
@@ -243,6 +249,7 @@ export default connect(
     cancelEscrow: escrow.actions.cancelEscrow,
     updateBalances: network.actions.updateBalances,
     rateTransaction: escrow.actions.rateTransaction,
-    loadArbitration: arbitration.actions.loadArbitration
+    loadArbitration: arbitration.actions.loadArbitration,
+    cancelDispute: arbitration.actions.cancelDispute
   }
 )(withRouter(Escrow));

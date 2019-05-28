@@ -11,6 +11,10 @@ import {
   LOAD_ARBITRATION_SUCCEEDED,
   GET_ARBITRATORS_FAILED,
   GET_ARBITRATORS_SUCCEEDED,
+  CANCEL_DISPUTE_FAILED,
+  CANCEL_DISPUTE,
+  CANCEL_DISPUTE_SUCCEEDED,
+  CANCEL_DISPUTE_PRE_SUCCESS,
   OPEN_DISPUTE_FAILED,
   OPEN_DISPUTE,
   OPEN_DISPUTE_SUCCEEDED,
@@ -45,6 +49,7 @@ function reducer(state = DEFAULT_STATE, action) {
           receipt: null
         }
       };
+    case CANCEL_DISPUTE_PRE_SUCCESS:
     case OPEN_DISPUTE_PRE_SUCCESS:
     case RESOLVE_DISPUTE_PRE_SUCCESS:
       return {
@@ -59,12 +64,14 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
+    case CANCEL_DISPUTE_SUCCEEDED:
     case OPEN_DISPUTE_SUCCEEDED:
       return {
         ...state,
         loading: false,
         receipt: action.receipt
       };
+    case CANCEL_DISPUTE_FAILED:
     case OPEN_DISPUTE_FAILED:
     case GET_DISPUTED_ESCROWS_FAILED:
     case RESOLVE_DISPUTE_FAILED:
@@ -75,6 +82,7 @@ function reducer(state = DEFAULT_STATE, action) {
           loading: false
         }
       };
+    case CANCEL_DISPUTE:
     case OPEN_DISPUTE:
     case RESOLVE_DISPUTE:
       return {
