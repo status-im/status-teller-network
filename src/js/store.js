@@ -22,7 +22,7 @@ const persistConfig = {
   key: 'teller-network-store',
   storage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ['network', 'approval', 'router']
+  blacklist: ['network', 'approval', 'router', 'events']
 };
 
 function *root() {

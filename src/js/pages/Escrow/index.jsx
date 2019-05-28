@@ -23,6 +23,7 @@ import escrow from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
 import arbitration from '../../features/arbitration';
+import events from '../../features/events';
 
 import "./index.scss";
 import { ARBITRATION_UNSOLVED } from '../../features/arbitration/constants';
@@ -58,7 +59,7 @@ class Escrow extends Component {
     if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null)) { // Reload allowance information
       this.loadData(this.props);
     }
-    if (this.props.escrow && !this.watching) {
+    if (this.props.escrow && !this.watching && !this.props.escrowEvents[this.props.escrowId]) {
       if (this.props.escrow.status === escrow.helpers.tradeStates.funded ||
         this.props.escrow.status === escrow.helpers.tradeStates.arbitration_open ||
         this.props.escrow.status === escrow.helpers.tradeStates.paid ||
@@ -213,7 +214,8 @@ Escrow.propTypes = {
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
   loadArbitration: PropTypes.func,
-  watchEscrow: PropTypes.func
+  watchEscrow: PropTypes.func,
+  escrowEvents: PropTypes.object
 };
 
 const mapStateToProps = (state, props) => {
@@ -239,6 +241,7 @@ const mapStateToProps = (state, props) => {
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
     payStatus: escrow.selectors.getPaidEscrowStatus(state),
     rateStatus: escrow.selectors.getRatingStatus(state),
+    escrowEvents: events.selectors.getEscrowEvents(state),
     cancelStatus
   };
 };
