@@ -19,7 +19,7 @@ class ArbitrationLicense extends Component {
   componentDidMount() {
     if (this.props.isLicenseOwner) {
       this.props.loadProfile(this.props.address);
-      return this.props.history.push('/');
+      return this.props.history.push('/profile/contact/edit');
     }
 
     this.props.checkLicenseOwner();
@@ -30,7 +30,7 @@ class ArbitrationLicense extends Component {
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
       this.props.loadProfile(this.props.address);
-      return this.props.history.push('/');
+      return this.props.history.push('/profile/contact/edit');
     }
   }
 

@@ -156,7 +156,8 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = MetadataStore.methods.updateUser(
+  const toSend = MetadataStore.methods.addOrUpdateUser(
+    user.address,
     user.statusContactCode,
     user.location,
     user.username
