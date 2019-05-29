@@ -157,7 +157,7 @@
       "foundOffers_plural": "We found {{count}} offers"
     },
     "offerTrade": {
-      "enterBefore": "Enter a fiat or asset quantity before submitting. Make sure the fiat amount is between the limits above."
+      "enterBefore": "Enter a fiat or asset quantity before submitting. Make sure the asset amount is between the limits above."
     }
   },
   "contactForm": {

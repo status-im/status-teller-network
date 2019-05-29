@@ -100,6 +100,14 @@
       "0x2e8c05d27fd0d12701b3d09a6821f04f120602701f23e5c62210dfcc978e00a5": {
         "name": "Escrow",
         "address": "0x1c5BF079fc52c1E711b5aC73E189264Cb6593B92"
+      },
+      "0x693f9d3d55faf9ed73b613e053e0cc07b1d5f32fab9b75130d81ed76956a7083": {
+        "name": "MetadataStore",
+        "address": "0x5851F398e8e45E82B1dAd184500F2B77B721cAD1"
+      },
+      "0x9dc283c3470abbb50f9884281c97369abc9b735a6c5d35fa2b44d048e81ff119": {
+        "name": "Escrow",
+        "address": "0xcd92e2D0B901050DAb2e99b5A58CbC49E3a03071"
       }
     }
   }
