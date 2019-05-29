@@ -65,6 +65,6 @@ export function formatBalance(balance) {
     return balance + ' wei';
   }
 
-  return parseFloat(numericalBalance).toFixed(6).toLocaleString();
+  return parseFloat(numericalBalance.toFixed(6)).toString();
 }
 
