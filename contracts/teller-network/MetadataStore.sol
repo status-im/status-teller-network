@@ -9,8 +9,7 @@ import "../common/Ownable.sol";
 */
 contract MetadataStore is Ownable {
 
-    enum PaymenMethods {Cash,BankTransfer,InternationalWire}
-    enum MarketType {Above, Below}
+    enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
     event OfferAdded(
         address owner,
@@ -20,9 +19,8 @@ contract MetadataStore is Ownable {
         string location,
         string currency,
         string username,
-        PaymenMethods[] paymentMethods,
-        MarketType marketType,
-        uint8 margin
+        PaymentMethods[] paymentMethods,
+        int8 margin
     );
 
     event OfferUpdated(
@@ -33,9 +31,8 @@ contract MetadataStore is Ownable {
         string location,
         string currency,
         string username,
-        PaymenMethods[] paymentMethods,
-        MarketType marketType,
-        uint8 margin
+        PaymentMethods[] paymentMethods,
+        int8 margin
     );
 
     event OfferRemoved(
@@ -59,9 +56,8 @@ contract MetadataStore is Ownable {
     struct Offer {
         address asset;
         string currency;
-        uint8 margin;
-        PaymenMethods[] paymentMethods;
-        MarketType marketType;
+        int8 margin;
+        PaymentMethods[] paymentMethods;
         address payable owner;
         address arbitrator;
     }
@@ -127,7 +123,6 @@ contract MetadataStore is Ownable {
     * @param _currency The currency the user want to receive (USD, EUR...)
     * @param _username The username of the user
     * @param _paymentMethods The list of the payment methods the user accept
-    * @param _marketType Above or Below
     * @param _margin The margin for the user from 0 to 100
     * @param _arbitrator The arbitrator used by the offer
     */
@@ -137,24 +132,24 @@ contract MetadataStore is Ownable {
         string memory _location,
         string memory _currency,
         string memory _username,
-        PaymenMethods[] memory _paymentMethods,
-        MarketType _marketType,
-        uint8 _margin,
+        PaymentMethods[] memory _paymentMethods,
+        int8 _margin,
         address _arbitrator
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
         require(_margin <= 100, "Margin too high");
+        require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
         addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
-        
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _marketType, msg.sender, _arbitrator);
+
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, msg.sender, _arbitrator);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
+            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 
@@ -187,7 +182,6 @@ contract MetadataStore is Ownable {
     * @param _currency The currency the user want to receive (USD, EUR...)
     * @param _username The username of the user
     * @param _paymentMethods The list of the payment methods the user accept
-    * @param _marketType Above or Below
     * @param _margin The margin for the user from 0 to 100
     * @param _arbitrator The arbitrator used by the offer
     */
@@ -198,29 +192,28 @@ contract MetadataStore is Ownable {
         string memory _location,
         string memory _currency,
         string memory _username,
-        PaymenMethods[] memory _paymentMethods,
-        MarketType _marketType,
-        uint8 _margin,
+        PaymentMethods[] memory _paymentMethods,
+        int8 _margin,
         address _arbitrator
     ) public {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
         require(_margin <= 100, "Margin too high");
+        require(_margin >= -100, "Margin too low");
 
         User storage tmpUser = users[addressToUser[msg.sender]];
         tmpUser.statusContactCode = _statusContactCode;
         tmpUser.location = _location;
         tmpUser.username = _username;
-        
+
         offers[_offerId].asset = _asset;
         offers[_offerId].currency = _currency;
         offers[_offerId].paymentMethods = _paymentMethods;
-        offers[_offerId].marketType = _marketType;
         offers[_offerId].margin = _margin;
         offers[_offerId].arbitrator = _arbitrator;
 
         emit OfferUpdated(
-            msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _marketType, _margin
+            msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 
@@ -245,9 +238,8 @@ contract MetadataStore is Ownable {
     function offer(uint256 _id) public view returns (
         address asset,
         string memory currency,
-        uint8 margin,
-        PaymenMethods[] memory paymentMethods,
-        MarketType marketType,
+        int8 margin,
+        PaymentMethods[] memory paymentMethods,
         address payable owner,
         address arbitrator
     ) {
@@ -258,7 +250,6 @@ contract MetadataStore is Ownable {
             offers[_id].currency,
             offers[_id].margin,
             offers[_id].paymentMethods,
-            offers[_id].marketType,
             offers[_id].owner,
             offers[_id].arbitrator
         );

@@ -40,8 +40,6 @@
   "marginSelectorForm": {
     "margin": "Choose a percentage margin",
     "enterMargin": "Enter a margin to move to the next page",
-    "aboveMarket": "Above market",
-    "belowMarket": "Below market",
     "priceOrigin": "Prices come from www.cryptocompare.com",
     "sellPrice": "Your sell price",
     "ourFee": "Our fee",

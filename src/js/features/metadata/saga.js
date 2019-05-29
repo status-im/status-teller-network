@@ -144,7 +144,6 @@ export function *addOffer({user, offer}) {
     offer.currency,
     user.username,
     offer.paymentMethods,
-    offer.marketType,
     offer.margin,
     offer.arbitrator
   );

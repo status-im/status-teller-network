@@ -64,7 +64,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
     const usernames = ['Jonathan', 'Iuri', 'Anthony', 'Barry', 'Richard', 'Ricardo'];
     const locations = ['London', 'Montreal', 'Paris', 'Berlin'];
     const currencies = ['USD', 'EUR'];
-    const marketTypes = [0, 1];
     const offerStartIndex = 1;
 
     const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, 5).map(async (address) => {
@@ -77,7 +76,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
         [paymentMethods[Math.floor(Math.random() * paymentMethods.length)]],
-        marketTypes[Math.floor(Math.random() * marketTypes.length)],
         Math.floor(Math.random() * 100),
         arbitrator
       );

@@ -1,11 +1,17 @@
-import {PAYMENT_METHODS, MARKET_TYPES} from './constants';
+import {PAYMENT_METHODS} from './constants';
 import {addressCompare, toChecksumAddress} from '../../utils/address';
 
 function enhanceOffer(state, offer) {
+  let aboveOrBelow = 'above';
+  let margin = offer.margin;
+  if (offer.margin < 0) {
+    aboveOrBelow = 'below';
+    margin *= -1;
+  }
   return {
     ...offer,
     paymentMethodsForHuman: offer.paymentMethods.map((i) => PAYMENT_METHODS[i]).join(', '),
-    rateForHuman: `${offer.margin}% ${MARKET_TYPES[offer.marketType]} CryptoCompare`,
+    rateForHuman: `${margin}% ${aboveOrBelow} CryptoCompare`,
     token: Object.values(state.network.tokens).find((token) => addressCompare(token.address, offer.asset))
   };
 }

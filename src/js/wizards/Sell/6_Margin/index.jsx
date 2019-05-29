@@ -20,21 +20,20 @@ class Margin extends Component {
     super(props);
     this.state = {
       margin: props.seller.margin,
-      marketType: props.seller.marketType,
       ready: false
     };
     this.validate(props.seller.margin);
     props.getFee();
 
     props.footer.onPageChange(() => {
-      props.setMargin(this.state.margin, this.state.marketType);
+      props.setMargin(this.state.margin);
     });
     props.footer.onNext(this.postOffer);
   }
 
   postOffer = () => {
     this.props.footer.hide();
-    this.props.addOffer({...this.props.seller, marketType: this.state.marketType, margin: this.state.margin});
+    this.props.addOffer({...this.props.seller, margin: this.state.margin});
   };
 
   componentDidMount() {
@@ -53,7 +52,7 @@ class Margin extends Component {
   }
 
   validate(margin) {
-    if ((margin || margin === 0) && margin < 100) {
+    if ((margin || margin === 0) && margin <= 100 && margin >= -100) {
       return this.props.footer.enableNext();
     }
     this.props.footer.disableNext();
@@ -66,10 +65,6 @@ class Margin extends Component {
     }
     this.validate(margin);
     this.setState({margin});
-  };
-
-  marketTypeChange = (marketType) => {
-    this.setState({marketType});
   };
 
   render() {
@@ -89,8 +84,6 @@ class Margin extends Component {
                               currency={this.props.seller.currency}
                               margin={this.state.margin}
                               marginChange={this.marginChange}
-                              marketType={this.state.marketType}
-                              marketTypeChange={this.marketTypeChange}
                               fee={this.props.fee} />
         );
       default:

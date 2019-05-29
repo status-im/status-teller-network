@@ -32,7 +32,7 @@ const OfferTrade = ({
         </FormGroup>
         <FormGroup>
           <Input type="number" name="asset" className="form-control" value={assetQuantity}
-                 validations={[isNumber, lowerEqThan.bind(null, maxToken),  higherEqThan.bind(null, minToken)]}
+                 validations={[isNumber, lowerEqThan.bind(null, parseFloat(maxToken)),  higherEqThan.bind(null, parseFloat(minToken))]}
                  placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)} step="any" />
           <span className="input-icon">{asset}</span>
         </FormGroup>
