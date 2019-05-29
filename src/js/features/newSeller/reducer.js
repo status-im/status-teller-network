@@ -18,7 +18,6 @@ const DEFAULT_STATE = {
   username: '',
   arbitrator: '',
   paymentMethods: [],
-  marketType: 0,
   margin: 0
 };
 
@@ -52,8 +51,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case SET_MARGIN:
       return {
         ...state,
-        margin: action.margin,
-        marketType: action.marketType
+        margin: action.margin
       };
     case SET_CONTACT_INFO:
       return {

@@ -18,7 +18,6 @@ export const addOffer = (seller) => ({
     asset: seller.asset,
     currency: seller.currency,
     paymentMethods: seller.paymentMethods,
-    marketType: seller.marketType,
     margin: seller.margin,
     arbitrator: seller.arbitrator
   }

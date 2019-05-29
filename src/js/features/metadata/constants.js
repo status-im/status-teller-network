@@ -27,4 +27,3 @@ export const UPDATE_USER_PRE_SUCCESS = 'METADATA/UPDATE_USER/PRE_SUCCESS';
 // Mapping
 export const PAYMENT_METHODS = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 export const SORT_TYPES = ['Top rated', 'Most recent'];
-export const MARKET_TYPES = ['Above', 'Below'];

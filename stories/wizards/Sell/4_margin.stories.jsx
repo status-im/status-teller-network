@@ -11,11 +11,9 @@ storiesOf('Wizards/Sell/5_Margin', module)
     "Default",
     withInfo({inline: true})(() => (
       <MarginSelectorForm margin={12}
-                          marketType={0}
                           currency={'USD'}
                           prices={{'ETH': {'USD': 1}}}
                           token={{symbol: 'ETH'}}
-                          marginChange={action('margin-change')}
-                          marketTypeCHange={action('market-change')}/>
+                          marginChange={action('margin-change')}/>
     ))
   );

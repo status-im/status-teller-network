@@ -15,7 +15,6 @@ import OfferTrade from './components/OfferTrade';
 
 const MIN = 0;
 const MAX = 999999;
-const ABOVE = '0';
 
 class Trade extends Component {
   constructor(props) {
@@ -74,8 +73,7 @@ class Trade extends Component {
 
   _calcPrice = () => {
     const marginPrice = this.props.offer.margin / 100 * this.props.price;
-    const calcPrice = this.props.price + (this.props.offer.marketType === ABOVE ? marginPrice : -marginPrice);
-    return calcPrice;
+    return this.props.price + marginPrice;
   };
 
   onAssetChange = (assetQuantity) => {

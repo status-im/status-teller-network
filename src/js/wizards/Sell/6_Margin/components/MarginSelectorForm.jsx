@@ -5,36 +5,22 @@ import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from '
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import {isNumber, required, lowerThan} from '../../../../validators';
+import {isNumber, required, lowerEqThan, higherEqThan} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
 
-const ABOVE = 0;
-const BELOW = 1;
-
 class MarginSelectorForm extends Component {
   onMarginChange = (value) => {
-    if (value < 0) {
-      if (this.props.marketType === ABOVE) {
-        this.props.marketTypeChange(BELOW);
-      }
-      value *= -1;
-    } else {
-      if (this.props.marketType === BELOW) {
-        this.props.marketTypeChange(ABOVE);
-      }
-    }
     this.props.marginChange(value);
   };
 
   render() {
-    const {t, currency, margin, marketType, token, prices, fee} = this.props;
+    const {t, currency, margin, token, prices, fee} = this.props;
 
     const basePrice = prices[token.symbol][currency];
     const marginPrice = (margin || 0) / 100 * basePrice;
-    const calcPrice = basePrice + (marketType === ABOVE ? marginPrice : -marginPrice);
-    const adjustedMargin = (marketType === ABOVE) ? margin : margin * -1;
+    const calcPrice = basePrice + marginPrice;
 
     return (
       <Form ref={c => {
@@ -45,7 +31,7 @@ class MarginSelectorForm extends Component {
           <Row>
             <Col xs={9}>
               <Slider className="mb-3 p-4" min={-100} max={100} defaultValue={0}
-                      onChange={(value) => this.onMarginChange(value)} value={adjustedMargin}/>
+                      onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
             <Col>
               <InputGroup className="full-width-input">
@@ -54,9 +40,9 @@ class MarginSelectorForm extends Component {
                        id="margin"
                        placeholder="0"
                        className="form-control prepend"
-                       value={adjustedMargin}
+                       value={margin}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isNumber, lowerThan.bind(null, 100)]}/>
+                       validations={[required, isNumber, lowerEqThan.bind(null, 100), higherEqThan.bind(null, -100)]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>
@@ -92,10 +78,8 @@ MarginSelectorForm.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  marketType: PropTypes.number,
   currency: PropTypes.string,
-  marginChange: PropTypes.func,
-  marketTypeChange: PropTypes.func
+  marginChange: PropTypes.func
 };
 
 export default withNamespaces()(MarginSelectorForm);

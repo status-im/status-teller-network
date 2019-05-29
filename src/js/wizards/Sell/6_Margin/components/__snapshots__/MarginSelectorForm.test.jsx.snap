@@ -83,6 +83,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
                 [Function],
                 [Function],
                 [Function],
+                [Function],
               ]
             }
             value={0}
