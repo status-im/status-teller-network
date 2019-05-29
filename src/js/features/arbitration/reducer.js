@@ -26,11 +26,12 @@ import {
   BUY_LICENSE_CANCEL,
   LOAD_PRICE_SUCCEEDED,
   CHECK_LICENSE_OWNER_FAILED,
-  CHECK_LICENSE_OWNER_SUCCEEDED
+  CHECK_LICENSE_OWNER_SUCCEEDED,
+  ARBITRATION_UNSOLVED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
-import {toChecksumAddress} from '../../utils/address';
+import {toChecksumAddress, zeroAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   escrows: [], arbitration: null, arbitrators: [], licenseOwner: false,
@@ -65,6 +66,21 @@ function reducer(state = DEFAULT_STATE, action) {
         }
       };
     case CANCEL_DISPUTE_SUCCEEDED:
+      return {
+        ...state, ...{
+          arbitration: {
+            ...state.arbitration,
+            arbitration: {
+              open: false,
+              openBy: zeroAddress,
+              arbitrator: zeroAddress,
+              result: ARBITRATION_UNSOLVED
+            }
+          },
+          loading: false,
+          receipt: action.receipt
+        }
+      };
     case OPEN_DISPUTE_SUCCEEDED:
       return {
         ...state,
