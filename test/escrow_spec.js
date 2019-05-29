@@ -215,6 +215,20 @@ contract("Escrow", function() {
   describe("Canceling an escrow", async () => {
     let created;
 
+    it("A seller cannot cancel an unexpired funded escrow", async () => {
+      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      
+      try {
+        receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Can only be canceled after expiration");
+      }
+    });
+
     it("A seller can cancel their ETH escrows", async () => {
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
@@ -258,6 +272,22 @@ contract("Escrow", function() {
       assert.equal(contractBalanceBeforeCreation, contractBalanceAfterCancelation, "Invalid contract balance");
     });
 
+    it("A buyer can cancel an escrow that hasn't been funded yet", async () => {
+      receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.cancel(receipt.events.Created.returnValues.escrowId).send({from: accounts[1]});
+      let Canceled = receipt.events.Canceled;
+      assert(!!Canceled, "Canceled() not triggered");
+    });
+
+    it("A buyer can cancel an escrow that has been funded", async () => {
+      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      escrowId = receipt.events.Created.returnValues.escrowId;
+      receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
+      let Canceled = receipt.events.Canceled;
+      assert(!!Canceled, "Canceled() not triggered");
+    });
+
     it("An escrow can only be canceled once", async () => {
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
@@ -277,10 +307,26 @@ contract("Escrow", function() {
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       try {
-        receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]}); // Buyer tries to cancel
+        receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[2]});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
+      }
+    });
+
+    it("A seller cannot cancel an escrow marked as paid", async () => {
+      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+
+      receipt = await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+
+      try {
+        receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
   });
