@@ -5,7 +5,7 @@ import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from '
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import {isNumber, required, lowerEqThan, higherEqThan} from '../../../../validators';
+import {isNumber, required, lowerEqThan, higherThan} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
@@ -29,8 +29,8 @@ class MarginSelectorForm extends Component {
         <h2>{t('sellerMarginContainer.title')}</h2>
         <FormGroup className="mb-0">
           <Row>
-            <Col xs={9}>
-              <Slider className="mb-3 p-4" min={-100} max={100} defaultValue={0}
+            <Col md={9} sm={8} xs={7}>
+              <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={0}
                       onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
             <Col>
@@ -42,7 +42,7 @@ class MarginSelectorForm extends Component {
                        className="form-control prepend"
                        value={margin}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isNumber, lowerEqThan.bind(null, 100), higherEqThan.bind(null, -100)]}/>
+                       validations={[required, isNumber, lowerEqThan.bind(null, 100), higherThan.bind(null, -100)]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>

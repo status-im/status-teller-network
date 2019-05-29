@@ -52,7 +52,7 @@ class Margin extends Component {
   }
 
   validate(margin) {
-    if ((margin || margin === 0) && margin <= 100 && margin >= -100) {
+    if ((margin || margin === 0) && margin <= 100 && margin > -100) {
       return this.props.footer.enableNext();
     }
     this.props.footer.disableNext();
