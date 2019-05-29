@@ -11,6 +11,8 @@ exports[`MarginSelectorForm should render correctly 1`] = `
       tag="div"
     >
       <Col
+        md={9}
+        sm={8}
         tag="div"
         widths={
           Array [
@@ -21,7 +23,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
             "xl",
           ]
         }
-        xs={9}
+        xs={7}
       >
         <ComponentEnhancer(undefined)
           activeDotStyle={Object {}}
@@ -39,7 +41,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
           included={true}
           marks={Object {}}
           max={100}
-          min={-100}
+          min={-99}
           onAfterChange={[Function]}
           onBeforeChange={[Function]}
           onChange={[Function]}
