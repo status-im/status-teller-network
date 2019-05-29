@@ -41,7 +41,6 @@ class Escrow extends Component {
     props.loadArbitration(props.escrowId);
     props.getFee();
     props.getSNTAllowance();
-    props.resetStatus();
     props.updateBalances();
 
     if (props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
@@ -105,6 +104,10 @@ class Escrow extends Component {
       cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, 
       approvalError, cancelDispute} = this.props;
     const {showApproveFundsScreen} = this.state;
+
+    if (releaseStatus === States.failed || payStatus === States.failed || rateStatus === States.failed || fundStatus === States.failed) {
+      return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
+    }
 
     if(!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration) {
       return <Loading page={true} />;
