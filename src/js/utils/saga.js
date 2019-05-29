@@ -47,3 +47,29 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
     yield put({type: failed, error: error.message});
   }
 }
+
+export function contractEventChannel(contract, event, filter, emitter) {
+  contract.once(event, {filter}, (err, result) => {
+    if (err) {
+      emitter({err});
+      return emitter(END);
+    }
+    emitter({result});
+    emitter(END);
+  });
+  return () => {};
+}
+
+export function *contractEvent(contract, event, filter, successType) {
+  const channel = eventChannel(contractEventChannel.bind(null, contract, event, filter));
+  while (true) {
+    const {result, error} = yield take(channel);
+    if (result) {
+      yield put({...filter, type: successType, result});
+    } else if (error) {
+      throw error;
+    } else {
+      break;
+    }
+  }
+}

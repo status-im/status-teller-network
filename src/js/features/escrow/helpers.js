@@ -11,6 +11,13 @@ export const tradeStates = {
   waiting: 'waiting'
 };
 
+export const eventTypes = {
+  paid: 'Paid',
+  funded: 'Funded',
+  released: 'Released',
+  canceled: 'Canceled'
+};
+
 export const escrowStatus = {
   CREATED: '0',
   FUNDED: '1',

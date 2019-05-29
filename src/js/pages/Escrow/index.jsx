@@ -31,11 +31,11 @@ import ErrorInformation from "../../components/ErrorInformation";
 const {toBN} = web3.utils;
 
 class Escrow extends Component {
-  componentDidMount(){
+  componentDidMount() {
     this.loadData(this.props);
   }
 
-  loadData(props){
+  loadData(props) {
     props.getEscrow(props.escrowId);
     props.loadArbitration(props.escrowId);
     props.getFee();
@@ -43,7 +43,7 @@ class Escrow extends Component {
     props.resetStatus();
     props.updateBalances();
 
-    if(props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
+    if (props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
   }
 
   state = {
@@ -57,6 +57,15 @@ class Escrow extends Component {
   componentDidUpdate(prevProps) {
     if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null)) { // Reload allowance information
       this.loadData(this.props);
+    }
+    if (this.props.escrow && !this.watching) {
+      if (this.props.escrow.status === escrow.helpers.tradeStates.funded ||
+        this.props.escrow.status === escrow.helpers.tradeStates.arbitration_open ||
+        this.props.escrow.status === escrow.helpers.tradeStates.paid ||
+        this.props.escrow.status === escrow.helpers.tradeStates.waiting) {
+        this.watching = true;
+        this.props.watchEscrow(this.props.escrowId);
+      }
     }
   }
 
@@ -203,7 +212,8 @@ Escrow.propTypes = {
   cancelApproval: PropTypes.func,
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
-  loadArbitration: PropTypes.func
+  loadArbitration: PropTypes.func,
+  watchEscrow: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -250,6 +260,7 @@ export default connect(
     updateBalances: network.actions.updateBalances,
     rateTransaction: escrow.actions.rateTransaction,
     loadArbitration: arbitration.actions.loadArbitration,
-    cancelDispute: arbitration.actions.cancelDispute
+    cancelDispute: arbitration.actions.cancelDispute,
+    watchEscrow: escrow.actions.watchEscrow
   }
 )(withRouter(Escrow));

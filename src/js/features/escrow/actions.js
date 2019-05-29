@@ -2,7 +2,8 @@
 import {
   CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
-  ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS
+  ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS,
+  WATCH_ESCROW
 } from './constants';
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
@@ -79,6 +80,8 @@ export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSe
 export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
 
 export const resetStatus = () => ({type: RESET_STATUS});
+
+export const watchEscrow = (escrowId) => ({type: WATCH_ESCROW, escrowId});
 
 // TODO: Update with new UI
 
