@@ -35,9 +35,9 @@ const getTradeStyle = (trade, isBuyer) => {
     case tradeStates.released:
       return {text: 'Done', className: 'bg-success'};
     case tradeStates.canceled:
-      return {text: 'Canceled', className: 'bg-secondary'};
+      return {text: 'Canceled', className: 'bg-secondary text-black'};
     case tradeStates.expired:
-      return {text: 'Expired', className: 'bg-secondary'};
+      return {text: 'Expired', className: 'bg-secondary text-black'};
     case tradeStates.arbitration_open:
       return {text: 'Arbitration', className: 'bg-warning'};
     case tradeStates.arbitration_closed: {
@@ -52,7 +52,7 @@ const getTradeStyle = (trade, isBuyer) => {
       return {text: 'Resolved', className};
     }
     default:
-      return {text: trade.status, className: 'bg-secondary'};
+      return {text: trade.status, className: 'bg-secondary text-black'};
   }
 };
 

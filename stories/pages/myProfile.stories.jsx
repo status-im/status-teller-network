@@ -41,7 +41,14 @@ storiesOf('Pages/MyProfile', module)
   .add(
     "With Trades",
     withInfo({inline: true})(() => (
-      <Trades trades={[{address: 'address', name: 'Name', value: '2', status: 'open'}]}/>
+      <Trades trades={[
+        {
+        address: 'address', name: 'Name', value: '2', status: 'open', buyerInfo: {
+            statusContactCode: '0x0fwefwef43f3qg43g', username: 'Bob'
+        },
+        token: {symbol: 'ETH'}
+      }
+      ]}/>
     ))
   )
   .add(
