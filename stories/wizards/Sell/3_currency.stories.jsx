@@ -4,7 +4,7 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import FiatSelectorForm from '../../../src/js/wizards/Sell/4_Currency/components/FiatSelectorForm';
+import FiatSelectorForm from '../../../src/js/wizards/Sell/5_Currency/components/FiatSelectorForm';
 
 const CURRENCY_DATA = [
   {id: 'USD', label: 'United States Dollar - USD'},
