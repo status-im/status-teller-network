@@ -329,13 +329,15 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
     function _cancel(uint _escrowId, EscrowTransaction storage trx) private {
+        address payable seller = metadataStore.getOfferOwner(trx.offerId);
+
         if(trx.status == EscrowStatus.FUNDED){
             address token = metadataStore.getAsset(trx.offerId);
             if(token == address(0)){
-                msg.sender.transfer(trx.tokenAmount);
+                seller.transfer(trx.tokenAmount);
             } else {
                 ERC20Token erc20token = ERC20Token(token);
-                require(erc20token.transfer(msg.sender, trx.tokenAmount));
+                require(erc20token.transfer(seller, trx.tokenAmount), "Transfer failed");
             }
         }
 

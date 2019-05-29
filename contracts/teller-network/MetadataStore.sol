@@ -264,7 +264,7 @@ contract MetadataStore is Ownable {
         );
     }
 
-    function getOfferOwner(uint256 _id) public view returns (address) {
+    function getOfferOwner(uint256 _id) public view returns (address payable) {
         require(_id < offers.length, "Invalid offer id");
         return (offers[_id].owner);
     }
