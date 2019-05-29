@@ -113,9 +113,9 @@ contract("Escrow", function() {
     await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
     await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator2});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -670,13 +670,13 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
       try {
-        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[0]}); 
+        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
       }
 
-      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]}); 
+      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
       const arbitrationCanceled = receipt.events.ArbitrationCanceled;
       assert(!!arbitrationCanceled, "ArbitrationCanceled() not triggered");
       assert.equal(arbitrationCanceled.returnValues.escrowId, escrowId, "Invalid escrowId");
@@ -707,7 +707,7 @@ contract("Escrow", function() {
       receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
       try {
-        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]}); 
+        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");

@@ -67,9 +67,9 @@ contract("Escrow Funding", function() {
   const value = web3.utils.toWei("0.1", "ether");
 
   let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
-  
+
   let receipt, escrowId, ethOfferId, tokenOfferId, SNTOfferId, arbitrator;
-  
+
   this.timeout(0);
 
   before(async () => {
@@ -77,20 +77,20 @@ contract("Escrow Funding", function() {
     await SNT.methods.generateTokens(accounts[0], 100000000).send();
     const encodedCall = License.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
-      
+
     // Register arbitrators
     arbitrator = accounts[9];
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     const encodedCall2 = Arbitration.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
+
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, License.address, "London", "USD", "Iuri", [0], 0, 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -98,16 +98,16 @@ contract("Escrow Funding", function() {
     beforeEach(async () => {
       receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, [0], "0x00", "U", "12345")
                                     .send({from: accounts[0]});
-      
+
       escrowId = receipt.events.Created.returnValues.escrowId;
     });
 
-    it("Should fund escrow and deduct an SNT fee", async () => {    
+    it("Should fund escrow and deduct an SNT fee", async () => {
       // Still requires 2 transactions, because approveAndCall cannot send ETH
       // TODO: test if inside the contract we can encode the call, and call approveAndCall
 
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      
+
       receipt = await Escrow.methods.fund(escrowId, value, expirationTime)
                                     .send({from: accounts[0], value});
 
@@ -140,7 +140,7 @@ contract("Escrow Funding", function() {
     it("Allowance == to funds and fee. Token is SNT", async () => {
       const amount = toBN(feeAmount).add(toBN(fundAmount)).toString(10);
       await SNT.methods.approve(Escrow.options.address, amount).send({from: accounts[0]});
-      
+
       await execute(SNT, escrowIdSNT);
     });
 
@@ -154,7 +154,7 @@ contract("Escrow Funding", function() {
     it("Allowance < than funds and fee. Token is SNT", async () => {
       const amount = toBN(feeAmount).add(toBN(fundAmount)).sub(toBN(10)).toString(10);
       await SNT.methods.approve(Escrow.options.address, amount).send({from: accounts[0]});
-      
+
       await execute(SNT, escrowIdSNT);
     });
 
@@ -234,7 +234,7 @@ contract("Escrow Funding", function() {
       let trxToSend;
 
       const resetApproval = (token, tokenAllowance) => {
-        // Reset approval 
+        // Reset approval
         // due to: https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
         if(toBN(tokenAllowance).gt(toBN(0))){
           approvalPromises.push(token.methods.approve(Escrow.options.address, "0").send({from: accounts[0]}));
@@ -249,7 +249,7 @@ contract("Escrow Funding", function() {
         } else {
           resetApproval(SNT, tokenAllowance);
           trxToSend = SNT.methods.approveAndCall(Escrow.options.address, sntAmount, encodedCall);
-        } 
+        }
       } else {
         // Verifying token allowance for funding
         if(toBN(tokenAllowance).lt(toBN(fundAmount))){
@@ -264,7 +264,7 @@ contract("Escrow Funding", function() {
         } else {
           resetApproval(SNT, tokenAllowance); // Has some funds. Reset
           trxToSend = SNT.methods.approveAndCall(Escrow.options.address, feeAmount, encodedCall);
-        } 
+        }
       }
 
       return { approvalPromises, trxToSend};
