@@ -30,7 +30,7 @@ class OffersMap extends Component {
   }
 
   goToProfile = (address) => {
-    this.props.history.push(`/buy/profile/${address}`);
+    this.props.history.push(`/profile/${address}`);
   };
 
   render() {
