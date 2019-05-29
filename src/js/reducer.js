@@ -13,6 +13,7 @@ import newSeller from './features/newSeller';
 import newBuy from './features/newBuy';
 import metadata from './features/metadata';
 import approval from './features/approval';
+import events from './features/events';
 
 
 const rootReducer = combineReducers({
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   newSeller: newSeller.reducer,
   newBuy: newBuy.reducer,
   metadata: metadata.reducer,
-  approval: approval.reducer
+  approval: approval.reducer,
+  events: events.reducer
 });
 
 export default rootReducer;

@@ -8,10 +8,11 @@ import {
   RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_PRE_SUCCESS,
-  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS
+  RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
+  ESCROW_EVENT_RECEIVED
 } from './constants';
 import { States } from '../../utils/transaction';
-import { escrowStatus } from './helpers';
+import { escrowStatus, eventTypes } from './helpers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import merge from 'merge';
 
@@ -208,6 +209,24 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         rateStatus: States.failed,
+        escrows: escrowsClone
+      };
+    case ESCROW_EVENT_RECEIVED:
+      if (action.result.event === eventTypes.funded) {
+        escrowsClone[escrowId].expirationTime = action.result.returnValues.expirationTime;
+        escrowsClone[escrowId].status = escrowStatus.FUNDED;
+      }
+      if (action.result.event === eventTypes.paid) {
+        escrowsClone[escrowId].status = escrowStatus.PAID;
+      }
+      if (action.result.event === eventTypes.released) {
+        escrowsClone[escrowId].status = escrowStatus.RELEASED;
+      }
+      if (action.result.event === eventTypes.canceled) {
+        escrowsClone[escrowId].status = escrowStatus.CANCELED;
+      }
+      return {
+        ...state,
         escrows: escrowsClone
       };
     case RESET_STATUS:
