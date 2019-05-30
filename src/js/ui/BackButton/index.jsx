@@ -11,17 +11,25 @@ class BackButton extends Component {
     hidden: null
   };
 
+  componentDidMount() {
+    this.checkLocation();
+  }
+
+  checkLocation() {
+    const hidden = !!BLACK_LIST.find(blackListedLink => {
+      const starIndex = blackListedLink.indexOf('*');
+      if (starIndex > -1) {
+        blackListedLink = blackListedLink.substring(0, starIndex);
+        return this.props.location.pathname.startsWith(blackListedLink);
+      }
+      return BLACK_LIST.includes(this.props.location.pathname);
+    });
+    this.setState({hidden});
+  }
+
   componentDidUpdate(prevProps) {
     if (this.state.hidden === null || prevProps.location.pathname !== this.props.location.pathname) {
-      const hidden = !!BLACK_LIST.find(blackListedLink => {
-        const starIndex = blackListedLink.indexOf('*');
-        if (starIndex > -1) {
-          blackListedLink = blackListedLink.substring(0, starIndex);
-          return this.props.location.pathname.startsWith(blackListedLink);
-        }
-        return BLACK_LIST.includes(this.props.location.pathname);
-      });
-      this.setState({hidden});
+     this.checkLocation();
     }
   }
 
