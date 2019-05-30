@@ -3,7 +3,6 @@ import React, {Fragment, Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
-import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import CancelIcon from "../../../../images/close.png";
 import classnames from 'classnames';
@@ -36,7 +35,7 @@ class CancelDispute extends Component {
             <h6 className="m-0 font-weight-normal">Cancel Dispute</h6>
           </Col>
         </Row>
-        
+
       </div>
       <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelDispute} onCancel={this.displayDialog(false)} title="Cancel Dispute" content="Are you sure?" cancelText="No" />
     </Fragment>;

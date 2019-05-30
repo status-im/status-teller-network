@@ -45,6 +45,7 @@ import SignatureContainer from '../pages/tmp/SignatureContainer';
 import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
+import escrow from '../features/escrow';
 import license from "../features/license";
 
 const PRICE_FETCH_INTERVAL = 60000;
@@ -53,9 +54,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.props.init();
+    this.watchingTrades = false;
     setInterval(() => {
       this.props.fetchExchangeRates();
     }, PRICE_FETCH_INTERVAL);
+    if (this.props.profile && this.props.profile.offers) {
+      this.watchTradesForOffers();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -67,6 +72,16 @@ class App extends Component {
       this.props.checkLicenseOwner();
       this.props.setCurrentUser(web3.eth.defaultAccount);
     }
+    if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
+      this.watchTradesForOffers();
+    }
+  }
+
+  watchTradesForOffers() {
+    if (this.watchingTrades) {
+      return;
+    }
+    this.props.watchEscrowCreations(this.props.profile.offers);
   }
 
   shouldComponentUpdate(nextProps) {
@@ -152,7 +167,8 @@ const mapStateToProps = (state) => {
     isReady: network.selectors.isReady(state),
     hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
     error: network.selectors.getError(state),
-    profile: metadata.selectors.getProfile(state, address)
+    profile: metadata.selectors.getProfile(state, address),
+    newEscrow: escrow.selectors.newEscrow(state)
   };
 };
 
@@ -170,7 +186,8 @@ App.propTypes = {
   setCurrentUser: PropTypes.func,
   resetState: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
-  currentUser: PropTypes.string
+  currentUser: PropTypes.string,
+  watchEscrowCreations: PropTypes.func
 };
 
 export default connect(
@@ -182,6 +199,7 @@ export default connect(
     resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    setCurrentUser: metadata.actions.setCurrentUser
+    setCurrentUser: metadata.actions.setCurrentUser,
+    watchEscrowCreations: escrow.actions.watchEscrowCreations
   }
 )(App);

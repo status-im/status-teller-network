@@ -15,7 +15,8 @@ export const eventTypes = {
   paid: 'Paid',
   funded: 'Funded',
   released: 'Released',
-  canceled: 'Canceled'
+  canceled: 'Canceled',
+  created: 'Created'
 };
 
 export const escrowStatus = {
