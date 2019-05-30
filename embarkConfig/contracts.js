@@ -233,7 +233,6 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
-    tracking: 'shared.chains.json',
     deployment: {
       accounts: [
         {
@@ -242,7 +241,7 @@ module.exports = {
           numAddresses: "10"
         }
       ],
-      host: `rinkeby.infura.io/${secret.infuraKey}`,
+      host: `ropsten.infura.io/${secret.infuraKey}`,
       port: false,
       protocol: 'https',
       type: "rpc"

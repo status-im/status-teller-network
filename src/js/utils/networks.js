@@ -7,7 +7,7 @@ import { zeroAddress } from './address';
 
 export const Networks = {
   // 1: 'mainnet', Not deployed
-  // 3: 'ropsten', Not tokens and not deployed
+  3: 'ropsten',
   4: 'rinkeby',
   1337: 'private'
 };
@@ -603,6 +603,20 @@ export const Tokens = {
       symbol: 'MKR',
       name: "MKR",
       address: MKR.address.toLowerCase(),
+      decimals: 18
+    }
+  ],
+  'ropsten': [
+    {
+      symbol: 'ETH',
+      name: 'ETH',
+      address: zeroAddress,
+      decimals: 18
+    },
+    {
+      symbol: 'SNT',
+      name: "Status Network Token",
+      address: SNT.address.toLowerCase(),
       decimals: 18
     }
   ],
