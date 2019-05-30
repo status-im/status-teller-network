@@ -30,14 +30,17 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         address _metadataStore,
         address _feeToken,
         address _feeDestination,
+        address _relayHub,
         uint _feeAmount)
         Fees(_feeToken, _feeDestination, _feeAmount) public {
         license = License(_license);
         arbitration = Arbitration(_arbitration);
         metadataStore = MetadataStore(_metadataStore);
+        setRelayHubAddress(_relayHub);
+    }
 
-        // ROPSTEN
-        init_relay_hub(RelayHub(0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87));
+    function setRelayHubAddress(address _relayHub) public onlyOwner {
+        init_relay_hub(RelayHub(_relayHub));
     }
 
     Arbitration arbitration;

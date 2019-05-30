@@ -84,7 +84,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, "$RelayHub", FEE_AMOUNT],
         onDeploy: [
           "Arbitration.methods.setEscrowAddress('$Escrow').send()",
           "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
@@ -108,6 +108,12 @@ module.exports = {
           "STT",
           true
         ]
+      },
+      "RLPReader": {
+        file: 'tabookey-gasless/contracts/RLPReader.sol'
+      },
+      "RelayHub": {
+        file: 'tabookey-gasless/contracts/RelayHub.sol'
       }
     }
   },
@@ -233,6 +239,21 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
+    contracts: {
+      RLPReader: {
+        deploy: false
+      },
+      RelayHub: {
+        deploy: false
+      },
+      Escrow: {
+        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87", FEE_AMOUNT],
+        onDeploy: [
+          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
+          "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
+        ]
+      }
+    },
     deployment: {
       accounts: [
         {
@@ -247,9 +268,7 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
-    dappConnection: [
-      "$WEB3"
-    ]
+    dappConnection: ["$WEB3"]
   },
 
   // merges with the settings in default
