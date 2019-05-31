@@ -19,7 +19,6 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  releaseStatus: States.none,
   cancelStatus: States.none,
   rateStatus: States.none,
   fee: '0',
@@ -76,21 +75,22 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case RELEASE_ESCROW:
+      escrowsClone[escrowId].releaseStatus = States.pending;
       return {
         ...state,
-        releaseStatus: States.pending
+        escrows: escrowsClone
       };
     case RELEASE_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].releaseStatus = States.success;
       escrowsClone[escrowId].status = escrowStatus.RELEASED;
       return {
         ...state,
-        releaseStatus: States.success,
         escrows: escrowsClone
       };
     case RELEASE_ESCROW_FAILED:
+      escrowsClone[escrowId].releaseStatus = States.failed;
       return {
         ...state,
-        releaseStatus: States.failed,
         escrows: escrowsClone
       };
     case PAY_ESCROW:
@@ -246,7 +246,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case CLEAR_CHANGED_ESCROW:
       return {
         ...state,
-        chnagedEscrow: null
+        changedEscrow: null
       };
     case RESET_STATUS:
       escrowsClone[escrowId] = {
