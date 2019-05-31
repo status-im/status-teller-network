@@ -19,7 +19,6 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  fundEscrowStatus: States.none,
   releaseStatus: States.none,
   payStatus: States.none,
   cancelStatus: States.none,
@@ -43,22 +42,23 @@ function reducer(state = DEFAULT_STATE, action) {
 
   switch (action.type) {
     case FUND_ESCROW:
+      escrowsClone[escrowId].fundStatus = States.pending;
       return {
         ...state,
-        fundEscrowStatus: States.pending
+        escrows: escrowsClone
       };
     case FUND_ESCROW_FAILED:
+      escrowsClone[escrowId].fundStatus = States.failed;
       return {
         ...state,
-        fundEscrowStatus: States.failed,
         escrows: escrowsClone
       };
     case FUND_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].fundStatus = States.success;
       escrowsClone[escrowId].expirationTime = action.expirationTime;
       escrowsClone[escrowId].status = escrowStatus.FUNDED;
       return {
         ...state,
-        fundEscrowStatus: States.success,
         escrows: escrowsClone
       };
     case PAY_ESCROW_PRE_SUCCESS:
@@ -248,13 +248,17 @@ function reducer(state = DEFAULT_STATE, action) {
         chnagedEscrow: null
       };
     case RESET_STATUS:
-      return {
-        ...state,
-        fundEscrowStatus: States.none,
+      escrowsClone[escrowId] = {
+        ...escrowsClone[escrowId],
+        fundStatus: States.none,
         createEscrowStatus: States.none,
         payStatus: States.none,
         releaseStatus: States.none,
         rateStatus: States.none
+      };
+      return {
+        ...state,
+        escrows: escrowsClone
       };
     case PURGE_STATE:
     case RESET_STATE: {

@@ -160,7 +160,7 @@ class CardEscrowSeller extends Component {
   render(){
     let step = this.state.step;
 
-    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, fundStatus, releaseStatus, tokens, arbitrationDetails} = this.props;
+    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, releaseStatus, tokens, arbitrationDetails} = this.props;
     let showFundButton = this.props.showFundButton;
 
     if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
@@ -168,8 +168,8 @@ class CardEscrowSeller extends Component {
     }
 
     if (showFundButton) step = 2;
-    if (fundStatus === States.pending || (trade.mining && trade.status === escrow.helpers.tradeStates.waiting)) step = 3;
-    if (fundStatus === States.success) step = 4;
+    if (trade.fundStatus === States.pending || (trade.mining && trade.status === escrow.helpers.tradeStates.waiting)) step = 3;
+    if (trade.fundStatus === States.success) step = 4;
     if (releaseStatus === States.pending || (trade.mining && (trade.status === escrow.helpers.tradeStates.funded || trade.status === escrow.helpers.tradeStates.paid))) step = 5;
     if (releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
     if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") step = 10;
@@ -224,7 +224,6 @@ CardEscrowSeller.propTypes = {
   fundEscrow: PropTypes.func,
   showFundButton: PropTypes.bool,
   releaseEscrow: PropTypes.func,
-  fundStatus: PropTypes.string,
   releaseStatus: PropTypes.string,
   arbitrationDetails: PropTypes.object
 };
