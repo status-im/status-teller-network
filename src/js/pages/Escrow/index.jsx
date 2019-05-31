@@ -205,7 +205,6 @@ Escrow.propTypes = {
   releaseEscrow: PropTypes.func,
   rateStatus: PropTypes.string,
   payEscrow: PropTypes.func,
-  cancelStatus: PropTypes.string,
   approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
   cancelDispute: PropTypes.func,
@@ -218,16 +217,16 @@ Escrow.propTypes = {
 };
 
 const mapStateToProps = (state, props) => {
-  const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
   const approvalLoading = approval.selectors.isLoading(state);
   const arbitrationLoading = arbitration.selectors.isLoading(state);
   const ratingStatus = escrow.selectors.getRatingStatus(state);
   const escrowId = props.match.params.id.toString();
+  const theEscrow = escrow.selectors.getEscrowById(state, escrowId);
 
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  escrowId,
-    escrow: escrow.selectors.getEscrowById(state, escrowId),
+    escrow: theEscrow,
     arbitration: arbitration.selectors.getArbitration(state) || {},
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
@@ -235,10 +234,9 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
+    loading: (theEscrow && theEscrow.cancelStatus === States.pending) || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
     rateStatus: escrow.selectors.getRatingStatus(state),
-    escrowEvents: events.selectors.getEscrowEvents(state),
-    cancelStatus
+    escrowEvents: events.selectors.getEscrowEvents(state)
   };
 };
 
