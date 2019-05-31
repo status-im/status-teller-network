@@ -20,7 +20,6 @@ const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
   releaseStatus: States.none,
-  payStatus: States.none,
   cancelStatus: States.none,
   rateStatus: States.none,
   fee: '0',
@@ -95,21 +94,23 @@ function reducer(state = DEFAULT_STATE, action) {
         escrows: escrowsClone
       };
     case PAY_ESCROW:
+      escrowsClone[escrowId].payStatus = States.pending;
       return {
         ...state,
-        payStatus: States.pending
+        escrows: escrowsClone
       };
     case PAY_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].payStatus = States.success;
       escrowsClone[escrowId].status = escrowStatus.PAID;
       return {
         ...state,
-        payStatus: States.success,
         escrows: escrowsClone
       };
     case PAY_ESCROW_FAILED:
+      escrowsClone[escrowId].payStatus = States.failed;
       return {
         ...state,
-        payStatus: States.failed
+        escrows: escrowsClone
       };
     case CREATE_ESCROW:
       return {

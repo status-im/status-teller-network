@@ -103,10 +103,10 @@ PreFund.propTypes = {
 
 class CardEscrowBuyer extends Component {
   render(){
-    const {trade, payStatus, payAction, rateTransaction, arbitrationDetails, rateStatus} = this.props;
+    const {trade, payAction, rateTransaction, arbitrationDetails, rateStatus} = this.props;
 
-    const showLoading = payStatus === States.pending;
-    const showWaiting = payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
+    const showLoading = trade.payStatus === States.pending;
+    const showWaiting = trade.payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
 
     let component;
     if (showLoading) {
@@ -147,7 +147,6 @@ class CardEscrowBuyer extends Component {
 
 CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
-  payStatus: PropTypes.string,
   rateStatus: PropTypes.string,
   payAction: PropTypes.func,
   rateTransaction: PropTypes.func,

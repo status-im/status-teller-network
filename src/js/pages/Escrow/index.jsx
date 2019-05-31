@@ -101,7 +101,7 @@ class Escrow extends Component {
 
   render() {
     let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash,
+      cancelEscrow, releaseEscrow, releaseStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash,
       approvalError, cancelDispute} = this.props;
     const {showApproveFundsScreen} = this.state;
 
@@ -109,7 +109,7 @@ class Escrow extends Component {
       return <Loading page={true} />;
     }
 
-    if (releaseStatus === States.failed || payStatus === States.failed || rateStatus === States.failed || escrow.fundStatus === States.failed) {
+    if (releaseStatus === States.failed || escrow.payStatus === States.failed || rateStatus === States.failed || escrow.fundStatus === States.failed) {
       return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
     }
 
@@ -156,7 +156,6 @@ class Escrow extends Component {
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
-                                      payStatus={payStatus}
                                       payAction={payEscrow}
                                       rateTransaction={rateTransaction}
                                       rateStatus={rateStatus}
@@ -206,7 +205,6 @@ Escrow.propTypes = {
   resetStatus: PropTypes.func,
   releaseStatus: PropTypes.string,
   releaseEscrow: PropTypes.func,
-  payStatus: PropTypes.string,
   rateStatus: PropTypes.string,
   payEscrow: PropTypes.func,
   cancelStatus: PropTypes.string,
@@ -241,7 +239,6 @@ const mapStateToProps = (state, props) => {
     tokens: network.selectors.getTokens(state),
     loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
     releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
-    payStatus: escrow.selectors.getPaidEscrowStatus(state),
     rateStatus: escrow.selectors.getRatingStatus(state),
     escrowEvents: events.selectors.getEscrowEvents(state),
     cancelStatus
