@@ -19,16 +19,34 @@ class License extends Component {
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
     }
+    this.pollBalanceInterval = null;
 
     this.props.checkLicenseOwner();
     this.props.loadLicensePrice();
     this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
   }
 
+  checkBalance() {
+    if (this.props.sntToken && this.props.sntToken.balance) {
+      if (this.enoughBalance()) {
+        if (this.pollBalanceInterval) {
+          clearInterval(this.pollBalanceInterval);
+        }
+      } else {
+        if (!this.pollBalanceInterval) {
+          this.pollBalanceInterval = setInterval(() => {
+            this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
+          }, 2000);
+        }
+      }
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
     }
+    this.checkBalance();
   }
 
   buyLicense = () => {
@@ -73,7 +91,10 @@ License.propTypes = {
   isLoading: PropTypes.bool,
   error: PropTypes.string,
   sntToken: PropTypes.object,
-  licensePrice: PropTypes.number,
+  licensePrice: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   loadLicensePrice: PropTypes.func,
   updateBalance: PropTypes.func,
   cancelBuyLicense: PropTypes.func
