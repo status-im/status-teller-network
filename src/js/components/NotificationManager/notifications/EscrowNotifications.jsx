@@ -4,21 +4,25 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import escrow from '../../../features/escrow';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-
-const DELAY = 5000;
+import {createNotification} from '../notifUtils';
 
 class EscrowNotifications extends Component {
   componentDidUpdate(prevProps) {
+    const {newEscrow, changedEscrow} = this.props;
     if (!prevProps.newEscrow && this.props.newEscrow) {
-      NotificationManager.info(`For Offer ${this.props.newEscrow.offerId}: ${this.props.newEscrow.token.symbol} → ${this.props.newEscrow.offer.currency}`,
-        'New trade created', DELAY, () => {
-          clearTimeout(this.escrowNotifTimeout);
-          this.props.clearNewEscrow();
-          this.props.history.push(`/escrow/${this.props.newEscrow.escrowId}`);
+      createNotification(NotificationManager, 'info', 'New trade created',
+        `For Offer #${newEscrow.offerId}: ${newEscrow.token.symbol} → ${newEscrow.offer.currency}`,
+        this.props.clearNewEscrow, () => {
+          this.props.history.push(`/escrow/${newEscrow.escrowId}`);
         });
-      this.escrowNotifTimeout = setTimeout(() => {
-        this.props.clearNewEscrow();
-      }, DELAY);
+    }
+
+    if (!prevProps.changedEscrow && changedEscrow) {
+      createNotification(NotificationManager, 'info', 'Trade status changed',
+        `Trade # ${changedEscrow.escrowId} is now ${escrow.helpers.getStatusFromStatusId(changedEscrow.status)}`,
+        this.props.clearChangedEscrow, () => {
+          this.props.history.push(`/escrow/${changedEscrow.escrowId}`);
+        });
     }
   }
 
@@ -30,20 +34,24 @@ class EscrowNotifications extends Component {
 EscrowNotifications.propTypes = {
   newEscrow: PropTypes.object,
   history: PropTypes.object,
-  clearNewEscrow: PropTypes.func
+  changedEscrow: PropTypes.object,
+  clearNewEscrow: PropTypes.func,
+  clearChangedEscrow: PropTypes.func
 };
 
 
 const mapStateToProps = (state) => {
   const newEscrowId = escrow.selectors.newEscrow(state);
   return {
-    newEscrow: escrow.selectors.getEscrowById(state, newEscrowId)
+    newEscrow: escrow.selectors.getEscrowById(state, newEscrowId),
+    changedEscrow: escrow.selectors.changedEscrow(state)
   };
 };
 
 export default connect(
   mapStateToProps,
   {
-    clearNewEscrow: escrow.actions.clearNewEscrow
+    clearNewEscrow: escrow.actions.clearNewEscrow,
+    clearChangedEscrow: escrow.actions.clearChangedEscrow
   }
 )(withRouter(EscrowNotifications));

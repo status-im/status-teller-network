@@ -9,7 +9,7 @@ import {
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_PRE_SUCCESS,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
-  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW
+  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW, CLEAR_CHANGED_ESCROW
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus, eventTypes } from './helpers';
@@ -25,7 +25,8 @@ const DEFAULT_STATE = {
   cancelStatus: States.none,
   rateStatus: States.none,
   fee: '0',
-  newEscrow: null
+  newEscrow: null,
+  changedEscrow: null
 };
 
 // eslint-disable-next-line complexity
@@ -228,7 +229,8 @@ function reducer(state = DEFAULT_STATE, action) {
       }
       return {
         ...state,
-        escrows: escrowsClone
+        escrows: escrowsClone,
+        changedEscrow: {escrowId, status: escrowsClone[escrowId].status}
       };
     case ESCROW_CREATED_EVENT_RECEIVED:
       return {
@@ -239,6 +241,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         newEscrow: null
+      };
+    case CLEAR_CHANGED_ESCROW:
+      return {
+        ...state,
+        chnagedEscrow: null
       };
     case RESET_STATUS:
       return {

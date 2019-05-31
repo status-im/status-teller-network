@@ -85,6 +85,7 @@ export const watchEscrow = (escrowId) => ({type: WATCH_ESCROW, escrowId});
 export const watchEscrowCreations = (offers) => ({type: WATCH_ESCROW_CREATIONS, offers});
 
 export const clearNewEscrow = () => ({type: CLEAR_NEW_ESCROW});
+export const clearChangedEscrow = () => ({type: CLEAR_NEW_ESCROW});
 
 // TODO: Update with new UI
 

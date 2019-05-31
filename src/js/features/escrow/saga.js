@@ -277,7 +277,7 @@ export function *onWatchEscrow() {
 
 export function *watchEscrowCreations({offers}) {
   try {
-    yield all(offers.map(offer => contractEvent(Escrow, eventTypes.created, {offerId: offer.id}, ESCROW_CREATED_EVENT_RECEIVED)));
+    yield all(offers.map(offer => contractEvent(Escrow, eventTypes.created, {offerId: offer.id}, ESCROW_CREATED_EVENT_RECEIVED, true)));
   } catch (error) {
     console.error(error);
   }

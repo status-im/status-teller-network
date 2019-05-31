@@ -27,6 +27,10 @@ export const escrowStatus = {
   CANCELED: '4'
 };
 
+export function getStatusFromStatusId(id) {
+  return Object.keys(escrowStatus)[Object.values(escrowStatus).indexOf(id.toString())];
+}
+
 export function getTradeStatus(trade) {
   switch(trade.status) {
     case escrowStatus.RELEASED: return tradeStates.released;
