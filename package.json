@@ -74,6 +74,7 @@
     "react-dom": "^16.8.2",
     "react-google-maps": "^9.4.5",
     "react-i18next": "^9.0.2",
+    "react-notifications": "^1.4.3",
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",

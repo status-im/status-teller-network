@@ -9,7 +9,7 @@ import {
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_PRE_SUCCESS,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
-  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED
+  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus, eventTypes } from './helpers';
@@ -234,6 +234,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         newEscrow: action.result.returnValues.escrowId
+      };
+    case CLEAR_NEW_ESCROW:
+      return {
+        ...state,
+        newEscrow: null
       };
     case RESET_STATUS:
       return {

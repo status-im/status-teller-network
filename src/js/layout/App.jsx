@@ -109,9 +109,9 @@ class App extends Component {
 
     return (
       <Fragment>
-        <NotificationManager/>
         <HashRouter>
           <Container className="p-0">
+            <NotificationManager/>
             <Header profile={this.props.profile}/>
             <div className="body-content">
               <BackButton/>
