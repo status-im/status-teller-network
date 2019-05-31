@@ -48,7 +48,7 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
   }
 }
 
-export function contractEventChannel(contract, event, filter, emitter) {
+export function contractOnceEventChannel(contract, event, filter, emitter) {
   contract.once(event, {filter}, (err, result) => {
     if (err) {
       emitter({err});
@@ -60,8 +60,28 @@ export function contractEventChannel(contract, event, filter, emitter) {
   return () => {};
 }
 
-export function *contractEvent(contract, event, filter, successType) {
-  const channel = eventChannel(contractEventChannel.bind(null, contract, event, filter));
+export function contractEventChannel(contract, event, filter, emitter) {
+  const sub = contract.events[event]({
+    filter
+  }, (err, result) => {
+    if (err) {
+      emitter({err});
+      return emitter(END);
+    }
+    emitter({result});
+  });
+  return () => {
+    sub.unsubscribe();
+  };
+}
+
+export function *contractEvent(contract, event, filter, successType, perpetualEvent) {
+  let channel;
+  if (perpetualEvent) {
+    channel = eventChannel(contractEventChannel.bind(null, contract, event, filter));
+  } else {
+    channel = eventChannel(contractOnceEventChannel.bind(null, contract, event, filter));
+  }
   while (true) {
     const {result, error} = yield take(channel);
     if (result) {

@@ -64,6 +64,9 @@ export const getEscrowById = (state, escrowId) => {
 export const getFee = state => state.escrow.fee;
 export const txHash = state => state.escrow.txHash;
 
+export const newEscrow = state => state.escrow.newEscrow;
+export const changedEscrow = state => state.escrow.changedEscrow;
+
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;

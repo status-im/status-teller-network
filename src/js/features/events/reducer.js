@@ -11,7 +11,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: {
-          ...state.watching,
+          ...state.escrows,
           [action.escrowId]: true
         }
       };

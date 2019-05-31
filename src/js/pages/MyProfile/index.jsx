@@ -17,6 +17,7 @@ import { zeroAddress, addressCompare } from '../../utils/address';
 
 import "./index.scss";
 import Loading from "../../components/Loading";
+import events from "../../features/events";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -27,16 +28,39 @@ const NULL_PROFILE = {
 };
 
 class MyProfile extends Component {
+  constructor(props) {
+    super(props);
+    if (props.trades) {
+      this.watchEscrows();
+    }
+  }
+
   componentDidMount() {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
     this.props.getArbitrators();
   }
 
-  componentDidUpdate(){
+  componentDidUpdate(oldProps){
     if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.statusContactCode){
-      this.props.history.push("/profile/contact/edit");
+      return this.props.history.push("/profile/contact/edit");
     }
+
+    if ((!oldProps.trades && this.props.trades) || oldProps.trades.length !== this.props.trades.length) {
+      this.watchEscrows();
+    }
+  }
+
+  watchEscrows() {
+    this.props.trades.forEach(trade => {
+      if (!this.props.escrowEvents[trade.escrowId] &&
+        (trade.status === escrow.helpers.tradeStates.funded ||
+          trade.status === escrow.helpers.tradeStates.arbitration_open ||
+          trade.status === escrow.helpers.tradeStates.paid ||
+          trade.status === escrow.helpers.tradeStates.waiting)) {
+        this.props.watchEscrow(trade.escrowId);
+        }
+      });
   }
 
   render() {
@@ -80,7 +104,9 @@ MyProfile.propTypes = {
   loadProfile: PropTypes.func,
   getDisputedEscrows: PropTypes.func,
   getArbitrators: PropTypes.func,
-  arbitrators: PropTypes.array
+  arbitrators: PropTypes.array,
+  escrowEvents: PropTypes.object,
+  watchEscrow: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -91,7 +117,8 @@ const mapStateToProps = state => {
     profile,
     trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
     disputes: arbitration.selectors.escrows(state),
-    arbitrators: arbitration.selectors.arbitrators(state)
+    arbitrators: arbitration.selectors.arbitrators(state),
+    escrowEvents: events.selectors.getEscrowEvents(state)
   };
 };
 
@@ -100,5 +127,6 @@ export default connect(
   {
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
-    getArbitrators: arbitration.actions.getArbitrators
+    getArbitrators: arbitration.actions.getArbitrators,
+    watchEscrow: escrow.actions.watchEscrow
   })(withRouter(MyProfile));

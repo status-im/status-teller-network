@@ -61,12 +61,12 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     MetadataStore public metadataStore;
 
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId, uint date);
-    event Funded(uint escrowId, uint expirationTime, uint amount, uint date);
+    event Funded(uint indexed escrowId, uint expirationTime, uint amount, uint date);
 
-    event Paid(uint escrowId, uint date);
-    event Released(uint escrowId, uint date);
-    event Canceled(uint escrowId, uint date);
-    event Rating(uint indexed offerId, address indexed buyer, uint escrowId, uint rating, uint date);
+    event Paid(uint indexed escrowId, uint date);
+    event Released(uint indexed escrowId, uint date);
+    event Canceled(uint indexed escrowId, uint date);
+    event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating, uint date);
 
 
     /**
@@ -310,7 +310,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
 
         EscrowTransaction storage trx = transactions[_escrowId];
         require(trx.status == EscrowStatus.FUNDED || trx.status == EscrowStatus.CREATED, "Only transactions in created or funded state can be canceled");
-        
+
         address seller = metadataStore.getOfferOwner(trx.offerId);
         require(trx.buyer == msg.sender || seller == msg.sender, "Function can only be invoked by the escrow buyer or seller");
 

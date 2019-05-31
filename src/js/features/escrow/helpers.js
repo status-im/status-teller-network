@@ -15,7 +15,8 @@ export const eventTypes = {
   paid: 'Paid',
   funded: 'Funded',
   released: 'Released',
-  canceled: 'Canceled'
+  canceled: 'Canceled',
+  created: 'Created'
 };
 
 export const escrowStatus = {
@@ -25,6 +26,10 @@ export const escrowStatus = {
   RELEASED: '3',
   CANCELED: '4'
 };
+
+export function getStatusFromStatusId(id) {
+  return Object.keys(escrowStatus)[Object.values(escrowStatus).indexOf(id.toString())];
+}
 
 export function getTradeStatus(trade) {
   switch(trade.status) {

@@ -19,7 +19,7 @@ import {
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING,
   GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED,
-  WATCH_ESCROW, ESCROW_EVENT_RECEIVED
+  WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED
 } from './constants';
 import {eventTypes} from './helpers';
 
@@ -159,6 +159,10 @@ export function *doLoadEscrows({address}) {
   }
 }
 
+export function *onLoadEscrows() {
+  yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
+}
+
 export function *doGetEscrow({escrowId}) {
   try {
     const escrow = yield Escrow.methods.transactions(escrowId).call();
@@ -175,12 +179,21 @@ export function *doGetEscrow({escrowId}) {
   }
 }
 
-export function *onLoadEscrows() {
-  yield takeEvery(LOAD_ESCROWS, doLoadEscrows);
-}
-
 export function *onGetEscrow() {
   yield takeEvery(GET_ESCROW, doGetEscrow);
+}
+
+export function *doGetEscrowByEvent({result}) {
+  try {
+    yield doGetEscrow({escrowId: result.returnValues.escrowId});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_ESCROW_FAILED, error: error.message});
+  }
+}
+
+export function *onGetEscrowAfterEvent() {
+  yield takeEvery(ESCROW_CREATED_EVENT_RECEIVED, doGetEscrowByEvent);
 }
 
 export function *onGetFee() {
@@ -262,8 +275,20 @@ export function *onWatchEscrow() {
   yield takeEvery(WATCH_ESCROW, watchEscrow);
 }
 
+export function *watchEscrowCreations({offers}) {
+  try {
+    yield all(offers.map(offer => contractEvent(Escrow, eventTypes.created, {offerId: offer.id}, ESCROW_CREATED_EVENT_RECEIVED, true)));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export function *onWatchEscrowCreations() {
+  yield takeEvery(WATCH_ESCROW_CREATIONS, watchEscrowCreations);
+}
+
 export default [
   fork(onCreateEscrow), fork(onLoadEscrows), fork(onGetEscrow), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess),
-  fork(onGetFee), fork(onFundEscrow), fork(onWatchEscrow)
+  fork(onGetFee), fork(onFundEscrow), fork(onWatchEscrow), fork(onWatchEscrowCreations), fork(onGetEscrowAfterEvent)
 ];
