@@ -19,11 +19,6 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  fundEscrowStatus: States.none,
-  releaseStatus: States.none,
-  payStatus: States.none,
-  cancelStatus: States.none,
-  rateStatus: States.none,
   fee: '0',
   newEscrow: null,
   changedEscrow: null
@@ -43,22 +38,23 @@ function reducer(state = DEFAULT_STATE, action) {
 
   switch (action.type) {
     case FUND_ESCROW:
+      escrowsClone[escrowId].fundStatus = States.pending;
       return {
         ...state,
-        fundEscrowStatus: States.pending
+        escrows: escrowsClone
       };
     case FUND_ESCROW_FAILED:
+      escrowsClone[escrowId].fundStatus = States.failed;
       return {
         ...state,
-        fundEscrowStatus: States.failed,
         escrows: escrowsClone
       };
     case FUND_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].fundStatus = States.success;
       escrowsClone[escrowId].expirationTime = action.expirationTime;
       escrowsClone[escrowId].status = escrowStatus.FUNDED;
       return {
         ...state,
-        fundEscrowStatus: States.success,
         escrows: escrowsClone
       };
     case PAY_ESCROW_PRE_SUCCESS:
@@ -77,39 +73,42 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case RELEASE_ESCROW:
+      escrowsClone[escrowId].releaseStatus = States.pending;
       return {
         ...state,
-        releaseStatus: States.pending
+        escrows: escrowsClone
       };
     case RELEASE_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].releaseStatus = States.success;
       escrowsClone[escrowId].status = escrowStatus.RELEASED;
       return {
         ...state,
-        releaseStatus: States.success,
         escrows: escrowsClone
       };
     case RELEASE_ESCROW_FAILED:
+      escrowsClone[escrowId].releaseStatus = States.failed;
       return {
         ...state,
-        releaseStatus: States.failed,
         escrows: escrowsClone
       };
     case PAY_ESCROW:
+      escrowsClone[escrowId].payStatus = States.pending;
       return {
         ...state,
-        payStatus: States.pending
+        escrows: escrowsClone
       };
     case PAY_ESCROW_SUCCEEDED:
+      escrowsClone[escrowId].payStatus = States.success;
       escrowsClone[escrowId].status = escrowStatus.PAID;
       return {
         ...state,
-        payStatus: States.success,
         escrows: escrowsClone
       };
     case PAY_ESCROW_FAILED:
+      escrowsClone[escrowId].payStatus = States.failed;
       return {
         ...state,
-        payStatus: States.failed
+        escrows: escrowsClone
       };
     case CREATE_ESCROW:
       return {
@@ -163,54 +162,54 @@ function reducer(state = DEFAULT_STATE, action) {
         fee: action.fee
       };
     case CANCEL_ESCROW:
+      escrowsClone[escrowId].cancelStatus = States.pending;
       return {
         ...state,
-        cancelStatus: States.pending
+        escrows: escrowsClone
       };
-    case CANCEL_ESCROW_SUCCEEDED:
-      {
-        escrowsClone[escrowId].status = escrowStatus.CANCELED;
-        return {
-          ...state,
-          escrows: escrowsClone,
-          cancelStatus: States.success
-        };
-      }
-    case CANCEL_ESCROW_FAILED:
+    case CANCEL_ESCROW_SUCCEEDED: {
+      escrowsClone[escrowId].cancelStatus = States.success;
+      escrowsClone[escrowId].status = escrowStatus.CANCELED;
       return {
         ...state,
-        cancelStatus: States.failed,
+        escrows: escrowsClone
+      };
+    }
+    case CANCEL_ESCROW_FAILED:
+      escrowsClone[escrowId].cancelStatus = States.failed;
+      return {
+        ...state,
         escrows: escrowsClone
       };
     case RATE_TRANSACTION:
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: action.rating
+        rating: action.rating,
+        rateStatus: States.pending
       };
       return {
         ...state,
-        rateStatus: States.pending,
         escrows: escrowsClone
       };
     case RATE_TRANSACTION_SUCCEEDED: {
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: action.rating
+        rating: action.rating,
+        rateStatus: States.success
       };
       return {
         ...state,
-        rateStatus: States.success,
         escrows: escrowsClone
       };
     }
     case RATE_TRANSACTION_FAILED:
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: 0
+        rating: 0,
+        rateStatus: States.failed
       };
       return {
         ...state,
-        rateStatus: States.failed,
         escrows: escrowsClone
       };
     case ESCROW_EVENT_RECEIVED:
@@ -245,16 +244,21 @@ function reducer(state = DEFAULT_STATE, action) {
     case CLEAR_CHANGED_ESCROW:
       return {
         ...state,
-        chnagedEscrow: null
+        changedEscrow: null
       };
     case RESET_STATUS:
-      return {
-        ...state,
-        fundEscrowStatus: States.none,
+      escrowsClone[escrowId] = {
+        ...escrowsClone[escrowId],
+        fundStatus: States.none,
         createEscrowStatus: States.none,
         payStatus: States.none,
         releaseStatus: States.none,
-        rateStatus: States.none
+        rateStatus: States.none,
+        cancelStatus: States.none
+      };
+      return {
+        ...state,
+        escrows: escrowsClone
       };
     case PURGE_STATE:
     case RESET_STATE: {

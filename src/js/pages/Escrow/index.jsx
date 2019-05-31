@@ -100,18 +100,19 @@ class Escrow extends Component {
   };
 
   render() {
-    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fundStatus,
-      cancelEscrow, releaseEscrow, releaseStatus, payStatus, rateStatus, payEscrow, rateTransaction, approvalTxHash, 
+    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
+      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash,
       approvalError, cancelDispute} = this.props;
     const {showApproveFundsScreen} = this.state;
-
-    if (releaseStatus === States.failed || payStatus === States.failed || rateStatus === States.failed || fundStatus === States.failed) {
-      return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
-    }
 
     if(!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration) {
       return <Loading page={true} />;
     }
+
+    if (escrow.releaseStatus === States.failed || escrow.payStatus === States.failed || escrow.rateStatus === States.failed || escrow.fundStatus === States.failed) {
+      return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
+    }
+
     if(loading) return <Loading mining={true} txHash={escrow.txHash || approvalTxHash}/>;
 
     const arbitrationDetails = arbitration.arbitration;
@@ -155,15 +156,11 @@ class Escrow extends Component {
     return (
       <div className="escrow">
         { isBuyer && <CardEscrowBuyer trade={escrow}
-                                      payStatus={payStatus}
                                       payAction={payEscrow}
                                       rateTransaction={rateTransaction}
-                                      rateStatus={rateStatus}
                                       arbitrationDetails={arbitrationDetails} /> }
 
-        { !isBuyer && <CardEscrowSeller  fundStatus={fundStatus}
-                                        tokens={tokens}
-                                        releaseStatus={releaseStatus}
+        { !isBuyer && <CardEscrowSeller tokens={tokens}
                                         trade={escrow}
                                         fee={fee}
                                         showFundButton={showFundButton}
@@ -204,12 +201,8 @@ Escrow.propTypes = {
   fundEscrow: PropTypes.func,
   fundStatus: PropTypes.string,
   resetStatus: PropTypes.func,
-  releaseStatus: PropTypes.string,
   releaseEscrow: PropTypes.func,
-  payStatus: PropTypes.string,
-  rateStatus: PropTypes.string,
   payEscrow: PropTypes.func,
-  cancelStatus: PropTypes.string,
   approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
   cancelDispute: PropTypes.func,
@@ -222,16 +215,15 @@ Escrow.propTypes = {
 };
 
 const mapStateToProps = (state, props) => {
-  const cancelStatus = escrow.selectors.getCancelEscrowStatus(state);
   const approvalLoading = approval.selectors.isLoading(state);
   const arbitrationLoading = arbitration.selectors.isLoading(state);
-  const ratingStatus = escrow.selectors.getRatingStatus(state);
   const escrowId = props.match.params.id.toString();
-  
+  const theEscrow = escrow.selectors.getEscrowById(state, escrowId);
+
   return {
     address: network.selectors.getAddress(state) || "",
     escrowId:  escrowId,
-    escrow: escrow.selectors.getEscrowById(state, escrowId),
+    escrow: theEscrow,
     arbitration: arbitration.selectors.getArbitration(state) || {},
     fee: escrow.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
@@ -239,13 +231,8 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: cancelStatus === States.pending || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
-    fundStatus: escrow.selectors.getFundEscrowStatus(state),
-    releaseStatus: escrow.selectors.getReleaseEscrowStatus(state),
-    payStatus: escrow.selectors.getPaidEscrowStatus(state),
-    rateStatus: escrow.selectors.getRatingStatus(state),
-    escrowEvents: events.selectors.getEscrowEvents(state),
-    cancelStatus
+    loading: (theEscrow && theEscrow.cancelStatus === States.pending) || theEscrow.rateStatus === States.pending || approvalLoading || arbitrationLoading,
+    escrowEvents: events.selectors.getEscrowEvents(state)
   };
 };
 

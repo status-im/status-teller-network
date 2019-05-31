@@ -7,17 +7,7 @@ const unimportantStates = [tradeStates.canceled, tradeStates.expired, tradeState
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
-export const getFundEscrowStatus = state => state.escrow.fundEscrowStatus;
-
-export const getReleaseEscrowStatus = state => state.escrow.releaseStatus;
-
-export const getPaidEscrowStatus = state => state.escrow.payStatus;
-
-export const getCancelEscrowStatus = state => state.escrow.cancelStatus;
-
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
-
-export const getRatingStatus = state => state.escrow.rateStatus;
 
 export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || {};
