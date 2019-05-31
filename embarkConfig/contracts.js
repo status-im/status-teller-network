@@ -87,7 +87,8 @@ module.exports = {
         args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, "$RelayHub", FEE_AMOUNT],
         onDeploy: [
           "Arbitration.methods.setEscrowAddress('$Escrow').send()",
-          "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
+          "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
+          "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
         ]
       },
       "MiniMeToken": { "deploy": false },

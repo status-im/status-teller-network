@@ -28,13 +28,13 @@ Replace the RelayHub contract address for the correct address.
 3. Browse http://localhost:8090/getaddr. Copy the address
 4. Stake ether for that address. You can execute this in the embark console:
 ```
-RelayHub.methods.stake("RELAY SERVER ADDRESS HERE", 30).send({value: web3.utils.toWei("1", "ether"), gas:800000}) 
+RelayHub.methods.stake("0x4e89c5FDf14877DA9757ea4c0FdC901023E5a868", 30).send({value: web3.utils.toWei("1", "ether"), gas:800000}) 
+```
+4. Send some ether to the relayer
+```
+web3.eth.sendTransaction({from: web3.eth.defaultAccount, to: "0x4e89c5FDf14877DA9757ea4c0FdC901023E5a868", value: web3.utils.toWei("3", "ether")})
 ```
 5. Relayer should register itself now that there's a stake. Otherwise restart the server
-6. Add funds to the escrow:
-```
-RelayHub.methods.depositFor(Escrow.options.address).send({value: web3.utils.toWei("1", "ether")})
-```
 
 ## Deploying
 

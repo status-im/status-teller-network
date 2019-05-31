@@ -24,6 +24,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     string private constant INVALID_ESCROW_ID = "Invalid escrow id";
     string private constant CAN_ONLY_BE_INVOKED_BY_ESCROW_OWNER = "Function can only be invoked by the escrow owner";
 
+    bytes4 private constant CREATE_SIGNATURE = bytes4(keccak256("create(address,uint256,uint256,uint8,uint256,bytes,string,string)"));
+    bytes4 private constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
+    bytes4 private constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
+    bytes4 private constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
+    
     constructor(
         address _license,
         address _arbitration,
@@ -75,11 +80,52 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     event Canceled(uint indexed escrowId, uint date);
     event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating, uint date);
 
-    function accept_relayed_call(address relay, address from,
-        bytes memory encoded_function, uint gas_price, 
-        uint transaction_fee ) public view returns(uint32) {
-    return 0; // accept everything.
+
+    mapping(address => uint) public lastActivity;
+
+    function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price,
+      uint transaction_fee ) public view returns(uint32) {
+
+        bytes4 fSign = abiDecodeFunctionSignature(encoded_function);
+
+        if(fSign != CREATE_SIGNATURE && fSign != PAY_SIGNATURE && fSign != CANCEL_SIGNATURE && fSign != OPEN_CASE_SIGNATURE)
+            return 11;
+            
+        if(from.balance > 500000 * gas_price) return 12; // TODO:
+
+        // Only allow trxs where the user is a buyer
+        if(fSign == PAY_SIGNATURE || fSign == CANCEL_SIGNATURE || fSign == OPEN_CASE_SIGNATURE){
+            bytes memory escrowBytes = slice(encoded_function, 4, 32);
+            uint escrowId;
+            assembly {
+                escrowId := mload(add(escrowBytes, add(0x20, 0)))
+            }
+            if(escrowId >= transactions.length) return 13;
+            if(transactions[escrowId].buyer != from) return 14;
+            if(metadataStore.getAsset(transactions[escrowId].offerId) != address(0)) return 15; // Must be eth trx
+
+            if(fSign == CANCEL_SIGNATURE){ // Allow activity after 30min have passed
+                if(lastActivity[from] + 15 minutes > block.timestamp) return 16;
+            }
+        }
+
+        if(fSign == CREATE_SIGNATURE) {
+            // TODO: only allow eth transactions
+            bytes memory offerIdBytes = slice(encoded_function, 36, 32);
+            uint offerId;
+            assembly {
+                offerId := mload(add(offerIdBytes, add(0x20, 0)))
+            }
+            
+            if(metadataStore.getAsset(offerId) != address(0)) return 15; // Must be eth trx
+            
+            // Allow activity after 30 min have passed
+            if(lastActivity[from] + 30 minutes > block.timestamp) return 16;
+        }
+
+        return 0;
     }
+
     // nothing to be done post-call.
     // still, we must implement this method.
     function post_relayed_call(address relay, address from,
@@ -111,6 +157,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         string memory _location,
         string memory _username
     ) public whenNotPaused returns(uint escrowId) {
+        lastActivity[_buyer] = block.timestamp;
         escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
         metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
     }
@@ -333,6 +380,10 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         address seller = metadataStore.getOfferOwner(trx.offerId);
         require(trx.buyer == get_sender() || seller == get_sender(), "Function can only be invoked by the escrow buyer or seller");
 
+        if(trx.buyer == get_sender()){
+            lastActivity[trx.buyer] = block.timestamp;
+        }
+
         if(trx.status == EscrowStatus.FUNDED){
             if(get_sender() == seller){
                 require(trx.expirationTime < block.timestamp, "Can only be canceled after expiration");
@@ -513,7 +564,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         bytes32 value2;
         bytes32 value3;
 
-        (sig, value1, value2, value3) = abiDecodeRegister(_data);
+        (sig, value1, value2, value3) = abiDecodeFundCall(_data);
 
         if (sig == bytes4(0x111d7d50)){
             _fund(_from, uint256(value1), uint256(value2), uint256(value3));
@@ -528,7 +579,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeRegister(bytes memory _data) private pure returns (
+    function abiDecodeFundCall(bytes memory _data) private pure returns (
             bytes4 sig,
             bytes32 value1,
             bytes32 value2,
@@ -541,5 +592,79 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             value2 := mload(add(_data, 68))
             value3 := mload(add(_data, 100))
         }
+    }
+
+    function abiDecodeFunctionSignature(bytes memory _data) private pure returns (
+            bytes4 sig
+        )
+    {
+        assembly {
+            sig := mload(add(_data, add(0x20, 0)))
+        }
+    }
+
+    function slice(
+        bytes memory _bytes,
+        uint _start,
+        uint _length
+    )
+        internal
+        pure
+        returns (bytes memory)
+    {
+        require(_bytes.length >= (_start + _length));
+
+        bytes memory tempBytes;
+
+        assembly {
+            switch iszero(_length)
+            case 0 {
+                // Get a location of some free memory and store it in tempBytes as
+                // Solidity does for memory variables.
+                tempBytes := mload(0x40)
+
+                // The first word of the slice result is potentially a partial
+                // word read from the original array. To read it, we calculate
+                // the length of that partial word and start copying that many
+                // bytes into the array. The first word we copy will start with
+                // data we don't care about, but the last `lengthmod` bytes will
+                // land at the beginning of the contents of the new array. When
+                // we're done copying, we overwrite the full first word with
+                // the actual length of the slice.
+                let lengthmod := and(_length, 31)
+
+                // The multiplication in the next line is necessary
+                // because when slicing multiples of 32 bytes (lengthmod == 0)
+                // the following copy loop was copying the origin's length
+                // and then ending prematurely not copying everything it should.
+                let mc := add(add(tempBytes, lengthmod), mul(0x20, iszero(lengthmod)))
+                let end := add(mc, _length)
+
+                for {
+                    // The multiplication in the next line has the same exact purpose
+                    // as the one above.
+                    let cc := add(add(add(_bytes, lengthmod), mul(0x20, iszero(lengthmod))), _start)
+                } lt(mc, end) {
+                    mc := add(mc, 0x20)
+                    cc := add(cc, 0x20)
+                } {
+                    mstore(mc, mload(cc))
+                }
+
+                mstore(tempBytes, _length)
+
+                //update free-memory pointer
+                //allocating the array padded to 32 bytes like the compiler does now
+                mstore(0x40, and(add(mc, 31), not(31)))
+            }
+            //if we want a zero-length slice let's just return a zero-length array
+            default {
+                tempBytes := mload(0x40)
+
+                mstore(0x40, add(tempBytes, 0x20))
+            }
+        }
+
+        return tempBytes;
     }
 }
