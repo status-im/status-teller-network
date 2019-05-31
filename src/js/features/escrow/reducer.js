@@ -19,7 +19,6 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  rateStatus: States.none,
   fee: '0',
   newEscrow: null,
   changedEscrow: null
@@ -185,32 +184,32 @@ function reducer(state = DEFAULT_STATE, action) {
     case RATE_TRANSACTION:
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: action.rating
+        rating: action.rating,
+        rateStatus: States.pending
       };
       return {
         ...state,
-        rateStatus: States.pending,
         escrows: escrowsClone
       };
     case RATE_TRANSACTION_SUCCEEDED: {
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: action.rating
+        rating: action.rating,
+        rateStatus: States.success
       };
       return {
         ...state,
-        rateStatus: States.success,
         escrows: escrowsClone
       };
     }
     case RATE_TRANSACTION_FAILED:
       escrowsClone[action.escrowId] = {
         ...escrowsClone[action.escrowId],
-        rating: 0
+        rating: 0,
+        rateStatus: States.failed
       };
       return {
         ...state,
-        rateStatus: States.failed,
         escrows: escrowsClone
       };
     case ESCROW_EVENT_RECEIVED:

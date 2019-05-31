@@ -9,8 +9,6 @@ export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
 
-export const getRatingStatus = state => state.escrow.rateStatus;
-
 export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || {};
   return Object.values(escrows).filter(escrow => addressCompare(escrow.buyer, userAddress) || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)

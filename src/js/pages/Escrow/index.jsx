@@ -101,7 +101,7 @@ class Escrow extends Component {
 
   render() {
     let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, rateStatus, payEscrow, rateTransaction, approvalTxHash,
+      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash,
       approvalError, cancelDispute} = this.props;
     const {showApproveFundsScreen} = this.state;
 
@@ -109,7 +109,7 @@ class Escrow extends Component {
       return <Loading page={true} />;
     }
 
-    if (escrow.releaseStatus === States.failed || escrow.payStatus === States.failed || rateStatus === States.failed || escrow.fundStatus === States.failed) {
+    if (escrow.releaseStatus === States.failed || escrow.payStatus === States.failed || escrow.rateStatus === States.failed || escrow.fundStatus === States.failed) {
       return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
     }
 
@@ -158,7 +158,6 @@ class Escrow extends Component {
         { isBuyer && <CardEscrowBuyer trade={escrow}
                                       payAction={payEscrow}
                                       rateTransaction={rateTransaction}
-                                      rateStatus={rateStatus}
                                       arbitrationDetails={arbitrationDetails} /> }
 
         { !isBuyer && <CardEscrowSeller tokens={tokens}
@@ -203,7 +202,6 @@ Escrow.propTypes = {
   fundStatus: PropTypes.string,
   resetStatus: PropTypes.func,
   releaseEscrow: PropTypes.func,
-  rateStatus: PropTypes.string,
   payEscrow: PropTypes.func,
   approvalTxHash: PropTypes.string,
   cancelEscrow: PropTypes.func,
@@ -219,7 +217,6 @@ Escrow.propTypes = {
 const mapStateToProps = (state, props) => {
   const approvalLoading = approval.selectors.isLoading(state);
   const arbitrationLoading = arbitration.selectors.isLoading(state);
-  const ratingStatus = escrow.selectors.getRatingStatus(state);
   const escrowId = props.match.params.id.toString();
   const theEscrow = escrow.selectors.getEscrowById(state, escrowId);
 
@@ -234,8 +231,7 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: (theEscrow && theEscrow.cancelStatus === States.pending) || ratingStatus === States.pending || approvalLoading || arbitrationLoading,
-    rateStatus: escrow.selectors.getRatingStatus(state),
+    loading: (theEscrow && theEscrow.cancelStatus === States.pending) || theEscrow.rateStatus === States.pending || approvalLoading || arbitrationLoading,
     escrowEvents: events.selectors.getEscrowEvents(state)
   };
 };

@@ -103,7 +103,7 @@ PreFund.propTypes = {
 
 class CardEscrowBuyer extends Component {
   render(){
-    const {trade, payAction, rateTransaction, arbitrationDetails, rateStatus} = this.props;
+    const {trade, payAction, rateTransaction, arbitrationDetails} = this.props;
 
     const showLoading = trade.payStatus === States.pending;
     const showWaiting = trade.payStatus === States.success || trade.status === escrow.helpers.tradeStates.released;
@@ -124,7 +124,7 @@ class CardEscrowBuyer extends Component {
         component = <Unreleased/>;
       }
       if (trade.status === escrow.helpers.tradeStates.released) {
-        component = <Done trade={trade} rateTransaction={rateTransaction} rateStatus={rateStatus}/>;
+        component = <Done trade={trade} rateTransaction={rateTransaction} rateStatus={trade.rateStatus}/>;
       }
       if (trade.status === escrow.helpers.tradeStates.canceled) {
         component = <Canceled/>;
@@ -147,7 +147,6 @@ class CardEscrowBuyer extends Component {
 
 CardEscrowBuyer.propTypes = {
   trade: PropTypes.object,
-  rateStatus: PropTypes.string,
   payAction: PropTypes.func,
   rateTransaction: PropTypes.func,
   arbitrationDetails: PropTypes.object
