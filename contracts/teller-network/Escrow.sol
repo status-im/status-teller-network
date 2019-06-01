@@ -104,8 +104,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             if(transactions[escrowId].buyer != from) return 14;
             if(metadataStore.getAsset(transactions[escrowId].offerId) != address(0)) return 15; // Must be eth trx
 
-            if(fSign == CANCEL_SIGNATURE){ // Allow activity after 30min have passed
-                if(lastActivity[from] + 15 minutes > block.timestamp) return 16;
+            if(fSign == CANCEL_SIGNATURE){ // Allow activity after 15min have passed
+                if((lastActivity[from] + 15 minutes) > block.timestamp) return 17;
             }
         }
 
@@ -119,8 +119,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             
             if(metadataStore.getAsset(offerId) != address(0)) return 15; // Must be eth trx
             
-            // Allow activity after 30 min have passed
-            if(lastActivity[from] + 30 minutes > block.timestamp) return 16;
+            // Allow activity after 15 min have passed
+            if((lastActivity[from] + 15 minutes) > block.timestamp) return 16;
         }
 
         return 0;
