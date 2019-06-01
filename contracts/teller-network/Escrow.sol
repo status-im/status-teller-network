@@ -35,13 +35,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         address _metadataStore,
         address _feeToken,
         address _feeDestination,
-        address _relayHub,
         uint _feeAmount)
         Fees(_feeToken, _feeDestination, _feeAmount) public {
         license = License(_license);
         arbitration = Arbitration(_arbitration);
         metadataStore = MetadataStore(_metadataStore);
-        setRelayHubAddress(_relayHub);
     }
 
     function setRelayHubAddress(address _relayHub) public onlyOwner {
@@ -91,7 +89,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         if(fSign != CREATE_SIGNATURE && fSign != PAY_SIGNATURE && fSign != CANCEL_SIGNATURE && fSign != OPEN_CASE_SIGNATURE)
             return 11;
             
-        if(from.balance > 500000 * gas_price) return 12; // TODO:
+        if(from.balance > 500000 * gas_price) return 12; // According to tests, 333450 is the cost of creating an escrow, so 500000 should be good
 
         // Only allow trxs where the user is a buyer
         if(fSign == PAY_SIGNATURE || fSign == CANCEL_SIGNATURE || fSign == OPEN_CASE_SIGNATURE){
@@ -124,6 +122,10 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         }
 
         return 0;
+    }
+
+    function canCreateOrCancel(address account) public view returns(bool) {
+        return (lastActivity[account] + 15 minutes) < block.timestamp;
     }
 
     // nothing to be done post-call.

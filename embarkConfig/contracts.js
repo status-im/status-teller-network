@@ -84,10 +84,12 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, "$RelayHub", FEE_AMOUNT],
+        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        deps: ['RelayHub'],
         onDeploy: [
           "Arbitration.methods.setEscrowAddress('$Escrow').send()",
           "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
+          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
         ]
       },
