@@ -108,7 +108,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         }
 
         if(fSign == CREATE_SIGNATURE) {
-            // TODO: only allow eth transactions
             bytes memory offerIdBytes = slice(encoded_function, 36, 32);
             uint offerId;
             assembly {
