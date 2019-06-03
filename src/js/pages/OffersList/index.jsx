@@ -21,6 +21,8 @@ import {withNamespaces} from "react-i18next";
 import {addressCompare} from "../../utils/address";
 import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
+const toBN = web3.utils.toBN;
+
 class OffersList extends Component {
   constructor(props) {
     super(props);
