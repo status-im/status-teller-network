@@ -30,7 +30,6 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         ready: true,
-        gasPrice: action.gasPrice,
         address: web3.eth.defaultAccount,
         isStatus: web3.currentProvider.isStatus,
         error: '',
