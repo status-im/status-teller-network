@@ -85,9 +85,12 @@ module.exports = {
       },
       Escrow: {
         args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        deps: ['RelayHub'],
         onDeploy: [
           "Arbitration.methods.setEscrowAddress('$Escrow').send()",
-          "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
+          "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
+          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
         ]
       },
       "MiniMeToken": { "deploy": false },
@@ -108,6 +111,12 @@ module.exports = {
           "STT",
           true
         ]
+      },
+      "RLPReader": {
+        file: 'tabookey-gasless/contracts/RLPReader.sol'
+      },
+      "RelayHub": {
+        file: 'tabookey-gasless/contracts/RelayHub.sol'
       }
     }
   },
@@ -248,9 +257,7 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
-    dappConnection: [
-      "$WEB3"
-    ]
+    dappConnection: ["$WEB3"]
   },
 
   // merges with the settings in default
