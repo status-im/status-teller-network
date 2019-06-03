@@ -132,12 +132,15 @@ contract MetadataStore is Ownable, MessageSigned {
         string memory _location,
         string memory _username
     ) public returns(address payable _user) {
-        if(msg.sender == escrow){ 
-            _user = msg.sender; 
-        }
-        address _userSigned = getSigner(_username, _statusContactCode, _location, _signature);
-        _user = address(uint160(_userSigned)); 
-
+        // commented out this functionality as in the following implementation we 
+        // are solving it through signatures
+        
+        // if(msg.sender == escrow){ 
+        //     _user = msg.sender; 
+        // } else {
+            address _userSigned = getSigner(_username, _statusContactCode, _location, _signature);
+            _user = address(uint160(_userSigned)); 
+        // }
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
             uint256 userId = users.push(user) - 1;

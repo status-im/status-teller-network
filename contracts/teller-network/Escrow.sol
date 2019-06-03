@@ -70,7 +70,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
 
     /**
      * @notice Create a new escrow
-     * @param _signature user's signature
+     * @param _signature buyer's signature
      * @param _offerId Offer
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
