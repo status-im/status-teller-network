@@ -1,3 +1,4 @@
+/* global web3 */
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -26,6 +27,7 @@ class Profile extends Component {
     }
 
     this.props.load(this.props.match.params.address);
+    this.props.updateBalance('ETH');
   }
 
   offerClick = (offerId) => {
@@ -36,6 +38,12 @@ class Profile extends Component {
   render() {
     const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
+
+    const toBN = web3.utils.toBN;
+    const relayGasPrice = toBN(this.props.gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
+    const onlyETH = toBN(web3.utils.toWei(this.props.ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
+    const filteredOffers = onlyETH ? profile.offers.filter(x => x.token.symbol === 'ETH') : profile.offers;
+    
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation}
@@ -44,16 +52,17 @@ class Profile extends Component {
         {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
                                 markers={[profile.coords]}/>}
         <p className="text-muted mt-2">{profile.location}</p>
-        {profile.offers.length > 0 && <Row>
+        {filteredOffers.length > 0 && <Row>
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
-              {profile.offers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address) || addressCompare(offer.arbitrator, address)}
+              {filteredOffers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address) || addressCompare(offer.arbitrator, address)}
                                                            key={index}
                                                            offer={offer}
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
+            { onlyETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
           </Col>
         </Row>}
       </div>
@@ -68,7 +77,10 @@ Profile.propTypes = {
   profile: PropTypes.object,
   setOfferId: PropTypes.func,
   prices: PropTypes.object,
-  address: PropTypes.string
+  address: PropTypes.string,
+  gasPrice: PropTypes.string,
+  updateBalance: PropTypes.func,
+  ethBalance: PropTypes.string
 };
 
 const mapStateToProps = (state, props) => {
@@ -77,7 +89,9 @@ const mapStateToProps = (state, props) => {
   return {
     address,
     profile: metadata.selectors.getProfile(state, userAddress),
-    prices: prices.selectors.getPrices(state)
+    prices: prices.selectors.getPrices(state),
+    gasPrice: network.selectors.getNetworkGasPrice(state),
+    ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
 
@@ -85,6 +99,7 @@ export default connect(
   mapStateToProps,
   {
     setOfferId: newBuy.actions.setOfferId,
-    load: metadata.actions.load
+    load: metadata.actions.load,
+    updateBalance: network.actions.updateBalance
   }
 )(withRouter(Profile));

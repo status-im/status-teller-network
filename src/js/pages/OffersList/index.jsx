@@ -154,7 +154,7 @@ class OffersList extends Component {
                       tokenFilter={this.state.tokenFilter}
                       paymentMethodFilter={this.state.paymentMethodFilter}/>
 
-        { onlyETH && <p>Token offers are disabled until you have ETH in your wallet</p>}
+        { onlyETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
