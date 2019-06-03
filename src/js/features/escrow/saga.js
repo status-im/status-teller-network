@@ -24,15 +24,6 @@ import {
 import {eventTypes} from './helpers';
 
 export function *createEscrow({user, escrow}) {
-console.log(Escrow.options.address);
-
-  var provider= new RelayProvider(web3.currentProvider, {
-    force_gasPrice:1200000000,
-    txfee:12,
-    verbose: true
-  });
-  web3.setProvider(provider);
-
   const toSend = Escrow.methods.create(
     user.buyerAddress,
     escrow.offerId,

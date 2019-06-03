@@ -6,10 +6,13 @@ import {
   WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW
 } from './constants';
 
+import tabooKey from 'tabookey-gasless';
+
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import { toTokenDecimals } from '../../utils/numbers';
 import { zeroAddress } from '../../utils/address';
+const RelayProvider = tabooKey.RelayProvider;
 
 export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
@@ -75,7 +78,17 @@ export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 export const getFee = () => ({ type: GET_FEE });
 
-export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) });
+export const cancelEscrow = (escrowId) => {
+
+  var provider= new RelayProvider(web3.currentProvider, {
+    force_gasPrice:1200000000,
+    txfee:12,
+    verbose: true
+  });
+  web3.setProvider(provider);
+
+  return { type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) };
+};
 
 export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
 

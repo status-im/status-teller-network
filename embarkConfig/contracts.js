@@ -242,21 +242,7 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
-    contracts: {
-      RLPReader: {
-        deploy: false
-      },
-      RelayHub: {
-        deploy: false
-      },
-      Escrow: {
-        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87", FEE_AMOUNT],
-        onDeploy: [
-          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
-          "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
-        ]
-      }
-    },
+    tracking: 'shared.chains.json',
     deployment: {
       accounts: [
         {
@@ -265,7 +251,7 @@ module.exports = {
           numAddresses: "10"
         }
       ],
-      host: `ropsten.infura.io/${secret.infuraKey}`,
+      host: `rinkeby.infura.io/${secret.infuraKey}`,
       port: false,
       protocol: 'https',
       type: "rpc"
