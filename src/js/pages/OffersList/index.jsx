@@ -19,8 +19,7 @@ import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare} from "../../utils/address";
-
-const toBN = web3.utils.toBN;
+import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 class OffersList extends Component {
   constructor(props) {
@@ -90,10 +89,8 @@ class OffersList extends Component {
   };
 
   render() {
-    const relayGasPrice = toBN(this.props.gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
-    const onlyETH = toBN(web3.utils.toWei(this.props.ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
-
-    let filteredOffers = onlyETH ? this.props.offers.filter(x => x.token.symbol === 'ETH') : this.props.offers;
+    const notEnoughETH = checkEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH);
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
@@ -154,7 +151,7 @@ class OffersList extends Component {
                       tokenFilter={this.state.tokenFilter}
                       paymentMethodFilter={this.state.paymentMethodFilter}/>
 
-        { onlyETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+        { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 

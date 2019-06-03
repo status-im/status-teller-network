@@ -1,4 +1,3 @@
-/* global web3 */
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
@@ -15,6 +14,7 @@ import newBuy from "../../features/newBuy";
 import network from "../../features/network";
 
 import {addressCompare} from "../../utils/address";
+import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 import './index.scss';
 import Loading from "../../components/Loading";
@@ -39,11 +39,9 @@ class Profile extends Component {
     const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
 
-    const toBN = web3.utils.toBN;
-    const relayGasPrice = toBN(this.props.gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
-    const onlyETH = toBN(web3.utils.toWei(this.props.ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
-    const filteredOffers = onlyETH ? profile.offers.filter(x => x.token.symbol === 'ETH') : profile.offers;
-    
+    const notEnoughETH = checkEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH);
+
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation}
@@ -62,7 +60,7 @@ class Profile extends Component {
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
-            { onlyETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+            { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
           </Col>
         </Row>}
       </div>
