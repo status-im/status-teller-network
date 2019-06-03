@@ -17,9 +17,12 @@ export function *doInit() {
   try {
     yield call(onReady);
     const networkId = yield call(web3.eth.net.getId);
-    const gasPrice = yield web3.eth.getGasPrice();
-    yield put({type: INIT_SUCCEEDED, networkId, gasPrice});
-    yield put({type: FETCH_EXCHANGE_RATE});
+
+    yield all([
+      put({type: INIT_SUCCEEDED, networkId}),
+      put({type: GET_GAS_PRICE}),
+      put({type: FETCH_EXCHANGE_RATE})
+    ]);
   } catch (error) {
     console.error(error);
     yield put({type: INIT_FAILED, error: error.message});

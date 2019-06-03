@@ -20,6 +20,8 @@ import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare} from "../../utils/address";
 
+const toBN = web3.utils.toBN;
+
 class OffersList extends Component {
   constructor(props) {
     super(props);
@@ -88,7 +90,6 @@ class OffersList extends Component {
   };
 
   render() {
-    const toBN = web3.utils.toBN;
     const relayGasPrice = toBN(this.props.gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
     const onlyETH = toBN(web3.utils.toWei(this.props.ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
 
