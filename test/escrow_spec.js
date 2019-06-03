@@ -137,6 +137,21 @@ contract("Escrow", function() {
       assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
+////////////////////////////////////////////// SIGNATURE CHECK
+
+    it("Should be able to create a signature", async () => {
+
+    let hash = await Escrow.methods.getNameHash("Iuri").call();
+
+    let sig = await web3.eth.accounts.sign(hash, accounts[0]);
+
+    await Escrow.methods.messageSigned("Iuri", sig.signature).send({from: accounts[0]});
+
+    });
+
+////////////////////////////////////////////// SIGNATURE CHECK
+
+
     it("Seller should be able to create escrows", async () => {
       receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[0]});
       const created = receipt.events.Created;

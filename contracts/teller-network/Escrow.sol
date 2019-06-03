@@ -68,6 +68,24 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable {
     event Canceled(uint indexed escrowId, uint date);
     event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating, uint date);
 
+////////////////////////////////////////////// SIGNATURE CHECK
+
+    function getNameHash(string calldata _name) external view returns (bytes32) { 
+        return nameHash(_name);
+    }
+
+    function nameHash(string memory _name) internal view returns (bytes32) { 
+        return keccak256(abi.encodePacked(address(this), _name));
+    }
+    
+    function messageSigned(string calldata _name, bytes calldata _signature) 
+        external returns(address _signer)
+    {
+        address _signer = recoverAddress(getSignHash(nameHash(_name)), _signature);
+    }
+
+
+////////////////////////////////////////////// SIGNATURE CHECK
 
     /**
      * @notice Create a new escrow
