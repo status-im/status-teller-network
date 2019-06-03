@@ -93,25 +93,34 @@ contract MetadataStore is Ownable, MessageSigned {
         arbitration = _arbitration;
     }
 
-    function getNameHash(string calldata _name) external view returns (bytes32) { 
-        return nameHash(_name);
+    function getNameHash(string calldata _username, 
+                         bytes calldata _statusContactCode, 
+                         string calldata _location
+            ) external view returns (bytes32) { 
+        return nameHash(_username, _statusContactCode, _location);
     }
 
-    function nameHash(string memory _name) internal view returns (bytes32) { 
-        return keccak256(abi.encodePacked(address(this), _name));
+    function nameHash(string memory _username, 
+                      bytes memory _statusContactCode, 
+                      string memory _location
+            ) internal view returns (bytes32) { 
+        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _location));
     }
     
-    function signed(string memory _name, bytes memory _signature) 
-        internal returns(address _signer)
-    {
-        _signer = recoverAddress(getSignHash(nameHash(_name)), _signature);
+    function signed(string memory _username, 
+                    bytes memory _statusContactCode, 
+                    string memory _location, 
+                    bytes memory _signature
+        ) internal returns(address _signer) {
+        _signer = recoverAddress(getSignHash(nameHash(_username, _statusContactCode, _location)), _signature);
     }
 
-    function messageSigned(
-                    string calldata _name,
-                    bytes calldata _signature)
-        external returns(address) {
-            return signed(_name, _signature);   
+    function messageSigned(string calldata _username, 
+                    bytes calldata _statusContactCode, 
+                    string calldata _location,
+                    bytes calldata _signature
+        ) external returns(address) {
+            return signed(_username, _statusContactCode, _location, _signature);   
         }
 
 
@@ -120,11 +129,11 @@ contract MetadataStore is Ownable, MessageSigned {
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
-    ) public returns(address payable _user){
-        if(msg.sender == escrow){
+    ) public returns(address payable _user) {
+        if(msg.sender == escrow){ 
             _user = msg.sender; 
         }
-        address _userSigned = signed(_username, _signature);
+        address _userSigned = signed(_username, _statusContactCode, _location, _signature);
         _user = address(uint160(_userSigned)); 
 
         if (!userWhitelist[_user]) {

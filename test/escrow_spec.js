@@ -141,11 +141,11 @@ contract("Escrow", function() {
 
     it("Should be able to create a signature", async () => {
 
-    let hash = await Escrow.methods.getNameHash("Iuri").call();
+    let hash = await MetadataStore.methods.getNameHash("Iuri").call();
 
     let sig = await web3.eth.accounts.sign(hash, accounts[0]);
 
-    await Escrow.methods.messageSigned("Iuri", sig.signature).send({from: accounts[0]});
+    await MetadataStore.methods.messageSigned("Iuri", sig.signature).send({from: accounts[0]});
 
     });
 
