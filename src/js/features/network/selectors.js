@@ -5,6 +5,8 @@ export const getError = state => state.network.error;
 export const getAddress = state => state.network.address;
 export const isStatus = state => state.network.isStatus;
 export const getTokens = state => state.network.tokens;
+export const getNetworkGasPrice = state => state.network.gasPrice;
+
 export const getBalance = (state, symbol, address) => {
   if (!symbol) {
     return null;

@@ -1,3 +1,4 @@
+/* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
@@ -33,6 +34,7 @@ class OffersList extends Component {
 
   componentDidMount() {
     this.props.loadOffers();
+    this.props.updateBalance('ETH');
   }
 
   setPaymentMethodFilter = (paymentMethodFilter) => {
@@ -86,7 +88,11 @@ class OffersList extends Component {
   };
 
   render() {
-    let filteredOffers = this.props.offers;
+    const toBN = web3.utils.toBN;
+    const relayGasPrice = toBN(this.props.gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
+    const onlyETH = toBN(web3.utils.toWei(this.props.ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
+
+    let filteredOffers = onlyETH ? this.props.offers.filter(x => x.token.symbol === 'ETH') : this.props.offers;
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
@@ -147,6 +153,8 @@ class OffersList extends Component {
                       tokenFilter={this.state.tokenFilter}
                       paymentMethodFilter={this.state.paymentMethodFilter}/>
 
+        { onlyETH && <p>Token offers are disabled until you have ETH in your wallet</p>}
+
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
         {Object.keys(groupedOffersByUser).map((paymentMethod) => (
@@ -176,7 +184,10 @@ OffersList.propTypes = {
   tokens: PropTypes.array,
   loadOffers: PropTypes.func,
   prices: PropTypes.object,
-  address: PropTypes.string
+  address: PropTypes.string,
+  gasPrice: PropTypes.string,
+  updateBalance: PropTypes.func,
+  ethBalance: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -184,7 +195,9 @@ const mapStateToProps = state => {
     address: network.selectors.getAddress(state) || '',
     offers: metadata.selectors.getOffersWithUser(state),
     tokens: Object.values(network.selectors.getTokens(state)),
-    prices: prices.selectors.getPrices(state)
+    prices: prices.selectors.getPrices(state),
+    gasPrice: network.selectors.getNetworkGasPrice(state),
+    ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
 
@@ -192,5 +205,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    loadOffers: metadata.actions.loadOffers
+    loadOffers: metadata.actions.loadOffers,
+    updateBalance: network.actions.updateBalance
   })(withNamespaces()(OffersList));

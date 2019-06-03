@@ -57,13 +57,14 @@ class App extends Component {
     this.props.init();
     this.watchingTrades = false;
     setInterval(() => {
+      this.props.getGasPrice();
       this.props.fetchExchangeRates();
     }, PRICE_FETCH_INTERVAL);
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
   }
-
+  
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
@@ -181,6 +182,7 @@ App.propTypes = {
   error: PropTypes.string,
   fetchPrices: PropTypes.func,
   fetchExchangeRates: PropTypes.func,
+  getGasPrice: PropTypes.func,
   isReady: PropTypes.bool,
   hasToken: PropTypes.bool,
   address: PropTypes.string,
@@ -199,6 +201,7 @@ export default connect(
   {
     fetchPrices: prices.actions.fetchPrices,
     fetchExchangeRates: prices.actions.fetchExchangeRates,
+    getGasPrice: network.actions.getGasPrice,
     init: network.actions.init,
     resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
