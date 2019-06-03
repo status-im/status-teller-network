@@ -1,3 +1,4 @@
+/* global web3 */
 import React, { Component } from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
