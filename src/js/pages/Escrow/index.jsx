@@ -231,7 +231,7 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: (theEscrow && theEscrow.cancelStatus === States.pending) || theEscrow.rateStatus === States.pending || approvalLoading || arbitrationLoading,
+    loading: (theEscrow && (theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending)) || approvalLoading || arbitrationLoading,
     escrowEvents: events.selectors.getEscrowEvents(state)
   };
 };

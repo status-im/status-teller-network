@@ -108,7 +108,7 @@ export function *doBuyLicense() {
     const encodedCall = Arbitration.methods.buy().encodeABI();
     const toSend = SNT.methods.approveAndCall(Arbitration.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 2000});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
       const {hash, receipt, error} = yield take(channel);
