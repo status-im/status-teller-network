@@ -2,12 +2,13 @@ pragma solidity ^0.5.7;
 
 import "./License.sol";
 import "../common/Ownable.sol";
+import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
 * @dev Metadata store
 */
-contract MetadataStore is Ownable {
+contract MetadataStore is Ownable, MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
@@ -92,15 +93,39 @@ contract MetadataStore is Ownable {
         arbitration = _arbitration;
     }
 
+    function getNameHash(string calldata _name) external view returns (bytes32) { 
+        return nameHash(_name);
+    }
+
+    function nameHash(string memory _name) internal view returns (bytes32) { 
+        return keccak256(abi.encodePacked(address(this), _name));
+    }
+    
+    function signed(string memory _name, bytes memory _signature) 
+        internal returns(address _signer)
+    {
+        _signer = recoverAddress(getSignHash(nameHash(_name)), _signature);
+    }
+
+    function messageSigned(
+                    string calldata _name,
+                    bytes calldata _signature)
+        external returns(address) {
+            return signed(_name, _signature);   
+        }
+
+
     function addOrUpdateUser(
-        address _user,
+        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
-    ) public {
-        if(msg.sender != escrow){
-            require(msg.sender == _user, "Sender does not match address");
+    ) public returns(address payable _user){
+        if(msg.sender == escrow){
+            _user = msg.sender; 
         }
+        address _userSigned = signed(_username, _signature);
+        _user = address(uint160(_userSigned)); 
 
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
@@ -128,6 +153,7 @@ contract MetadataStore is Ownable {
     */
     function addOffer(
         address _asset,
+        bytes memory _signature,       
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -141,15 +167,15 @@ contract MetadataStore is Ownable {
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+        address payable _user = this.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, msg.sender, _arbitrator);
+        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, _user, _arbitrator);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
+            _user, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 
