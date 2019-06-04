@@ -14,6 +14,7 @@ import newBuy from "../../features/newBuy";
 import network from "../../features/network";
 
 import {addressCompare} from "../../utils/address";
+import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 import './index.scss';
 import Loading from "../../components/Loading";
@@ -26,6 +27,7 @@ class Profile extends Component {
     }
 
     this.props.load(this.props.match.params.address);
+    this.props.updateBalance('ETH');
   }
 
   offerClick = (offerId) => {
@@ -36,6 +38,10 @@ class Profile extends Component {
   render() {
     const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
+
+    const notEnoughETH = checkEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH);
+
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation}
@@ -44,16 +50,17 @@ class Profile extends Component {
         {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
                                 markers={[profile.coords]}/>}
         <p className="text-muted mt-2">{profile.location}</p>
-        {profile.offers.length > 0 && <Row>
+        {filteredOffers.length > 0 && <Row>
           <Col xs="12" className="mt-2">
             <h3>Offers</h3>
             <div>
-              {profile.offers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address) || addressCompare(offer.arbitrator, address)}
+              {filteredOffers.map((offer, index) => <Offer disabled={addressCompare(profile.address, address) || addressCompare(offer.arbitrator, address)}
                                                            key={index}
                                                            offer={offer}
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
+            { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
           </Col>
         </Row>}
       </div>
@@ -68,7 +75,10 @@ Profile.propTypes = {
   profile: PropTypes.object,
   setOfferId: PropTypes.func,
   prices: PropTypes.object,
-  address: PropTypes.string
+  address: PropTypes.string,
+  gasPrice: PropTypes.string,
+  updateBalance: PropTypes.func,
+  ethBalance: PropTypes.string
 };
 
 const mapStateToProps = (state, props) => {
@@ -77,7 +87,9 @@ const mapStateToProps = (state, props) => {
   return {
     address,
     profile: metadata.selectors.getProfile(state, userAddress),
-    prices: prices.selectors.getPrices(state)
+    prices: prices.selectors.getPrices(state),
+    gasPrice: network.selectors.getNetworkGasPrice(state),
+    ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
 
@@ -85,6 +97,7 @@ export default connect(
   mapStateToProps,
   {
     setOfferId: newBuy.actions.setOfferId,
-    load: metadata.actions.load
+    load: metadata.actions.load,
+    updateBalance: network.actions.updateBalance
   }
 )(withRouter(Profile));
