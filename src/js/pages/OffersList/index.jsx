@@ -19,7 +19,7 @@ import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare} from "../../utils/address";
-import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
+import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 class OffersList extends Component {
   constructor(props) {
@@ -89,7 +89,7 @@ class OffersList extends Component {
   };
 
   render() {
-    const notEnoughETH = checkEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH);
 
     if (this.state.locationCoords) {

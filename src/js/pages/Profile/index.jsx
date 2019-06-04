@@ -14,7 +14,7 @@ import newBuy from "../../features/newBuy";
 import network from "../../features/network";
 
 import {addressCompare} from "../../utils/address";
-import {checkEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
+import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 import './index.scss';
 import Loading from "../../components/Loading";
@@ -39,7 +39,7 @@ class Profile extends Component {
     const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
 
-    const notEnoughETH = checkEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH);
 
     return (

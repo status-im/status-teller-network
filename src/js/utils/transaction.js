@@ -13,7 +13,7 @@ export const calculateEscrowPrice = (escrow, prices) => {
 
 const toBN = web3.utils.toBN;
 
-export const checkEnoughETH = (gasPrice, ethBalance) => {
+export const checkNotEnoughETH = (gasPrice, ethBalance) => {
   const relayGasPrice = toBN(gasPrice || '0').mul(toBN(120)).div(toBN(100)); // 120%. toBN doesnt like decimals?
   return toBN(web3.utils.toWei(ethBalance || '0', 'ether')).lt(toBN(500000).mul(relayGasPrice)); // only allow ETH if less than 500000*gasPrice
 };
