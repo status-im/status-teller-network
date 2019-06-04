@@ -1,6 +1,7 @@
 /* global web3 */
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import {checkNotEnoughETH} from './utils/transaction';
+import {addressCompare} from './utils/address';
 
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
@@ -19,14 +20,12 @@ class Provider {
 
     send(payload, callback) {
       const params = payload.params[0];
-      if(params && params.to && params.to.toLowerCase() === Escrow.options.address.toLowerCase()){
-        (async () => {
-          const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
-          const gasPrice = await web3.eth.getGasPrice();
-          if(checkNotEnoughETH(gasPrice, balance) &&
-             payload.method === "eth_sendTransaction" &&
-             Object.values(VALID_OPERATIONS).includes(params.data.substring(2, 10))){
-              console.log("Relaying transaction");
+      if(params && params.to && addressCompare(params.to, Escrow.options.address.toLowerCase())){
+        if(payload.method === "eth_sendTransaction" && Object.values(VALID_OPERATIONS).includes(params.data.substring(2, 10))){
+          (async () => {
+            const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
+            const gasPrice = await web3.eth.getGasPrice();
+            if(checkNotEnoughETH(gasPrice, balance)){
               // Increase 120%. 
               // Normally we would use gaspriceFactorPercent on tabookey.RelayProvider
               // but this version of web3 does a getPrice before send() if the gas price is null
@@ -37,19 +36,15 @@ class Provider {
               this.relayProviderSend(payload, function (error, result) {
                 callback(error, result);
               });
-          } else {
-            this.origProviderSend(payload, function (error, result) {
-              callback(error, result);
-            });
-          }
-        })();
-        return;
+            } else {
+              this.origProviderSend(payload, callback);
+            }
+          })();
+          return;
+        }
       }
 
-      this.origProviderSend(payload, function (error, result) {
-        callback(error, result);
-      });
-
+      this.origProviderSend(payload, callback);
     }
 
     sendAsync(payload, callback) {
