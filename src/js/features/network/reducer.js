@@ -1,11 +1,12 @@
 /*global web3*/
-import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED, RESOLVE_ENS_NAME_SUCCEEDED, RESOLVE_ENS_NAME_FAILED } from './constants';
+import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED, RESOLVE_ENS_NAME_SUCCEEDED, RESOLVE_ENS_NAME_FAILED, GET_GAS_PRICE_SUCCEEDED } from './constants';
 import { Networks, Tokens } from '../../utils/networks';
 import { fromTokenDecimals } from '../../utils/numbers';
 import { addressCompare } from '../../utils/address';
 
 const DEFAULT_STATE = {
   ready: false,
+  gasPrice: '0',
   address: '',
   contactCode: '',
   isStatus: false,
@@ -27,6 +28,7 @@ function reducer(state = DEFAULT_STATE, action) {
         return acc;
       }, {});
       return {
+        ...state,
         ready: true,
         address: web3.eth.defaultAccount,
         isStatus: web3.currentProvider.isStatus,
@@ -58,6 +60,12 @@ function reducer(state = DEFAULT_STATE, action) {
       }
       return {
         ...state, tokens: { ...state.tokens, [action.token.symbol]: {...action.token, balance} }
+      };
+    }
+    case GET_GAS_PRICE_SUCCEEDED: {
+      return {
+        ...state,
+        gasPrice: action.gasPrice
       };
     }
     case GET_CONTACT_CODE_SUCCEEDED: {
