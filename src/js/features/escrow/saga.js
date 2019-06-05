@@ -19,7 +19,7 @@ import {
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING,
   GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED,
-  WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED
+  WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED, GET_LAST_ACTIVITY, GET_LAST_ACTIVITY_SUCCEEDED, GET_LAST_ACTIVITY_FAILED
 } from './constants';
 import {eventTypes} from './helpers';
 
@@ -258,6 +258,20 @@ export function *onAddUserRating() {
   yield takeEvery(ADD_USER_RATING, addRating);
 }
 
+export function *doGetLastActivity({address}){
+  try {
+    const lastActivity = yield Escrow.methods.lastActivity(address).call();
+    return yield put({type: GET_LAST_ACTIVITY_SUCCEEDED, lastActivity});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_LAST_ACTIVITY_FAILED, error: error.message});
+  }
+}
+
+export function *onGetLastActivity() {
+  yield takeEvery(GET_LAST_ACTIVITY, doGetLastActivity);
+}
+
 export function *watchEscrow({escrowId}) {
   try {
     yield all([
@@ -290,5 +304,5 @@ export function *onWatchEscrowCreations() {
 export default [
   fork(onCreateEscrow), fork(onLoadEscrows), fork(onGetEscrow), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess),
-  fork(onGetFee), fork(onFundEscrow), fork(onWatchEscrow), fork(onWatchEscrowCreations), fork(onGetEscrowAfterEvent)
+  fork(onGetFee), fork(onFundEscrow), fork(onWatchEscrow), fork(onWatchEscrowCreations), fork(onGetEscrowAfterEvent), fork(onGetLastActivity)
 ];

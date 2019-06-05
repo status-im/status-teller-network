@@ -3,7 +3,7 @@ import {
   CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
   ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS,
-  WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW
+  WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW, GET_LAST_ACTIVITY
 } from './constants';
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
@@ -74,6 +74,8 @@ export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
 export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 export const getFee = () => ({ type: GET_FEE });
+
+export const getLastActivity = (address) => ({ type: GET_LAST_ACTIVITY, address});
 
 export const cancelEscrow = (escrowId) => {
   return { type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) };

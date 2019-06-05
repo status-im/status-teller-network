@@ -83,3 +83,5 @@ export const signature = state => {
     type
   };
 };
+
+export const getLastActivity = state => state.escrow.lastActivity;
