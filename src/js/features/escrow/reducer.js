@@ -253,18 +253,9 @@ function reducer(state = DEFAULT_STATE, action) {
         changedEscrow: null
       };
     case RESET_STATUS:
-      escrowsClone[escrowId] = {
-        ...escrowsClone[escrowId],
-        fundStatus: States.none,
-        createEscrowStatus: States.none,
-        payStatus: States.none,
-        releaseStatus: States.none,
-        rateStatus: States.none,
-        cancelStatus: States.none
-      };
       return {
         ...state,
-        escrows: escrowsClone
+        createEscrowStatus: States.none
       };
     case PURGE_STATE:
     case RESET_STATE: {
