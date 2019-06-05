@@ -245,7 +245,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(metadataStore.getArbitrator(_offerId) != _buyer, "Cannot buy offers where buyer is arbitrator");
-
+        require(_tradeAmount != 0 && _assetPrice != 0, "Prices cannot be 0");
+        
         escrowId = transactions.length++;
 
         transactions[escrowId] = EscrowTransaction({
