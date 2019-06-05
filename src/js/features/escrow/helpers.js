@@ -1,5 +1,4 @@
 import {ARBITRATION_UNSOLVED} from "../arbitration/constants";
-import { checkEnoughETH } from "../../utils/transaction";
 
 export const tradeStates = {
   released: 'released',

@@ -22,7 +22,6 @@ import {
   WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED, GET_LAST_ACTIVITY, GET_LAST_ACTIVITY_SUCCEEDED, GET_LAST_ACTIVITY_FAILED
 } from './constants';
 import {eventTypes} from './helpers';
-import { getLastActivity } from './selectors';
 
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
