@@ -9,7 +9,7 @@ import {
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_PRE_SUCCESS,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
-  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW, CLEAR_CHANGED_ESCROW
+  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW, CLEAR_CHANGED_ESCROW, GET_LAST_ACTIVITY_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus, eventTypes } from './helpers';
@@ -20,6 +20,7 @@ const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
   fee: '0',
+  lastActivity: 0,
   newEscrow: null,
   changedEscrow: null
 };
@@ -155,6 +156,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: merge.recursive(state.escrows, action.escrows)
+      };
+    case GET_LAST_ACTIVITY_SUCCEEDED:
+      return {
+        ...state,
+        lastActivity: (parseInt(action.lastActivity, 10) * 1000)
       };
     case GET_FEE_SUCCEEDED:
       return {

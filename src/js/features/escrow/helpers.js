@@ -1,4 +1,5 @@
 import {ARBITRATION_UNSOLVED} from "../arbitration/constants";
+import { checkEnoughETH } from "../../utils/transaction";
 
 export const tradeStates = {
   released: 'released',
@@ -47,4 +48,8 @@ export function getTradeStatus(trade) {
     case escrowStatus.CANCELED: return tradeStates.canceled;
     default: return tradeStates.waiting;
   }
+}
+
+export function canRelay(address, balance, lastActivity) {
+
 }
