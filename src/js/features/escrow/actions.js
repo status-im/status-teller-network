@@ -75,7 +75,7 @@ export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 export const getFee = () => ({ type: GET_FEE });
 
-export const getLastActivity = () => ({ type: GET_LAST_ACTIVITY, address});
+export const getLastActivity = (address) => ({ type: GET_LAST_ACTIVITY, address});
 
 export const cancelEscrow = (escrowId) => {
   return { type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) };

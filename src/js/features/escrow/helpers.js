@@ -1,5 +1,4 @@
 import {ARBITRATION_UNSOLVED} from "../arbitration/constants";
-import { checkEnoughETH } from "../../utils/transaction";
 
 export const tradeStates = {
   released: 'released',
@@ -50,6 +49,12 @@ export function getTradeStatus(trade) {
   }
 }
 
-export function canRelay(address, balance, lastActivity) {
+const RELAY_DELAY = (15 * 60 * 1000) + 20; // Adding 20 seconds buffer since blocks are not mined exactly on this time
 
+export function canRelay(lastActivity) {
+  return (lastActivity + RELAY_DELAY) < Date.now();
+}
+
+export function nextRelayDate(lastActivity) {
+  return new Date(lastActivity + RELAY_DELAY);
 }

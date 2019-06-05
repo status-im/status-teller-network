@@ -36,7 +36,7 @@ function reducer(state = DEFAULT_STATE, action) {
       txHash: ''
     };
   }
-
+  
   switch (action.type) {
     case FUND_ESCROW:
       escrowsClone[escrowId].fundStatus = States.pending;

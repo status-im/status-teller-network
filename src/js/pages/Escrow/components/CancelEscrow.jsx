@@ -7,6 +7,7 @@ import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import CancelIcon from "../../../../images/close.png";
 import classnames from 'classnames';
+import moment from 'moment';
 
 class CancelEscrow extends Component {
 
@@ -31,12 +32,21 @@ class CancelEscrow extends Component {
     this.props.cancelEscrow(this.props.trade.escrowId);
     this.displayDialog(false)();
   };
-
+ 
   render(){
-    const {trade} = this.props;
+    const {trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETH} = this.props;
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
-    const disabled = !this.props.isBuyer && (parseInt(this.props.trade.expirationTime, 10) * 1000 > Date.now());
+    const relayFutureDate = escrow.helpers.nextRelayDate(lastActivity);
     
+    let disabled; 
+    if(isBuyer){
+      if(notEnoughETH){
+        disabled = !canRelay && !isETH;
+      }
+    } else {
+      disabled = (parseInt(this.props.trade.expirationTime, 10) * 1000 > Date.now());
+    }
+
     return shouldDisplay && <Fragment>
       <div onClick={this.displayDialog(true)} className="clickable">
         <Row className={classnames("mt-4 text-primary", {'disabled': disabled})}>
@@ -48,7 +58,7 @@ class CancelEscrow extends Component {
           </Col>
         </Row>
         {
-          disabled && <Row>
+          disabled && !isBuyer && <Row>
             <Col xs="2">
             </Col>
             <Col xs="10" className="text-small">
@@ -56,16 +66,37 @@ class CancelEscrow extends Component {
             </Col>
           </Row>
         }
+        {
+          disabled && isBuyer && <Row>
+            <Col xs="2">
+            </Col>
+            <Col xs="10" className="text-small">
+              Escrow can be canceled in {moment(relayFutureDate).toNow(true)}
+            </Col>
+          </Row>
+        }
+
       </div>
       { !disabled && <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?" cancelText="No" /> }
     </Fragment>;
   }
 }
 
+CancelEscrow.defaultProps = {
+  notEnoughETH: false,
+  canRelay: false,
+  isETH: false
+};
+
 CancelEscrow.propTypes = {
   cancelEscrow: PropTypes.func,
   trade: PropTypes.object,
-  isBuyer: PropTypes.bool
+  isBuyer: PropTypes.bool,
+  notEnoughETH: PropTypes.bool,
+  canRelay: PropTypes.bool,
+  lastActivity: PropTypes.number,
+  isETH: PropTypes.bool,
 };
 
 export default CancelEscrow;
+
