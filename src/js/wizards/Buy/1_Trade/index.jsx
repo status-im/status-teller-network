@@ -51,7 +51,7 @@ class Trade extends Component {
 
   componentDidUpdate(oldProps) {
     if (this.props.createEscrowStatus === States.success) {
-      this.props.resetStatus();
+      this.props.resetCreateStatus();
       return this.props.history.push('/escrow/' + this.props.escrowId);
     }
     if ((this.props.offer && !oldProps.offer) || (this.props.offer.token && !oldProps.offer.token)) {
@@ -111,7 +111,7 @@ class Trade extends Component {
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetStatus}/>;
+        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetCreateStatus}/>;
       case States.none:
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
@@ -137,7 +137,7 @@ class Trade extends Component {
 Trade.propTypes = {
   history: PropTypes.object,
   setTrade: PropTypes.func,
-  resetStatus: PropTypes.func,
+  resetCreateStatus: PropTypes.func,
   offer: PropTypes.object,
   address: PropTypes.string,
   currencyQuantity: PropTypes.number,
@@ -182,7 +182,7 @@ export default connect(
   mapStateToProps,
   {
     setTrade: newBuy.actions.setTrade,
-    resetStatus: escrow.actions.resetStatus,
+    resetCreateStatus: escrow.actions.resetCreateStatus,
     createEscrow: escrow.actions.createEscrow,
     updateBalance: network.actions.updateBalance,
     loadOffers: metadata.actions.loadOffers
