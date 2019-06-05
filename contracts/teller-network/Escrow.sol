@@ -43,7 +43,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     }
 
     function setRelayHubAddress(address _relayHub) public onlyOwner {
-        init_relay_hub(RelayHub(_relayHub));
+        set_relay_hub(RelayHub(_relayHub));
     }
 
     Arbitration arbitration;

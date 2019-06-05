@@ -1,0 +1,46 @@
+{
+  "0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d": {
+    "contracts": {
+      "0x3043b04ad856d169c8f0b0509c0bc63192dc7edd92d6933c58708298a0e381be": {
+        "name": "ENSRegistry",
+        "address": "0x112234455c3a32fd11230c42e7bccd4a84e02010"
+      },
+      "0x4f96b534860cd72e9388b7373c14f4d9bdc201a81bdccdc1b2922865de029497": {
+        "name": "RelayHub",
+        "address": "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
+      },
+      "0x573ce922ef30ea27239add0fb9f2af8d008314dc4a0b3eaefa0adaf8963e44fa": {
+        "name": "StandardToken",
+        "address": "0xEAFb5d3c2c79B48896589ec1dfd1E95ed24D6f93"
+      },
+      "0x5cd70a563902729e50887cf8436b89ccf72107e0acf1a98fd78d1b68c0a8edcc": {
+        "name": "MiniMeTokenFactory",
+        "address": "0x1B3748Bdc4aF6f6BE159DDDEA0154fa3717cB516"
+      },
+      "0x90633e0d0e44dedf48012ba2f1f863ad09468d7fb9793830f6e1a8adbeaaf2e7": {
+        "name": "SNT",
+        "address": "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
+      },
+      "0x823f81eb5239fd857afd6bb050d2d628acddcaf2394ef641cd91cf0b8ff874b9": {
+        "name": "ERC20Receiver",
+        "address": "0xB59B23736D852b854aE0eE6687c2b90B01A02AB4"
+      },
+      "0x2677020cbbcaa18ce69dd8bb8df64aa0e52a0223b292a7a9abb9a9bdef750dd3": {
+        "name": "License",
+        "address": "0x0c7e44b251861a8D4E5E1C81E100CAAd4DCD1DEc"
+      },
+      "0x744d8dd8d4284e8cdebc5adaf2047826cb846f723c7ec842d12ad5b52678a73a": {
+        "name": "Arbitration",
+        "address": "0xaCd119C6049D3cDAe874d73b944a25592233Dd14"
+      },
+      "0xf0e3441440660cc814b11ddb03e1e1f801b6208fe8d821643596e92ac3af2450": {
+        "name": "MetadataStore",
+        "address": "0x72296A3Bd9bdcdE4bCa5fa63920D40388D84cafB"
+      },
+      "0x6736899f25ec619bbd3b81360f73a21009700e238aa3d743aaa8f9456e4ea5d3": {
+        "name": "Escrow",
+        "address": "0xe515E50DeB4280a3C4f57509CCA9310B0D75b501"
+      }
+    }
+  }
+}

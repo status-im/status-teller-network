@@ -260,6 +260,46 @@ module.exports = {
     dappConnection: ["$WEB3"]
   },
 
+  ropsten: {
+    tracking: 'shared.ropsten.chains.json',
+    contracts: {
+      Escrow: {
+        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        deps: ['RelayHub'],
+        onDeploy: [
+          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
+          "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
+          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
+        ]
+      },
+      SNT: {
+        address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
+      },
+      "RLPReader": {
+        deploy: false
+      },
+      "RelayHub": {
+        address: "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
+      }
+    },
+    deployment: {
+      accounts: [
+        {
+          mnemonic: secret.mnemonic,
+          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
+          numAddresses: "10"
+        }
+      ],
+      host: `ropsten.infura.io/${secret.infuraKey}`,
+      port: false,
+      protocol: 'https',
+      type: "rpc"
+    },
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
+    dappConnection: ["$WEB3"]
+  },
+
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
