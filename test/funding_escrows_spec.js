@@ -96,7 +96,7 @@ contract("Escrow Funding", function() {
 
   describe("ETH as asset", async () => {
     beforeEach(async () => {
-      receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, [0], "0x00", "U", "12345")
+      receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, value, "0x00", "U", "12345")
                                     .send({from: accounts[0]});
 
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -122,11 +122,11 @@ contract("Escrow Funding", function() {
       await SNT.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
       await StandardToken.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create(accounts[1], SNTOfferId, 123, FIAT, [0], "0x00", "U", "12345")
+      receipt = await Escrow.methods.create(accounts[1], SNTOfferId, 123, FIAT, value, "0x00", "U", "12345")
                                     .send({from: accounts[0]});
       escrowIdSNT = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.create(accounts[1], tokenOfferId, 123, FIAT, [0], "0x00", "U", "12345")
+      receipt = await Escrow.methods.create(accounts[1], tokenOfferId, 123, FIAT, value, "0x00", "U", "12345")
                                     .send({from: accounts[0]});
       escrowIdToken = receipt.events.Created.returnValues.escrowId;
     });

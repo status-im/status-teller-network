@@ -41,7 +41,7 @@ class CancelEscrow extends Component {
     let disabled; 
     if(isBuyer){
       if(notEnoughETH){
-        disabled = !canRelay && !isETH;
+        disabled = !canRelay || !isETH;
       }
     } else {
       disabled = (parseInt(this.props.trade.expirationTime, 10) * 1000 > Date.now());
@@ -70,9 +70,12 @@ class CancelEscrow extends Component {
           disabled && isBuyer && <Row>
             <Col xs="2">
             </Col>
-            <Col xs="10" className="text-small">
+            {isETH && <Col xs="10" className="text-small">
               Escrow can be canceled in {moment(relayFutureDate).toNow(true)}
-            </Col>
+            </Col>}
+            {!isETH && <Col xs="10" className="text-small">
+              Only ETH transactions can be canceled when you don&quot;t have enough balance in your wallet
+            </Col>}
           </Row>
         }
 
