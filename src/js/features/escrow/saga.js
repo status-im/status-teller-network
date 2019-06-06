@@ -304,7 +304,7 @@ export function *onWatchEscrowCreations() {
 
 export function *watchNewOffer({offer, receipt}) {
   try {
-    const newOffer = Object.assign({}, offer, {id: receipt.events.OfferAdded.returnValues.offerId})
+    const newOffer = Object.assign({}, offer, {id: receipt.events.OfferAdded.returnValues.offerId});
     yield put({type: WATCH_ESCROW_CREATIONS, offers: [newOffer]});
   } catch (error) {
     console.error(error);
