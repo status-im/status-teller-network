@@ -1,3 +1,6 @@
+/* solium-disable security/no-block-members */
+/* solium-disable security/no-inline-assembly */
+
 pragma solidity ^0.5.7;
 
 import "../common/Ownable.sol";
@@ -28,7 +31,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     bytes4 private constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
     bytes4 private constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
     bytes4 private constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
-    
+
     constructor(
         address _license,
         address _arbitration,
@@ -88,8 +91,9 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         if(fSign != CREATE_SIGNATURE && fSign != PAY_SIGNATURE && fSign != CANCEL_SIGNATURE && fSign != OPEN_CASE_SIGNATURE)
             return 11;
-            
-        if(from.balance > 500000 * gas_price) return 12; // According to tests, 333450 is the cost of creating an escrow, so 500000 should be good
+
+        // According to tests, 333450 is the cost of creating an escrow, so 500000 should be good
+        if(from.balance > 500000 * gas_price) return 12;
 
         // Only allow trxs where the user is a buyer
         if(fSign == PAY_SIGNATURE || fSign == CANCEL_SIGNATURE || fSign == OPEN_CASE_SIGNATURE){
@@ -113,9 +117,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             assembly {
                 offerId := mload(add(offerIdBytes, add(0x20, 0)))
             }
-            
             if(metadataStore.getAsset(offerId) != address(0)) return 15; // Must be eth trx
-            
             // Allow activity after 15 min have passed
             if((lastActivity[from] + 15 minutes) > block.timestamp) return 16;
         }
@@ -127,11 +129,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         return (lastActivity[account] + 15 minutes) < block.timestamp;
     }
 
-    // nothing to be done post-call.
-    // still, we must implement this method.
     function post_relayed_call(address relay, address from,
         bytes memory encoded_function, bool success,
         uint used_gas, uint transaction_fee ) public {
+        // nothing to be done post-call.
+        // still, we must implement this method.
     }
 
 
@@ -202,7 +204,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             require(erc20token.allowance(_from, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
             require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
-
         emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
     }
 
@@ -298,7 +299,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             trx.buyer.transfer(trx.tokenAmount); // TODO: transfer fee to Status?
         } else {
             ERC20Token erc20token = ERC20Token(token);
-            require(erc20token.transfer(trx.buyer, trx.tokenAmount));
+            require(erc20token.transfer(trx.buyer, trx.tokenAmount), "Couldn't transfer funds");
         }
 
         emit Released(_escrowId, block.timestamp);
@@ -318,11 +319,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(trx.status != EscrowStatus.CANCELED, TRANSACTION_ALREADY_CANCELED);
         require(trx.status != EscrowStatus.PAID, TRANSACTION_ALREADY_PAID);
         require(trx.status == EscrowStatus.FUNDED, TRANSACTION_NOT_FUNDED);
-
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
-        require(trx.buyer == _sender || metadataStore.getOfferOwner(trx.offerId) == _sender, "Function can only be invoked by the escrow buyer or seller");
+        require(trx.buyer == _sender || metadataStore.getOfferOwner(trx.offerId) == _sender,
+                "Function can only be invoked by the escrow buyer or seller");
 
-        trx.status  = EscrowStatus.PAID;
+        trx.status = EscrowStatus.PAID;
 
         emit Paid(_escrowId, block.timestamp);
     }
@@ -376,7 +377,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(_escrowId < transactions.length, INVALID_ESCROW_ID);
 
         EscrowTransaction storage trx = transactions[_escrowId];
-        require(trx.status == EscrowStatus.FUNDED || trx.status == EscrowStatus.CREATED, "Only transactions in created or funded state can be canceled");
+        require(trx.status == EscrowStatus.FUNDED || trx.status == EscrowStatus.CREATED,
+                "Only transactions in created or funded state can be canceled");
 
         address seller = metadataStore.getOfferOwner(trx.offerId);
         require(trx.buyer == get_sender() || seller == get_sender(), "Function can only be invoked by the escrow buyer or seller");
@@ -456,7 +458,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(trx.status == EscrowStatus.RELEASED, "Transaction not released yet");
         require(trx.buyer == get_sender(), "Function can only be invoked by the escrow buyer");
 
-        trx.rating  = _rate;
+        trx.rating = _rate;
+
         emit Rating(trx.offerId, trx.buyer, _escrowId, _rate, block.timestamp);
     }
 
@@ -490,7 +493,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
 
-        require(trx.buyer == senderAddress || metadataStore.getOfferOwner(trx.offerId) == senderAddress, "Only a buyer or seller can open a case");
+        require(trx.buyer == senderAddress || metadataStore.getOfferOwner(trx.offerId) == senderAddress,
+                "Only a buyer or seller can open a case");
 
         // FIXME get actual motive from the signature if possible
         arbitration.openCase(_escrowId, get_sender(), '');
@@ -613,10 +617,9 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         pure
         returns (bytes memory)
     {
-        require(_bytes.length >= (_start + _length));
+        require(_bytes.length >= (_start + _length), "Length does not match _start + _length");
 
         bytes memory tempBytes;
-
         assembly {
             switch iszero(_length)
             case 0 {
