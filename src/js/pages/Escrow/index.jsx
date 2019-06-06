@@ -24,6 +24,7 @@ import network from '../../features/network';
 import approval from '../../features/approval';
 import arbitration from '../../features/arbitration';
 import events from '../../features/events';
+import prices from '../../features/prices';
 
 import "./index.scss";
 import { ARBITRATION_UNSOLVED } from '../../features/arbitration/constants';
@@ -175,7 +176,7 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow}
                                         arbitrationDetails={arbitrationDetails} /> }
 
-        <EscrowDetail escrow={escrow} />
+        <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
@@ -218,6 +219,7 @@ Escrow.propTypes = {
   loadArbitration: PropTypes.func,
   watchEscrow: PropTypes.func,
   escrowEvents: PropTypes.object,
+  assetCurrentPrice: PropTypes.object,
   lastActivity: PropTypes.number,
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
@@ -244,6 +246,7 @@ const mapStateToProps = (state, props) => {
     loading: (theEscrow && (theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending)) || approvalLoading || arbitrationLoading,
     escrowEvents: events.selectors.getEscrowEvents(state),
     lastActivity: escrowF.selectors.getLastActivity(state),
+    assetCurrentPrice: (theEscrow && theEscrow.token) ? prices.selectors.getAssetPrice(state, theEscrow.token.symbol) : null,
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH')
   };
