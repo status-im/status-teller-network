@@ -4,6 +4,7 @@ import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import moment from "moment";
+import {tradeStates} from '../../../features/escrow/helpers';
 
 const PERCENTAGE_THRESHOLD = 10; // If asset price is 10% different than the real price, show the warning
 
@@ -19,7 +20,7 @@ const EscrowDetail = ({escrow, currentPrice}) => {
       <p className="text-dark m-0">{(escrow.tokenAmount * escrow.assetPrice / 100).toFixed(2)} {escrow.offer.currency} for {escrow.tokenAmount} {escrow.token.symbol}</p>
       <p className="text-dark m-0">{escrow.token.symbol} Price = {escrowAssetPrice} {escrow.offer.currency}</p>
       {escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">Expiration time: {moment(escrow.expirationTime * 1000).calendar()}</p>}
-      {currentPriceForCurrency && escrowAssetPrice * ((PERCENTAGE_THRESHOLD + 100) / 100) < currentPriceForCurrency &&
+      {escrow.status === tradeStates.waiting && currentPriceForCurrency && escrowAssetPrice * ((PERCENTAGE_THRESHOLD + 100) / 100) < currentPriceForCurrency &&
       <Fragment>
         <p className="text-danger font-weight-bold mb-0">The current price for {escrow.token.symbol} is {currentPriceForCurrency} {escrow.offer.currency}, which is {PERCENTAGE_THRESHOLD}% above the price for this trade</p>
         <p className="text-danger mb-1">Double-check whether you really want to go through with this trade</p>
