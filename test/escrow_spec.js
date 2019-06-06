@@ -125,7 +125,7 @@ contract("Escrow", function() {
         await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[8]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
       }
     });
 
@@ -293,11 +293,14 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
+      await expireTransaction();
+      receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
+
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
 
@@ -310,7 +313,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[2]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
       }
     });
 
@@ -344,7 +347,7 @@ contract("Escrow", function() {
         await Escrow.methods.release(999).send({from: accounts[0]}); // Invalid escrow
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid escrow id");
       }
     });
 
@@ -353,7 +356,7 @@ contract("Escrow", function() {
         await Escrow.methods.release(escrowId).send({from: accounts[1]}); // Buyer tries to release
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow owner");
       }
     });
 
@@ -397,7 +400,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction already released");
       }
     });
 
@@ -408,7 +411,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
 
@@ -421,7 +424,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction already canceled");
       }
     });
   });
@@ -439,7 +442,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.pay(escrowId).send({from: accounts[7]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
       }
     });
 
@@ -486,10 +489,10 @@ contract("Escrow", function() {
       await expireTransaction();
 
       try {
-      receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
+        receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
   });
@@ -642,7 +645,7 @@ contract("Escrow", function() {
         await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[3]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only a buyer or seller can open a case");
       }
     });
 
@@ -824,7 +827,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Contract must be paused");
       }
 
       receipt = await Escrow.methods.pause().send({from: accounts[0]});
@@ -837,7 +840,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.withdraw_emergency(releasedEscrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        TestUtils.assertJump(error);
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
       }
 
       await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
