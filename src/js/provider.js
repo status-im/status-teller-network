@@ -18,7 +18,8 @@ class Provider {
   startProvider(web3) {
     this.origProvider = web3.currentProvider;
     this.origProviderSend = (this.origProvider['sendAsync'] || this.origProvider['send']).bind(this.origProvider);
-    this.origProvider.send = (payload, callback) => {
+    
+    const fSend = (payload, callback) => {
       const params = payload.params[0];
 
       if (!(params && params.to && addressCompare(params.to, Escrow.options.address.toLowerCase()) &&
@@ -47,6 +48,9 @@ class Provider {
         }
       })();
     };
+    
+    this.origProvider.send = fSend;
+    this.origProvider.sendAsync = fSend;
   }
 
   sendAsync(payload, callback) {
