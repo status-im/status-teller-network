@@ -1,4 +1,4 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.8;
 
 import "./License.sol";
 import "../common/Ownable.sol";
@@ -54,10 +54,10 @@ contract MetadataStore is Ownable {
     }
 
     struct Offer {
-        address asset;
-        string currency;
         int8 margin;
         PaymentMethods[] paymentMethods;
+        address asset;
+        string currency;
         address payable owner;
         address arbitrator;
     }
@@ -143,7 +143,7 @@ contract MetadataStore is Ownable {
 
         addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, msg.sender, _arbitrator);
+        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator);
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
@@ -256,17 +256,14 @@ contract MetadataStore is Ownable {
     }
 
     function getOfferOwner(uint256 _id) public view returns (address payable) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].owner);
     }
 
     function getAsset(uint256 _id) public view returns (address) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].asset);
     }
 
     function getArbitrator(uint256 _id) public view returns (address) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].arbitrator);
     }
 

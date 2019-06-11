@@ -6,7 +6,7 @@
   "config": "embarkConfig/",
   "versions": {
     "web3": "1.0.0-beta",
-    "solc": "0.5.7",
+    "solc": "0.5.8",
     "ipfs-api": "17.2.4"
   },
   "plugins": {

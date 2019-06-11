@@ -1,4 +1,4 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.8;
 
 interface Arbitrable {
     function setArbitrationResult(uint _escrowId, bool _releaseFunds, address _arbitrator) external;

@@ -1,6 +1,6 @@
 /* solium-disable security/no-block-members */
 
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.8;
 
 import "../common/Ownable.sol";
 import "./Arbitrable.sol";
