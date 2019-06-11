@@ -1,4 +1,4 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.8;
 
 import "../token/ERC20Token.sol";
 import "../common/Ownable.sol";
@@ -64,6 +64,6 @@ contract Fees is Ownable {
         
         require(feeToken.allowance(_from, address(this)) >= feeAmount, "Allowance not set for this contract for specified fee");
         require(feeToken.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
-    }	    
+    }
 
 }

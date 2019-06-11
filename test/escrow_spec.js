@@ -400,7 +400,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction already released");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid transaction status");
       }
     });
 
@@ -424,7 +424,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction already canceled");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid transaction status");
       }
     });
   });
