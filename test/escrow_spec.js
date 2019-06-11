@@ -347,16 +347,16 @@ contract("Escrow", function() {
         await Escrow.methods.release(999).send({from: accounts[0]}); // Invalid escrow
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid escrow id");
+        TestUtils.assertJump(error);
       }
     });
 
-    it("Accounts different from the escrow owner cannot release an escrow", async () => {
+    it("Accounts different from the seller cannot release an escrow", async () => {
       try {
         await Escrow.methods.release(escrowId).send({from: accounts[1]}); // Buyer tries to release
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow owner");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can release the escrow");
       }
     });
 
@@ -710,7 +710,7 @@ contract("Escrow", function() {
         receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid escrow arbitrator");
+        TestUtils.assertJump(error);
       }
     });
 
@@ -761,6 +761,15 @@ contract("Escrow", function() {
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");
       }
+    });
+
+    it("can open an arbitration on a escrow that had a canceled arbitration before", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      const arbitrationRequired = receipt.events.ArbitrationRequired;
+      assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
     });
 
   });

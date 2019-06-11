@@ -66,14 +66,9 @@ contract Arbitration is Ownable, License {
         require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open,
                 "Arbitration already solved or not open");
-        arbitrationCases[_escrowId] = ArbitrationCase({
-            open: false,
-            openBy: address(0),
-            arbitrator: address(0),
-            result: ArbitrationResult.UNSOLVED,
-            motive: ""
-        });
 
+        delete arbitrationCases[_escrowId];
+        
         emit ArbitrationCanceled(_escrowId, block.timestamp);
     }
 

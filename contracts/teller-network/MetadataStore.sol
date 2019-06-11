@@ -243,8 +243,6 @@ contract MetadataStore is Ownable {
         address payable owner,
         address arbitrator
     ) {
-        require(_id < offers.length, "Invalid offer id");
-
         return (
             offers[_id].asset,
             offers[_id].currency,
