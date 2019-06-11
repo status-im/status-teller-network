@@ -43,7 +43,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @return bool
     */
     function isLicenseOwner(address _address) public view returns (bool) {
-        return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime > 0;
+        return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime != 0;
     }
 
     /**
