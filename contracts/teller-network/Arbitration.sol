@@ -1,3 +1,5 @@
+/* solium-disable security/no-block-members */
+
 pragma solidity ^0.5.7;
 
 import "../common/Ownable.sol";
@@ -29,6 +31,7 @@ contract Arbitration is Ownable, License {
     constructor(address payable _tokenAddress, uint256 _price)
         License(_tokenAddress, _price)
         public {
+        // Do nothing
     }
 
     function setEscrowAddress(address _escrow) public onlyOwner {
@@ -61,7 +64,8 @@ contract Arbitration is Ownable, License {
      */
     function cancelArbitration(uint _escrowId) public {
         require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
-        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open, "Arbitration already solved or not open");
+        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open,
+                "Arbitration already solved or not open");
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: false,
             openBy: address(0),
@@ -97,7 +101,8 @@ contract Arbitration is Ownable, License {
      * @param _result Result of the arbitration
      */
     function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public {
-        require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
+        require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED,
+                "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
         require(isArbitrator(msg.sender), "Only arbitrators can invoke this function");
         require(escrow.getArbitrator(_escrowId) == msg.sender, "Invalid escrow arbitrator");

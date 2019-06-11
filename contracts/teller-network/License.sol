@@ -1,3 +1,6 @@
+/* solium-disable security/no-block-members */
+/* solium-disable security/no-inline-assembly */
+
 pragma solidity  ^0.5.7;
 
 import "../common/Ownable.sol";
