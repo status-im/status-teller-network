@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import FiatSelectorForm from "./components/FiatSelectorForm";
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
-import {CURRENCY_DATA} from "../../../utils/currencies";
+import {CURRENCY_DATA} from "../../../constants/currencies";
 
 class Currency extends Component {
   constructor(props) {

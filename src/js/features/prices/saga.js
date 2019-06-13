@@ -3,7 +3,7 @@ import cc from 'cryptocompare';
 import { FETCH_PRICES, FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED, FETCH_EXCHANGE_RATE } from './constants';
 import network from "../../features/network";
 import merge from 'merge';
-import {CURRENCY_DATA} from "../../utils/currencies";
+import {CURRENCY_DATA} from "../../constants/currencies";
 
 export function *doFetchPrices(action) {
   try {
