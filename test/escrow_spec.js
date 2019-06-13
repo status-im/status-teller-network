@@ -762,7 +762,7 @@ contract("Escrow", function() {
     it("can open an arbitration on a escrow that had a canceled arbitration before", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
       receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
