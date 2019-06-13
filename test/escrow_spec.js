@@ -2,12 +2,12 @@
 const EthUtil = require('ethereumjs-util');
 const TestUtils = require("../utils/testUtils");
 
-const License = embark.require('Embark/contracts/License');
+const SellerLicense = embark.require('Embark/contracts/SellerLicense');
+const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
-const Arbitration = embark.require('Embark/contracts/Arbitration');
 
 
 const ESCROW_CREATED = 0;
@@ -54,20 +54,22 @@ config({
       ]
     },
     License: {
+      deploy: false
+    },
+    SellerLicense: {
+      instanceOf: "License",
+      args: ["$SNT", 10]
+    },
+    ArbitrationLicense: {
+      instanceOf: "License",
       args: ["$SNT", 10]
     },
     MetadataStore: {
-      args: ["$License", "$Arbitration"]
-    },
-    Arbitration: {
-      args: ["$SNT", 10]
+      args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     Escrow: {
-      args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
-      onDeploy: [
-        "Arbitration.methods.setEscrowAddress('$Escrow').send()",
-        "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
-      ]
+      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      onDeploy: ["MetadataStore.methods.setEscrowAddress('$Escrow').send()"]
     },
     StandardToken: {
     }
@@ -95,27 +97,21 @@ contract("Escrow", function() {
   this.timeout(0);
 
   before(async () => {
-
-    const escrowEvents = Escrow.options.jsonInterface.filter(x => x.type === 'event');
-    const arbitrationEvents = Arbitration.options.jsonInterface.filter(x => x.type === 'event');
-
-    Escrow.options.jsonInterface = Escrow.options.jsonInterface.concat(arbitrationEvents);
-    Arbitration.options.jsonInterface = Arbitration.options.jsonInterface.concat(escrowEvents);
-
     await SNT.methods.generateTokens(accounts[0], 1000).send();
-    const encodedCall = License.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
+    const encodedCall = SellerLicense.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
 
     // Register arbitrators
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     await SNT.methods.generateTokens(arbitrator2, 1000).send();
-    const encodedCall2 = Arbitration.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
-    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator2});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
+    await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator2});
+
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -676,12 +672,12 @@ contract("Escrow", function() {
 
       receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signatureRPC).send({from: accounts[8]});
 
-      messageToSign = await Escrow.methods.openCaseSignHash(escrowId).call();
+      messageToSign = await Escrow.methods.openCaseSignHash(escrowId, "My motive is...").call();
       msgHash = EthUtil.hashPersonalMessage(Buffer.from(EthUtil.stripHexPrefix(messageToSign), 'hex'));
       signature = EthUtil.ecsign(msgHash, privateKey);
       signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s);
 
-      receipt = await Escrow.methods.openCaseWithSignature(escrowId, signatureRPC).send({from: accounts[9]});
+      receipt = await Escrow.methods.openCaseWithSignature(escrowId, "My motive is...", signatureRPC).send({from: accounts[9]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
       assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");
@@ -695,7 +691,7 @@ contract("Escrow", function() {
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
       try {
-        receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
+        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only arbitrators can invoke this function");
@@ -707,7 +703,7 @@ contract("Escrow", function() {
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
       try {
-        receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
+        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
         assert.fail('should have reverted before');
       } catch (error) {
         TestUtils.assertJump(error);
@@ -719,13 +715,13 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
       try {
-        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[0]});
+        receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
       }
 
-      receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
       const arbitrationCanceled = receipt.events.ArbitrationCanceled;
       assert(!!arbitrationCanceled, "ArbitrationCanceled() not triggered");
       assert.equal(arbitrationCanceled.returnValues.escrowId, escrowId, "Invalid escrowId");
@@ -735,7 +731,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
-      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
       const released = receipt.events.Released;
       assert(!!released, "Released() not triggered");
     });
@@ -744,7 +740,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
-      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
       const released = receipt.events.Canceled;
       assert(!!released, "Canceled() not triggered");
@@ -753,10 +749,10 @@ contract("Escrow", function() {
     it("cannot cancel a solved arbitration", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      receipt = await Arbitration.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
       try {
-        receipt = await Arbitration.methods.cancelArbitration(escrowId).send({from: accounts[1]});
+        receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");
@@ -868,10 +864,10 @@ contract("Escrow", function() {
     });
 
     it("arbitrator should be valid", async () => {
-      const isArbitrator = await Arbitration.methods.isArbitrator(arbitrator).call();
+      const isArbitrator = await ArbitrationLicense.methods.isLicenseOwner(arbitrator).call();
       assert.equal(isArbitrator, true, "Invalid arbitrator");
 
-      const nonArbitrator = await Arbitration.methods.isArbitrator(accounts[5]).call();
+      const nonArbitrator = await ArbitrationLicense.methods.isLicenseOwner(accounts[5]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
     });
   });

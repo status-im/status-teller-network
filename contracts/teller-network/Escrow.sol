@@ -10,7 +10,6 @@ import "../token/ERC20Token.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
-import "./Arbitration.sol";
 import "./Arbitrable.sol";
 import "tabookey-gasless/contracts/RelayRecipient.sol";
 
@@ -26,22 +25,21 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
     constructor(
         address _license,
-        address _arbitration,
+        address _arbitrationLicense,
         address _metadataStore,
         address _feeToken,
         address _feeDestination,
         uint _feeAmount)
-        Fees(_feeToken, _feeDestination, _feeAmount) public {
+        Fees(_feeToken, _feeDestination, _feeAmount)
+        Arbitrable(_arbitrationLicense)
+        public {
         license = License(_license);
-        arbitration = Arbitration(_arbitration);
         metadataStore = MetadataStore(_metadataStore);
     }
 
     function setRelayHubAddress(address _relayHub) public onlyOwner {
         set_relay_hub(RelayHub(_relayHub));
     }
-
-    Arbitration arbitration;
 
     struct EscrowTransaction {
         uint256 offerId;
@@ -423,7 +421,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function rateTransaction(uint _escrowId, uint _rate) external whenNotPaused {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
-        require(!arbitration.exists(_escrowId), "Can't rate a transaction that has an arbitration process");
+        require(!isDisputed(_escrowId), "Can't rate a transaction that has an arbitration process");
 
         EscrowTransaction storage trx = transactions[_escrowId];
 
@@ -445,11 +443,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function openCase(uint _escrowId, string calldata motive) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(!arbitration.exists(_escrowId), "Case already exist");
+        require(!isDisputed(_escrowId), "Case already exist");
         require(trx.buyer == get_sender() || metadataStore.getOfferOwner(trx.offerId) == get_sender(), "Only a buyer or seller can open a case");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        arbitration.openCase(_escrowId, get_sender(), motive);
+        openDispute(_escrowId, get_sender(), motive);
     }
 
     /**
@@ -458,19 +456,18 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCaseWithSignature(uint _escrowId, bytes calldata _signature) external {
+    function openCaseWithSignature(uint _escrowId, string calldata motive, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        require(!arbitration.exists(_escrowId), "Case already exist");
+        require(!isDisputed(_escrowId), "Case already exist");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId)), _signature);
+        address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId, motive)), _signature);
 
         require(trx.buyer == senderAddress || metadataStore.getOfferOwner(trx.offerId) == senderAddress,
                 "Only a buyer or seller can open a case");
 
-        // FIXME get actual motive from the signature if possible
-        arbitration.openCase(_escrowId, get_sender(), '');
+        openDispute(_escrowId, get_sender(), motive);
     }
 
     /**
@@ -479,9 +476,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _releaseFunds Release funds to buyer or cancel escrow
      * @param _arbitrator Arbitrator address
      */
-    function setArbitrationResult(uint _escrowId, bool _releaseFunds, address _arbitrator) external {
-        assert(get_sender() == address(arbitration)); // Only arbitration contract can invoke this
-
+    function solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         address payable seller = metadataStore.getOfferOwner(trx.offerId);
@@ -511,12 +506,13 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @return message hash
      * @dev Once message is signed, pass it as _signature of openCase(uint256,bytes)
      */
-    function openCaseSignHash(uint _escrowId) public view returns(bytes32){
+    function openCaseSignHash(uint _escrowId, string memory motive) public view returns(bytes32){
         return keccak256(
             abi.encodePacked(
                 address(this),
                 "openCase(uint256)",
-                _escrowId
+                _escrowId,
+                motive
             )
         );
     }

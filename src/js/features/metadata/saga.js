@@ -1,5 +1,5 @@
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
-import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
+import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
@@ -16,7 +16,7 @@ import {getLocation} from '../../services/googleMap';
 
 export function *loadUser({address}) {
   try {
-    const isArbitrator = yield Arbitration.methods.isArbitrator(address).call();
+    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
     const isUser = yield MetadataStore.methods.userWhitelist(address).call();
 
     let user = {

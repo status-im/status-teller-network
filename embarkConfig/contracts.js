@@ -69,25 +69,29 @@ module.exports = {
 
     contracts: {
       License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
         args: [
           "$SNT",
           LICENSE_PRICE
         ]
       },
       "MetadataStore": {
-        args: ["$License", "$Arbitration"]
+        args: ["$SellerLicense", "$ArbitrationLicense"]
       },
-      Arbitration: {
+      ArbitrationLicense: {
+        instanceOf: "License",
         args: [
           "$SNT",
           ARB_LICENSE_PRICE
         ]
       },
       Escrow: {
-        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
         deps: ['RelayHub'],
         onDeploy: [
-          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
           "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
@@ -264,10 +268,9 @@ module.exports = {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
       Escrow: {
-        args: ["$License", "$Arbitration", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
         deps: ['RelayHub'],
         onDeploy: [
-          "Arbitration.methods.setEscrowAddress('$Escrow').send()",
           "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
