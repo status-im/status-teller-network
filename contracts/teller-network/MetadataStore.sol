@@ -189,7 +189,6 @@ contract MetadataStore is MessageSigned {
     */
     function addOffer(
         address _asset,
-        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -214,7 +213,7 @@ contract MetadataStore is MessageSigned {
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            _user, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
+            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 

@@ -125,8 +125,6 @@ contract("Escrow", function() {
         nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
         await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});       
-        assert.fail('should have reverted before');
-      } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
       }
     });
@@ -137,6 +135,7 @@ contract("Escrow", function() {
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       
       receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});      
+
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -174,6 +173,7 @@ contract("Escrow", function() {
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
       receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       // Approve fee amount

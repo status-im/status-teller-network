@@ -125,7 +125,7 @@ contract("Escrow Funding", function() {
 
     beforeEach(async () => {
 
-      const hash = await MetadataStore.methods.getDataHash("Iuri", License.address, "London").call();
+      const hash = await MetadataStore.methods.getDataHash("Iuri", "0x00", "London").call();
       const signature = await web3.eth.sign(hash, accounts[1]);
       
       // Reset allowance
