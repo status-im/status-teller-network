@@ -124,6 +124,10 @@ contract("Escrow Funding", function() {
     let escrowIdSNT, escrowIdToken;
 
     beforeEach(async () => {
+
+      const hash = await MetadataStore.methods.getDataHash("Iuri", License.address, "London").call();
+      const signature = await web3.eth.sign(hash, accounts[1]);
+      
       // Reset allowance
       await SNT.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
       await StandardToken.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
