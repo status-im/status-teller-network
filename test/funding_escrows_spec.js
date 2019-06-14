@@ -1,9 +1,9 @@
 /*global contract, config, it, embark, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
-const License = embark.require('Embark/contracts/License');
+const SellerLicense = embark.require('Embark/contracts/SellerLicense');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
-const Arbitration = embark.require('Embark/contracts/Arbitration');
+const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
@@ -36,18 +36,22 @@ config({
       ]
     },
     License: {
+      deploy: false
+    },
+    SellerLicense: {
+      instanceOf: "License",
       args: ["$SNT", 10]
     },
     MetadataStore: {
-      args: ["$License", "$Arbitration"]
+      args: ["$SellerLicense", "$ArbitrationLicense"]
     },
-    Arbitration: {
+    ArbitrationLicense: {
+      instanceOf: "License",
       args: ["$SNT", 10]
     },
     Escrow: {
-      args: ["$License", "$accounts[5]", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
       onDeploy: [
-        "Arbitration.methods.setEscrowAddress('$Escrow').send()",
         "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
       ]
     },
@@ -75,22 +79,22 @@ contract("Escrow Funding", function() {
   before(async () => {
     await StandardToken.methods.mint(accounts[0], 100000000).send();
     await SNT.methods.generateTokens(accounts[0], 100000000).send();
-    const encodedCall = License.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(License.options.address, 10, encodedCall).send({from: accounts[0]});
+    const encodedCall = SellerLicense.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
 
     // Register arbitrators
     arbitrator = accounts[9];
     await SNT.methods.generateTokens(arbitrator, 1000).send();
-    const encodedCall2 = Arbitration.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(Arbitration.options.address, 10, encodedCall2).send({from: arbitrator});
+    const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, License.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 

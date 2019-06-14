@@ -39,11 +39,8 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
 
     console.log("Buy arbitration license");
     {
-      console.log(deps.contracts.Arbitration._address);
-      console.log(arbitrationLicensePrice);
-
-      const buyLicense = deps.contracts.Arbitration.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.Arbitration._address, arbitrationLicensePrice, buyLicense);
+      const buyLicense = deps.contracts.ArbitrationLicense.methods.buy().encodeABI();
+      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
 
       const gas = await toSend.estimateGas({from: arbitrator});
       await toSend.send({from: arbitrator, gas});
@@ -51,8 +48,8 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
 
     console.log('Buy Licenses...');
     await Promise.all(addresses.slice(1, 8).map(async (address) => {
-      const buyLicense = deps.contracts.License.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.License._address, licensePrice, buyLicense);
+      const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
+      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense);
 
       const gas = await toSend.estimateGas({from: address});
       return toSend.send({from: address, gas});
@@ -148,7 +145,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
     const accounts = await Promise.all(addresses.map(async(address) => {
       const ethBalance = await deps.web3.eth.getBalance(address);
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();
-      const isLicenseOwner = await deps.contracts.License.methods.isLicenseOwner(address).call();
+      const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
       let user = {};
       let offers = [];
       const isUser = await deps.contracts.MetadataStore.methods.userWhitelist(address).call();
