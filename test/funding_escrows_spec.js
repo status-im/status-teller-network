@@ -51,9 +51,6 @@ config({
     },
     Escrow: {
       args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
-      onDeploy: [
-        "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
-      ]
     },
     StandardToken: {
     }
@@ -88,16 +85,13 @@ contract("Escrow Funding", function() {
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
 
-    const hash = await MetadataStore.methods.getDataHash("Iuri", "0x00", "London").call();
-    const signature = await web3.eth.sign(hash, accounts[0]);
-
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress,signature, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, signature, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, signature, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -130,7 +124,7 @@ contract("Escrow Funding", function() {
 
     beforeEach(async () => {
 
-      const hash = await MetadataStore.methods.getDataHash("Iuri", License.address, "London").call();
+      const hash = await MetadataStore.methods.getDataHash("Iuri", "0x00", "London").call();
       const signature = await web3.eth.sign(hash, accounts[1]);
       
       // Reset allowance

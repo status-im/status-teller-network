@@ -69,7 +69,6 @@ config({
     },
     Escrow: {
       args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
-      onDeploy: ["MetadataStore.methods.setEscrowAddress('$Escrow').send()"]
     },
     StandardToken: {
     }
@@ -113,9 +112,9 @@ contract("Escrow", function() {
     hash = await MetadataStore.methods.getDataHash("Iuri", "0x00", "London").call();
     signature = await web3.eth.sign(hash, accounts[0]);
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, signature, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, signature, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -123,10 +122,10 @@ contract("Escrow", function() {
 
     it("Seller must be licensed to participate in escrow", async () => {
       try {
-        hash = await MetadataStore.methods.getDataHash("L", [0], "U").call();
+        hash = await MetadataStore.methods.getDataHash("L", "0x00", "U").call();
         signature = await web3.eth.sign(hash, accounts[1]);
 
-        await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[8]});       
+        await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[8]});       
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
@@ -135,10 +134,10 @@ contract("Escrow", function() {
 
     it("Buyer can create escrow", async () => {
       // receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[1]});
-      hash = await MetadataStore.methods.getDataHash("U", License.address, "L").call();
+      hash = await MetadataStore.methods.getDataHash("U", "0x00", "L").call();
       signature = await web3.eth.sign(hash, accounts[1]);
       
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, License.address, "L", "U").send({from: accounts[1]});      
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[1]});      
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -147,7 +146,7 @@ contract("Escrow", function() {
 
     it("Seller should be able to create escrows", async () => {
       // receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, 140, [0], "L", "U").send({from: accounts[0]});
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, License.address, "L", "U").send({from: accounts[0]});
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[0]});
 
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
@@ -168,7 +167,7 @@ contract("Escrow", function() {
     });
 
     it("Seller should be able to fund escrow", async () => {
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, License.address, "L", "U").send({from: accounts[0]});
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       // Approve fee amount
@@ -195,7 +194,7 @@ contract("Escrow", function() {
 
       await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create(signature, tokenOfferId, 123, FIAT, 140, License.address, "L", "U").send({from: accounts[0]});
+      receipt = await Escrow.methods.create(signature, tokenOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[0]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
@@ -283,7 +282,7 @@ contract("Escrow", function() {
     });
 
     it("A buyer can cancel an escrow that hasn't been funded yet", async () => {
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, License.address, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U").send({from: accounts[1]});
       receipt = await Escrow.methods.cancel(receipt.events.Created.returnValues.escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
       assert(!!Canceled, "Canceled() not triggered");

@@ -171,7 +171,6 @@ contract MetadataStore is Ownable, MessageSigned {
     */
     function addOffer(
         address _asset,
-        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -187,16 +186,16 @@ contract MetadataStore is Ownable, MessageSigned {
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        address payable _user = this.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, _user, _arbitrator);
+        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator);
 
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            _user, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
+            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 
