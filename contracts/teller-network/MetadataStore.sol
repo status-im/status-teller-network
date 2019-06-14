@@ -1,6 +1,7 @@
 pragma solidity ^0.5.8;
 
 import "./License.sol";
+import "../common/Ownable.sol";
 import "../common/MessageSigned.sol";
 
 /**
@@ -156,6 +157,25 @@ contract MetadataStore is MessageSigned {
         }
     }
 
+    function addOrUpdateUser(
+        bytes memory _signature,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public returns(address payable _user) {
+        _user = address(uint160(getSigner(_username, _statusContactCode, _location, _signature)));
+        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+        return _user;
+    }
+
+    function addOrUpdateUser(
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+    }
+
     /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
@@ -169,6 +189,7 @@ contract MetadataStore is MessageSigned {
     */
     function addOffer(
         address _asset,
+        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -193,7 +214,7 @@ contract MetadataStore is MessageSigned {
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
+            _user, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 

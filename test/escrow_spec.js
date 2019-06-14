@@ -93,6 +93,7 @@ contract("Escrow", function() {
 
   let receipt, escrowId, escrowTokenId, _offerId, ethOfferId, tokenOfferId, hash, signature, nonce;
 
+
   this.timeout(0);
 
   before(async () => {
@@ -111,6 +112,7 @@ contract("Escrow", function() {
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -141,8 +143,7 @@ contract("Escrow", function() {
       assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
-    it("Seller should be able to create escrows", async () => {
-      
+    it("Seller should be able to create escrows", async () => {     
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
