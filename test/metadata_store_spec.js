@@ -48,6 +48,11 @@ config({
 contract("MetadataStore", function () {
   before(async () => {
     await SNT.methods.generateTokens(accounts[0], 1000).send();
+    await SNT.methods.generateTokens(accounts[9], 1000).send();
+
+
+    const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
+    await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall).send({from: accounts[9]});
   });
 
   it("should not allow to add new user when not license owner", async function () {
@@ -62,6 +67,7 @@ contract("MetadataStore", function () {
   it("should allow to add new user and offer when license owner", async function () {
     const encodedCall = SellerLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send();
+    
     await MetadataStore.methods.addOffer(SNT.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
     assert.strictEqual(usersSize, '1');
