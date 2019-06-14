@@ -86,38 +86,61 @@ contract MetadataStore is Ownable, MessageSigned {
     }
 
 
+    mapping(address => uint) public user_nonce;
+
     function getDataHash(
         string calldata _username,
-        bytes calldata _statusContactCode,
-        string calldata _location
+        bytes calldata _statusContactCode
     ) external view returns (bytes32) {
-        return dataHash(_username, _statusContactCode, _location);
+        return dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
     }
 
     function dataHash(
         string memory _username,
         bytes memory _statusContactCode,
-        string memory _location
+        uint nonce
     ) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _location));
+        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, nonce));
     }
 
     function getSigner(
         string memory _username,
         bytes memory _statusContactCode,
-        string memory _location,
+        uint nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, _location)), _signature);
+        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, nonce)), _signature);
     }
 
     function getMessageSigner(
         string calldata _username,
         bytes calldata _statusContactCode,
-        string calldata _location,
-        bytes calldata _signature
+        bytes calldata _signature,
+        uint _nonce
     ) external view returns(address) {
-        return getSigner(_username, _statusContactCode, _location, _signature);
+        return getSigner(_username, _statusContactCode, _nonce, _signature);
+    }
+
+    function addOrUpdateUser(
+        bytes memory _signature,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username,
+        uint _nonce
+    ) public returns(address payable _user) {
+        _user = address(uint160(getSigner(_username, _statusContactCode, _nonce, _signature)));
+        require(_nonce == user_nonce[_user], "Invalid nonce");
+        user_nonce[_user]++;
+        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+        return _user;
+    }
+
+    function addOrUpdateUser(
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
     function _addOrUpdateUser(
@@ -137,25 +160,6 @@ contract MetadataStore is Ownable, MessageSigned {
             tmpUser.location = _location;
             tmpUser.username = _username;
         }
-    }
-
-    function addOrUpdateUser(
-        bytes memory _signature,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public returns(address payable _user) {
-        _user = address(uint160(getSigner(_username, _statusContactCode, _location, _signature)));
-        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
-        return _user;
-    }
-
-    function addOrUpdateUser(
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public {
-        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
     /**

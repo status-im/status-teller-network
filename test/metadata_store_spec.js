@@ -55,7 +55,7 @@ contract("MetadataStore", function () {
     const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall).send({from: accounts[9]});
 
-    hash = await MetadataStore.methods.getDataHash("Iuri", SellerLicense.address, "London").call();
+    hash = await MetadataStore.methods.getDataHash("Iuri", SellerLicense.address).call();
     signature = await web3.eth.sign(hash, accounts[0]);
 
   });

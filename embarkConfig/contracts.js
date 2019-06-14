@@ -92,7 +92,6 @@ module.exports = {
         args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
         deps: ['RelayHub'],
         onDeploy: [
-          "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
         ]
@@ -271,7 +270,6 @@ module.exports = {
         args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
         deps: ['RelayHub'],
         onDeploy: [
-          "MetadataStore.methods.setEscrowAddress('$Escrow').send()",
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
         ]

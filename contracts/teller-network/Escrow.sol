@@ -146,9 +146,10 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         uint _assetPrice,
         bytes memory _statusContactCode,
         string memory _location,
-        string memory _username
+        string memory _username,
+        uint _nonce
     ) public whenNotPaused returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
+        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
         lastActivity[_buyer] = block.timestamp;
         escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
     }
