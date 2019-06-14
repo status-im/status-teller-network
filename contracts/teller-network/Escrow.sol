@@ -18,7 +18,7 @@ import "tabookey-gasless/contracts/RelayRecipient.sol";
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
 contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
-    bytes4 private constant CREATE_SIGNATURE = bytes4(keccak256("create(address,uint256,uint256,uint8,uint256,bytes,string,string)"));
+    bytes4 private constant CREATE_SIGNATURE = bytes4(keccak256("create(bytes,uint256,uint256,uint8,uint256,bytes,string,string)"));
     bytes4 private constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
     bytes4 private constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
     bytes4 private constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
@@ -127,7 +127,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
     /**
      * @notice Create a new escrow
-     * @param _buyer Buyer address
+     * @param _signature buyer's signature
      * @param _offerId Offer
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
@@ -139,18 +139,18 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      *         The seller needs to be licensed.
      */
     function create(
-        address payable _buyer,
+        bytes memory _signature,
         uint _offerId,
         uint _tradeAmount,
         uint8 _tradeType,
         uint _assetPrice,
-        bytes calldata _statusContactCode,
-        string calldata _location,
-        string calldata _username
-    ) external whenNotPaused returns(uint escrowId) {
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public whenNotPaused returns(uint escrowId) {
+        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
         lastActivity[_buyer] = block.timestamp;
-        escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
-        metadataStore.addOrUpdateUser(_buyer, _statusContactCode, _location, _username);
+        escrowId = createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
     }
 
     /**

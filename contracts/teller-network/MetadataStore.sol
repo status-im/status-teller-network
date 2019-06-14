@@ -2,12 +2,13 @@ pragma solidity ^0.5.8;
 
 import "./License.sol";
 import "../common/Ownable.sol";
+import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
 * @dev Metadata store
 */
-contract MetadataStore is Ownable {
+contract MetadataStore is Ownable, MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
@@ -85,16 +86,46 @@ contract MetadataStore is Ownable {
     }
 
 
-    function addOrUpdateUser(
+    function getDataHash(
+        string calldata _username,
+        bytes calldata _statusContactCode,
+        string calldata _location
+    ) external view returns (bytes32) {
+        return dataHash(_username, _statusContactCode, _location);
+    }
+
+    function dataHash(
+        string memory _username,
+        bytes memory _statusContactCode,
+        string memory _location
+    ) internal view returns (bytes32) {
+        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _location));
+    }
+
+    function getSigner(
+        string memory _username,
+        bytes memory _statusContactCode,
+        string memory _location,
+        bytes memory _signature
+    ) internal view returns(address) {
+        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, _location)), _signature);
+    }
+
+    function getMessageSigner(
+        string calldata _username,
+        bytes calldata _statusContactCode,
+        string calldata _location,
+        bytes calldata _signature
+    ) external view returns(address) {
+        return getSigner(_username, _statusContactCode, _location, _signature);
+    }
+
+    function _addOrUpdateUser(
         address _user,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
-    ) public {
-        if(msg.sender != escrow){
-            require(msg.sender == _user, "Sender does not match address");
-        }
-
+    ) internal {
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
             uint256 userId = users.push(user) - 1;
@@ -106,6 +137,25 @@ contract MetadataStore is Ownable {
             tmpUser.location = _location;
             tmpUser.username = _username;
         }
+    }
+
+    function addOrUpdateUser(
+        bytes memory _signature,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public returns(address payable _user) {
+        _user = address(uint160(getSigner(_username, _statusContactCode, _location, _signature)));
+        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+        return _user;
+    }
+
+    function addOrUpdateUser(
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
     /**
@@ -121,6 +171,7 @@ contract MetadataStore is Ownable {
     */
     function addOffer(
         address _asset,
+        bytes memory _signature,
         bytes memory _statusContactCode,
         string memory _location,
         string memory _currency,
@@ -136,15 +187,16 @@ contract MetadataStore is Ownable {
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+        address payable _user = this.addOrUpdateUser(_signature, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator);
+        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, _user, _arbitrator);
+
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
         emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
+            _user, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
         );
     }
 
