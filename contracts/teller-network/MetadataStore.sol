@@ -83,6 +83,8 @@ contract MetadataStore is MessageSigned {
 
     mapping(address => uint) public user_nonce;
 
+    mapping(address => uint) public user_nonce;
+
     function getDataHash(
         string calldata _username,
         bytes calldata _statusContactCode
@@ -155,25 +157,6 @@ contract MetadataStore is MessageSigned {
             tmpUser.location = _location;
             tmpUser.username = _username;
         }
-    }
-
-    function addOrUpdateUser(
-        bytes memory _signature,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public returns(address payable _user) {
-        _user = address(uint160(getSigner(_username, _statusContactCode, _location, _signature)));
-        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
-        return _user;
-    }
-
-    function addOrUpdateUser(
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public {
-        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
     /**

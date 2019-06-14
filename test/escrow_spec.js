@@ -93,7 +93,6 @@ contract("Escrow", function() {
 
   let receipt, escrowId, escrowTokenId, _offerId, ethOfferId, tokenOfferId, hash, signature, nonce;
 
-
   this.timeout(0);
 
   before(async () => {
@@ -125,17 +124,20 @@ contract("Escrow", function() {
         nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
         await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});       
+
+        assert.fail('should have reverted before');
+      } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
       }
     });
 
     it("Buyer can create escrow", async () => {
+
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       
       receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});      
-
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
