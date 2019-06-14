@@ -6,18 +6,7 @@ import {connect} from 'react-redux';
 import FiatSelectorForm from "./components/FiatSelectorForm";
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
-
-// TODO: where will this FIAT currency list come from?
-//       cryptocompare does not identify which currencies are FIAT
-//       and it does not have a full list of FIAT currencies
-const CURRENCY_DATA = [
-  {id: 'USD', label: 'United States Dollar - USD'},
-  {id: 'EUR', label: 'Euro - EUR'},
-  {id: 'GBP', label: 'Pound sterling - GBP'},
-  {id: 'JPY', label: 'Japanese Yen - JPY'},
-  {id: 'CNY', label: 'Chinese Yuan - CNY'},
-  {id: 'KRW', label: 'South Korean Won - KRW'}
-];
+import {CURRENCY_DATA} from "../../../constants/currencies";
 
 class Currency extends Component {
   constructor(props) {
@@ -61,7 +50,7 @@ class Currency extends Component {
     }
 
     return (<FiatSelectorForm value={this.state.currency}
-                              currencies={CURRENCY_DATA}
+                              currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
                               changeCurrency={this.changeCurrency}/>);
   }
 }
