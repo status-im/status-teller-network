@@ -11,14 +11,15 @@ import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import { toTokenDecimals } from '../../utils/numbers';
 import { zeroAddress } from '../../utils/address';
 
-export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
+export const createEscrow = (signature, username, tradeAmount, assetPrice, statusContactCode, offer, nonce) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
     user: {
       statusContactCode,
       username,
-      buyerAddress
+      signature,
+      nonce
     },
     escrow: {
       tradeAmount,

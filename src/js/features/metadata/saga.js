@@ -1,3 +1,4 @@
+/* global web3 */
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
@@ -8,7 +9,8 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
-  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED
+  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
+  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -155,8 +157,7 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = MetadataStore.methods.addOrUpdateUser(
-    user.address,
+  const toSend = MetadataStore.methods['addOrUpdateUser(bytes,string,string)'](
     user.statusContactCode,
     user.location,
     user.username
@@ -168,11 +169,29 @@ export function *onUpdateUser() {
   yield takeEvery(UPDATE_USER, updateUser);
 }
 
+export function *signMessage({statusContactCode, username}) {
+  try {
+    const hash = yield MetadataStore.methods.getDataHash(username, statusContactCode).call({from: web3.eth.defaultAccount});
+    const signature = yield web3.eth.personal.sign(hash, web3.eth.defaultAccount);
+    const nonce = yield MetadataStore.methods.user_nonce(web3.eth.defaultAccount).call();
+
+    yield put({type: SIGN_MESSAGE_SUCCEEDED, signature, nonce});
+  } catch(err){
+    yield put({type: SIGN_MESSAGE_FAILED, error: err.message});
+  }
+}
+
+export function *onSignMessage() {
+  yield takeEvery(SIGN_MESSAGE, signMessage);
+}
+
+
 export default [
   fork(onLoad),
   fork(onLoadUser),
   fork(onLoadLocation),
   fork(onLoadOffers),
   fork(onAddOffer),
-  fork(onUpdateUser)
+  fork(onUpdateUser),
+  fork(onSignMessage)
 ];

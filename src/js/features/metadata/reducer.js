@@ -2,7 +2,8 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_USER_SUCCEEDED,
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
-  LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED
+  LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
+  SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
@@ -14,7 +15,9 @@ const DEFAULT_STATE = {
   addOfferTx: '',
   updateUserStatus: States.none,
   users: {},
-  offers: {}
+  offers: {},
+  signing: false,
+  signature: ''
 };
 
 function formatOffer(offer) {
@@ -27,6 +30,7 @@ function formatOffer(offer) {
   };
 }
 
+/*eslint-disable-next-line complexity */
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case RESET_ADD_OFFER_STATUS:
@@ -150,6 +154,25 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case PURGE_STATE:
       return DEFAULT_STATE;
+    case SIGN_MESSAGE:
+      return {
+        ...state,
+        signing: true
+      };
+    case SIGN_MESSAGE_SUCCEEDED: 
+      return {
+        ...state,
+        signing: false,
+        signature: action.signature,
+        nonce: action.nonce
+      };
+    case SIGN_MESSAGE_FAILED: 
+      return {
+        ...state,
+        signing: false,
+        signature: "",
+        nonce: 0
+      };
     default:
       return state;
   }

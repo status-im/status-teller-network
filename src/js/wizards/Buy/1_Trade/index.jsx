@@ -57,6 +57,11 @@ class Trade extends Component {
       this.props.resetCreateStatus();
       return this.props.history.push('/escrow/' + this.props.escrowId);
     }
+
+    if(!this.props.isSigning && !this.props.signature){
+      return this.props.history.push('/buy/contact');
+    }
+
     if ((this.props.offer && !oldProps.offer) || (this.props.offer.token && !oldProps.offer.token)) {
       this.getSellerBalance();
     }
@@ -71,7 +76,7 @@ class Trade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.address, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer);
+    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer, this.props.nonce);
   };
 
   _calcPrice = () => {
@@ -106,9 +111,11 @@ class Trade extends Component {
   };
 
   render() {
-    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance) {
+    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
       return <Loading page/>;
     }
+
+    if (!this.props.isSigning && !this.props.signature) return null;
 
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     const canRelay = escrow.helpers.canRelay(this.props.lastActivity);
@@ -173,7 +180,10 @@ Trade.propTypes = {
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
   gasPrice: PropTypes.string,
-  updateBalances: PropTypes.func
+  updateBalances: PropTypes.func,
+  isSigning: PropTypes.bool,
+  signature: PropTypes.string,
+  nonce: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
@@ -195,6 +205,9 @@ const mapStateToProps = (state) => {
     lastActivity: escrow.selectors.getLastActivity(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH'),
+    isSigning: metadata.selectors.isSigning(state),
+    signature: metadata.selectors.getSignature(state),
+    nonce: metadata.selectors.getNonce(state),
     offer,
     offerId,
     price

@@ -1,6 +1,7 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
-  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER
+  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
+  SIGN_MESSAGE
 } from './constants';
 
 export const load = (address) => ({type: LOAD, address});
@@ -21,6 +22,12 @@ export const addOffer = (seller) => ({
     margin: seller.margin,
     arbitrator: seller.arbitrator
   }
+});
+
+export const signMessage = (username, statusContactCode) => ({
+  type: SIGN_MESSAGE,
+  statusContactCode,
+  username
 });
 
 export const setCurrentUser = (currentUser) => ({

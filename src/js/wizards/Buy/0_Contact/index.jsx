@@ -22,6 +22,7 @@ class Contact extends Component {
     this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
     props.footer.onPageChange(() => {
+      props.signMessage(this.state.username, this.state.statusContactCode);
       props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
   }
@@ -29,14 +30,11 @@ class Contact extends Component {
   componentDidMount() {
     if (this.props.profile && this.props.profile.username) {
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
-      // FIXME: infinite loop between this page and the next
-      setTimeout(() => {
-        this.props.wizard.next();
-      }, 500);
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
-      this.setState({ready: true});
     }
+
+    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {
@@ -107,7 +105,8 @@ Contact.propTypes = {
   getContactCode: PropTypes.func,
   profile: PropTypes.object,
   resolveENSName: PropTypes.func,
-  ensError: PropTypes.string
+  ensError: PropTypes.string,
+  signMessage: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -124,6 +123,7 @@ export default connect(
   {
     setContactInfo: newBuy.actions.setContactInfo,
     getContactCode: network.actions.getContactCode,
-    resolveENSName: network.actions.resolveENSName
+    resolveENSName: network.actions.resolveENSName,
+    signMessage: metadata.actions.signMessage
   }
   )(withRouter(Contact));

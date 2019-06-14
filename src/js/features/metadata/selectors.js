@@ -70,3 +70,9 @@ export const getUsersWithOffers = (state) => {
 export const getAllUsers = state => state.metadata.users;
 
 export const getAddOfferTx = state => state.metadata.addOfferTx;
+
+export const isSigning = state => state.metadata.signing;
+
+export const getSignature = state => state.metadata.signature;
+
+export const getNonce = state => state.metadata.nonce;
