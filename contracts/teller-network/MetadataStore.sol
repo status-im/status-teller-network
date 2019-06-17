@@ -1,14 +1,13 @@
 pragma solidity ^0.5.8;
 
 import "./License.sol";
-import "../common/Ownable.sol";
 import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
 * @dev Metadata store
 */
-contract MetadataStore is Ownable, MessageSigned {
+contract MetadataStore is MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
@@ -80,11 +79,6 @@ contract MetadataStore is Ownable, MessageSigned {
         license = _license;
         arbitrationLicense = _arbitrationLicense;
     }
-
-    function setEscrowAddress(address _escrow) public onlyOwner {
-        escrow = _escrow;
-    }
-
 
     mapping(address => uint) public user_nonce;
 
