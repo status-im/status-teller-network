@@ -60,6 +60,7 @@ contract MetadataStore is MessageSigned {
         string currency;
         address payable owner;
         address arbitrator;
+        bool deleted;
     }
 
     address public license;
@@ -186,7 +187,7 @@ contract MetadataStore is MessageSigned {
 
         _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator);
+        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
 
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
@@ -271,7 +272,7 @@ contract MetadataStore is MessageSigned {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
 
-        delete offers[_offerId];
+        offers[_offerId].deleted = true;
         offerWhitelist[msg.sender][_offerId] = false;
         emit OfferRemoved(msg.sender, _offerId);
     }
@@ -285,7 +286,8 @@ contract MetadataStore is MessageSigned {
         int8 margin,
         PaymentMethods[] memory paymentMethods,
         address payable owner,
-        address arbitrator
+        address arbitrator,
+        bool deleted
     ) {
         return (
             offers[_id].asset,
@@ -293,7 +295,8 @@ contract MetadataStore is MessageSigned {
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].owner,
-            offers[_id].arbitrator
+            offers[_id].arbitrator,
+            offers[_id].deleted
         );
     }
 
