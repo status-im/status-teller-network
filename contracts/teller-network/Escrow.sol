@@ -228,9 +228,13 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         uint8 _tradeType,
         uint _assetPrice
     ) internal returns(uint escrowId) {
-        address seller = metadataStore.getOfferOwner(_offerId);
-        address arbitrator = metadataStore.getArbitrator(_offerId);
+        address seller;
+        address arbitrator;
+        bool deleted;
 
+        (,,,,seller, arbitrator, deleted) = metadataStore.offer(_offerId);
+
+        require(!deleted, "Offer is not valid");
         require(get_sender() == _buyer || get_sender() == seller, "Must participate in the trade");
         require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
