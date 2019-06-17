@@ -16,12 +16,12 @@ class Contact extends Component {
     super(props);
     this.state = {
       username: props.username,
-      statusContactCode: props.statusContactCode,
-      ready: false
+      statusContactCode: props.statusContactCode
     };
     this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
     props.footer.onPageChange(() => {
+      props.signMessage(this.state.username, this.state.statusContactCode);
       props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
   }
@@ -29,13 +29,8 @@ class Contact extends Component {
   componentDidMount() {
     if (this.props.profile && this.props.profile.username) {
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
-      // FIXME: infinite loop between this page and the next
-      setTimeout(() => {
-        this.props.wizard.next();
-      }, 500);
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
-      this.setState({ready: true});
     }
   }
 
@@ -79,9 +74,6 @@ class Contact extends Component {
   }
 
   render() {
-    if (!this.state.ready) {
-      return <Loading page/>;
-    }
     return (
       <EditContact isStatus={this.props.isStatus}
                    statusContactCode={this.state.statusContactCode}
@@ -107,7 +99,8 @@ Contact.propTypes = {
   getContactCode: PropTypes.func,
   profile: PropTypes.object,
   resolveENSName: PropTypes.func,
-  ensError: PropTypes.string
+  ensError: PropTypes.string,
+  signMessage: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -124,6 +117,7 @@ export default connect(
   {
     setContactInfo: newBuy.actions.setContactInfo,
     getContactCode: network.actions.getContactCode,
-    resolveENSName: network.actions.resolveENSName
+    resolveENSName: network.actions.resolveENSName,
+    signMessage: metadata.actions.signMessage
   }
   )(withRouter(Contact));

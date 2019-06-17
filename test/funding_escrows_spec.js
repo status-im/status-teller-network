@@ -51,9 +51,6 @@ config({
     },
     Escrow: {
       args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
-      onDeploy: [
-        "MetadataStore.methods.setEscrowAddress('$Escrow').send()"
-      ]
     },
     StandardToken: {
     }
@@ -88,19 +85,24 @@ contract("Escrow Funding", function() {
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("ETH as asset", async () => {
     beforeEach(async () => {
-      receipt = await Escrow.methods.create(accounts[1], ethOfferId, 123, FIAT, value, "0x00", "U", "12345")
+      
+      const hash = await MetadataStore.methods.getDataHash("Iuri", "0x00").call({from: accounts[1]});
+      const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      const signature = await web3.eth.sign( hash, accounts[1]);
+
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, value, "0x00", "U", "Iuri", nonce)
                                     .send({from: accounts[0]});
 
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -126,11 +128,19 @@ contract("Escrow Funding", function() {
       await SNT.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
       await StandardToken.methods.approve(Escrow.options.address, "0").send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create(accounts[1], SNTOfferId, 123, FIAT, value, "0x00", "U", "12345")
+      let hash = await MetadataStore.methods.getDataHash("Iuri", "0x00").call({from: accounts[1]});
+      let signature = await web3.eth.sign(hash, accounts[1]);
+      let nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+
+      receipt = await Escrow.methods.create(signature, SNTOfferId, 123, FIAT, value, "0x00", "U", "Iuri", nonce)
                                     .send({from: accounts[0]});
       escrowIdSNT = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.create(accounts[1], tokenOfferId, 123, FIAT, value, "0x00", "U", "12345")
+      hash = await MetadataStore.methods.getDataHash("Iuri", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+
+      receipt = await Escrow.methods.create(signature, tokenOfferId, 123, FIAT, value, "0x00", "U", "Iuri", nonce)
                                     .send({from: accounts[0]});
       escrowIdToken = receipt.events.Created.returnValues.escrowId;
     });

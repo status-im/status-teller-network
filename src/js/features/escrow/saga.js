@@ -26,14 +26,16 @@ import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
 
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
-    user.buyerAddress,
+    user.signature,
     escrow.offerId,
     escrow.tradeAmount,
     1,
     escrow.assetPrice,
     user.statusContactCode,
     '',
-    user.username);
+    user.username,
+    user.nonce
+    );
   yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
 }
 
