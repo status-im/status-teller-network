@@ -16,8 +16,7 @@ class Contact extends Component {
     super(props);
     this.state = {
       username: props.username,
-      statusContactCode: props.statusContactCode,
-      ready: false
+      statusContactCode: props.statusContactCode
     };
     this.validate(props.username, props.statusContactCode);
     props.footer.enableNext();
@@ -33,8 +32,6 @@ class Contact extends Component {
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
     }
-
-    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {
@@ -77,9 +74,6 @@ class Contact extends Component {
   }
 
   render() {
-    if (!this.state.ready) {
-      return <Loading page/>;
-    }
     return (
       <EditContact isStatus={this.props.isStatus}
                    statusContactCode={this.state.statusContactCode}
