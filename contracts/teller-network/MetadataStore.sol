@@ -1,7 +1,6 @@
 pragma solidity ^0.5.8;
 
 import "./License.sol";
-import "../common/Ownable.sol";
 import "../common/MessageSigned.sol";
 
 /**
@@ -80,8 +79,6 @@ contract MetadataStore is MessageSigned {
         license = _license;
         arbitrationLicense = _arbitrationLicense;
     }
-
-    mapping(address => uint) public user_nonce;
 
     mapping(address => uint) public user_nonce;
 
