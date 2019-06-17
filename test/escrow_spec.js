@@ -111,7 +111,6 @@ contract("Escrow", function() {
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
-
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -124,7 +123,6 @@ contract("Escrow", function() {
         nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
         await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});       
-
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
@@ -132,7 +130,6 @@ contract("Escrow", function() {
     });
 
     it("Buyer can create escrow", async () => {
-
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
@@ -144,7 +141,8 @@ contract("Escrow", function() {
       assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
-    it("Seller should be able to create escrows", async () => {     
+    it("Seller should be able to create escrows", async () => {
+
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
@@ -175,7 +173,6 @@ contract("Escrow", function() {
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
       receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
-
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       // Approve fee amount

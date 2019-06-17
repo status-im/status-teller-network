@@ -7,7 +7,6 @@ import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
-import Loading from '../../../components/Loading';
 import {contactCodeRegExp} from '../../../utils/address';
 import DOMPurify from 'dompurify';
 
@@ -32,8 +31,6 @@ class Contact extends Component {
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
     }
-
-    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {
