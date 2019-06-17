@@ -21,8 +21,7 @@ class Trade extends Component {
     this.state = {
       currencyQuantity: props.currencyQuantity,
       assetQuantity: props.assetQuantity,
-      disabled: true,
-      ready: false
+      disabled: true
     };
 
     props.footer.hide();
@@ -42,8 +41,6 @@ class Trade extends Component {
     this.props.loadOffers(this.props.offer.owner); // TODO Change this to only load the right offer
 
     this.getSellerBalance();
-
-    this.setState({ready: true});
   }
 
   getSellerBalance() {
@@ -111,7 +108,7 @@ class Trade extends Component {
   };
 
   render() {
-    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
+    if (!this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
       return <Loading page/>;
     }
 
