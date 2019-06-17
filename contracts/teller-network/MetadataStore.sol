@@ -83,8 +83,6 @@ contract MetadataStore is MessageSigned {
 
     mapping(address => uint) public user_nonce;
 
-    mapping(address => uint) public user_nonce;
-
     function getDataHash(
         string calldata _username,
         bytes calldata _statusContactCode
