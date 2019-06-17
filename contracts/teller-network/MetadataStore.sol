@@ -63,7 +63,7 @@ contract MetadataStore is Ownable {
     }
 
     address public license;
-    address public arbitration;
+    address public arbitrationLicense;
     address public escrow;
 
     User[] public users;
@@ -75,22 +75,15 @@ contract MetadataStore is Ownable {
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
     mapping(address => uint256[]) public addressToOffers;
 
-    constructor(address _license, address _arbitration) public {
+    constructor(address _license, address _arbitrationLicense) public {
         license = _license;
-        arbitration = _arbitration;
+        arbitrationLicense = _arbitrationLicense;
     }
 
     function setEscrowAddress(address _escrow) public onlyOwner {
         escrow = _escrow;
     }
 
-    function setLicense(address _license) public onlyOwner {
-        license = _license;
-    }
-
-    function setArbitration(address _arbitration) public onlyOwner {
-        arbitration = _arbitration;
-    }
 
     function addOrUpdateUser(
         address _user,
@@ -137,6 +130,8 @@ contract MetadataStore is Ownable {
         address _arbitrator
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
+        require(License(arbitrationLicense).isLicenseOwner(_arbitrator), "Not an arbitrator");
+
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
