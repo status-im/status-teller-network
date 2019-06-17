@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Card, CardHeader, CardBody } from 'reactstrap';
+import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,6 +28,7 @@ class Offers extends Component {
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
           <FontAwesomeIcon icon={currencyIcon(offer.currency)} className="mr-1"/>
           {offer.currency}
+          <Button className="p-0 pl-3 pr-3 m-0 float-right">X</Button>
         </CardHeader>
         <CardBody>
           <Row>

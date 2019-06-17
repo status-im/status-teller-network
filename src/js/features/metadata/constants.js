@@ -28,6 +28,10 @@ export const SIGN_MESSAGE = 'METADATA/SIGN_MESSAGE';
 export const SIGN_MESSAGE_SUCCEEDED = 'METADATA/SIGN_MESSAGE_SUCCEEDED';
 export const SIGN_MESSAGE_FAILED = 'METADATA/SIGN_MESSAGE_FAILED';
 
+export const DELETE_OFFER = 'METADATA/DELETE_OFFER';
+export const DELETE_OFFER_SUCCEEDED = 'METADATA/DELETE_OFFER_SUCCEEDED';
+export const DELETE_OFFER_FAILED = 'METADATA/DELETE_OFFER_FAILED';
+
 // Mapping
 export const PAYMENT_METHODS = ['Cash (In person)', 'Bank Transfer', 'International wire'];
 export const SORT_TYPES = ['Top rated', 'Most recent'];

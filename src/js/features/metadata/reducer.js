@@ -3,7 +3,8 @@ import {
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED
+  SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
+  DELETE_OFFER
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
@@ -17,7 +18,8 @@ const DEFAULT_STATE = {
   users: {},
   offers: {},
   signing: false,
-  signature: ''
+  signature: '',
+  deleteOfferStatus: States.none
 };
 
 function formatOffer(offer) {
@@ -173,6 +175,20 @@ function reducer(state = DEFAULT_STATE, action) {
         signature: "",
         nonce: 0
       };
+    case DELETE_OFFER:
+      return {
+        ...state,
+        deleteOfferStatus: States.pending
+      };
+    case DELETE_OFFER_SUCCEEDED: {
+      const newOffers = {...state.offers};
+      delete newOffers[action.offerId];
+      return {
+        ...state,
+        deleteOfferStatus: States.none,
+        offers: newOffers
+      };
+    }
     default:
       return state;
   }

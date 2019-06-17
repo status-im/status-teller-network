@@ -76,3 +76,5 @@ export const isSigning = state => state.metadata.signing;
 export const getSignature = state => state.metadata.signature;
 
 export const getNonce = state => state.metadata.nonce;
+
+export const getDeleteOfferStatus = (state) => state.metadata.deleteOfferStatus;

@@ -1,7 +1,7 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
-  SIGN_MESSAGE
+  SIGN_MESSAGE, DELETE_OFFER
 } from './constants';
 
 export const load = (address) => ({type: LOAD, address});
@@ -46,4 +46,9 @@ export const updateUser = (user) => ({
 
 export const resetUpdateUserStatus = () => ({
   type: RESET_UPDATE_USER_STATUS
+});
+
+export const deleteOffer = (offerId) => ({
+  type: DELETE_OFFER,
+  offerId
 });
