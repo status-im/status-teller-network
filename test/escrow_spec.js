@@ -142,7 +142,6 @@ contract("Escrow", function() {
     });
 
     it("Seller should be able to create escrows", async () => {
-      
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();

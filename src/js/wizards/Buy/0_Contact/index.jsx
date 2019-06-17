@@ -7,7 +7,6 @@ import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
-import Loading from '../../../components/Loading';
 import {contactCodeRegExp} from '../../../utils/address';
 import DOMPurify from 'dompurify';
 

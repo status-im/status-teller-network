@@ -26,7 +26,7 @@ export const getProfile = (state, address) => {
     return null;
   }
 
-  const offers = Object.values(state.metadata.offers).filter((offer) => addressCompare(offer.owner, lAddress)) || [];
+  const offers = Object.values(state.metadata.offers).filter((offer) => !offer.deleted && addressCompare(offer.owner, lAddress)) || [];
   return {
     address: lAddress,
     ...state.metadata.users[lAddress],
@@ -53,7 +53,7 @@ export const getOfferById = (state, id) => {
 };
 
 export const getOffersWithUser = (state) => {
-  return Object.values(state.metadata.offers).map((offer) => ({
+  return Object.values(state.metadata.offers).filter(x => !x.deleted).map((offer) => ({
     ...enhanceOffer(state, offer),
     user: state.metadata.users[offer.owner] || {}
   }));
@@ -63,7 +63,7 @@ export const getUsersWithOffers = (state) => {
   return Object.keys(state.metadata.users).map((address) => ({
     ...state.metadata.users[address],
     address,
-    offers: Object.values(state.metadata.offers).filter(offer => addressCompare(offer.owner, address))
+    offers: Object.values(state.metadata.offers).filter(offer => !offer.deleted && addressCompare(offer.owner, address))
   }));
 };
 
