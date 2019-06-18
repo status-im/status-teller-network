@@ -115,6 +115,12 @@ module.exports = {
           true
         ]
       },
+      "StakingPool": {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: [
+          "$SNT"
+        ]
+      },
       "RLPReader": {
         file: 'tabookey-gasless/contracts/RLPReader.sol'
       },

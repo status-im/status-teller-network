@@ -12840,6 +12840,11 @@ onetime@^2.0.0:
   dependencies:
     mimic-fn "^1.0.0"
 
+openzeppelin-solidity@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/openzeppelin-solidity/-/openzeppelin-solidity-2.3.0.tgz#1ab7b4cc3782a5472ed61eb740c56a8bfdd74119"
+  integrity sha512-QYeiPLvB1oSbDt6lDQvvpx7k8ODczvE474hb2kLXZBPKMsxKT1WxTCHBYrCU7kS7hfAku4DcJ0jqOyL+jvjwQw==
+
 opn@5.3.0:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/opn/-/opn-5.3.0.tgz#64871565c863875f052cfdf53d3e3cb5adb53b1c"
@@ -16788,6 +16793,14 @@ stack-utils@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/stack-utils/-/stack-utils-1.0.2.tgz#33eba3897788558bebfc2db059dc158ec36cebb8"
   integrity sha512-MTX+MeG5U994cazkjd/9KNAapsHnibjMLnfXodlkXw76JEea0UiNzrqidzo1emMwk7w5Qhc9jd4Bn9TBb1MFwA==
+
+staking-pool@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/staking-pool/-/staking-pool-0.0.1.tgz#1b2d53a232bc2d1385249252759844cef64c1b7d"
+  integrity sha512-Bom97X4qxL4704ojPFYpuRJNihPcUiEuWb8yIL8ZiUn80daTeFfkf+bFLTRDvKD9cMKicxAoXw5vUNilrpPIJw==
+  dependencies:
+    embark "^4.0.2"
+    openzeppelin-solidity "^2.3.0"
 
 static-extend@^0.1.1:
   version "0.1.2"
