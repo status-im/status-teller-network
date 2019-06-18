@@ -198,7 +198,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _tradeAmount Amount buyer is willing to trade
      * @param _tradeType Indicates if the amount is in crypto or fiat
      * @param _assetPrice Indicates the price of the asset in the FIAT of choice
-     * @param _tokenAmount How much ether/tokens will be put in escrow
      * @param _expirationTime Unix timestamp before the transaction is considered expired
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
@@ -208,15 +207,14 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function create_and_fund(
         address payable _buyer,
         uint _offerId,
-        uint _tokenAmount,
-        uint _expirationTime,
         uint _tradeAmount,
         uint _feeAmount,
+        uint _expirationTime,
         uint8 _tradeType,
         uint _assetPrice
     ) external payable whenNotPaused {
         uint escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
-        _fund(get_sender(), escrowId, _tokenAmount, _feeAmount, _expirationTime);
+        _fund(get_sender(), escrowId, _tradeAmount, _feeAmount, _expirationTime);
     }
 
     function _createTransaction(
@@ -380,11 +378,12 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function _cancel(uint _escrowId, address payable _seller, EscrowTransaction storage trx) internal {
         if(trx.status == EscrowStatus.FUNDED){
             address token = metadataStore.getAsset(trx.offerId);
+            uint amount = trx.tokenAmount + ((trx.tokenAmount * feeMilliPercent) / (100 * 1000));
             if(token == address(0)){
-                _seller.transfer(trx.tokenAmount);
+                _seller.transfer(amount);
             } else {
                 ERC20Token erc20token = ERC20Token(token);
-                require(erc20token.transfer(_seller, trx.tokenAmount), "Transfer failed");
+                require(erc20token.transfer(_seller, amount), "Transfer failed");
             }
         }
 
