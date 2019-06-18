@@ -83,5 +83,4 @@ contract Fees is Ownable {
             require(tokenToPay.transferFrom(_from, address(this), amount), "Unsuccessful token transfer");
         }
     }
-
 }

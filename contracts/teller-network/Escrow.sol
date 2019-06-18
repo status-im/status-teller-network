@@ -70,7 +70,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     event Canceled(uint indexed escrowId, uint date);
     event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating, uint date);
 
-
     mapping(address => uint) public lastActivity;
 
     function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price,
@@ -179,8 +178,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         address token = metadataStore.getAsset(transactions[_escrowId].offerId);
 
-        payFee(_from, _escrowId, _tokenAmount, _feeAmount, token);
-
         if(token == address(0)){
             require(msg.value == (_tokenAmount + _feeAmount), "ETH amount is required");
         } else {
@@ -189,6 +186,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             require(erc20token.allowance(_from, address(this)) >= _tokenAmount, "Allowance not set for this contract for specified amount");
             require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer");
         }
+        payFee(_from, _escrowId, _tokenAmount, _feeAmount, token);
 
         emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
     }

@@ -86,7 +86,9 @@ config({
 contract("Escrow", function() {
 
   const {toBN} = web3.utils;
-  const value = web3.utils.toWei("0.1", "ether");
+
+  const tradeAmount = 100;
+  const tradeFee = Math.round(tradeAmount * (feePercent / 100));
 
   // util
   let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 1000;
@@ -175,64 +177,62 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      const tradeAmount = 100;
-
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(signature, ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
-      const tradeFee = Math.round(tradeAmount * (feePercent / 100));
       receipt = await Escrow.methods.fund(escrowId, tradeAmount, tradeFee, expirationTime).send({from: accounts[0], value: tradeAmount + tradeFee});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
-      const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
-      assert.strictEqual(parseInt(ethFeeBalance, 10), tradeFee);
-      const ethBalance = await web3.eth.getBalance(Escrow.options.address);
-      assert.strictEqual(parseInt(ethBalance, 10), tradeFee + tradeAmount);
     });
 
     it("Funded escrow should contain valid data", async () => {
+      const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
+      assert.strictEqual(parseInt(ethFeeBalance, 10), tradeFee, 'Invalid fee balance');
       const contractBalance = await web3.eth.getBalance(Escrow.options.address);
-      assert.equal(contractBalance, value, "Invalid contract balance");
+      assert.equal(contractBalance, tradeFee + tradeAmount, "Invalid contract balance");
       const escrow = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(escrow.tokenAmount, value, "Invalid amount");
+      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
       assert.equal(escrow.expirationTime, expirationTime, "Invalid expirationTime");
       assert.equal(escrow.status, ESCROW_FUNDED, "Invalid status");
     });
 
     it("Escrows can be created with ERC20 tokens", async () => {
-      await StandardToken.methods.mint(accounts[0], value).send();
+      await StandardToken.methods.mint(accounts[0], tradeAmount + tradeFee).send();
 
       const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
+      console.log('My balance', balanceBeforeCreation);
 
-      await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
+      await StandardToken.methods.approve(Escrow.options.address, tradeAmount + tradeFee).send({from: accounts[0]});
+      const allowance = await StandardToken.methods.allowance(accounts[0], Escrow.options.address).call();
+      console.log('allowance', allowance);
+      assert(allowance >= tradeAmount + tradeFee, "Allowance needs to be equal or higher to the amount plus the fee");
 
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, tokenOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(signature, tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
       const created = receipt.events.Created;
+      console.log('Created');
       assert(!!created, "Created() not triggered");
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
-      // Approve fee amount
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.fund(escrowTokenId, value, expirationTime).send({from: accounts[0]});
+      console.log('Fund', escrowTokenId, tradeAmount, tradeFee, expirationTime);
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount, tradeFee, expirationTime).send({from: accounts[0]});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
 
       const balanceAfterCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
 
-      assert(toBN(balanceAfterCreation), toBN(balanceBeforeCreation).sub(toBN(value)), "Token value wasn't deducted");
+      assert(toBN(balanceAfterCreation), toBN(balanceBeforeCreation).sub(toBN(tradeAmount)), "Token value wasn't deducted");
 
       const contractBalance = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      assert(toBN(contractBalance), toBN(value), "Contract token balance is incorrect");
+      assert(toBN(contractBalance), toBN(tradeAmount), "Contract token balance is incorrect");
 
       const escrow = await Escrow.methods.transactions(escrowTokenId).call();
 
-      assert.equal(escrow.tokenAmount, value, "Invalid amount");
+      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
     });
   });
 
