@@ -18,6 +18,7 @@ import { zeroAddress, addressCompare } from '../../utils/address';
 import "./index.scss";
 import Loading from "../../components/Loading";
 import events from "../../features/events";
+import { States } from '../../utils/transaction';
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -64,8 +65,12 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {profile, address} = this.props;
+    const {profile, address, deleteOfferStatus, txHash} = this.props;
     if(!profile) return <Loading page={true} />;
+
+    if(deleteOfferStatus === States.pending) {
+      return <Loading mining={true} txHash={txHash}/>;
+    }
 
     const trades = this.props.trades.map(x => {
       const dispute = this.props.disputes.find(y => y.escrowId === x.escrowId);
@@ -74,7 +79,6 @@ class MyProfile extends Component {
       }
       return x;
     });
-
 
     return (
       <Fragment>
@@ -87,7 +91,7 @@ class MyProfile extends Component {
 
         <Fragment>
           <Trades trades={trades} address={this.props.address}/>
-          <Offers offers={profile.offers} location={profile.location} />
+          <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment>
       </Fragment>
@@ -106,7 +110,10 @@ MyProfile.propTypes = {
   getArbitrators: PropTypes.func,
   arbitrators: PropTypes.array,
   escrowEvents: PropTypes.object,
-  watchEscrow: PropTypes.func
+  watchEscrow: PropTypes.func,
+  deleteOffer: PropTypes.func,
+  deleteOfferStatus: PropTypes.string,
+  txHash: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -118,7 +125,9 @@ const mapStateToProps = state => {
     trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
     disputes: arbitration.selectors.escrows(state),
     arbitrators: arbitration.selectors.arbitrators(state),
-    escrowEvents: events.selectors.getEscrowEvents(state)
+    escrowEvents: events.selectors.getEscrowEvents(state),
+    deleteOfferStatus: metadata.selectors.getDeleteOfferStatus(state),
+    txHash: metadata.selectors.txHash(state)
   };
 };
 
@@ -128,5 +137,6 @@ export default connect(
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     getArbitrators: arbitration.actions.getArbitrators,
-    watchEscrow: escrow.actions.watchEscrow
+    watchEscrow: escrow.actions.watchEscrow,
+    deleteOffer: metadata.actions.deleteOffer
   })(withRouter(MyProfile));

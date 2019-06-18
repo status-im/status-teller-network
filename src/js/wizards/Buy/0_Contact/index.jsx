@@ -31,6 +31,8 @@ class Contact extends Component {
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
     }
+
+    this.setState({ready: true});
   }
 
   componentDidUpdate(prevProps) {

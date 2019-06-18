@@ -65,7 +65,6 @@ contract MetadataStore is MessageSigned {
 
     address public license;
     address public arbitrationLicense;
-    address public escrow;
 
     User[] public users;
     Offer[] public offers;

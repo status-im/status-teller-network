@@ -1,24 +1,41 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Card, CardHeader, CardBody } from 'reactstrap';
+import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEuroSign, faDollarSign, faPoundSign, faYenSign, faWonSign, faMoneyBillAlt } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import ConfirmDialog from "../../../components/ConfirmDialog";
+import {CURRENCY_DATA} from "../../../constants/currencies";
 
-const currencyIcon = (currencySymbol) => {
-  switch(currencySymbol) {
-    case 'USD': return faDollarSign;
-    case 'EUR': return faEuroSign;
-    case 'GBP': return faPoundSign;
-    case 'JPY': return faYenSign; // Japan and China share same symbol
-    case 'CNY': return faYenSign;
-    case 'KRW': return faWonSign;
-    default: return faMoneyBillAlt;
-  }
-};
 
 class Offers extends Component {
+  state = {
+    displayDialog: false,
+    offerId: null
+  }
+
+  handleClose = () => {
+    this.setState({ displayDialog: false });
+  };
+
+  confirmDelete = offerId => (e) => {
+    if(e) e.preventDefault();
+    this.setState({ offerId, displayDialog: true });
+    return false;
+  }
+
+  displayDialog = show => () => {
+    this.setState({displayDialog: show});
+    return false;
+  };
+
+
+  deleteOffer = () => {
+    this.props.deleteOffer(this.state.offerId);
+    this.setState({offerId: null, displayDialog: false});
+  }
+
   renderOffers() {
     const {t, offers} = this.props;
     return offers.map((offer, index) => (
@@ -26,8 +43,11 @@ class Offers extends Component {
         <CardHeader>
           {offer.token.symbol}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
-          <FontAwesomeIcon icon={currencyIcon(offer.currency)} className="mr-1"/>
+          <span className="text-small font-italic mr-2">{CURRENCY_DATA.find(x => x.id === offer.currency).symbol}</span>
           {offer.currency}
+          <Button className="p-0 pl-3 pr-3 m-0 float-right btn-link" onClick={this.confirmDelete(offer.id)}>
+            <FontAwesomeIcon icon={faEllipsisV} />
+          </Button>
         </CardHeader>
         <CardBody>
           <Row>
@@ -75,6 +95,7 @@ class Offers extends Component {
           </span>
         </div>
         {offers.length === 0 ? this.renderEmpty() : this.renderOffers()}
+        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.deleteOffer} onCancel={this.displayDialog(false)} title="Delete offer" content="Are you sure?" cancelText="No" />
       </div>
     );
   }
@@ -83,7 +104,8 @@ class Offers extends Component {
 Offers.propTypes = {
   t: PropTypes.func,
   location: PropTypes.string,
-  offers: PropTypes.array
+  offers: PropTypes.array,
+  deleteOffer: PropTypes.func
 };
 
 export default withNamespaces()(Offers);
