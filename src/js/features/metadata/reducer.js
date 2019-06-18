@@ -4,7 +4,8 @@ import {
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
-  DELETE_OFFER
+  DELETE_OFFER,
+  DELETE_OFFER_PRE_SUCCESS
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
@@ -178,7 +179,13 @@ function reducer(state = DEFAULT_STATE, action) {
     case DELETE_OFFER:
       return {
         ...state,
-        deleteOfferStatus: States.pending
+        deleteOfferStatus: States.pending,
+        txHash: ''
+      };
+    case DELETE_OFFER_PRE_SUCCESS:
+      return {
+        ...state,
+        txHash: action.txHash
       };
     case DELETE_OFFER_SUCCEEDED: {
       const newOffers = {...state.offers};
@@ -186,6 +193,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         deleteOfferStatus: States.none,
+        txHash: '',
         offers: newOffers
       };
     }

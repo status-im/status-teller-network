@@ -10,7 +10,7 @@ import {
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED
+  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED, DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -185,6 +185,15 @@ export function *onSignMessage() {
   yield takeEvery(SIGN_MESSAGE, signMessage);
 }
 
+export function *deleteOffer({offerId}) {
+  const toSend = MetadataStore.methods.removeOffer(offerId);
+  yield doTransaction(DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED, {offerId, toSend});
+}
+
+export function *onDeleteOffer() {
+  yield takeEvery(DELETE_OFFER, deleteOffer);
+}
+
 
 export default [
   fork(onLoad),
@@ -193,5 +202,6 @@ export default [
   fork(onLoadOffers),
   fork(onAddOffer),
   fork(onUpdateUser),
-  fork(onSignMessage)
+  fork(onSignMessage),
+  fork(onDeleteOffer)
 ];
