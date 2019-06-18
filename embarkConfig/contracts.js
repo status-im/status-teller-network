@@ -75,7 +75,8 @@ module.exports = {
         instanceOf: "License",
         args: [
           "$SNT",
-          LICENSE_PRICE
+          LICENSE_PRICE,
+          "$StakingPool"
         ]
       },
       "MetadataStore": {
@@ -85,7 +86,8 @@ module.exports = {
         instanceOf: "License",
         args: [
           "$SNT",
-          ARB_LICENSE_PRICE
+          ARB_LICENSE_PRICE,
+          "$StakingPool"
         ]
       },
       Escrow: {

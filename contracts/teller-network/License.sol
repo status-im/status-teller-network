@@ -14,6 +14,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     uint256 public price;
 
     ERC20Token token;
+    address burnAddress;
 
     struct LicenseDetails {
         uint price;
@@ -31,9 +32,10 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _tokenAddress Address of token used to pay for licenses (SNT)
      * @param _price Price of the licenses
      */
-    constructor(address _tokenAddress, uint256 _price) public {
+    constructor(address _tokenAddress, uint256 _price, address _burnAddress) public {
         price = _price;
         token = ERC20Token(_tokenAddress);
+        burnAddress = _burnAddress;
     }
 
     /**

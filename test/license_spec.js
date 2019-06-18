@@ -4,6 +4,7 @@ const TestUtils = require("../utils/testUtils");
 
 const License = require('Embark/contracts/License');
 const SNT = require('Embark/contracts/SNT');
+const StakingPool = require('Embark/contracts/StakingPool');
 
 let accounts;
 
@@ -27,8 +28,12 @@ config({
       ]
     },
     License: {
-      args: ["$SNT", 10]
-    }
+      args: ["$SNT", 10, "$StakingPool"]
+    },
+    StakingPool: {
+      file: 'staking-pool/contracts/StakingPool.sol',
+      args: ["$SNT"]
+    },
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
@@ -68,8 +73,8 @@ contract("License", function () {
     
     isLicenseOwner = await License.methods.isLicenseOwner(accounts[0]).call();
     assert.strictEqual(isLicenseOwner, true);
-    const contractBalance = await SNT.methods.balanceOf(License.options.address).call();
-    assert.strictEqual(contractBalance, "10", "Contract balance is incorrect");
+    const stakingBalance = await SNT.methods.balanceOf(StakingPool.options.address).call();
+    assert.strictEqual(stakingBalance, "10", "Contract balance is incorrect");
   });
 
   it("should buy license with approveAndCall", async () => {

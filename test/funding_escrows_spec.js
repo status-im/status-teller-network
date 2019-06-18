@@ -40,14 +40,18 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10]
+      args: ["$SNT", 10, "$StakingPool"]
     },
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     ArbitrationLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10]
+      args: ["$SNT", 10, "$StakingPool"]
+    },
+    StakingPool: {
+      file: 'staking-pool/contracts/StakingPool.sol',
+      args: ["$SNT"]
     },
     Escrow: {
       args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
