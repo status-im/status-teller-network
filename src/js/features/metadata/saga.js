@@ -185,13 +185,8 @@ export function *onSignMessage() {
   yield takeEvery(SIGN_MESSAGE, signMessage);
 }
 
-export function *deleteOffer({offerId}) {
-  const toSend = MetadataStore.methods.removeOffer(offerId);
-  yield doTransaction(DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED, {offerId, toSend});
-}
-
 export function *onDeleteOffer() {
-  yield takeEvery(DELETE_OFFER, deleteOffer);
+  yield takeEvery(DELETE_OFFER, doTransaction.bind(null, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED));
 }
 
 

@@ -5,7 +5,8 @@ import {
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
   DELETE_OFFER,
-  DELETE_OFFER_PRE_SUCCESS
+  DELETE_OFFER_PRE_SUCCESS,
+  DELETE_OFFER_FAILED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import { States } from '../../utils/transaction';
@@ -197,6 +198,10 @@ function reducer(state = DEFAULT_STATE, action) {
         offers: newOffers
       };
     }
+    case DELETE_OFFER_FAILED:
+      return {
+        ...state, deleteOfferStatus: States.failed
+      };
     default:
       return state;
   }

@@ -25,7 +25,7 @@ class Offers extends Component {
     return false;
   }
 
-  displayDialog = show => (e) => {
+  displayDialog = show => () => {
     this.setState({displayDialog: show});
     return false;
   };
