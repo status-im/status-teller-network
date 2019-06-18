@@ -54,7 +54,7 @@ contract("License", function () {
       await SNT.methods.approve(License.options.address, 5).send();
       await License.methods.buy().send({from: accounts[0]});
     } catch(error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Allowance not set for this contract to expected price");
+      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Unsuccessful token transfer");
     }
   });
 
