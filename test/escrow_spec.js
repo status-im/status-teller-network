@@ -836,8 +836,6 @@ contract("Escrow", function() {
 
       await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
       receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
 
       escrowTokenId = receipt.events.Created.returnValues.escrowId;

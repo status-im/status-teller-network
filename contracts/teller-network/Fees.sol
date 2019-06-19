@@ -67,6 +67,12 @@ contract Fees is Ownable {
         emit FeesWithdrawn(fees, _tokenAddress);
     }
 
+    function getFeeFromAmount(uint _value) internal returns(uint) {
+        // To get the factor, we divide like 100 like a normal percent, but we multiply that by 1000 because it's a milliPercent
+        // Eg: 1 % = 1000 millipercent => Factor is 0.01, so 1000 divided by 100 * 1000
+        return (_value * feeMilliPercent) / (100 * 1000);
+    }
+
     /**
      * @notice Pay fees for a transaction or element id
      * @param _from Address from where the fees are being extracted
@@ -80,9 +86,7 @@ contract Fees is Ownable {
         if (feePaid[_id]) return;
 
         feePaid[_id] = true;
-        // To get the factor, we divide like 100 like a normal percent, but we multiply that by 1000 because it's a milliPercent
-        // Eg: 1 % = 1000 millipercent => Factor is 0.01, so 1000 divided by 100 * 1000
-        uint amount = (_value * feeMilliPercent) / (100 * 1000);
+        uint amount = getFeeFromAmount(_value);
         require(amount == _feeAmount, "Fee amount needs to match the percentage");
         feeTokenBalances[_tokenAddress] += amount;
 

@@ -378,7 +378,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function _cancel(uint _escrowId, address payable _seller, EscrowTransaction storage trx) internal {
         if(trx.status == EscrowStatus.FUNDED){
             address token = metadataStore.getAsset(trx.offerId);
-            uint amount = trx.tokenAmount + ((trx.tokenAmount * feeMilliPercent) / (100 * 1000));
+            uint amount = trx.tokenAmount + getFeeFromAmount(trx.tokenAmount);
             if(token == address(0)){
                 _seller.transfer(amount);
             } else {
