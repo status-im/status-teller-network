@@ -72,7 +72,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     Escrow: {
-      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$StakingPool", feePercent * 1000]
+      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
     },
     StandardToken: {
     }
@@ -120,7 +120,7 @@ contract("Escrow", function() {
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
-  xdescribe("Creating a new escrow", async () => {
+  describe("Creating a new escrow", async () => {
 
     it("Seller must be licensed to participate in escrow", async () => {
       try {
@@ -233,7 +233,7 @@ contract("Escrow", function() {
   });
 
 
-  xdescribe("Canceling an escrow", async () => {
+  describe("Canceling an escrow", async () => {
     let created;
 
     it("A seller cannot cancel an unexpired funded escrow", async () => {
@@ -357,7 +357,7 @@ contract("Escrow", function() {
   });
 
 
-  xdescribe("Releasing escrows", async () => {
+  describe("Releasing escrows", async () => {
     beforeEach(async() => {
       receipt = await Escrow.methods.create_and_fund(accounts[1],ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -449,7 +449,7 @@ contract("Escrow", function() {
   });
 
 
-  xdescribe("Buyer notifies payment of escrow", async () => {
+  describe("Buyer notifies payment of escrow", async () => {
     beforeEach(async() => {
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -513,7 +513,7 @@ contract("Escrow", function() {
     });
   });
 
-  xdescribe("Rating a released Transaction", async() => {
+  describe("Rating a released Transaction", async() => {
     beforeEach(async() => {
       const isPaused = await Escrow.methods.paused().call();
       if (isPaused) {
@@ -579,7 +579,7 @@ contract("Escrow", function() {
   });
 
 
-  xdescribe("Rating an unreleased Transaction", async() => {
+  describe("Rating an unreleased Transaction", async() => {
     let receipt, created, escrowId;
 
     beforeEach(async() => {
@@ -604,7 +604,7 @@ contract("Escrow", function() {
     });
   });
 
-  xdescribe("Getting a user rating", async() => {
+  describe("Getting a user rating", async() => {
     let receipt, created, escrowId, seller;
 
     beforeEach(async() => {
@@ -634,7 +634,7 @@ contract("Escrow", function() {
     });
   });
 
-  xdescribe("Transaction arbitration case", async() => {
+  describe("Transaction arbitration case", async() => {
     beforeEach(async() => {
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       const created = receipt.events.Created;
@@ -811,9 +811,9 @@ contract("Escrow", function() {
       const totalEthAfter = await web3.eth.getBalance(Escrow.options.address);
       const destAddressBalanceAfter = await web3.eth.getBalance(await Escrow.methods.feeDestination().call());
 
-      assert.strictEqual(toBN(totalEthAfter), toBN(totalEthBefore).sub(toBN(ethFeeBalanceBefore)), "Invalid contract balance");
-      assert.strictEqual(ethFeeBalanceAfter, 0, "Invalid fee balance");
-      assert.strictEqual(toBN(destAddressBalanceAfter), toBN(destAddressBalanceBefore).add(toBN(ethFeeBalanceBefore)), "Invalid address balance");
+      assert.strictEqual(toBN(totalEthAfter).toString(), (toBN(totalEthBefore).sub(toBN(ethFeeBalanceBefore)).toString()), "Invalid contract balance");
+      assert.strictEqual(parseInt(ethFeeBalanceAfter, 10), 0, "Invalid fee balance");
+      assert.strictEqual(toBN(destAddressBalanceAfter).toString(), (toBN(destAddressBalanceBefore).add(toBN(ethFeeBalanceBefore)).toString()), "Invalid address balance");
     });
   });
 

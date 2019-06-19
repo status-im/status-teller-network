@@ -58,8 +58,7 @@ contract Fees is Ownable {
         feeTokenBalances[_tokenAddress] = 0;
         if (_tokenAddress == address(0)) {
             require(address(this).balance >= fees, "Not enough balance");
-            // FIXME HELP!!!
-//            feeDestination.transfer(fees);
+            feeDestination.transfer(fees);
             emit MyEvent(fees, feeDestination, address(this).balance);
         } else {
             ERC20Token tokenToWithdraw = ERC20Token(_tokenAddress);
