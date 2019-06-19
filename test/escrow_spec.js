@@ -23,7 +23,7 @@ let accounts;
 let arbitrator, arbitrator2;
 let _deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_revert/snapshot to reset state between tests
 
-const feeAmount = '10';
+const feePercent = 1;
 
 config({
   deployment: {
@@ -72,7 +72,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     Escrow: {
-      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000001", feePercent * 1000]
     },
     StandardToken: {
     }
@@ -126,7 +126,7 @@ contract("Escrow", function() {
         signature = await web3.eth.sign(hash, accounts[1]);
         nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-        await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});       
+        await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
@@ -137,8 +137,8 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});      
+
+      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -175,15 +175,19 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
+      const tradeAmount = 100;
+
       receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
-      // Approve fee amount
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.fund(escrowId, value, expirationTime).send({from: accounts[0], value});
+      const tradeFee = Math.round(tradeAmount * (feePercent / 100));
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount, tradeFee, expirationTime).send({from: accounts[0], value: tradeAmount + tradeFee});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
+      const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
+      assert.strictEqual(parseInt(ethFeeBalance, 10), tradeFee);
+      const ethBalance = await web3.eth.getBalance(Escrow.options.address);
+      assert.strictEqual(parseInt(ethBalance, 10), tradeFee + tradeAmount);
     });
 
     it("Funded escrow should contain valid data", async () => {
@@ -241,7 +245,7 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
-      
+
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');

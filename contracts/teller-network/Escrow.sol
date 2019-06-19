@@ -27,10 +27,9 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         address _license,
         address _arbitrationLicense,
         address _metadataStore,
-        address _feeToken,
         address _feeDestination,
-        uint _feeAmount)
-        Fees(_feeToken, _feeDestination, _feeAmount)
+        uint _feeMilliPercent)
+        Fees(_feeDestination, _feeMilliPercent)
         Arbitrable(_arbitrationLicense)
         public {
         license = License(_license);
@@ -163,11 +162,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      *         The expiration time must be at least 10min in the future
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function fund(uint _escrowId, uint _tokenAmount, uint _expirationTime) external payable whenNotPaused {
-        _fund(get_sender(), _escrowId, _tokenAmount, _expirationTime);
+    function fund(uint _escrowId, uint _tokenAmount, uint _feeAmount, uint _expirationTime) external payable whenNotPaused {
+        _fund(get_sender(), _escrowId, _tokenAmount, _feeAmount, _expirationTime);
     }
 
-    function _fund(address _from, uint _escrowId, uint _tokenAmount, uint _expirationTime) internal whenNotPaused {
+    function _fund(address _from, uint _escrowId, uint _tokenAmount, uint _feeAmount, uint _expirationTime) internal whenNotPaused {
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
         require(license.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
 
@@ -178,12 +177,12 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         transactions[_escrowId].expirationTime = _expirationTime;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
-        payFee(_from, _escrowId);
-
         address token = metadataStore.getAsset(transactions[_escrowId].offerId);
 
+        payFee(_from, _escrowId, _tokenAmount, _feeAmount, token);
+
         if(token == address(0)){
-            require(msg.value == _tokenAmount, "ETH amount is required");
+            require(msg.value == (_tokenAmount + _feeAmount), "ETH amount is required");
         } else {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
             ERC20Token erc20token = ERC20Token(token);
@@ -214,11 +213,12 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         uint _tokenAmount,
         uint _expirationTime,
         uint _tradeAmount,
+        uint _feeAmount,
         uint8 _tradeType,
         uint _assetPrice
     ) external payable whenNotPaused {
         uint escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
-        _fund(get_sender(), escrowId, _tokenAmount, _expirationTime);
+        _fund(get_sender(), escrowId, _tokenAmount, _feeAmount, _expirationTime);
     }
 
     function _createTransaction(
@@ -404,7 +404,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function withdraw_emergency(uint _escrowId) external whenPaused {
         EscrowTransaction storage trx = transactions[_escrowId];
         require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
-        
+
         address payable seller = metadataStore.getOfferOwner(trx.offerId);
         _cancel(_escrowId, seller, trx);
     }
@@ -534,8 +534,8 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _data Abi encoded data with selector of `register(bytes32,address,bytes32,bytes32)`.
      */
     function receiveApproval(address _from, uint256 _amount, address _token, bytes memory _data) public {
-        require(_amount >= feeAmount, "Amount should include fee");
-        require(_token == address(feeToken), "Wrong token");
+//        require(_amount >= feeAmount, "Amount should include fee");
+        // TODO change this to be the percent or whatever
         require(_token == address(get_sender()), "Wrong call");
         require(_data.length == 100, "Wrong data length");
 
@@ -543,11 +543,13 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         bytes32 value1;
         bytes32 value2;
         bytes32 value3;
+        bytes32 value4;
 
+        // TODO fix this and put the fee amount in
         (sig, value1, value2, value3) = abiDecodeFundCall(_data);
 
         if (sig == bytes4(0x111d7d50)){
-            _fund(_from, uint256(value1), uint256(value2), uint256(value3));
+            _fund(_from, uint256(value1), uint256(value2), 10, uint256(value3));
         } else {
             revert("Wrong method selector");
         }
