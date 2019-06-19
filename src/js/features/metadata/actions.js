@@ -1,7 +1,9 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
-  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER
+  UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
+  SIGN_MESSAGE, DELETE_OFFER
 } from './constants';
+import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 
 export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
@@ -23,6 +25,12 @@ export const addOffer = (seller) => ({
   }
 });
 
+export const signMessage = (username, statusContactCode) => ({
+  type: SIGN_MESSAGE,
+  statusContactCode,
+  username
+});
+
 export const setCurrentUser = (currentUser) => ({
   type: SET_CURRENT_USER,
   currentUser
@@ -39,4 +47,10 @@ export const updateUser = (user) => ({
 
 export const resetUpdateUserStatus = () => ({
   type: RESET_UPDATE_USER_STATUS
+});
+
+export const deleteOffer = (offerId) => ({
+  type: DELETE_OFFER,
+  offerId,
+  toSend: MetadataStore.methods.removeOffer(offerId)
 });

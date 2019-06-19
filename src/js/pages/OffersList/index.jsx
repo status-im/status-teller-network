@@ -18,6 +18,7 @@ import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare} from "../../utils/address";
+import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 class OffersList extends Component {
   constructor(props) {
@@ -33,6 +34,7 @@ class OffersList extends Component {
 
   componentDidMount() {
     this.props.loadOffers();
+    this.props.updateBalance('ETH');
   }
 
   setPaymentMethodFilter = (paymentMethodFilter) => {
@@ -86,7 +88,8 @@ class OffersList extends Component {
   };
 
   render() {
-    let filteredOffers = this.props.offers;
+    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH);
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
@@ -147,6 +150,8 @@ class OffersList extends Component {
                       tokenFilter={this.state.tokenFilter}
                       paymentMethodFilter={this.state.paymentMethodFilter}/>
 
+        { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
         {Object.keys(groupedOffersByUser).map((paymentMethod) => (
@@ -176,7 +181,10 @@ OffersList.propTypes = {
   tokens: PropTypes.array,
   loadOffers: PropTypes.func,
   prices: PropTypes.object,
-  address: PropTypes.string
+  address: PropTypes.string,
+  gasPrice: PropTypes.string,
+  updateBalance: PropTypes.func,
+  ethBalance: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -184,7 +192,9 @@ const mapStateToProps = state => {
     address: network.selectors.getAddress(state) || '',
     offers: metadata.selectors.getOffersWithUser(state),
     tokens: Object.values(network.selectors.getTokens(state)),
-    prices: prices.selectors.getPrices(state)
+    prices: prices.selectors.getPrices(state),
+    gasPrice: network.selectors.getNetworkGasPrice(state),
+    ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
 
@@ -192,5 +202,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    loadOffers: metadata.actions.loadOffers
+    loadOffers: metadata.actions.loadOffers,
+    updateBalance: network.actions.updateBalance
   })(withNamespaces()(OffersList));

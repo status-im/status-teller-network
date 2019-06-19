@@ -1,13 +1,13 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.8;
 
 import "./License.sol";
-import "../common/Ownable.sol";
+import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
 * @dev Metadata store
 */
-contract MetadataStore is Ownable {
+contract MetadataStore is MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
@@ -54,17 +54,17 @@ contract MetadataStore is Ownable {
     }
 
     struct Offer {
-        address asset;
-        string currency;
         int8 margin;
         PaymentMethods[] paymentMethods;
+        address asset;
+        string currency;
         address payable owner;
         address arbitrator;
+        bool deleted;
     }
 
     address public license;
-    address public arbitration;
-    address public escrow;
+    address public arbitrationLicense;
 
     User[] public users;
     Offer[] public offers;
@@ -75,33 +75,74 @@ contract MetadataStore is Ownable {
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
     mapping(address => uint256[]) public addressToOffers;
 
-    constructor(address _license, address _arbitration) public {
+    constructor(address _license, address _arbitrationLicense) public {
         license = _license;
-        arbitration = _arbitration;
+        arbitrationLicense = _arbitrationLicense;
     }
 
-    function setEscrowAddress(address _escrow) public onlyOwner {
-        escrow = _escrow;
+    mapping(address => uint) public user_nonce;
+
+    function getDataHash(
+        string calldata _username,
+        bytes calldata _statusContactCode
+    ) external view returns (bytes32) {
+        return dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
     }
 
-    function setLicense(address _license) public onlyOwner {
-        license = _license;
+    function dataHash(
+        string memory _username,
+        bytes memory _statusContactCode,
+        uint nonce
+    ) internal view returns (bytes32) {
+        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, nonce));
     }
 
-    function setArbitration(address _arbitration) public onlyOwner {
-        arbitration = _arbitration;
+    function getSigner(
+        string memory _username,
+        bytes memory _statusContactCode,
+        uint nonce,
+        bytes memory _signature
+    ) internal view returns(address) {
+        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, nonce)), _signature);
+    }
+
+    function getMessageSigner(
+        string calldata _username,
+        bytes calldata _statusContactCode,
+        bytes calldata _signature,
+        uint _nonce
+    ) external view returns(address) {
+        return getSigner(_username, _statusContactCode, _nonce, _signature);
     }
 
     function addOrUpdateUser(
-        address _user,
+        bytes memory _signature,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username,
+        uint _nonce
+    ) public returns(address payable _user) {
+        _user = address(uint160(getSigner(_username, _statusContactCode, _nonce, _signature)));
+        require(_nonce == user_nonce[_user], "Invalid nonce");
+        user_nonce[_user]++;
+        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+        return _user;
+    }
+
+    function addOrUpdateUser(
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username
     ) public {
-        if(msg.sender != escrow){
-            require(msg.sender == _user, "Sender does not match address");
-        }
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+    }
 
+    function _addOrUpdateUser(
+        address _user,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) internal {
         if (!userWhitelist[_user]) {
             User memory user = User(_statusContactCode, _location, _username);
             uint256 userId = users.push(user) - 1;
@@ -137,13 +178,16 @@ contract MetadataStore is Ownable {
         address _arbitrator
     ) public {
         require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
+        require(License(arbitrationLicense).isLicenseOwner(_arbitrator), "Not an arbitrator");
+
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_asset, _currency, _margin, _paymentMethods, msg.sender, _arbitrator);
+        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
+
         uint256 offerId = offers.push(offer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
@@ -227,7 +271,7 @@ contract MetadataStore is Ownable {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
 
-        delete offers[_offerId];
+        offers[_offerId].deleted = true;
         offerWhitelist[msg.sender][_offerId] = false;
         emit OfferRemoved(msg.sender, _offerId);
     }
@@ -241,32 +285,29 @@ contract MetadataStore is Ownable {
         int8 margin,
         PaymentMethods[] memory paymentMethods,
         address payable owner,
-        address arbitrator
+        address arbitrator,
+        bool deleted
     ) {
-        require(_id < offers.length, "Invalid offer id");
-
         return (
             offers[_id].asset,
             offers[_id].currency,
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].owner,
-            offers[_id].arbitrator
+            offers[_id].arbitrator,
+            offers[_id].deleted
         );
     }
 
     function getOfferOwner(uint256 _id) public view returns (address payable) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].owner);
     }
 
     function getAsset(uint256 _id) public view returns (address) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].asset);
     }
 
     function getArbitrator(uint256 _id) public view returns (address) {
-        require(_id < offers.length, "Invalid offer id");
         return (offers[_id].arbitrator);
     }
 

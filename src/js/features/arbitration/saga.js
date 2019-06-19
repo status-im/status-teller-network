@@ -1,6 +1,6 @@
 /* global web3 */
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
+import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
@@ -31,10 +31,10 @@ export function *onCancelDispute() {
 
 export function *doGetArbitrators() {
   try {
-    const cnt = yield call(Arbitration.methods.getNumLicenseOwners().call);
+    const cnt = yield call(ArbitrationLicense.methods.getNumLicenseOwners().call);
     const arbitrators = [];
     for(let i = 0; i < cnt; i++){
-      arbitrators.push(yield call(Arbitration.methods.licenseOwners(i).call));
+      arbitrators.push(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
   } catch (error) {
@@ -45,7 +45,7 @@ export function *doGetArbitrators() {
 
 export function *doGetEscrows() {
   try {
-    const events = yield Arbitration.getPastEvents('ArbitrationRequired', {fromBlock: 1});
+    const events = yield Escrow.getPastEvents('ArbitrationRequired', {fromBlock: 1});
 
     const escrows = [];
     for (let i = 0; i < events.length; i++) {
@@ -56,7 +56,7 @@ export function *doGetEscrows() {
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
-      escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowId).call);
+      escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
       escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
 
       escrows.push(escrow);
@@ -88,7 +88,7 @@ export function *doLoadArbitration({escrowId}) {
     escrow.escrowId = escrowId;
     escrow.seller = offer.owner;
     escrow.offer = offer;
-    escrow.arbitration = yield call(Arbitration.methods.arbitrationCases(escrowId).call);
+    escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
 
     yield put({type: LOAD_ARBITRATION_SUCCEEDED, escrow});
   } catch (error) {
@@ -104,11 +104,11 @@ export function *onLoadArbitration() {
 
 export function *doBuyLicense() {
   try {
-    const price = yield call(Arbitration.methods.price().call);
-    const encodedCall = Arbitration.methods.buy().encodeABI();
-    const toSend = SNT.methods.approveAndCall(Arbitration.options.address, price, encodedCall);
+    const price = yield call(ArbitrationLicense.methods.price().call);
+    const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(ArbitrationLicense.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
-    const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000});
+    const promiseEvent = toSend.send({gasLimit: estimatedGas + 2000});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
       const {hash, receipt, error} = yield take(channel);
@@ -134,7 +134,7 @@ export function *onBuyLicense() {
 
 export function *loadPrice() {
   try {
-    const price = yield call(Arbitration.methods.price().call);
+    const price = yield call(ArbitrationLicense.methods.price().call);
     yield put({type: LOAD_PRICE_SUCCEEDED, price});
   } catch (error) {
     console.error(error);
@@ -148,7 +148,7 @@ export function *onLoadPrice() {
 
 export function *doCheckLicenseOwner() {
   try {
-    const isLicenseOwner = yield call(Arbitration.methods.isLicenseOwner(web3.eth.defaultAccount).call);
+    const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
     yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner});
   } catch (error) {
     console.error(error);

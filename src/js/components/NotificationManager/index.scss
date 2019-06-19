@@ -1,0 +1,19 @@
+@import "../../../css/variable-overrides";
+
+.notification-container {
+  .notification-info {
+    background-color: $info;
+  }
+
+  .notification-success {
+    background-color: $success;
+  }
+
+  .notification-warning {
+    background-color: $warning;
+  }
+
+  .notification-error {
+    background-color: $danger;
+  }
+}

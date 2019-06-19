@@ -1,6 +1,8 @@
 /*global web3*/
 import EmbarkJS from '../../embarkArtifacts/embarkjs';
 import {contactCodeRegExp} from '../utils/address';
+import TellerProvider from '../provider';
+import tabookey from 'tabookey-gasless';
 
 export function onReady() {
   return new Promise((resolve, reject) => {
@@ -8,6 +10,12 @@ export function onReady() {
       if (err) {
         return reject(err);
       }
+
+      // A relay gets compensated whenever it relays a transaction: whatever the gas usage it pays,
+      // it gets back the same plus the "txFee" precent - that is, it gets back ( (txFee+100)*gasUsed ) / 100
+      const relayProvider = new tabookey.RelayProvider(web3.currentProvider, { txfee: 12 });
+      const customProvider = new TellerProvider(relayProvider);
+      customProvider.startProvider(web3);
 
       resolve();
     });

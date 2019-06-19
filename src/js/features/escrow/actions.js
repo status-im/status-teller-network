@@ -3,7 +3,7 @@ import {
   CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
   ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS,
-  WATCH_ESCROW
+  WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW, GET_LAST_ACTIVITY, RESET_CREATE_STATUS
 } from './constants';
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
@@ -11,14 +11,15 @@ import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import { toTokenDecimals } from '../../utils/numbers';
 import { zeroAddress } from '../../utils/address';
 
-export const createEscrow = (buyerAddress, username, tradeAmount, assetPrice, statusContactCode, offer) => {
+export const createEscrow = (signature, username, tradeAmount, assetPrice, statusContactCode, offer, nonce) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
     user: {
       statusContactCode,
       username,
-      buyerAddress
+      signature,
+      nonce
     },
     escrow: {
       tradeAmount,
@@ -75,13 +76,22 @@ export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 
 export const getFee = () => ({ type: GET_FEE });
 
-export const cancelEscrow = (escrowId) => ({ type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) });
+export const getLastActivity = (address) => ({ type: GET_LAST_ACTIVITY, address});
+
+export const cancelEscrow = (escrowId) => {
+  return { type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) };
+};
 
 export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
 
-export const resetStatus = () => ({type: RESET_STATUS});
+export const resetCreateStatus = () => ({type: RESET_CREATE_STATUS});
+export const resetStatus = (escrowId) => ({type: RESET_STATUS, escrowId});
 
 export const watchEscrow = (escrowId) => ({type: WATCH_ESCROW, escrowId});
+export const watchEscrowCreations = (offers) => ({type: WATCH_ESCROW_CREATIONS, offers});
+
+export const clearNewEscrow = () => ({type: CLEAR_NEW_ESCROW});
+export const clearChangedEscrow = () => ({type: CLEAR_NEW_ESCROW});
 
 // TODO: Update with new UI
 

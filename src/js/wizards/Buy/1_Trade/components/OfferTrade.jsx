@@ -6,10 +6,12 @@ import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 import Identicon from "../../../../components/UserInformation/Identicon";
+import moment from "moment";
+import escrow from "../../../../features/escrow";
 
 const OfferTrade = ({
-  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, onClick,
-  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t
+  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, onClick, lastActivity,
+  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay
 }) => (
   <Row>
     <Col xs="12" className="mt-5 text-center">
@@ -52,6 +54,9 @@ const OfferTrade = ({
         </FormGroup>
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
         <Button color="primary" className="px-4" onClick={onClick} disabled={disabled}>Open trade</Button>
+        {notEnoughETH && !canRelay && <Col xs="12" className="text-small text-center text-danger">
+              New orders can be created in {moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)}
+        </Col>}
       </Form>
     </Col>
   </Row>
@@ -83,7 +88,10 @@ OfferTrade.propTypes = {
   ]),
   onCurrencyChange: PropTypes.func,
   onAssetChange: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  notEnoughETH: PropTypes.bool,
+  canRelay: PropTypes.bool,
+  lastActivity: PropTypes.number
 };
 
 export default withNamespaces()(OfferTrade);

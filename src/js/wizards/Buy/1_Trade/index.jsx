@@ -2,8 +2,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
-
-import { States } from '../../../utils/transaction';
+import { States, checkNotEnoughETH } from '../../../utils/transaction';
 import newBuy from "../../../features/newBuy";
 import escrow from '../../../features/escrow';
 import prices from '../../../features/prices';
@@ -37,7 +36,11 @@ class Trade extends Component {
     if (isNaN(this.props.offerId)) {
       return this.props.history.push('/');
     }
+
+    this.props.updateBalances();
+    this.props.getLastActivity(this.props.address);
     this.props.loadOffers(this.props.offer.owner); // TODO Change this to only load the right offer
+
     this.getSellerBalance();
 
     this.setState({ready: true});
@@ -51,9 +54,14 @@ class Trade extends Component {
 
   componentDidUpdate(oldProps) {
     if (this.props.createEscrowStatus === States.success) {
-      this.props.resetStatus();
+      this.props.resetCreateStatus();
       return this.props.history.push('/escrow/' + this.props.escrowId);
     }
+
+    if(!this.props.isSigning && !this.props.signature){
+      return this.props.history.push('/buy/contact');
+    }
+
     if ((this.props.offer && !oldProps.offer) || (this.props.offer.token && !oldProps.offer.token)) {
       this.getSellerBalance();
     }
@@ -68,7 +76,7 @@ class Trade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.address, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer);
+    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer, this.props.nonce);
   };
 
   _calcPrice = () => {
@@ -103,15 +111,25 @@ class Trade extends Component {
   };
 
   render() {
-    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance) {
+    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
       return <Loading page/>;
+    }
+
+    if (!this.props.isSigning && !this.props.signature) return null;
+
+    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
+    const canRelay = escrow.helpers.canRelay(this.props.lastActivity);
+
+    let disabled = this.state.disabled;
+    if(notEnoughETH){
+      disabled = disabled && !canRelay;
     }
 
     switch(this.props.createEscrowStatus){
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetStatus}/>;
+        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.props.resetCreateStatus}/>;
       case States.none:
         return (
           <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
@@ -126,7 +144,11 @@ class Trade extends Component {
                       assetQuantity={this.state.assetQuantity}
                       onAssetChange={this.onAssetChange}
                       onCurrencyChange={this.onCurrencyChange}
-                      disabled={this.state.disabled}/>
+                      disabled={disabled}
+                      notEnoughETH={notEnoughETH}
+                      canRelay={canRelay}
+                      lastActivity={this.props.lastActivity}
+                      />
         );
       default:
         return <Fragment/>;
@@ -137,7 +159,7 @@ class Trade extends Component {
 Trade.propTypes = {
   history: PropTypes.object,
   setTrade: PropTypes.func,
-  resetStatus: PropTypes.func,
+  resetCreateStatus: PropTypes.func,
   offer: PropTypes.object,
   address: PropTypes.string,
   currencyQuantity: PropTypes.number,
@@ -153,7 +175,15 @@ Trade.propTypes = {
   createEscrowStatus: PropTypes.string,
   escrowId: PropTypes.string,
   price: PropTypes.number,
-  sellerBalance: PropTypes.string
+  sellerBalance: PropTypes.string,
+  lastActivity: PropTypes.number,
+  getLastActivity: PropTypes.func,
+  ethBalance: PropTypes.string,
+  gasPrice: PropTypes.string,
+  updateBalances: PropTypes.func,
+  isSigning: PropTypes.bool,
+  signature: PropTypes.string,
+  nonce: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
@@ -172,6 +202,12 @@ const mapStateToProps = (state) => {
     assetQuantity: newBuy.selectors.assetQuantity(state),
     address: network.selectors.getAddress(state),
     sellerBalance: network.selectors.getBalance(state, offer.token.symbol, offer.owner),
+    lastActivity: escrow.selectors.getLastActivity(state),
+    gasPrice: network.selectors.getNetworkGasPrice(state),
+    ethBalance: network.selectors.getBalance(state, 'ETH'),
+    isSigning: metadata.selectors.isSigning(state),
+    signature: metadata.selectors.getSignature(state),
+    nonce: metadata.selectors.getNonce(state),
     offer,
     offerId,
     price
@@ -182,9 +218,11 @@ export default connect(
   mapStateToProps,
   {
     setTrade: newBuy.actions.setTrade,
-    resetStatus: escrow.actions.resetStatus,
+    resetCreateStatus: escrow.actions.resetCreateStatus,
     createEscrow: escrow.actions.createEscrow,
+    updateBalances: network.actions.updateBalances,
     updateBalance: network.actions.updateBalance,
-    loadOffers: metadata.actions.loadOffers
+    loadOffers: metadata.actions.loadOffers,
+    getLastActivity: escrow.actions.getLastActivity
   }
 )(withRouter(Trade));

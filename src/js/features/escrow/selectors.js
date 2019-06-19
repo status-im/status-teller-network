@@ -7,17 +7,7 @@ const unimportantStates = [tradeStates.canceled, tradeStates.expired, tradeState
 
 export const getCreateEscrowStatus = state => state.escrow.createEscrowStatus;
 
-export const getFundEscrowStatus = state => state.escrow.fundEscrowStatus;
-
-export const getReleaseEscrowStatus = state => state.escrow.releaseStatus;
-
-export const getPaidEscrowStatus = state => state.escrow.payStatus;
-
-export const getCancelEscrowStatus = state => state.escrow.cancelStatus;
-
 export const getCreateEscrowId = state => state.escrow.createEscrowId;
-
-export const getRatingStatus = state => state.escrow.rateStatus;
 
 export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || {};
@@ -64,6 +54,9 @@ export const getEscrowById = (state, escrowId) => {
 export const getFee = state => state.escrow.fee;
 export const txHash = state => state.escrow.txHash;
 
+export const newEscrow = state => state.escrow.newEscrow;
+export const changedEscrow = state => state.escrow.changedEscrow;
+
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;
@@ -90,3 +83,5 @@ export const signature = state => {
     type
   };
 };
+
+export const getLastActivity = state => state.escrow.lastActivity;

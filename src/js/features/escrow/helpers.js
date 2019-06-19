@@ -15,7 +15,8 @@ export const eventTypes = {
   paid: 'Paid',
   funded: 'Funded',
   released: 'Released',
-  canceled: 'Canceled'
+  canceled: 'Canceled',
+  created: 'Created'
 };
 
 export const escrowStatus = {
@@ -25,6 +26,10 @@ export const escrowStatus = {
   RELEASED: '3',
   CANCELED: '4'
 };
+
+export function getStatusFromStatusId(id) {
+  return Object.keys(escrowStatus)[Object.values(escrowStatus).indexOf(id.toString())];
+}
 
 export function getTradeStatus(trade) {
   switch(trade.status) {
@@ -42,4 +47,14 @@ export function getTradeStatus(trade) {
     case escrowStatus.CANCELED: return tradeStates.canceled;
     default: return tradeStates.waiting;
   }
+}
+
+const RELAY_DELAY = (((15 * 60) + 20) * 1000); // Adding 20 seconds buffer since blocks are not mined exactly on this time
+
+export function canRelay(lastActivity) {
+  return (lastActivity + RELAY_DELAY) < Date.now();
+}
+
+export function nextRelayDate(lastActivity) {
+  return new Date(lastActivity + RELAY_DELAY);
 }

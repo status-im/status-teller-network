@@ -1,4 +1,7 @@
-pragma solidity  ^0.5.7;
+/* solium-disable security/no-block-members */
+/* solium-disable security/no-inline-assembly */
+
+pragma solidity  ^0.5.8;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
@@ -40,7 +43,7 @@ contract License is Ownable, ApproveAndCallFallBack {
     * @return bool
     */
     function isLicenseOwner(address _address) public view returns (bool) {
-        return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime > 0;
+        return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime != 0;
     }
 
     /**

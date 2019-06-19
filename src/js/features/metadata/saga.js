@@ -1,5 +1,6 @@
+/* global web3 */
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
-import Arbitration from '../../../embarkArtifacts/contracts/Arbitration';
+import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
@@ -8,7 +9,8 @@ import {
   LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
-  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED
+  LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
+  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED, DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -16,7 +18,7 @@ import {getLocation} from '../../services/googleMap';
 
 export function *loadUser({address}) {
   try {
-    const isArbitrator = yield Arbitration.methods.isArbitrator(address).call();
+    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
     const isUser = yield MetadataStore.methods.userWhitelist(address).call();
 
     let user = {
@@ -155,8 +157,7 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = MetadataStore.methods.addOrUpdateUser(
-    user.address,
+  const toSend = MetadataStore.methods['addOrUpdateUser(bytes,string,string)'](
     user.statusContactCode,
     user.location,
     user.username
@@ -168,11 +169,34 @@ export function *onUpdateUser() {
   yield takeEvery(UPDATE_USER, updateUser);
 }
 
+export function *signMessage({statusContactCode, username}) {
+  try {
+    const hash = yield MetadataStore.methods.getDataHash(username, statusContactCode).call({from: web3.eth.defaultAccount});
+    const signature = yield web3.eth.personal.sign(hash, web3.eth.defaultAccount);
+    const nonce = yield MetadataStore.methods.user_nonce(web3.eth.defaultAccount).call();
+
+    yield put({type: SIGN_MESSAGE_SUCCEEDED, signature, nonce});
+  } catch(err){
+    yield put({type: SIGN_MESSAGE_FAILED, error: err.message});
+  }
+}
+
+export function *onSignMessage() {
+  yield takeEvery(SIGN_MESSAGE, signMessage);
+}
+
+export function *onDeleteOffer() {
+  yield takeEvery(DELETE_OFFER, doTransaction.bind(null, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED));
+}
+
+
 export default [
   fork(onLoad),
   fork(onLoadUser),
   fork(onLoadLocation),
   fork(onLoadOffers),
   fork(onAddOffer),
-  fork(onUpdateUser)
+  fork(onUpdateUser),
+  fork(onSignMessage),
+  fork(onDeleteOffer)
 ];

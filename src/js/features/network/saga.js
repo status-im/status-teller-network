@@ -7,7 +7,7 @@ import { fork, takeEvery, call, put, all, select } from 'redux-saga/effects';
 import {
   INIT, INIT_FAILED, INIT_SUCCEEDED,
   UPDATE_BALANCES, UPDATE_BALANCE, UPDATE_BALANCE_FAILED, UPDATE_BALANCE_SUCCEEDED,
-  GET_CONTACT_CODE, GET_CONTACT_CODE_SUCCEEDED, GET_CONTACT_CODE_FAILED, RESOLVE_ENS_NAME, RESOLVE_ENS_NAME_FAILED, RESOLVE_ENS_NAME_SUCCEEDED
+  GET_CONTACT_CODE, GET_CONTACT_CODE_SUCCEEDED, GET_CONTACT_CODE_FAILED, RESOLVE_ENS_NAME, RESOLVE_ENS_NAME_FAILED, RESOLVE_ENS_NAME_SUCCEEDED, GET_GAS_PRICE, GET_GAS_PRICE_FAILED, GET_GAS_PRICE_SUCCEEDED
 } from './constants';
 import {FETCH_EXCHANGE_RATE} from '../prices/constants';
 import { onReady } from '../../services/embarkjs';
@@ -17,8 +17,12 @@ export function *doInit() {
   try {
     yield call(onReady);
     const networkId = yield call(web3.eth.net.getId);
-    yield put({type: INIT_SUCCEEDED, networkId});
-    yield put({type: FETCH_EXCHANGE_RATE});
+
+    yield all([
+      put({type: INIT_SUCCEEDED, networkId}),
+      put({type: GET_GAS_PRICE}),
+      put({type: FETCH_EXCHANGE_RATE})
+    ]);
   } catch (error) {
     console.error(error);
     yield put({type: INIT_FAILED, error: error.message});
@@ -67,6 +71,21 @@ export function *onUpdateBalances() {
   yield takeEvery(UPDATE_BALANCES, updateBalances);
 }
 
+export function *getGasPrice() { 
+  try {
+    const gasPrice = yield web3.eth.getGasPrice();
+    yield put({type: GET_GAS_PRICE_SUCCEEDED, gasPrice});
+  } catch(error){
+    console.error(error);
+    yield put({type: GET_GAS_PRICE_FAILED});
+ 
+  }
+}
+
+export function *onGetGasPrice() {
+  yield takeEvery(GET_GAS_PRICE, getGasPrice);
+}
+
 export function *getStatusCode() {
   try {
     // https://status.im/developer_tools/status_web_api.html
@@ -109,5 +128,6 @@ export default [
   fork(onUpdateBalances),
   fork(onUpdateBalance),
   fork(onGetStatusCode),
+  fork(onGetGasPrice),
   fork(onResolveEnsName)
 ];
