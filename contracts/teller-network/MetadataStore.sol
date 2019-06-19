@@ -11,42 +11,6 @@ contract MetadataStore is MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
-    event OfferAdded(
-        address owner,
-        uint256 offerId,
-        address asset,
-        bytes statusContactCode,
-        string location,
-        string currency,
-        string username,
-        PaymentMethods[] paymentMethods,
-        int8 margin
-    );
-
-    event OfferUpdated(
-        address owner,
-        uint256 id,
-        address asset,
-        bytes statusContactCode,
-        string location,
-        string currency,
-        string username,
-        PaymentMethods[] paymentMethods,
-        int8 margin
-    );
-
-    event OfferRemoved(
-        address owner,
-        uint256 offerId
-    );
-
-    event UserUpdated(
-        address owner,
-        bytes statusContactCode,
-        string location,
-        string username
-    );
-
     struct User {
         bytes statusContactCode;
         string location;
@@ -74,6 +38,22 @@ contract MetadataStore is MessageSigned {
     Offer[] public offers;
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
+
+    event OfferAdded(
+        address owner,
+        uint256 offerId,
+        address asset,
+        bytes statusContactCode,
+        string location,
+        string currency,
+        string username,
+        PaymentMethods[] paymentMethods,
+        int8 margin
+    );
+
+    event OfferRemoved(address owner, uint256 offerId);
+
+    event UserUpdated(address owner, bytes statusContactCode, string location, string username);
 
     /**
      * @param _sellingLicenses Sellers licenses contract address
