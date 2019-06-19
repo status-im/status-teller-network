@@ -1,15 +1,14 @@
-/* global web3 */
 import {
   CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
-  ADD_USER_RATING, USER_RATING, GET_ESCROW, GET_FEE, FUND_ESCROW, RESET_STATUS,
-  WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW, GET_LAST_ACTIVITY, RESET_CREATE_STATUS
+  ADD_USER_RATING, USER_RATING, GET_ESCROW, FUND_ESCROW, RESET_STATUS,
+  WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW, GET_LAST_ACTIVITY, RESET_CREATE_STATUS,
+  GET_FEE_MILLI_PERCENT
 } from './constants';
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import { toTokenDecimals } from '../../utils/numbers';
-import { zeroAddress } from '../../utils/address';
 
 export const createEscrow = (signature, username, tradeAmount, assetPrice, statusContactCode, offer, nonce) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
@@ -30,25 +29,12 @@ export const createEscrow = (signature, username, tradeAmount, assetPrice, statu
 };
 
 export const fundEscrow = (escrow) => {
-  const token = web3.utils.toChecksumAddress(escrow.offer.asset);
   const expirationTime = Math.floor((new Date()).getTime() / 1000) + (86400 * 2); // TODO: what will be the expiration time?
-  let value = escrow.tradeAmount;
-
-  let toSend = Escrow.methods.fund(escrow.escrowId, value, expirationTime);
-
-  if(token === zeroAddress){
-    return {
-      type: FUND_ESCROW,
-      toSend,
-      value,
-      escrowId: escrow.escrowId,
-      expirationTime
-    };
-  }
+  const value = escrow.tradeAmount;
 
   return {
     type: FUND_ESCROW,
-    toSend,
+    value,
     escrowId: escrow.escrowId,
     expirationTime
   };
@@ -73,8 +59,6 @@ export const payEscrow = (escrowId) => ({ type: PAY_ESCROW, escrowId, toSend: Es
 export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
 
 export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
-
-export const getFee = () => ({ type: GET_FEE });
 
 export const getLastActivity = (address) => ({ type: GET_LAST_ACTIVITY, address});
 
@@ -106,3 +90,5 @@ export const closeDialog = () => ({ type: CLOSE_DIALOG });
 export const checkUserRating = (address) => ({ type: USER_RATING, address });
 
 export const addUserRating = () => ({ type: ADD_USER_RATING });
+
+export const getFeeMilliPercent = () => ({ type: GET_FEE_MILLI_PERCENT });

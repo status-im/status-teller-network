@@ -85,3 +85,5 @@ export const signature = state => {
 };
 
 export const getLastActivity = state => state.escrow.lastActivity;
+
+export const feeMilliPercent = state => state.escrow.feeMilliPercent;
