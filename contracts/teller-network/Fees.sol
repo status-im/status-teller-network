@@ -8,22 +8,22 @@ import "../common/Ownable.sol";
  * @dev Fee registry, payment and withdraw utilities.
  */
 contract Fees is Ownable {
-    address public feeDestination;
+    address payable public feeDestination;
     uint public feeMilliPercent;
     mapping(address => uint) public feeTokenBalances;
     mapping(uint => bool) public feePaid;
 
-    event FeeDestinationChanged(address);
+    event FeeDestinationChanged(address payable);
     event FeeMilliPercentChanged(uint amount);
     event FeesWithdrawn(uint amount, address token);
+    event MyEvent(uint fees, address destination, uint balance);
 
     /**
-     * @param _feeToken Address of token used to pay for fees (SNT)
      * @param _feeDestination Address to send the fees once withdraw is called
-     * @param _feeAmount Fee amount in token-wei
+     * @param _feeMilliPercent Millipercent for the fee off teh amount sold
      * @dev TODO: determine if the contract will hold the fees or if it will send them automatically to the fee destination address
      */
-    constructor(address _feeDestination, uint _feeMilliPercent) public {
+    constructor(address payable _feeDestination, uint _feeMilliPercent) public {
         feeDestination = _feeDestination;
         feeMilliPercent = _feeMilliPercent;
     }
@@ -34,14 +34,14 @@ contract Fees is Ownable {
      * @dev Can only be called by the owner of the contract
      *      TODO: if the contract will be changed to remove ownership, remove this function
      */
-    function setFeeDestinationAddress(address _addr) public onlyOwner {
+    function setFeeDestinationAddress(address payable _addr) public onlyOwner {
         feeDestination = _addr;
         emit FeeDestinationChanged(_addr);
     }
 
     /**
      * @notice Set Fee Amount
-     * @param _amount New Amount
+     * @param _feeMilliPercent New millipercent
      * @dev Can only be called by the owner of the contract
      *      TODO: if the contract will be changed to remove ownership, remove this function
      */
@@ -54,10 +54,17 @@ contract Fees is Ownable {
      * @notice Withdraw fees by sending them to the fee destination address
      */
     function withdrawFees(address _tokenAddress) public {
-        ERC20Token tokenToWithdraw = ERC20Token(_tokenAddress);
         uint fees = feeTokenBalances[_tokenAddress];
         feeTokenBalances[_tokenAddress] = 0;
-        require(tokenToWithdraw.transfer(feeDestination, fees), "Error transfering fees");
+        if (_tokenAddress == address(0)) {
+            require(address(this).balance >= fees, "Not enough balance");
+            // FIXME HELP!!!
+//            feeDestination.transfer(fees);
+            emit MyEvent(fees, feeDestination, address(this).balance);
+        } else {
+            ERC20Token tokenToWithdraw = ERC20Token(_tokenAddress);
+            require(tokenToWithdraw.transfer(feeDestination, fees), "Error transferring fees");
+        }
         emit FeesWithdrawn(fees, _tokenAddress);
     }
 
@@ -65,6 +72,9 @@ contract Fees is Ownable {
      * @notice Pay fees for a transaction or element id
      * @param _from Address from where the fees are being extracted
      * @param _id Escrow id or element identifier to mark as paid
+     * @param _value Value sold in the escrow
+     * @param _feeAmount Fee amount calculated by the front-end
+     * @param _tokenAddress Address of the token sold in the escrow
      * @dev This will only transfer funds if the fee  has not been paid
      */
     function payFee(address _from, uint _id, uint _value, uint _feeAmount, address _tokenAddress) internal {

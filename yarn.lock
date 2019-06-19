@@ -6328,10 +6328,10 @@ embark-reset@^4.0.0:
   dependencies:
     rimraf "2.6.3"
 
-embark-solc@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/embark-solc/-/embark-solc-4.0.2.tgz#c3ee068a14d0f046646067a299c696277f6a51aa"
-  integrity sha512-KKTyeEnvEhypSzs5s9ZlEeHWCn/WfLWSJiQFI0246OKDwF7WdZYrffXXpdq+Ps0TjW8VQg9covuqRpjFMfOUfg==
+embark-solc@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/embark-solc/-/embark-solc-4.0.3.tgz#2de3bd7d3c590883ac05ed7350c73d19482af10d"
+  integrity sha512-oHoxOeiqq9RvRbAtSm0K3LLF0OrXxQyPDSSZxaPxb2YXxx2Ak7ujFMlcANXEOiyR7EuNaYNrY7c/wJce37Jr4w==
   dependencies:
     async "^2.6.0"
     semver "^5.6.0"

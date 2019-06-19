@@ -27,7 +27,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         address _license,
         address _arbitrationLicense,
         address _metadataStore,
-        address _feeDestination,
+        address payable _feeDestination,
         uint _feeMilliPercent)
         Fees(_feeDestination, _feeMilliPercent)
         Arbitrable(_arbitrationLicense)
