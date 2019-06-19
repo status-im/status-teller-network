@@ -31,11 +31,15 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10]
+      args: ["$SNT", 10, "$StakingPool"]
     },
     ArbitrationLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10]
+      args: ["$SNT", 10, "$StakingPool"]
+    },
+    StakingPool: {
+      file: 'staking-pool/contracts/StakingPool.sol',
+      args: ["$SNT"]
     },
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
