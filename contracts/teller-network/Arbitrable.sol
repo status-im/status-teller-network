@@ -1,10 +1,18 @@
 /* solium-disable security/no-block-members */
-
-pragma solidity ^0.5.8;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "./License.sol";
 
+/**
+ * Arbitrable
+ * @dev Utils for management of disputes
+ */
 contract Arbitrable {
+
+    enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
+
+    License public arbitratorLicenses;
+
     mapping(uint => ArbitrationCase) public arbitrationCases;
 
     struct ArbitrationCase {
@@ -20,22 +28,29 @@ contract Arbitrable {
     event ArbitrationRequired(uint escrowId, uint date);
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
 
-    enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
-
-    License public arbitratorLicenses;
-
+    /**
+     * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
+     */
     constructor(address _arbitratorLicenses) public {
         arbitratorLicenses = License(_arbitratorLicenses);
     }
 
-
-    // Abstract functions
+    /**
+     * @param _escrowId Id of the escrow with an open dispute
+     * @param _releaseFunds Release funds to the buyer
+     * @param _arbitrator Address of the arbitrator solving the dispute
+     * @dev Abstract contract used to perform actions after a dispute has been settled
+     */
     function solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal;
-    function getArbitrator(uint _escrowId) public view returns(address);
-
 
     /**
-     * @notice arbitration exists
+     * @notice Get arbitrator of an escrow
+     * @return address Arbitrator address
+     */
+    function getArbitrator(uint _escrowId) public view returns(address);
+
+    /**
+     * @notice Determine if a dispute exists/existed for an escrow
      * @param _escrowId Escrow to verify
      * @return bool result
      */
@@ -43,25 +58,23 @@ contract Arbitrable {
         return arbitrationCases[_escrowId].open || arbitrationCases[_escrowId].result != ArbitrationResult.UNSOLVED;
     }
 
-
     /**
-     * @notice cancel arbitration
+     * @notice Cancel arbitration
      * @param _escrowId Escrow to cancel
      */
     function cancelArbitration(uint _escrowId) public {
         require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open,
                 "Arbitration already solved or not open");
-        
+
         delete arbitrationCases[_escrowId];
 
         emit ArbitrationCanceled(_escrowId, block.timestamp);
     }
 
-
     function openDispute(uint _escrowId, address _openBy, string memory motive) internal {
-        require(!arbitrationCases[_escrowId].open, "Arbitration already open");
-        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Arbitration already solved");
+        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
+                "Arbitration already solved or has been opened before");
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
@@ -74,7 +87,6 @@ contract Arbitrable {
         emit ArbitrationRequired(_escrowId, block.timestamp);
     }
 
-
     /**
      * @notice Set arbitration result in favour of the buyer or seller and transfer funds accordingly
      * @param _escrowId Id of the escrow
@@ -86,7 +98,6 @@ contract Arbitrable {
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
         require(arbitratorLicenses.isLicenseOwner(msg.sender), "Only arbitrators can invoke this function");
         require(getArbitrator(_escrowId) == msg.sender, "Invalid escrow arbitrator");
-
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;
@@ -105,5 +116,4 @@ contract Arbitrable {
             solveDispute(_escrowId, false, msg.sender);
         }
     }
-
 }
