@@ -4,7 +4,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
-import {addressCompare} from '../../utils/address';
+import {addressCompare, zeroAddress} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
@@ -25,7 +25,6 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
-import { zeroAddress } from '../../utils/address';
 
 const { toBN } = web3.utils;
 
@@ -60,15 +59,12 @@ export function *fundEscrow({value, escrowId, expirationTime, token}) {
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount = toBN(value).div(toBN(divider));
+  const totalAmount = toBN(value).add(feeAmount);
 
-  const toSend = Escrow.methods.fund(escrowId, value, feeAmount.toString(), expirationTime);
+  const toSend = Escrow.methods.fund(escrowId, value.toString(), feeAmount.toString(), expirationTime.toString());
 
-  if (token !== zeroAddress) {
-    // Remove value as token escrows should not send an ETH value
-    value = 0;
-  }
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
-    value,
+    value: (token !== zeroAddress) ? '0' : totalAmount.toString(),
     escrowId,
     expirationTime,
     toSend

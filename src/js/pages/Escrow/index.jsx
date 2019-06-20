@@ -106,8 +106,9 @@ class Escrow extends Component {
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
+    const isETH = escrow && escrow.offer.asset === zeroAddress;
 
-    if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!tokenAllowance && tokenAllowance !== 0)) {
+    if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETH && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
     }
 
@@ -123,13 +124,12 @@ class Escrow extends Component {
     const canRelay = escrowF.helpers.canRelay(lastActivity);
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
-    const isETH = token.address === zeroAddress;
     const isBuyer = addressCompare(escrow.buyer, address);
     const offer = this.getOffer(escrow, isBuyer);
     offer.token = token;
 
     const requiredBalance = this.calculateRequiredBalance();
-    const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredBalance)));
+    const isTokenApproved = (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredBalance)));
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredBalance).lt(toBN(tokenAllowance));
 
     let showFundButton = isTokenApproved;
@@ -166,7 +166,8 @@ class Escrow extends Component {
                                         fundEscrow={fundEscrow}
                                         releaseEscrow={releaseEscrow}
                                         arbitrationDetails={arbitrationDetails}
-                                        feeMilliPercent={feeMilliPercent}/> }
+                                        feeMilliPercent={feeMilliPercent}
+                                        isETH={isETH}/> }
 
         <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
