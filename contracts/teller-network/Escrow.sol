@@ -177,7 +177,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
         address token = metadataStore.getAsset(transactions[_escrowId].offerId);
-
         if(token == address(0)){
             require(msg.value == (_tokenAmount + _feeAmount), "ETH amount is required");
         } else {

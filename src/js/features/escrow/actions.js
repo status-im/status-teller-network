@@ -1,3 +1,4 @@
+/*global web3*/
 import {
   CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
@@ -36,7 +37,8 @@ export const fundEscrow = (escrow) => {
     type: FUND_ESCROW,
     value,
     escrowId: escrow.escrowId,
-    expirationTime
+    expirationTime,
+    token: web3.utils.toChecksumAddress(escrow.offer.asset)
   };
 
   /*

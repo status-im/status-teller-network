@@ -25,6 +25,7 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
+import { zeroAddress } from '../../utils/address';
 
 const { toBN } = web3.utils;
 
@@ -55,12 +56,17 @@ export function *onPayEscrow() {
   yield takeEvery(PAY_ESCROW, doTransaction.bind(null, PAY_ESCROW_PRE_SUCCESS, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED));
 }
 
-export function *fundEscrow({value, escrowId, expirationTime}) {
+export function *fundEscrow({value, escrowId, expirationTime, token}) {
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount = toBN(value).div(toBN(divider));
 
   const toSend = Escrow.methods.fund(escrowId, value, feeAmount.toString(), expirationTime);
+
+  if (token !== zeroAddress) {
+    // Remove value as token escrows should not send an ETH value
+    value = 0;
+  }
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
     value,
     escrowId,

@@ -46,8 +46,6 @@ function reducer(state = DEFAULT_STATE, action) {
         escrows: escrowsClone
       };
     case FUND_ESCROW_FAILED:
-      console.log(action);
-      console.log('clone', escrowsClone);
       escrowsClone[escrowId].fundStatus = States.failed;
       return {
         ...state,
