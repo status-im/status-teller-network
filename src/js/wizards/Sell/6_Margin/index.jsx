@@ -23,7 +23,7 @@ class Margin extends Component {
       ready: false
     };
     this.validate(props.seller.margin);
-    props.getFee();
+    props.getFeeMilliPercent();
 
     props.footer.onPageChange(() => {
       props.setMargin(this.state.margin);
@@ -84,7 +84,7 @@ class Margin extends Component {
                               currency={this.props.seller.currency}
                               margin={this.state.margin}
                               marginChange={this.marginChange}
-                              fee={this.props.fee} />
+                              feeMilliPercent={this.props.feeMilliPercent} />
         );
       default:
         return <Fragment/>;
@@ -104,8 +104,8 @@ Margin.propTypes = {
   resetAddOfferStatus: PropTypes.func,
   wizard: PropTypes.object,
   footer: PropTypes.object,
-  getFee: PropTypes.func,
-  fee: PropTypes.string,
+  getFeeMilliPercent: PropTypes.func,
+  feeMilliPercent: PropTypes.string,
   txHash: PropTypes.string
 };
 
@@ -114,7 +114,7 @@ const mapStateToProps = state => ({
   addOfferStatus: metadata.selectors.getAddOfferStatus(state),
   token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
   prices: prices.selectors.getPrices(state),
-  fee: escrow.selectors.getFee(state),
+  feeMilliPercent: escrow.selectors.feeMilliPercent(state),
   txHash: metadata.selectors.getAddOfferTx(state)
 });
 
@@ -124,7 +124,7 @@ export default connect(
     setMargin: newSeller.actions.setMargin,
     addOffer: metadata.actions.addOffer,
     resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
-    getFee: escrow.actions.getFee
+    getFeeMilliPercent: escrow.actions.getFeeMilliPercent
 
   }
 )(withRouter(Margin));

@@ -19,7 +19,6 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  fee: '0',
   lastActivity: 0,
   newEscrow: null,
   changedEscrow: null,

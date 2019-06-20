@@ -229,7 +229,6 @@ const mapStateToProps = (state, props) => {
     escrowId:  escrowId,
     escrow: theEscrow,
     arbitration: arbitration.selectors.getArbitration(state) || {},
-    fee: escrowF.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     approvalTxHash: approval.selectors.txHash(state),
@@ -249,7 +248,6 @@ export default connect(
   mapStateToProps,
   {
     getEscrow: escrowF.actions.getEscrow,
-    getFee: escrowF.actions.getFee,
     getSNTAllowance: approval.actions.getSNTAllowance,
     getTokenAllowance: approval.actions.getTokenAllowance,
     getFeeMilliPercent: escrowF.actions.getFeeMilliPercent,
