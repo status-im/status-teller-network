@@ -180,7 +180,7 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.create(signature, ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount, feeAmount, expirationTime).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount, expirationTime).send({from: accounts[0], value: tradeAmount + feeAmount});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
     });
@@ -214,7 +214,7 @@ contract("Escrow", function() {
       assert(!!created, "Created() not triggered");
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount, feeAmount, expirationTime).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount, expirationTime).send({from: accounts[0]});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
 
@@ -238,7 +238,7 @@ contract("Escrow", function() {
 
     it("A seller cannot cancel an unexpired funded escrow", async () => {
       await StandardToken.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -252,7 +252,7 @@ contract("Escrow", function() {
 
     it("A seller can cancel their ETH escrows", async () => {
       await StandardToken.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -274,7 +274,7 @@ contract("Escrow", function() {
       const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
       const contractBalanceBeforeCreation = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
       created = receipt.events.Created;
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
@@ -305,7 +305,7 @@ contract("Escrow", function() {
 
     it("A buyer can cancel an escrow that has been funded", async () => {
       await StandardToken.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
@@ -314,7 +314,7 @@ contract("Escrow", function() {
 
     it("An escrow can only be canceled once", async () => {
       await StandardToken.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       await expireTransaction();
@@ -329,7 +329,7 @@ contract("Escrow", function() {
     });
 
     it("Accounts different from the escrow owner cannot cancel escrows", async() => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
       try {
@@ -341,7 +341,7 @@ contract("Escrow", function() {
     });
 
     it("A seller cannot cancel an escrow marked as paid", async () => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -359,7 +359,7 @@ contract("Escrow", function() {
 
   describe("Releasing escrows", async () => {
     beforeEach(async() => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1],ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1],ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
     });
 
@@ -396,7 +396,7 @@ contract("Escrow", function() {
 
     it("Escrow owner can release token funds to the buyer", async () => {
       await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
       const buyerBalanceBeforeEscrow = await StandardToken.methods.balanceOf(accounts[1]).call();
@@ -451,7 +451,7 @@ contract("Escrow", function() {
 
   describe("Buyer notifies payment of escrow", async () => {
     beforeEach(async() => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       escrowId = receipt.events.Created.returnValues.escrowId;
     });
 
@@ -483,7 +483,7 @@ contract("Escrow", function() {
       const publicKey  = EthUtil.privateToPublic(Buffer.from(privateKey, 'hex'));
       const address = '0x' + EthUtil.pubToAddress(publicKey).toString('hex');
 
-      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -520,7 +520,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.unpause().send({from: accounts[0]});
       }
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       await Escrow.methods.release(escrowId).send({from: accounts[0]});
@@ -588,7 +588,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.unpause().send({from: accounts[0]});
       }
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
     });
@@ -617,7 +617,7 @@ contract("Escrow", function() {
           receipt = await Escrow.methods.unpause().send({from: seller});
         }
 
-        receipt = await Escrow.methods.create_and_fund(buyer, ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: seller, value: tradeAmount + feeAmount});
+        receipt = await Escrow.methods.create_and_fund(buyer, ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: seller, value: tradeAmount + feeAmount});
         created = receipt.events.Created;
         escrowId = created.returnValues.escrowId;
         await Escrow.methods.release(escrowId).send({from: seller});
@@ -636,7 +636,7 @@ contract("Escrow", function() {
 
   describe("Transaction arbitration case", async() => {
     beforeEach(async() => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
     });
@@ -675,7 +675,7 @@ contract("Escrow", function() {
 
       await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       const created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -791,7 +791,7 @@ contract("Escrow", function() {
       const ethFeeBalanceBefore = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
       const totalEthBefore = await web3.eth.getBalance(Escrow.options.address);
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
       const totalEthAfter = await web3.eth.getBalance(Escrow.options.address);
@@ -819,13 +819,13 @@ contract("Escrow", function() {
 
   describe("Other operations", async () => {
     it("Paused contract allows withdrawal by owner only on active escrows", async () => {
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       const releasedEscrowId = receipt.events.Created.returnValues.escrowId;
 
       await Escrow.methods.release(releasedEscrowId).send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       escrowId = receipt.events.Created.returnValues.escrowId;
 
@@ -836,7 +836,7 @@ contract("Escrow", function() {
 
       await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, feeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
+      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0]});
 
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 

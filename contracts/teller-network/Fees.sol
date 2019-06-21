@@ -78,22 +78,21 @@ contract Fees is Ownable {
      * @param _from Address from where the fees are being extracted
      * @param _id Escrow id or element identifier to mark as paid
      * @param _value Value sold in the escrow
-     * @param _feeAmount Fee amount calculated by the front-end
      * @param _tokenAddress Address of the token sold in the escrow
      * @dev This will only transfer funds if the fee  has not been paid
      */
-    function payFee(address _from, uint _id, uint _value, uint _feeAmount, address _tokenAddress) internal {
+    function payFee(address _from, uint _id, uint _value, address _tokenAddress) internal {
         if (feePaid[_id]) return;
 
         feePaid[_id] = true;
-        uint amount = getFeeFromAmount(_value);
-        require(amount == _feeAmount, "Fee amount needs to match the percentage");
-        feeTokenBalances[_tokenAddress] += amount;
+        uint feeAmount = getFeeFromAmount(_value);
+        feeTokenBalances[_tokenAddress] += feeAmount;
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.allowance(_from, address(this)) >= amount, "Allowance not set for this contract for specified fee");
-            require(tokenToPay.transferFrom(_from, address(this), amount), "Unsuccessful token transfer");
+            require(tokenToPay.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
+        } else {
+            require(msg.value == (_value + feeAmount), "ETH amount is required");
         }
     }
 }

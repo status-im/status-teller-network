@@ -96,7 +96,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
       let gas;
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, feeAmount, expirationTime, FIAT, 13555);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
       const receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
       const created = receipt.events.Created;
@@ -120,7 +120,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, feeAmount, expirationTime, FIAT, 13555);
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
       receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
       const created = receipt.events.Created;

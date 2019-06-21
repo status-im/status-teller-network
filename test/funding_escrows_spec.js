@@ -118,7 +118,7 @@ contract("Escrow Funding", function() {
       // Still requires 2 transactions, because approveAndCall cannot send ETH
       // TODO: test if inside the contract we can encode the call, and call approveAndCall
 
-      receipt = await Escrow.methods.fund(escrowId, fundAmount, feeAmount, expirationTime)
+      receipt = await Escrow.methods.fund(escrowId, fundAmount, expirationTime)
                                     .send({from: accounts[0], value});
 
     });
@@ -245,7 +245,7 @@ contract("Escrow Funding", function() {
     const tokenApprovalAndBuildTrx = async (token, escrowId) => {
       const tokenAllowance = await token.methods.allowance(accounts[0], Escrow.options.address).call();
 
-      const toSend = Escrow.methods.fund(escrowId, fundAmount, feeAmount, expirationTime);
+      const toSend = Escrow.methods.fund(escrowId, fundAmount, expirationTime);
       // const encodedCall = toSend.encodeABI();
 
       let approvalPromises = [];

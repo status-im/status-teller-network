@@ -28,6 +28,9 @@ import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
 
 const { toBN } = web3.utils;
 
+window.MetadataStore = MetadataStore;
+window.Escrow = Escrow;
+
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
     user.signature,
@@ -61,7 +64,7 @@ export function *fundEscrow({value, escrowId, expirationTime, token}) {
   const feeAmount = toBN(value).div(toBN(divider));
   const totalAmount = toBN(value).add(feeAmount);
 
-  const toSend = Escrow.methods.fund(escrowId, value.toString(), feeAmount.toString(), expirationTime.toString());
+  const toSend = Escrow.methods.fund(escrowId, value.toString(), expirationTime.toString());
 
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
     value: (token !== zeroAddress) ? '0' : totalAmount.toString(),
