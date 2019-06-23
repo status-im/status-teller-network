@@ -52,8 +52,9 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Requires value to be equal to the price of the license.
      *      The msg.sender must not already own a license.
      */
-    function buy() public {
-        buyFrom(msg.sender);
+    function buy() public returns(uint) {
+        uint id =buyFrom(msg.sender);
+        return id;
     }
 
     /**
@@ -61,7 +62,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Requires value to be equal to the price of the license.
      *      The _owner must not already own a license.
      */
-    function buyFrom(address _owner) private {
+    function buyFrom(address _owner) private returns(uint) {
         require(licenseDetails[_owner].creationTime == 0, "License already bought");
         require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
 
@@ -74,6 +75,7 @@ contract License is Ownable, ApproveAndCallFallBack {
         idxLicenseOwners[_owner] = idx;
 
         emit Bought(_owner, price);
+        return idx;
     }
 
     /**
