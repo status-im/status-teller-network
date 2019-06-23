@@ -74,6 +74,7 @@ contract Arbitrable {
     }
 
     function openDispute(uint _escrowId, address _openBy, string memory motive) internal {
+        // TODO: add check for 
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 

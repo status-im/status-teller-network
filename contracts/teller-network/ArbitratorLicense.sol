@@ -2,6 +2,10 @@ pragma solidity ^0.5.8;
 
 import "./License.sol";
 
+/**
+* @title ArbitratorLicense
+* @dev Contract for management of an arbitrator license
+*/
 contract ArbitratorLicense is License{
 
 	struct ArbitratorLicenseDetails {
@@ -14,7 +18,13 @@ contract ArbitratorLicense is License{
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
     
     event ArbitratorLicensed(uint id, bool acceptAny);
+    event SellerAccepted(address arbitrator, address seller);
 
+
+    /**
+     * @notice Buy an arbitrator license
+     * @param _acceptAny indicates does arbitrator allow to accept any seller/choose sellers 
+     */
     function buyLicense(bool _acceptAny) public {
     	uint _id = buy();
     	address[] memory addresses;
@@ -29,8 +39,19 @@ contract ArbitratorLicense is License{
         emit ArbitratorLicensed(_id, _acceptAny);
     }
 
-    // func acceptSeller
+    /**
+     * @notice Allows arbitrator to accept a seller
+     * @param _seller address of an accepted seller
+     */
+    function acceptSeller(address _seller) public {
+		require(arbitratorlicenseDetails[msg.sender].isActive, "Arbiter should have a valid license");   	
+ 		require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbiter already acceps all cases");
+
+ 		arbitratorlicenseDetails[msg.sender].accepted.push(_seller);
+ 		emit SellerAccepted(msg.sender, _seller);
+    }
 
     // func getLicense
     
+    // func cancel license
 }
