@@ -100,17 +100,6 @@ contract("MetadataStore", function () {
     }
   });
 
-  it("should allow to update a user and offer", async function () {
-    await MetadataStore.methods.updateOffer(0, SNT.address, "0x00", "Paris", "EUR", "Iuri", [0], 1, accounts[9]).send();
-    const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '1');
-    const user = await MetadataStore.methods.users(0).call();
-    assert.strictEqual(user.location, 'Paris');
-
-    const offer = await MetadataStore.methods.offers(0).call();
-    assert.strictEqual(offer.currency, 'EUR');
-  });
-
   it("should allow to update a user", async function () {
     await MetadataStore.methods.updateUser(SNT.address, "Montreal", "Anthony").send();
     const usersSize = await MetadataStore.methods.usersSize().call();
