@@ -5,16 +5,19 @@ import "./License.sol";
 contract ArbitratorLicense is License{
 
 	struct ArbitratorLicenseDetails {
-        LicenseDetails licenseDetails;
+        // LicenseDetails licenseDetails;
+        uint id; 
         bool acceptAny; // accept any seller
         address[] accepted; // addresses of accepted sellers
     }
 
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
     
-    event ArbitratorLicensed(address buyer, uint256 price, bool acceptAny);
+    event ArbitratorLicensed(uint id, address buyer, uint256 price, bool acceptAny);
 
-
+    // TODO:
+    // func buyLicense
+    // func getLicense
 
 
 }

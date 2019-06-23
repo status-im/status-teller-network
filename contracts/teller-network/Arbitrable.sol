@@ -1,7 +1,8 @@
 /* solium-disable security/no-block-members */
 pragma solidity >=0.5.0 <0.6.0;
 
-import "./License.sol";
+// import "./License.sol";
+import "./ArbitratorLicense.sol";
 
 /**
  * Arbitrable
@@ -11,7 +12,7 @@ contract Arbitrable {
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
 
-    License public arbitratorLicenses;
+    ArbitratorLicense public arbitratorLicenses;
 
     mapping(uint => ArbitrationCase) public arbitrationCases;
 
@@ -32,7 +33,7 @@ contract Arbitrable {
      * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
      */
     constructor(address _arbitratorLicenses) public {
-        arbitratorLicenses = License(_arbitratorLicenses);
+        arbitratorLicenses = ArbitratorLicense(_arbitratorLicenses);
     }
 
     /**
