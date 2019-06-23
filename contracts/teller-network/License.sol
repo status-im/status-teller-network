@@ -63,7 +63,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      */
     function buyFrom(address _owner) private {
         require(licenseDetails[_owner].creationTime == 0, "License already bought");
-        require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
+        require(token.transferFrom(_owner, burnAddress, price), "Unsuccessful token transfer");
 
         licenseDetails[_owner] = LicenseDetails({
             price: price,
@@ -92,24 +92,6 @@ contract License is Ownable, ApproveAndCallFallBack {
      */
     function getNumLicenseOwners() public view returns (uint256) {
         return licenseOwners.length;
-    }
-
-    /**
-     * @notice Withdraw not reserved tokens
-     * @param _token Address of ERC20 withdrawing excess, or address(0) if want ETH.
-     * @param _beneficiary Address to send the funds.
-     * @dev TODO: determine if we will send the fee to some address, if there's a slashing mechanism, or if
-     *      seller can forfeit their license, and remove this function accordinglu
-     **/
-    function withdrawExcessBalance(address _token, address payable _beneficiary) external onlyOwner {
-        require(_beneficiary != address(0), "Cannot burn token");
-        if (_token == address(0)) {
-            _beneficiary.transfer(address(this).balance);
-        } else {
-            ERC20Token excessToken = ERC20Token(_token);
-            uint256 amount = excessToken.balanceOf(address(this));
-            excessToken.transfer(_beneficiary, amount);
-        }
     }
 
     /**
