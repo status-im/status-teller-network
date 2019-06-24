@@ -1,3 +1,4 @@
+
 pragma solidity ^0.5.8;
 
 import "./License.sol";
@@ -30,7 +31,7 @@ contract ArbitratorLicense is License{
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
-    event SellerAccepted(address arbitrator, address seller);
+    event RequestAccepted(address arbitrator, address seller);
 
     /**
      * @notice Buy an arbitrator license
@@ -50,33 +51,43 @@ contract ArbitratorLicense is License{
         emit ArbitratorLicensed(_id, _acceptAny);
     }
 
+
     /**
      * @notice Allows arbitrator to accept a seller
-     * @param _seller address of an accepted seller
+     * @param _arbitrator address of a licensed arbitrator
      */
-    function acceptSeller(address _seller) public {
-		require(arbitratorlicenseDetails[msg.sender].isActive, "Arbitrator should have a valid license");   	
- 		require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already acceps all cases");
-
- 		arbitratorlicenseDetails[msg.sender].accepted.push(_seller);
- 		emit SellerAccepted(msg.sender, _seller);
-    }
-
     function requestArbitrator(address _arbitrator) public {
-        require(arbitratorlicenseDetails[_arbitrator].isActive, "Arbitrator should have a valid license");
-        // TODO: add should be a licensed seller
-        uint _id = requests.length++;
+       require(arbitratorlicenseDetails[_arbitrator].isActive, "Arbitrator should have a valid license");
+       require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already acceps all cases");
+       require(isLicenseOwner(msg.sender), "Must be a valid seller to fund escrow transactions");
+       
+       uint _id = requests.length++;
 
-        requests[_id] = Requests({
+       requests[_id] = Requests({
             seller: msg.sender,
             arbitrator: _arbitrator,    
             status:  RequestStatus.AWAIT         
-        });
-        emit ArbitratorRequested(_id, msg.sender, _arbitrator );
+       });
+       emit ArbitratorRequested(_id, msg.sender, _arbitrator );
+    }
 
+    /**
+     * @notice Allows arbitrator to accept a seller
+     * @param _seller address of an accepted seller
+     * @param _id request id     
+     */
+    function acceptRequest(address _seller, uint _id) public {
+        require(arbitratorlicenseDetails[msg.sender].isActive, "Arbitrator should have a valid license");       
+        require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already acceps all cases");
+        
+        requests[_id].status = RequestStatus.ACCEPTED;
+
+        arbitratorlicenseDetails[msg.sender].accepted.push(_seller);
+        emit RequestAccepted(msg.sender, _seller);
     }
 
     // TODO:
+    // func reject seller
     // func deactivate license
     // func getLicense
 }
