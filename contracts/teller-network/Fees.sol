@@ -10,13 +10,10 @@ import "../common/Ownable.sol";
 contract Fees is Ownable {
     address payable public feeDestination;
     uint public feeMilliPercent;
+    uint public feeBalance;
     mapping(address => uint) public feeTokenBalances;
-    mapping(uint => bool) public feePaid;
 
-    event FeeDestinationChanged(address payable);
-    event FeeMilliPercentChanged(uint amount);
     event FeesWithdrawn(uint amount, address token);
-    event MyEvent(uint fees, address destination, uint balance);
 
     /**
      * @param _feeDestination Address to send the fees once withdraw is called
@@ -29,28 +26,6 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Set Fee Destination Address
-     * @param _addr New address
-     * @dev Can only be called by the owner of the contract
-     *      TODO: if the contract will be changed to remove ownership, remove this function
-     */
-    function setFeeDestinationAddress(address payable _addr) public onlyOwner {
-        feeDestination = _addr;
-        emit FeeDestinationChanged(_addr);
-    }
-
-    /**
-     * @notice Set Fee Amount
-     * @param _feeMilliPercent New millipercent
-     * @dev Can only be called by the owner of the contract
-     *      TODO: if the contract will be changed to remove ownership, remove this function
-     */
-    function setFeeAmount(uint _feeMilliPercent) public onlyOwner {
-        feeMilliPercent = _feeMilliPercent;
-        emit FeeMilliPercentChanged(_feeMilliPercent);
-    }
-
-    /**
      * @notice Withdraw fees by sending them to the fee destination address
      */
     function withdrawFees(address _tokenAddress) public {
@@ -59,7 +34,6 @@ contract Fees is Ownable {
         if (_tokenAddress == address(0)) {
             require(address(this).balance >= fees, "Not enough balance");
             feeDestination.transfer(fees);
-            emit MyEvent(fees, feeDestination, address(this).balance);
         } else {
             ERC20Token tokenToWithdraw = ERC20Token(_tokenAddress);
             require(tokenToWithdraw.transfer(feeDestination, fees), "Error transferring fees");
@@ -76,23 +50,19 @@ contract Fees is Ownable {
     /**
      * @notice Pay fees for a transaction or element id
      * @param _from Address from where the fees are being extracted
-     * @param _id Escrow id or element identifier to mark as paid
      * @param _value Value sold in the escrow
      * @param _tokenAddress Address of the token sold in the escrow
      * @dev This will only transfer funds if the fee  has not been paid
      */
-    function payFee(address _from, uint _id, uint _value, address _tokenAddress) internal {
-        if (feePaid[_id]) return;
-
-        feePaid[_id] = true;
+    function payFee(address _from, uint _value, address _tokenAddress) internal {
         uint feeAmount = getFeeFromAmount(_value);
         feeTokenBalances[_tokenAddress] += feeAmount;
 
         if (_tokenAddress != address(0)) {
-            ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
+            require(ERC20Token(_tokenAddress).transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
         } else {
             require(msg.value == (_value + feeAmount), "ETH amount is required");
         }
     }
+    
 }
