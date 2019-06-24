@@ -4,7 +4,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
-import {addressCompare} from '../../utils/address';
+import {addressCompare, zeroAddress} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
@@ -18,11 +18,18 @@ import {
   OPEN_CASE_SIGNATURE, OPEN_CASE_SIGNATURE_SUCCEEDED, OPEN_CASE_SIGNATURE_FAILED,
   SIGNATURE_PAYMENT, SIGNATURE_OPEN_CASE, GET_ARBITRATION_BY_ID_FAILED,
   USER_RATING, USER_RATING_FAILED, USER_RATING_SUCCEEDED, ADD_USER_RATING,
-  GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED, GET_FEE, GET_FEE_SUCCEEDED, GET_FEE_FAILED,
-  WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED, GET_LAST_ACTIVITY, GET_LAST_ACTIVITY_SUCCEEDED, GET_LAST_ACTIVITY_FAILED
+  GET_ESCROW, GET_ESCROW_FAILED, GET_ESCROW_SUCCEEDED,
+  WATCH_ESCROW, ESCROW_EVENT_RECEIVED, WATCH_ESCROW_CREATIONS, ESCROW_CREATED_EVENT_RECEIVED,
+  GET_LAST_ACTIVITY, GET_LAST_ACTIVITY_SUCCEEDED, GET_LAST_ACTIVITY_FAILED,
+  GET_FEE_MILLI_PERCENT, GET_FEE_MILLI_PERCENT_FAILED, GET_FEE_MILLI_PERCENT_SUCCEEDED
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
+
+const { toBN } = web3.utils;
+
+window.MetadataStore = MetadataStore;
+window.Escrow = Escrow;
 
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
@@ -51,8 +58,24 @@ export function *onPayEscrow() {
   yield takeEvery(PAY_ESCROW, doTransaction.bind(null, PAY_ESCROW_PRE_SUCCESS, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED));
 }
 
+export function *fundEscrow({value, escrowId, expirationTime, token}) {
+  const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+  const divider = 100 * (feeMilliPercent / 1000);
+  const feeAmount = toBN(value).div(toBN(divider));
+  const totalAmount = toBN(value).add(feeAmount);
+
+  const toSend = Escrow.methods.fund(escrowId, value.toString(), expirationTime.toString());
+
+  yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
+    value: (token !== zeroAddress) ? '0' : totalAmount.toString(),
+    escrowId,
+    expirationTime,
+    toSend
+  });
+}
+
 export function *onFundEscrow() {
-  yield takeEvery(FUND_ESCROW, doTransaction.bind(null, FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED));
+  yield takeEvery(FUND_ESCROW, fundEscrow);
 }
 
 export function *payEscrowSignature({escrowId}) {
@@ -185,6 +208,19 @@ export function *doGetEscrow({escrowId}) {
 export function *onGetEscrow() {
   yield takeEvery(GET_ESCROW, doGetEscrow);
 }
+export function *doGetFeeMilliPercent() {
+  try {
+    const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+    yield put({type: GET_FEE_MILLI_PERCENT_SUCCEEDED, feeMilliPercent});
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_FEE_MILLI_PERCENT_FAILED, error: error.message});
+  }
+}
+
+export function *onGetFeeMilliPercent() {
+  yield takeEvery(GET_FEE_MILLI_PERCENT, doGetFeeMilliPercent);
+}
 
 export function *doGetEscrowByEvent({result}) {
   try {
@@ -197,20 +233,6 @@ export function *doGetEscrowByEvent({result}) {
 
 export function *onGetEscrowAfterEvent() {
   yield takeEvery(ESCROW_CREATED_EVENT_RECEIVED, doGetEscrowByEvent);
-}
-
-export function *onGetFee() {
-  yield takeEvery(GET_FEE, doGetFee);
-}
-
-export function *doGetFee() {
-  try {
-    const fee = yield Escrow.methods.feeAmount().call();
-    return yield put({type: GET_FEE_SUCCEEDED, fee});
-  } catch (error) {
-    console.error(error);
-    yield put({type: GET_FEE_FAILED, error: error.message});
-  }
 }
 
 export function *checkUserRating({address}) {
@@ -320,5 +342,6 @@ export function *onWatchAddOfferSuccess() {
 export default [
   fork(onCreateEscrow), fork(onLoadEscrows), fork(onGetEscrow), fork(onReleaseEscrow), fork(onCancelEscrow), fork(onUserRating), fork(onAddUserRating),
   fork(onRateTx), fork(onPayEscrow), fork(onPayEscrowSignature), fork(onOpenCase), fork(onOpenCaseSignature), fork(onOpenCaseSuccess),
-  fork(onGetFee), fork(onFundEscrow), fork(onWatchEscrow), fork(onWatchEscrowCreations), fork(onGetEscrowAfterEvent), fork(onGetLastActivity), fork(onWatchAddOfferSuccess)
+  fork(onFundEscrow), fork(onWatchEscrow), fork(onWatchEscrowCreations), fork(onGetEscrowAfterEvent),
+  fork(onGetLastActivity), fork(onWatchAddOfferSuccess), fork(onGetFeeMilliPercent)
 ];

@@ -51,7 +51,6 @@ export const getEscrowById = (state, escrowId) => {
   };
 };
 
-export const getFee = state => state.escrow.fee;
 export const txHash = state => state.escrow.txHash;
 
 export const newEscrow = state => state.escrow.newEscrow;
@@ -85,3 +84,5 @@ export const signature = state => {
 };
 
 export const getLastActivity = state => state.escrow.lastActivity;
+
+export const feeMilliPercent = state => state.escrow.feeMilliPercent;

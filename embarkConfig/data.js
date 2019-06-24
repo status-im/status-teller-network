@@ -1,4 +1,4 @@
-module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) => {
+module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
 
@@ -85,6 +85,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
     const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
     const FIAT = 0;
     const val = 1000;
+    const feeAmount = Math.round(val * (feeMilliPercent / (100 * 1000)));
 
     const buyerAddress = addresses[offerStartIndex];
     const escrowStartIndex = offerStartIndex + 1;
@@ -95,13 +96,9 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
 
       let gas;
 
-      const approval = deps.contracts.SNT.methods.approve(deps.contracts.Escrow.options.address, feeAmount);
-      gas = await approval.estimateGas({from: creatorAddress});
-      await approval.send({from: creatorAddress, gas: gas + 1000});
-
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
-      gas = await creation.estimateGas({from: creatorAddress, value: val});
-      const receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
+      gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
+      const receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
       const created = receipt.events.Created;
       const escrowId = created.returnValues.escrowId;
 
@@ -123,13 +120,9 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeAmount, deps) 
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;
 
-      const approval = deps.contracts.SNT.methods.approve(deps.contracts.Escrow.options.address, feeAmount);
-      gas = await approval.estimateGas({from: creatorAddress});
-      await approval.send({from: creatorAddress, gas: gas + 1000});
-
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, 123, FIAT, 13555);
-      gas = await creation.estimateGas({from: creatorAddress, value: val});
-      receipt = await creation.send({from: creatorAddress, value: val, gas: gas + 1000});
+      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
+      gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
+      receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
       const created = receipt.events.Created;
       const escrowId = created.returnValues.escrowId;
 

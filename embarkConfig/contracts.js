@@ -2,7 +2,7 @@ const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 
 
-const FEE_AMOUNT = "1000000000000000000"; // 1 * Math.pow(10, 18)
+const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
 
 const dataMigration = require('./data.js');
@@ -91,7 +91,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
         deps: ['RelayHub'],
         onDeploy: [
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
@@ -242,7 +242,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT)
   },
 
   // merges with the settings in default
@@ -267,7 +267,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
     dappConnection: ["$WEB3"]
   },
 
@@ -275,7 +275,7 @@ module.exports = {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
       Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_MILLI_PERCENT],
         deps: ['RelayHub'],
         onDeploy: [
           "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
@@ -305,7 +305,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
     dappConnection: ["$WEB3"]
   },
 

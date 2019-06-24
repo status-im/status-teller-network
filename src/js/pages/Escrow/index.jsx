@@ -13,7 +13,6 @@ import OpenChat from './components/OpenChat';
 import Profile from './components/Profile';
 import OpenDispute from './components/OpenDispute';
 import Loading from '../../components/Loading';
-import ApproveSNTFunds from './components/ApproveSNTFunds';
 import ApproveTokenFunds from './components/ApproveTokenFunds';
 
 import {zeroAddress, addressCompare} from '../../utils/address';
@@ -33,32 +32,33 @@ import ErrorInformation from "../../components/ErrorInformation";
 const {toBN} = web3.utils;
 
 class Escrow extends Component {
-  componentDidMount() {
-    this.loadData(this.props);
-  }
-
-  loadData(props) {
-    props.getEscrow(props.escrowId);
-    props.loadArbitration(props.escrowId);
-    props.getFee();
-    props.getSNTAllowance();
-    props.updateBalances();
-    props.getLastActivity(props.address);
-
-    if (props.escrow) props.getTokenAllowance(props.escrow.offer.asset);
+  constructor(props) {
+    super(props);
+    this.loadData();
   }
 
   state = {
     showApproveFundsScreen: false
+  };
+
+  loadData() {
+    this.props.getEscrow(this.props.escrowId);
+    this.props.loadArbitration(this.props.escrowId);
+    this.props.getSNTAllowance();
+    this.props.updateBalances();
+    this.props.getLastActivity(this.props.address);
+    this.props.getFeeMilliPercent();
+
+    if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset);
   }
 
   showApproveScreen = () => {
     this.setState({showApproveFundsScreen: true});
-  }
+  };
 
   componentDidUpdate(prevProps) {
     if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null)) { // Reload allowance information
-      this.loadData(this.props);
+      this.props.getTokenAllowance(this.props.escrow.offer.asset);
     }
     if (this.props.escrow && !this.watching && !this.props.escrowEvents[this.props.escrowId]) {
       if (this.props.escrow.status === escrowF.helpers.tradeStates.funded ||
@@ -71,16 +71,15 @@ class Escrow extends Component {
     }
   }
 
-  calculateRequiredSNT = () => {
-    const {escrow, tokens, fee} = this.props;
-    const asset = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
+  calculateRequiredBalance = () => {
+    const {escrow, feeMilliPercent} = this.props;
 
-    if(!addressCompare(asset.address, tokens.SNT.address)){
-      return fee; // Only snt fee must be paid
-    }
+    const tradeAmount = toBN(escrow.tradeAmount);
+    const divider = 100 * (feeMilliPercent / 1000);
+    const feeAmount =  tradeAmount.div(toBN(divider));
 
-    // SNT trade amount + fee
-    return toBN(fee).add(toBN(escrow.tradeAmount)).toString();
+    // trade amount + fee
+    return tradeAmount.add(feeAmount).toString();
   };
 
   handleApprove = (amount, token) => () => {
@@ -102,18 +101,19 @@ class Escrow extends Component {
   };
 
   render() {
-    let {escrow, arbitration, fee, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
+    let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
-      approvalError, cancelDispute, ethBalance, gasPrice} = this.props;
-    
-      const {showApproveFundsScreen} = this.state;
+      approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
-    if(!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration) {
-      return <Loading page={true} />;
+    const {showApproveFundsScreen} = this.state;
+    const isETH = escrow && escrow.offer.asset === zeroAddress;
+
+    if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETH && !tokenAllowance && tokenAllowance !== 0)) {
+      return <Loading page={true}/>;
     }
 
     if (escrow.releaseStatus === States.failed || escrow.payStatus === States.failed || escrow.rateStatus === States.failed || escrow.fundStatus === States.failed) {
-      return <ErrorInformation transaction={true} cancel={this.props.resetStatus}/>;
+      return <ErrorInformation transaction={true} cancel={() => this.props.resetStatus(escrowId)}/>;
     }
 
     if(loading) return <Loading mining={true} txHash={escrow.txHash || approvalTxHash}/>;
@@ -124,36 +124,28 @@ class Escrow extends Component {
     const canRelay = escrowF.helpers.canRelay(lastActivity);
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
-    const isETH = token.address === zeroAddress;
     const isBuyer = addressCompare(escrow.buyer, address);
     const offer = this.getOffer(escrow, isBuyer);
     offer.token = token;
 
-    const requiredSNT = this.calculateRequiredSNT();
-    const isSNTapproved = toBN(sntAllowance).gte(toBN(requiredSNT));
-    const shouldResetSNT = toBN(sntAllowance).gt(toBN(0)) && toBN(requiredSNT).lt(toBN(sntAllowance));
+    const requiredBalance = this.calculateRequiredBalance();
+    const isTokenApproved = (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredBalance)));
+    const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredBalance).lt(toBN(tokenAllowance));
 
-    const requiredToken = escrow.tradeAmount;
-    const isTokenApproved = token.address === zeroAddress || (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredToken)));
-    const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredToken).lt(toBN(tokenAllowance));
-
-    let showFundButton = isSNTapproved && isTokenApproved;
+    let showFundButton = isTokenApproved;
 
     // Show token approval UI
     if(showApproveFundsScreen) {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
-                                 retry={(!isSNTapproved || shouldResetSNT) ? this.handleApprove(requiredSNT, tokens.SNT.address) : this.handleApprove(requiredToken, token.address)}
+                                 retry={this.handleApprove(escrow.tradeAmount, token.address)}
                                  transaction={true} cancel={this.props.cancelApproval}/>;
       }
-      if (!isSNTapproved || shouldResetSNT) return <ApproveSNTFunds handleApprove={this.handleApprove(requiredSNT, tokens.SNT.address)} handleReset={this.handleReset(tokens.SNT.address)} sntAllowance={sntAllowance} requiredSNT={requiredSNT} shouldResetSNT={shouldResetSNT} />;
-
-      if(escrow.offer.asset !== zeroAddress) { // A token
-        if(addressCompare(escrow.offer.asset, tokens.SNT.address)){
-          showFundButton = true;
-        } else {
-          if(!isTokenApproved || shouldResetToken)  return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(requiredToken, token.address)} handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance} requiredToken={requiredToken} shouldResetToken={shouldResetToken} />;
-          showFundButton = true;
+      if (escrow.offer.asset !== zeroAddress) { // A token
+        if (!isTokenApproved || shouldResetToken) {
+          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tradeAmount, token.address)}
+                                    handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance}
+                                    requiredToken={requiredBalance} shouldResetToken={shouldResetToken}/>;
         }
       } else { // ETH
         showFundButton = true;
@@ -169,12 +161,13 @@ class Escrow extends Component {
 
         { !isBuyer && <CardEscrowSeller tokens={tokens}
                                         trade={escrow}
-                                        fee={fee}
                                         showFundButton={showFundButton}
                                         showApproveScreen={this.showApproveScreen}
                                         fundEscrow={fundEscrow}
                                         releaseEscrow={releaseEscrow}
-                                        arbitrationDetails={arbitrationDetails} /> }
+                                        arbitrationDetails={arbitrationDetails}
+                                        feeMilliPercent={feeMilliPercent}
+                                        isETH={isETH}/> }
 
         <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
@@ -194,8 +187,6 @@ Escrow.propTypes = {
   arbitration: PropTypes.object,
   escrowId: PropTypes.string,
   getEscrow: PropTypes.func,
-  getFee: PropTypes.func,
-  fee: PropTypes.string,
   address: PropTypes.string,
   sntAllowance: PropTypes.string,
   approvalError: PropTypes.string,
@@ -208,6 +199,7 @@ Escrow.propTypes = {
   fundEscrow: PropTypes.func,
   fundStatus: PropTypes.string,
   resetStatus: PropTypes.func,
+  getFeeMilliPercent: PropTypes.func,
   releaseEscrow: PropTypes.func,
   payEscrow: PropTypes.func,
   approvalTxHash: PropTypes.string,
@@ -223,7 +215,8 @@ Escrow.propTypes = {
   lastActivity: PropTypes.number,
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
-  gasPrice: PropTypes.string
+  gasPrice: PropTypes.string,
+  feeMilliPercent: PropTypes.string
 };
 
 const mapStateToProps = (state, props) => {
@@ -237,7 +230,6 @@ const mapStateToProps = (state, props) => {
     escrowId:  escrowId,
     escrow: theEscrow,
     arbitration: arbitration.selectors.getArbitration(state) || {},
-    fee: escrowF.selectors.getFee(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     approvalTxHash: approval.selectors.txHash(state),
@@ -248,6 +240,7 @@ const mapStateToProps = (state, props) => {
     lastActivity: escrowF.selectors.getLastActivity(state),
     assetCurrentPrice: (theEscrow && theEscrow.token) ? prices.selectors.getAssetPrice(state, theEscrow.token.symbol) : null,
     gasPrice: network.selectors.getNetworkGasPrice(state),
+    feeMilliPercent: escrowF.selectors.feeMilliPercent(state),
     ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
@@ -256,9 +249,9 @@ export default connect(
   mapStateToProps,
   {
     getEscrow: escrowF.actions.getEscrow,
-    getFee: escrowF.actions.getFee,
     getSNTAllowance: approval.actions.getSNTAllowance,
     getTokenAllowance: approval.actions.getTokenAllowance,
+    getFeeMilliPercent: escrowF.actions.getFeeMilliPercent,
     approve: approval.actions.approve,
     cancelApproval: approval.actions.cancelApproval,
     fundEscrow: escrowF.actions.fundEscrow,

@@ -2,14 +2,14 @@ import {
   CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS_SUCCEEDED,
   GET_ESCROW_SUCCEEDED,
-  GET_FEE_SUCCEEDED,
   FUND_ESCROW_FAILED, FUND_ESCROW_SUCCEEDED, FUND_ESCROW, FUND_ESCROW_PRE_SUCCESS,
   RESET_STATUS,
   RELEASE_ESCROW_SUCCEEDED, RELEASE_ESCROW, RELEASE_ESCROW_FAILED, RELEASE_ESCROW_PRE_SUCCESS,
   PAY_ESCROW, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED, PAY_ESCROW_PRE_SUCCESS,
   CANCEL_ESCROW, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED, CANCEL_ESCROW_PRE_SUCCESS,
   RATE_TRANSACTION, RATE_TRANSACTION_FAILED, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_PRE_SUCCESS,
-  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW, CLEAR_CHANGED_ESCROW, GET_LAST_ACTIVITY_SUCCEEDED, RESET_CREATE_STATUS
+  ESCROW_EVENT_RECEIVED, ESCROW_CREATED_EVENT_RECEIVED, CLEAR_NEW_ESCROW, CLEAR_CHANGED_ESCROW,
+  GET_LAST_ACTIVITY_SUCCEEDED, RESET_CREATE_STATUS, GET_FEE_MILLI_PERCENT_FAILED, GET_FEE_MILLI_PERCENT_SUCCEEDED
 } from './constants';
 import { States } from '../../utils/transaction';
 import { escrowStatus, eventTypes } from './helpers';
@@ -19,10 +19,11 @@ import merge from 'merge';
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
-  fee: '0',
   lastActivity: 0,
   newEscrow: null,
-  changedEscrow: null
+  changedEscrow: null,
+  feeMilliPercent: null,
+  feeMilliPercentError: null
 };
 
 // eslint-disable-next-line complexity
@@ -36,7 +37,7 @@ function reducer(state = DEFAULT_STATE, action) {
       txHash: ''
     };
   }
-  
+
   switch (action.type) {
     case FUND_ESCROW:
       escrowsClone[escrowId].fundStatus = States.pending;
@@ -162,11 +163,6 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         lastActivity: (parseInt(action.lastActivity, 10) * 1000)
       };
-    case GET_FEE_SUCCEEDED:
-      return {
-        ...state,
-        fee: action.fee
-      };
     case CANCEL_ESCROW:
       escrowsClone[escrowId].cancelStatus = States.pending;
       return {
@@ -241,6 +237,18 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         newEscrow: action.result.returnValues.escrowId
+      };
+    case GET_FEE_MILLI_PERCENT_SUCCEEDED:
+      return {
+        ...state,
+        feeMilliPercent: action.feeMilliPercent,
+        feeMilliPercentError: null
+      };
+    case GET_FEE_MILLI_PERCENT_FAILED:
+      return {
+        ...state,
+        feeMilliPercent: null,
+        feeMilliPercentError: action.error
       };
     case CLEAR_NEW_ESCROW:
       return {

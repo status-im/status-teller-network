@@ -21,6 +21,8 @@ import {ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../../features
 
 import Dispute from "./Dispute";
 
+const { toBN } = web3.utils;
+
 const Done = () => (
   <Fragment>
     <RoundedIcon icon={faCheck} bgColor="green"/>
@@ -63,26 +65,27 @@ Funded.propTypes = {
 
 class PreFund extends Component {
   render(){
-    const {fee, showApproveScreen, showFundButton, fundEscrow, trade, tokens} = this.props;
-    const { toBN } = web3.utils;
+    const {showApproveScreen, showFundButton, fundEscrow, trade, feeMilliPercent} = this.props;
 
-    if (!trade.token || !trade.token.balance) {
+    if (!trade.token || !trade.token.balance || !feeMilliPercent) {
       return <Loading page={true}/>; // Wait for trade to be populated
     }
+    const feePercent = feeMilliPercent / 1000;
+    const tradeAmount = toBN(trade.tradeAmount);
+    const divider = 100 * (feeMilliPercent / 1000);
+    const feeAmount =  tradeAmount.div(toBN(divider));
+    const totalAmount = tradeAmount.add(feeAmount);
 
-    const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance || 0, trade.token.decimals) : 0).gte(toBN(trade.tradeAmount)) &&
-                          toBN(toTokenDecimals(tokens.SNT.balance || 0, 18)).gte(toBN(fee));
+    const enoughBalance = toBN(trade.token.balance ? toTokenDecimals(trade.token.balance || 0, trade.token.decimals) : 0).gte(totalAmount);
     return <Fragment>
       <span className="bg-dark text-white p-3 rounded-circle">
         <img src={two} alt="two" />
       </span>
       <p className="h2 mt-4">{!showFundButton ? 'You are about to approve' : 'You are about to send'}</p>
-      <p className="h2 text-success">{fromTokenDecimals(trade.tradeAmount, trade.token.decimals)} {trade.token.symbol}</p>
-      { fee !== "0" && <Fragment>
+      <p className="h2 text-success">{fromTokenDecimals(tradeAmount, trade.token.decimals)} {trade.token.symbol}</p>
       <p className="h2">+ our fee</p>
-      <p className="h2 text-success">{fromTokenDecimals(fee, 18)} SNT</p>
-      </Fragment> }
-      { showFundButton && <Button color="primary" disabled={!enoughBalance} className="btn-lg mt-3" onClick={() => { fundEscrow(trade, fee); }}>Fund</Button> }
+      <p className="h2 text-success">{feePercent.toString()} % ({fromTokenDecimals(feeAmount, trade.token.decimals)} {trade.token.symbol})</p>
+      { showFundButton && <Button color="primary" disabled={!enoughBalance} className="btn-lg mt-3" onClick={() => fundEscrow(trade)}>Fund</Button> }
       { showFundButton && !enoughBalance && <p className="balanceAlert">Not enough balance</p>}
       { !showFundButton && <Button color="primary" className="btn-lg mt-3" onClick={showApproveScreen}>Approve Token Transfer(s)</Button> }
     </Fragment>;
@@ -92,10 +95,10 @@ class PreFund extends Component {
 PreFund.propTypes = {
   trade: PropTypes.object,
   tokens: PropTypes.object,
-  fee: PropTypes.string,
   showApproveScreen: PropTypes.func,
   showFundButton: PropTypes.bool,
-  fundEscrow: PropTypes.func
+  fundEscrow: PropTypes.func,
+  feeMilliPercent: PropTypes.string
 };
 
 const Start = ({onClick}) => (
@@ -157,10 +160,11 @@ class CardEscrowSeller extends Component {
     this.setState({step});
   };
 
-  render(){
+// eslint-disable-next-line complexity
+  render() {
     let step = this.state.step;
 
-    const {trade, fee, showApproveScreen, fundEscrow, releaseEscrow, tokens, arbitrationDetails} = this.props;
+    const {trade, showApproveScreen, fundEscrow, releaseEscrow, tokens, arbitrationDetails, feeMilliPercent, isETH} = this.props;
     let showFundButton = this.props.showFundButton;
 
     if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
@@ -199,8 +203,8 @@ class CardEscrowSeller extends Component {
         break;
       case 2:
         component =
-          <PreFund tokens={tokens} showFundButton={showFundButton} fundEscrow={fundEscrow} trade={trade} fee={fee}
-                   showApproveScreen={showApproveScreen}/>;
+          <PreFund tokens={tokens} showFundButton={showFundButton || isETH} fundEscrow={fundEscrow} trade={trade}
+                   showApproveScreen={showApproveScreen} feeMilliPercent={feeMilliPercent}/>;
         break;
       case 1:
       default:
@@ -219,12 +223,13 @@ class CardEscrowSeller extends Component {
 CardEscrowSeller.propTypes = {
   tokens: PropTypes.object,
   trade: PropTypes.object,
-  fee: PropTypes.string,
   showApproveScreen: PropTypes.func,
   fundEscrow: PropTypes.func,
   showFundButton: PropTypes.bool,
+  isETH: PropTypes.bool,
   releaseEscrow: PropTypes.func,
-  arbitrationDetails: PropTypes.object
+  arbitrationDetails: PropTypes.object,
+  feeMilliPercent: PropTypes.string
 };
 
 export default CardEscrowSeller;
