@@ -251,12 +251,9 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
      */
     function pay(bytes calldata _signature) external {
         address sender = recoverAddress(getSignHash(paySignHash()), _signature);
-        emit X(sender);
-        emit Paid();
-       // _pay(sender);
+        _pay(sender);
     }
 
-event X(address);
 
     /**
      * @dev Cancel an escrow operation
@@ -359,7 +356,7 @@ event X(address);
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCaseWithSignature(string calldata _motive, bytes calldata _signature) external {
+    function openCase(string calldata _motive, bytes calldata _signature) external {
         require(status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         address sender = recoverAddress(getSignHash(openCaseSignHash(_motive)), _signature);
