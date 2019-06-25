@@ -12,6 +12,7 @@ import "./Fees.sol";
 import "./Arbitrable.sol";
 import "./Arbitrations.sol";
 import "../proxy/ProxyData.sol";
+import "./EscrowManagement.sol";
 
 /**
  * @title Escrow
@@ -66,7 +67,6 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
     address public token;
     uint256 public tokenAmount;
     uint256 public expirationTime;
-    uint256 public rating;
     uint256 public tradeAmount;
     uint256 public assetPrice;
     TradeType public tradeType;
@@ -88,7 +88,6 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
     event Paid();
     event Released();
     event Canceled();
-    event Rating(uint indexed offerId, address indexed buyer, uint rating);
 
     /**
      * @notice Create a new escrow
@@ -113,10 +112,11 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
         string memory _username,
         uint _nonce,
         bytes memory _signature
-    ) public returns (address) {
+    ) public returns (address, address) {
        buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
-        _createTransaction(buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
-       return buyer;
+       _createTransaction(buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
+
+       return (buyer,seller);
     }
 
     /**
@@ -314,13 +314,13 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         require(!arbitrations.isDisputed(address(this)), "Can't rate a transaction that has an arbitration process");
 
-        require(rating == 0, "Transaction already rated");
+        EscrowManagement mgmt = EscrowManagement(factory);
+
+        require(mgmt.rating(address(this)) == 0, "Transaction already rated");
         require(status == EscrowStatus.RELEASED, "Transaction not released yet");
         require(buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
-        rating = _rate;
-
-        emit Rating(offerId, buyer, _rate);
+        mgmt.rate(seller, buyer, _rate);
     }
 
     /**

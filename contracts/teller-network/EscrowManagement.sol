@@ -8,9 +8,14 @@ import "../factory/Factory.sol";
 /**
  * @title Escrow Factory
  */
-contract EscrowFactory is Factory {
+contract EscrowManagement is Factory {
 
-    event InstanceCreated(address instance, address buyer);
+    mapping(address => bool) public escrowInstances;
+
+    mapping(address => uint256) public rating;
+
+    event InstanceCreated(address instance, address indexed buyer, address indexed seller);
+    event Rating(address indexed escrow, address indexed seller, address indexed buyer, uint rating);
 
     /**
      * @notice Create a new escrow instance
@@ -34,9 +39,12 @@ contract EscrowFactory is Factory {
         uint _nonce,
         bytes memory _signature
     ) public whenNotPaused returns (address instance) {
-instance = address(new Proxy(address(template)));
-        instance.call(initParameters);
-        address buyer = Escrow(instance).create(
+        instance = getInstance();
+
+        address buyer;
+        address seller;
+
+        (buyer, seller) = Escrow(instance).create(
             _offerId,
             _tradeAmount,
             _tradeType,
@@ -48,6 +56,23 @@ instance = address(new Proxy(address(template)));
             _signature
         );
 
-        emit InstanceCreated(address(instance), buyer);
+        address aInstance = address(instance);
+
+        escrowInstances[aInstance] = true;
+
+        emit InstanceCreated(aInstance, buyer, seller);
     }
+
+    /**
+     * @notice Rate an escrow
+     * @param _seller Escrow seller
+     * @param _buyer Escrow buyer
+     * @param _rate Rating
+     */
+    function rate(address _seller, address _buyer, uint _rate) external {
+        require(escrowInstances[msg.sender], "Not an escrow");
+        rating[msg.sender] = _rate;
+        emit Rating(msg.sender, _seller, _buyer, _rate);
+    }
+
 }

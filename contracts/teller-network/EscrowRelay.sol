@@ -5,7 +5,7 @@
 pragma solidity ^0.5.8;
 
 import "./Escrow.sol";
-import "./EscrowFactory.sol";
+import "./EscrowManagement.sol";
 import "./MetadataStore.sol";
 import "../common/Ownable.sol";
 import "tabookey-gasless/contracts/RelayRecipient.sol";
@@ -15,12 +15,10 @@ import "tabookey-gasless/contracts/RelayRecipient.sol";
  */
 contract EscrowRelay is RelayRecipient, Ownable {
 
-  EscrowFactory public factory;
+  EscrowManagement public factory;
   MetadataStore public metadataStore;
 
   mapping(address => uint) public lastActivity;
-
-  event InstanceCreated(address instance);
 
   bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("create(uint256,uint256,uint8,uint256,bytes,string,string,uint,bytes)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(address)"));
@@ -38,7 +36,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _metadataStore Metadata Store Address
    */
   constructor(address _factory, address _metadataStore) public {
-    factory = EscrowFactory(_factory);
+    factory = EscrowManagement(_factory);
     metadataStore = MetadataStore(_metadataStore);
   }
 
@@ -48,7 +46,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _factory New escrow factory address
    */
   function setFactory(address _factory) public onlyOwner {
-    factory = EscrowFactory(_factory);
+    factory = EscrowManagement(_factory);
   }
 
   /**
