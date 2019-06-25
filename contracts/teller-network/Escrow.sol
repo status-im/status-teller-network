@@ -349,7 +349,7 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
         require(status == EscrowStatus.RELEASED, "Transaction not released yet");
         require(buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
-        mgmt.rate(seller, buyer, _rate);
+        mgmt.rate(offerId, seller, buyer, _rate);
     }
 
     /**

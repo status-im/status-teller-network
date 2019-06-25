@@ -14,8 +14,8 @@ contract EscrowManagement is Factory {
 
     mapping(address => uint256) public rating;
 
-    event InstanceCreated(address instance, address indexed buyer, address indexed seller);
-    event Rating(address indexed escrow, address indexed seller, address indexed buyer, uint rating);
+    event InstanceCreated(address instance, uint indexed offerId, address indexed buyer, address indexed seller);
+    event Rating(address indexed escrow, uint indexed offerId, address seller, address indexed buyer, uint rating);
 
     /**
      * @notice Create a new escrow instance
@@ -60,7 +60,7 @@ contract EscrowManagement is Factory {
 
         escrowInstances[aInstance] = true;
 
-        emit InstanceCreated(aInstance, buyer, seller);
+        emit InstanceCreated(aInstance, _offerId, buyer, seller);
     }
 
     /**
@@ -69,10 +69,10 @@ contract EscrowManagement is Factory {
      * @param _buyer Escrow buyer
      * @param _rate Rating
      */
-    function rate(address _seller, address _buyer, uint _rate) external {
+    function rate(uint _offerId, address _seller, address _buyer, uint _rate) external {
         require(escrowInstances[msg.sender], "Not an escrow");
         rating[msg.sender] = _rate;
-        emit Rating(msg.sender, _seller, _buyer, _rate);
+        emit Rating(msg.sender, _offerId, _seller, _buyer, _rate);
     }
 
 }
