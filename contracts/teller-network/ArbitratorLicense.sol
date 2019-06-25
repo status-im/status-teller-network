@@ -21,7 +21,6 @@ contract ArbitratorLicense is License{
         uint id; 
         bool acceptAny; // accept any seller
         address[] accepted; // addresses of accepted sellers
-    	bool isActive; // is license active?
     }
 
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
@@ -44,8 +43,7 @@ contract ArbitratorLicense is License{
         arbitratorlicenseDetails[msg.sender] = ArbitratorLicenseDetails({
             id: _id,
             acceptAny: _acceptAny,
-            accepted: addresses,    
- 			isActive:  true			
+            accepted: addresses    
         });
 
         emit ArbitratorLicensed(_id, _acceptAny);
@@ -57,10 +55,9 @@ contract ArbitratorLicense is License{
      * @param _arbitrator address of a licensed arbitrator
      */
     function requestArbitrator(address _arbitrator) public {
-       require(arbitratorlicenseDetails[_arbitrator].isActive, "Arbitrator should have a valid license");
+       require(isLicenseOwner(_arbitrator), "Arbitrator should have a valid license");
        require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already acceps all cases");
-       require(isLicenseOwner(msg.sender), "Must be a valid seller to fund escrow transactions");
-       
+
        uint _id = requests.length++;
 
        requests[_id] = Requests({
@@ -77,7 +74,7 @@ contract ArbitratorLicense is License{
      * @param _id request id     
      */
     function acceptRequest(address _seller, uint _id) public {
-        require(arbitratorlicenseDetails[msg.sender].isActive, "Arbitrator should have a valid license");       
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already acceps all cases");
         
         requests[_id].status = RequestStatus.ACCEPTED;
@@ -90,4 +87,5 @@ contract ArbitratorLicense is License{
     // func reject seller
     // func deactivate license
     // func getLicense
+    // func cancel arbitrator
 }
