@@ -4,6 +4,7 @@ import {fork, put, takeEvery} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
 import {zeroAddress} from '../../utils/address';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
+import EscrowManagement from "../../../embarkArtifacts/contracts/EscrowManagement";
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
 
@@ -11,12 +12,15 @@ import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED
 
 const {toBN} = web3.utils;
 
-export function *approveToken({amount}) {
+export function *approveToken({escrowId, amount}) {
+  const escrowTemplateAddress = yield EscrowManagement.methods.template().call();
+  Escrow.options.address = escrowTemplateAddress;
+
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount =  toBN(amount).div(toBN(divider));
 
-  const toSend = ERC20Token.methods.approve(Escrow.options.address, (toBN(amount).add(feeAmount)).toString());
+  const toSend = ERC20Token.methods.approve(escrowId, (toBN(amount).add(feeAmount)).toString());
   yield doTransaction(APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, {toSend});
 }
 
@@ -24,9 +28,9 @@ export function *onApproveToken() {
   yield takeEvery(APPROVE_TOKEN, approveToken);
 }
 
-export function *doGetSNTAllowance() {
+export function *doGetSNTAllowance({escrowId}) {
   try {
-    const allowance = yield SNT.methods.allowance(web3.eth.defaultAccount, Escrow.options.address).call();
+    const allowance = yield SNT.methods.allowance(web3.eth.defaultAccount, escrowId).call();
     yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, allowance});
   } catch (error) {
     console.error(error);
@@ -34,12 +38,12 @@ export function *doGetSNTAllowance() {
   }
 }
 
-export function *doGetTokenAllowance({token}) {
+export function *doGetTokenAllowance({escrowId, token}) {
   if(token === zeroAddress) return;
 
   try {
     ERC20Token.options.address = token;
-    const allowance = yield ERC20Token.methods.allowance(web3.eth.defaultAccount, Escrow.options.address).call();
+    const allowance = yield ERC20Token.methods.allowance(web3.eth.defaultAccount, escrowId).call();
     yield put({type: GET_TOKEN_ALLOWANCE_SUCCEEDED, allowance});
   } catch (error) {
     console.error(error);

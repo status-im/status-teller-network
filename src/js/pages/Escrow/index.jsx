@@ -44,12 +44,12 @@ class Escrow extends Component {
   loadData() {
     this.props.getEscrow(this.props.escrowId);
     this.props.loadArbitration(this.props.escrowId);
-    this.props.getSNTAllowance();
+    this.props.getSNTAllowance(this.props.escrowId);
     this.props.updateBalances();
     this.props.getLastActivity(this.props.address);
     this.props.getFeeMilliPercent();
 
-    if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset);
+    if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset, this.props.escrowId);
   }
 
   showApproveScreen = () => {
@@ -83,11 +83,11 @@ class Escrow extends Component {
   };
 
   handleApprove = (amount, token) => () => {
-    this.props.approve(token, amount);
+    this.props.approve(token, amount, this.props.escrowId);
   };
 
   handleReset = token => () => {
-    this.props.approve(token, '0');
+    this.props.approve(token, '0', this.props.escrowId);
   };
 
   getOffer = (escrow, isBuyer) => {
@@ -139,7 +139,7 @@ class Escrow extends Component {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
                                  retry={this.handleApprove(escrow.tradeAmount, token.address)}
-                                 transaction={true} cancel={this.props.cancelApproval}/>;
+                                 transaction={true} cancel={() => { this.props.cancelApproval(escrowId); }}/>;
       }
       if (escrow.offer.asset !== zeroAddress) { // A token
         if (!isTokenApproved || shouldResetToken) {

@@ -21,3 +21,11 @@ export const checkNotEnoughETH = (gasPrice, ethBalance) => {
 export const filterValidGaslessOffers = (offers, noBalance) => {
   return noBalance ? offers.filter(x => x.token.symbol === 'ETH') : offers;
 };
+
+export const remove_e_prefix = (escrow) => {
+  const result = {};
+  Object.keys(escrow).forEach(x => {
+    result[x.replace(/^e_/, '')] = escrow[x];
+  });
+  return result;
+};
