@@ -7,9 +7,11 @@ import "./License.sol";
 * @title ArbitratorLicense
 * @dev Contract for management of an arbitrator license
 */
-contract ArbitratorLicense is License{
+contract ArbitratorLicense {
 
-    enum RequestStatus {AWAIT,ACCEPTED,REJECTED}
+    License public license;
+
+    enum RequestStatus {AWAIT,ACCEPTED,REJECTED, CLOSED}
 
     struct Requests{
         address seller;
@@ -37,7 +39,7 @@ contract ArbitratorLicense is License{
      * @param _acceptAny indicates does arbitrator allow to accept any seller/choose sellers 
      */
     function buyLicense(bool _acceptAny) public {
-    	uint _id = buy();
+    	uint _id = license.buy();
     	address[] memory addresses;
 
         arbitratorlicenseDetails[msg.sender] = ArbitratorLicenseDetails({
@@ -49,6 +51,14 @@ contract ArbitratorLicense is License{
         emit ArbitratorLicensed(_id, _acceptAny);
     }
 
+    /**
+     * @notice Check if a license owner
+     * @param _address address that you want to check
+     */
+    function isLicenseOwner(address _address) public view returns (bool) {
+        bool response =license.isLicenseOwner(_address);
+        return response;
+    }
 
     /**
      * @notice Allows arbitrator to accept a seller
