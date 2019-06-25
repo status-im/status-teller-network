@@ -4,20 +4,25 @@ import "ProxyData.sol";
 
 contract Proxy is ProxyData {
 
-    constructor(address _proxied) public {
-        proxied = _proxied;
+    constructor(address _implementation) public {
+        implementation = _implementation;
     }
 
-    function () external payable {
-        address addr = proxied;
+    function () payable external {
+        address _impl = implementation;
+        assert(_impl != address(0));
+
         assembly {
-            let freememstart := mload(0x40)
-            calldatacopy(freememstart, 0, calldatasize())
-            let success := delegatecall(not(0), addr, freememstart, calldatasize(), freememstart, 32)
-            switch success
-            case 0 { revert(freememstart, 32) }
-            default { return(freememstart, 32) }
+            let ptr := mload(0x40)
+            calldatacopy(ptr, 0, calldatasize)
+            let result := delegatecall(gas, _impl, ptr, calldatasize, 0, 0)
+            let size := returndatasize
+            returndatacopy(ptr, 0, size)
+
+            switch result
+            case 0 { revert(ptr, size) }
+            default { return(ptr, size) }
         }
-    }
+  }
 
 }
