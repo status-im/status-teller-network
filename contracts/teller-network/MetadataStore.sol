@@ -23,7 +23,7 @@ contract MetadataStore is MessageSigned {
         address asset;
         string currency;
         address payable owner;
-        address arbitrator;
+        address payable arbitrator;
         bool deleted;
     }
 
@@ -161,12 +161,12 @@ contract MetadataStore is MessageSigned {
         uint _nonce
     ) public returns(address payable _user) {
         _user = address(uint160(getSigner(_username, _statusContactCode, _nonce, _signature)));
-        
+
         require(_nonce == user_nonce[_user], "Invalid nonce");
-        
+
         user_nonce[_user]++;
         _addOrUpdateUser(_user, _statusContactCode, _location, _username);
-        
+
         return _user;
     }
 
@@ -204,7 +204,7 @@ contract MetadataStore is MessageSigned {
         string memory _username,
         PaymentMethods[] memory _paymentMethods,
         int8 _margin,
-        address _arbitrator
+        address payable _arbitrator
     ) public {
         require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
         require(arbitrationLicenses.isLicenseOwner(_arbitrator), "Not an arbitrator");
@@ -267,7 +267,7 @@ contract MetadataStore is MessageSigned {
         int8 margin,
         PaymentMethods[] memory paymentMethods,
         address payable owner,
-        address arbitrator,
+        address payable arbitrator,
         bool deleted
     ) {
         return (
@@ -307,7 +307,7 @@ contract MetadataStore is MessageSigned {
      * @param _id Offer id
      * @return Arbitrator address
      */
-    function getArbitrator(uint256 _id) public view returns (address) {
+    function getArbitrator(uint256 _id) public view returns (address payable) {
         return (offers[_id].arbitrator);
     }
 
