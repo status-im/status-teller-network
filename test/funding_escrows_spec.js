@@ -8,7 +8,7 @@ const Arbitrations = embark.require('Embark/contracts/Arbitrations');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
-const EscrowFactory = embark.require('Embark/contracts/EscrowFactory');
+const EscrowManagement = embark.require('Embark/contracts/EscrowManagement');
 const SNT = embark.require('Embark/contracts/SNT');
 
 const FIAT = 0;
@@ -66,9 +66,9 @@ config({
       args: ["$EscrowRelay", "$SellerLicense", "$Arbitrations", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
     },
     EscrowRelay: {
-      "args": ["$EscrowFactory", "$MetadataStore"]
+      "args": ["$EscrowManagement", "$MetadataStore"]
     },
-    EscrowFactory: {},
+    EscrowManagement: {},
     StandardToken: {
     }
   }
@@ -120,7 +120,7 @@ contract("Escrow Funding", function() {
       FEE_MILLI_PERCENT
     ).encodeABI();
 
-    await EscrowFactory.methods.setTemplate(Escrow.options.address, abiEncode).send();
+    await EscrowManagement.methods.setTemplate(Escrow.options.address, abiEncode).send();
   });
 
   describe("ETH as asset", async () => {
@@ -130,7 +130,7 @@ contract("Escrow Funding", function() {
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       const signature = await web3.eth.sign(hash, accounts[1]);
 
-      receipt = await EscrowFactory.methods.create(ethOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
+      receipt = await EscrowManagement.methods.create(ethOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
 
       Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;
@@ -191,7 +191,7 @@ contract("Escrow Funding", function() {
       let signature = await web3.eth.sign(hash, accounts[1]);
       let nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await EscrowFactory.methods.create(SNTOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
+      receipt = await EscrowManagement.methods.create(SNTOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
 
       Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;
@@ -229,7 +229,7 @@ contract("Escrow Funding", function() {
       let signature = await web3.eth.sign(hash, accounts[1]);
       let nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await EscrowFactory.methods.create(tokenOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
+      receipt = await EscrowManagement.methods.create(tokenOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
 
       Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;

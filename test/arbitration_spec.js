@@ -9,7 +9,7 @@ const Arbitrations = embark.require('Embark/contracts/Arbitrations');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
-const EscrowFactory = embark.require('Embark/contracts/EscrowFactory');
+const EscrowManagement = embark.require('Embark/contracts/EscrowManagement');
 
 const SNT = embark.require('Embark/contracts/SNT');
 const StakingPool = embark.require('Embark/contracts/StakingPool');
@@ -83,9 +83,9 @@ config({
       args: ["$EscrowRelay", "$SellerLicense", "$Arbitrations", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
     },
     EscrowRelay: {
-      "args": ["$EscrowFactory", "$MetadataStore"]
+      "args": ["$EscrowManagement", "$MetadataStore"]
     },
-    EscrowFactory: {},
+    EscrowManagement: {},
     StandardToken: {}
   }
 }, (_err, web3_accounts) => {
@@ -139,7 +139,7 @@ contract("Escrow", function() {
       FEE_MILLI_PERCENT
     ).encodeABI();
 
-    await EscrowFactory.methods.setTemplate(Escrow.options.address, abiEncode).send();
+    await EscrowManagement.methods.setTemplate(Escrow.options.address, abiEncode).send();
   });
   
   describe("Transaction arbitration case", async() => {
@@ -148,7 +148,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await EscrowFactory.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await EscrowManagement.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;
       // Fund
       receipt = await Escrow.methods.fund(tradeAmount, expirationTime).send({from: accounts[0], value: tradeAmount + feeAmount});
@@ -172,7 +172,7 @@ contract("Escrow", function() {
         await Escrow.methods.openCase('Motive').send({from: accounts[3]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only a buyer or seller can open a case");
       }
     });
 
@@ -181,7 +181,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await EscrowFactory.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await EscrowManagement.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;
       
       // Fund

@@ -2,7 +2,7 @@
 
 const TestUtils = require("../utils/testUtils");
 
-const EscrowFactory = require('Embark/contracts/EscrowFactory');
+const EscrowManagement = require('Embark/contracts/EscrowManagement');
 
 let accounts;
 
@@ -66,9 +66,9 @@ config({
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
-    "EscrowFactory": {},
+    "EscrowManagement": {},
     "EscrowRelay": {
-      "args": ["$EscrowFactory", "$MetadataStore"]
+      "args": ["$EscrowManagement", "$MetadataStore"]
     },
     Escrow: {
       args: ["$EscrowRelay", "$SellerLicense", "$Arbitrations", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * FEE_MILLI_PERCENT]
@@ -110,7 +110,7 @@ contract("Escrow Relay", function () {
     ).encodeABI();
 
     
-    await EscrowFactory.methods.setTemplate(Escrow.options.address, abiEncode).send();
+    await EscrowManagement.methods.setTemplate(Escrow.options.address, abiEncode).send();
   });
 
   it("Instantiate an escrow", async () => {
@@ -118,7 +118,7 @@ contract("Escrow Relay", function () {
     const signature = await web3.eth.sign(hash, buyer);
     const nonce = await MetadataStore.methods.user_nonce(buyer).call();
 
-    receipt = await EscrowFactory.methods.create(offerId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
+    receipt = await EscrowManagement.methods.create(offerId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
     Escrow.options.address = receipt.events.InstanceCreated.returnValues.instance;
   });
 
@@ -149,7 +149,7 @@ contract("Escrow Relay", function () {
     const signature = await web3.eth.sign(hash, buyer);
     const nonce = await MetadataStore.methods.user_nonce(buyer).call();
 
-    EscrowRelay.options.jsonInterface.push(EscrowFactory.options.jsonInterface.find(x => x.name === "InstanceCreated"));
+    EscrowRelay.options.jsonInterface.push(EscrowManagement.options.jsonInterface.find(x => x.name === "InstanceCreated"));
 
     receipt = await EscrowRelay.methods.create(offerId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
     
