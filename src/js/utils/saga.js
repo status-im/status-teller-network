@@ -22,8 +22,9 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
   const parsedPayload = cloneDeep(arguments[3]);
   delete parsedPayload.toSend;
   delete parsedPayload.type;
+
   try {
-    const estimatedGas = yield call(toSend.estimateGas, {value});
+    const estimatedGas = yield call(toSend.estimateGas, {value, from: web3.eth.defaultAccount});
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
     while (true) {
