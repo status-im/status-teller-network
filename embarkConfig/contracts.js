@@ -3,7 +3,7 @@ const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 
 
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
-const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const dataMigration = require('./data.js');
 
@@ -65,7 +65,7 @@ module.exports = {
     //            when not specified
     // - explicit will only attempt to deploy the contracts that are explicity specified inside the
     //            contracts section.
-    strategy: 'implicit',
+    strategy: 'explicit',
 
     contracts: {
       License: {
@@ -90,13 +90,20 @@ module.exports = {
           "$StakingPool"
         ]
       },
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
+      Arbitrations: {
+        args: ["$ArbitrationLicense"]
+      },
+      EscrowManagement: {},
+      EscrowRelay: {
+        args: ["$EscrowManagement", "$MetadataStore"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
         ]
+      },
+      Escrow: {
+        args: ["$EscrowRelay", "$SellerLicense", "$Arbitrations", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {
