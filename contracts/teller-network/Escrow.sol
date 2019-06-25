@@ -90,6 +90,35 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
     event Canceled();
 
     /**
+     * @notice Get Escrow Data
+     */
+    function data() public returns (
+        uint256 e_offerId,
+        address e_token,
+        uint256 e_tokenAmount,
+        uint256 e_expirationTime,
+        uint256 e_tradeAmount,
+        uint256 e_assetPrice,
+        TradeType e_tradeType,
+        EscrowStatus e_status,
+        address payable e_seller,
+        address payable e_buyer,
+        address e_arbitrator
+    ) {
+        e_offerId = offerId;
+        e_token = token;
+        e_tokenAmount = tokenAmount;
+        e_expirationTime = expirationTime;
+        e_tradeAmount = tradeAmount;
+        e_assetPrice = assetPrice;
+        e_tradeType = tradeType;
+        e_status = status;
+        e_seller = seller;
+        e_buyer = buyer;
+        e_arbitrator = arbitrator;
+    }
+
+    /**
      * @notice Create a new escrow
      * @param _signature buyer's signature
      * @param _offerId Offer
