@@ -157,7 +157,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
       fSign := mload(add(encoded_function, add(0x20, 0)))
     }
 
-    if(from.balance > 600000 * gas_price) return ERROR_ENOUGH_BALANCE;
+    if(from.balance > 700000 * gas_price) return ERROR_ENOUGH_BALANCE;
 
     // TODO: should we allow payments and opening disputes no matter wat kind of trx is being done?
 

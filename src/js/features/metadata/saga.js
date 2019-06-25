@@ -80,6 +80,7 @@ export function *loadOffers({address}) {
     let allReleased;
     let releasedEscrows;
     if (!address) {
+      // TODO: refactor
       allReleased = yield Escrow.getPastEvents('Released', {fromBlock: 1});
       releasedEscrows = allReleased.map(e => e.returnValues.escrowId);
     }
@@ -97,6 +98,7 @@ export function *loadOffers({address}) {
         return {...offer, id};
       }
 
+      // TODO: refactor
       // Get all escrows of that offer
       const createdTrades = yield Escrow.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
       let nbReleasedTrades = 0;

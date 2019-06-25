@@ -1,5 +1,6 @@
 import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE, CANCEL_DISPUTE} from './constants';
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import Arbitrations from '../../../embarkArtifacts/contracts/Arbitrations';
+import EscrowInstance from '../../../embarkArtifacts/contracts/Escrow';
 
 export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
 
@@ -14,13 +15,16 @@ export const resolveDispute = (escrowId, result) => {
     type: RESOLVE_DISPUTE,
     escrowId,
     result,
-    toSend: Escrow.methods.setArbitrationResult(escrowId, result)
+    toSend: Arbitrations.methods.setArbitrationResult(escrowId, result)
   };
 };
 
-export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: Escrow.methods.openCase(escrowId, motive || '')});
+export const openDispute = (escrowId, motive) => {
+  EscrowInstance.options.address = escrowId;
+  return {type: OPEN_DISPUTE, escrowId, toSend: EscrowInstance.methods.openCase(motive || '')};
+};
 
-export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: Escrow.methods.cancelArbitration(escrowId)});
+export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: Arbitrations.methods.cancelArbitration(escrowId)});
 
 export const loadArbitration = (escrowId) => {
   return {type: LOAD_ARBITRATION, escrowId};

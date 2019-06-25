@@ -1,11 +1,14 @@
 /* global web3 */
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import EscrowInstance from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
+import Arbitrations from '../../../embarkArtifacts/contracts/Arbitrations';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
+import {remove_e_prefix} from '../../utils/transaction';
+import EscrowManagement from '../../../embarkArtifacts/contracts/EscrowManagement';
 
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
@@ -45,24 +48,29 @@ export function *doGetArbitrators() {
 
 export function *doGetEscrows() {
   try {
-    const events = yield Escrow.getPastEvents('ArbitrationRequired', {fromBlock: 1});
-
-    const escrows = [];
+    const events = yield Arbitrations.getPastEvents('ArbitrationRequired', {fromBlock: 1});
+    let escrows = [];
     for (let i = 0; i < events.length; i++) {
-      const escrowId = events[i].returnValues.escrowId;
-
-      const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-      const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
-
+      const escrowId = events[i].returnValues.item;
+      
+      EscrowInstance.options.address = escrowId;
+      const escrow = remove_e_prefix(yield call(EscrowInstance.methods.data().call));
+      const block = yield web3.eth.getBlock(events[0].blockNumber);
       escrow.escrowId = escrowId;
-      escrow.seller = offer.owner;
-      escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
-      escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
+      escrow.arbitration = yield call(Arbitrations.methods.arbitrationCases(escrowId).call);
+      escrow.arbitration.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
 
-      escrows.push(escrow);
+      if(escrow.arbitration.open || escrow.arbitration.result !== 0) {
+        escrows.push(escrow);
+      }
     }
 
-    yield put({type: GET_DISPUTED_ESCROWS_SUCCEEDED, escrows});
+    // remove duplicates in the case of re-opened disputes
+    escrows = escrows.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['escrowId']).indexOf(obj['escrowId']) === pos;
+    });
+
+    yield put({type: GET_DISPUTED_ESCROWS_SUCCEEDED, escrows: escrows});
   } catch (error) {
     console.error(error);
     yield put({type: GET_DISPUTED_ESCROWS_FAILED, error: error.message});
@@ -79,16 +87,18 @@ export function *onGetEscrows() {
 
 export function *doLoadArbitration({escrowId}) {
   try {
-    const escrow = yield call(Escrow.methods.transactions(escrowId).call);
+    EscrowInstance.options.address = escrowId;
+    const escrow = remove_e_prefix(yield call(EscrowInstance.methods.data().call));
     const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
 
-    const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
+    const events = yield EscrowManagement.getPastEvents('InstanceCreated', {fromBlock: 1, filter: {instance: escrowId} });
 
-    escrow.createDate = moment(events[0].returnValues.date * 1000).format("DD.MM.YY");
+    const block = yield web3.eth.getBlock(events[0].blockNumber);
+    
+    escrow.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
     escrow.escrowId = escrowId;
-    escrow.seller = offer.owner;
     escrow.offer = offer;
-    escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
+    escrow.arbitration = yield call(Arbitrations.methods.arbitrationCases(escrowId).call);
 
     yield put({type: LOAD_ARBITRATION_SUCCEEDED, escrow});
   } catch (error) {
