@@ -5,7 +5,7 @@ export const approve = (tokenAddress, amount, escrowId) => {
   ERC20Token.options.address = tokenAddress;
   return {
     type: APPROVE_TOKEN,
-    toSend: ERC20Token.methods.approve(escrowId, amount, escrowId),
+    toSend: ERC20Token.methods.approve(escrowId, amount),
     amount
   };
 };

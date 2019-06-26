@@ -4,8 +4,7 @@ import {fork, put, takeEvery} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
 import {zeroAddress} from '../../utils/address';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
-import EscrowManagement from "../../../embarkArtifacts/contracts/EscrowManagement";
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import EscrowInstance from '../../../embarkArtifacts/contracts/Escrow';
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
 
 import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, GET_SNT_ALLOWANCE, GET_SNT_ALLOWANCE_SUCCEEDED, GET_SNT_ALLOWANCE_FAILED, GET_TOKEN_ALLOWANCE, GET_TOKEN_ALLOWANCE_FAILED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
@@ -13,10 +12,8 @@ import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED
 const {toBN} = web3.utils;
 
 export function *approveToken({escrowId, amount}) {
-  const escrowTemplateAddress = yield EscrowManagement.methods.template().call();
-  Escrow.options.address = escrowTemplateAddress;
-
-  const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+  EscrowInstance.options.address = escrowId;
+  const feeMilliPercent = yield EscrowInstance.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount =  toBN(amount).div(toBN(divider));
 
