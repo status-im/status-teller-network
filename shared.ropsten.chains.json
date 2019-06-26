@@ -44,6 +44,46 @@
       "0x35ba4c78cf630e8a7a346283d2e884bb53f450527d7fdd73648520427d1a0909": {
         "name": "Escrow",
         "address": "0xEC9D640726355787ddFcD2d600f65b13B92bf640"
+      },
+      "0x22a4cbc034fdfd4615cb09ad670b09a3c2709b987ac966f6e5b208307b91a942": {
+        "name": "MiniMeTokenFactory",
+        "address": "0xcBa7600bF5B3f61Dd18a50355E1650A405e73bA3"
+      },
+      "0xc028b7bfe70049fefbae9105e89f1afcd751a02d8d9439d3d1db354b1e79020b": {
+        "name": "SNT",
+        "address": "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
+      },
+      "0x4145658b023e72890f517176e409a4267d46c521cc3152d6ebe9b0fd2936a5f0": {
+        "name": "EscrowManagement",
+        "address": "0xb2B7a587BD89F627e4dc01cd5A0a0b9F13Cd0913"
+      },
+      "0x43860c1078a0905618ad0e9a65d6c4dd924cafe396cd871b1ef677b0ce5d3d44": {
+        "name": "StakingPool",
+        "address": "0xE82A6E47282c97eB4316C7Ed59477477BF326898"
+      },
+      "0xb6862cda925049bfa8deccf8dc8e4f835d9c242740ee580cd01f2d25997284c3": {
+        "name": "ArbitrationLicense",
+        "address": "0x364Aa0a4cF8294BAAF7FDBCbD9f685d3D65A1a5F"
+      },
+      "0xac560898993f85e84abb992aafc460d16107c63c124736724515e7e6d7020e39": {
+        "name": "SellerLicense",
+        "address": "0x87415dF3016cf46De05Ed40c27064F068f91719A"
+      },
+      "0xacebed090f853f78db507ad721a1b25c9a3bd066c75de07ed2c5b1e56b652d40": {
+        "name": "MetadataStore",
+        "address": "0xf7b43F1FFF87987741119F4Cb19FE10dB5bccF85"
+      },
+      "0x250b9e881b9a89dd4e1bbff66806df97e3e1fe94d4bdbf6c480cd8f8900cbccf": {
+        "name": "Arbitrations",
+        "address": "0xc33DeBa89674910eCeffcdf8D75F933f1C94dd5b"
+      },
+      "0xf796565a2fe5c92f94f9493edc8d79d4e779467e315813678aa5220483589b08": {
+        "name": "EscrowRelay",
+        "address": "0x7418cb1070e7BfD0B4c827E5845D733Ac54ca089"
+      },
+      "0x7ea3bd654e4ebb19b9eb825987de861e17990b575fc3e1cb0018e2bb192e05fb": {
+        "name": "Escrow",
+        "address": "0x9F0BC95A0Cb574ce9fB721503f5fd34BfefD0c8c"
       }
     }
   }

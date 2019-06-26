@@ -281,12 +281,12 @@ module.exports = {
   ropsten: {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_MILLI_PERCENT],
+      EscrowRelay: {
+        args: ["$EscrowManagement", "$MetadataStore"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
         ]
       },
       SNT: {
