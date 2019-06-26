@@ -89,6 +89,21 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
     event Released();
     event Canceled();
 
+    modifier onlyBuyer(address _sender) {
+        require(_sender == buyer, "Only the buyer can invoke this function");
+        _;
+    }
+
+    modifier onlySeller(address _sender) {
+        require(_sender == seller, "Only the seller can invoke this function");
+        _;
+    }
+
+    modifier onlyParticipants(address _sender) {
+        require(_sender == seller || _sender == buyer, "Only participants can invoke this function");
+        _;
+    }
+
     /**
      * @notice Get Escrow Data
      */
@@ -161,11 +176,10 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
         _fund(msg.sender, _tokenAmount, _expirationTime);
     }
 
-    function _fund(address _from, uint _tokenAmount, uint _expirationTime) internal {
+    function _fund(address _from, uint _tokenAmount, uint _expirationTime) internal onlySeller(_from) {
         // TODO: expiration time
         require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
         require(license.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
-        require(_from == seller, "Only the seller can fund this escrow");
         require(status == EscrowStatus.CREATED, "Invalid escrow status");
 
         tokenAmount = _tokenAmount;
@@ -214,8 +228,7 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
      *      Can only be executed by the seller
      *      Transaction must not be expired, or previously canceled or released
      */
-    function release() external {
-        require(seller == msg.sender, "Only the seller can release the escrow");
+    function release() external onlySeller(msg.sender) {
         require(status == EscrowStatus.PAID || status == EscrowStatus.FUNDED, "Invalid transaction status");
         _release();
     }
@@ -239,10 +252,9 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
      * @dev Seller/Buyer marks transaction as paid
      * @param _sender Address marking the transaction as paid
      */
-    function _pay(address _sender) internal {
+    function _pay(address _sender) internal onlyParticipants(_sender) {
         require(status == EscrowStatus.FUNDED, "Transaction is not funded");
         require(expirationTime > block.timestamp, "Transaction already expired");
-        require(buyer == _sender || seller == _sender, "Function can only be invoked by the escrow buyer or seller");
 
         status = EscrowStatus.PAID;
 
@@ -290,10 +302,9 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
      *         Can only be executed by the seller
      *         Transaction must be expired, or previously canceled or released
      */
-    function cancel() external {
+    function cancel() external onlyParticipants(msg.sender) {
         require(status == EscrowStatus.FUNDED || status == EscrowStatus.CREATED,
                 "Only transactions in created or funded state can be canceled");
-        require(buyer == msg.sender || seller == msg.sender, "Function can only be invoked by the escrow buyer or seller");
 
         if(status == EscrowStatus.FUNDED){
             if(msg.sender == seller){
@@ -304,11 +315,10 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
         _cancel();
     }
 
-    function cancel_relayed(address _sender) external {
+    function cancel_relayed(address _sender) external onlyBuyer(_sender) {
         assert(msg.sender == relayer);
         require(status == EscrowStatus.FUNDED || status == EscrowStatus.CREATED,
                 "Only transactions in created or funded state can be canceled");
-        require(buyer == _sender, "Function can only be invoked by the escrow buyer");
 
         _cancel();
     }
@@ -338,7 +348,7 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
      *         Can only be executed by the buyer
      *         Transaction must released
      */
-    function rateTransaction(uint _rate) external {
+    function rateTransaction(uint _rate) external onlyBuyer(msg.sender) {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         require(!arbitrations.isDisputed(address(this)), "Can't rate a transaction that has an arbitration process");
@@ -347,7 +357,6 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
 
         require(mgmt.rating(address(this)) == 0, "Transaction already rated");
         require(status == EscrowStatus.RELEASED, "Transaction not released yet");
-        require(buyer == msg.sender, "Function can only be invoked by the escrow buyer");
 
         mgmt.rate(seller, buyer, _rate);
     }
@@ -355,17 +364,14 @@ contract Escrow is ProxyData, MessageSigned, Fees, Arbitrable {
     /**
      * @notice Open case as a buyer or seller for arbitration
      */
-    function openCase(string calldata _motive) external {
-        require(buyer == msg.sender || seller == msg.sender, "Only a buyer or seller can open a case");
+    function openCase(string calldata _motive) external onlyParticipants(msg.sender) {
         require(status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         arbitrations.openCase(msg.sender, _motive);
     }
 
-    function openCase_relayed(address _sender, string calldata _motive) external {
+    function openCase_relayed(address _sender, string calldata _motive) external onlyBuyer(_sender) {
         assert(msg.sender == relayer);
-
-        require(buyer == _sender, "Function can only be invoked by the escrow buyer");
         require(status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         arbitrations.openCase(_sender, _motive);

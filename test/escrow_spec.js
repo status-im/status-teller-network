@@ -356,7 +356,7 @@ it("Buyer can create escrow", async () => {
       }
     });
 
-    it("Accounts different from the escrow owner cannot cancel escrows", async() => {
+    it("Accounts different from the escrow participants cannot cancel escrows", async() => {
       // Create
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
@@ -370,7 +370,7 @@ it("Buyer can create escrow", async () => {
         receipt = await Escrow.methods.cancel().send({from: accounts[2]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
@@ -413,7 +413,7 @@ it("Buyer can create escrow", async () => {
         await Escrow.methods.release().send({from: accounts[1]}); // Buyer tries to release
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can release the escrow");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can invoke this function");
       }
     });
 
@@ -505,7 +505,7 @@ it("Buyer can create escrow", async () => {
         receipt = await Escrow.methods.pay().send({from: accounts[7]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 

@@ -172,7 +172,7 @@ contract("Escrow", function() {
         await Escrow.methods.openCase('Motive').send({from: accounts[3]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only a buyer or seller can open a case");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
