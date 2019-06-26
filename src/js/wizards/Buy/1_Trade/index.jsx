@@ -87,9 +87,9 @@ class Trade extends Component {
   onAssetChange = (assetQuantity) => {
     let currencyQuantity = 0;
     if(assetQuantity !== ""){
-      assetQuantity = parseFloat(assetQuantity);
-      currencyQuantity = assetQuantity * this._calcPrice();
-      this.validate(currencyQuantity, assetQuantity);
+      const _assetQuantity = parseFloat(assetQuantity);
+      currencyQuantity = _assetQuantity * this._calcPrice();
+      this.validate(currencyQuantity, assetQua_assetQuantityntity);
       if (isNaN(currencyQuantity)) {
         return;
       }
@@ -100,9 +100,9 @@ class Trade extends Component {
   onCurrencyChange = (currencyQuantity) => {
     let assetQuantity = 0;
     if(currencyQuantity !== ""){
-      currencyQuantity = parseFloat(currencyQuantity);
-      assetQuantity = currencyQuantity / this._calcPrice();
-      this.validate(currencyQuantity, assetQuantity);
+      const _currencyQuantity = parseFloat(currencyQuantity);
+      assetQuantity = _currencyQuantity / this._calcPrice();
+      this.validate(_currencyQuantity, assetQuantity);
       if (isNaN(assetQuantity)) {
         return;
       }
