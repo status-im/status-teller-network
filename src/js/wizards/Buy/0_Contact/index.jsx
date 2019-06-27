@@ -43,6 +43,10 @@ class Contact extends Component {
     if (prevProps.statusContactCode !== this.props.statusContactCode) {
       this.changeStatusContactCode(this.props.statusContactCode);
     }
+
+    if (prevProps.username !== this.props.username) {
+      this.changeUsername(this.props.username);
+    }
   }
 
   validate(username, statusContactCode) {

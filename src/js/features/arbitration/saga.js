@@ -47,7 +47,7 @@ export function *doGetEscrows() {
   try {
     const events = yield Escrow.getPastEvents('ArbitrationRequired', {fromBlock: 1});
 
-    const escrows = [];
+    let escrows = [];
     for (let i = 0; i < events.length; i++) {
       const escrowId = events[i].returnValues.escrowId;
 
@@ -59,8 +59,15 @@ export function *doGetEscrows() {
       escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
       escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
 
-      escrows.push(escrow);
+      if(escrow.arbitration.open || escrow.arbitration.result !== 0) {
+        escrows.push(escrow);
+      }
     }
+
+    // remove duplicates in the case of re-opened disputes
+    escrows = escrows.filter((obj, pos, arr) => {
+      return arr.map(mapObj => mapObj['escrowId']).indexOf(obj['escrowId']) === pos;
+    });
 
     yield put({type: GET_DISPUTED_ESCROWS_SUCCEEDED, escrows});
   } catch (error) {
