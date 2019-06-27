@@ -24,9 +24,9 @@ contract Arbitrable {
     }
 
     event ArbitratorChanged(address arbitrator);
-    event ArbitrationCanceled(uint escrowId, uint date);
-    event ArbitrationRequired(uint escrowId, uint date);
-    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator, uint date);
+    event ArbitrationCanceled(uint escrowId);
+    event ArbitrationRequired(uint escrowId);
+    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
 
     /**
      * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
@@ -69,7 +69,7 @@ contract Arbitrable {
 
         delete arbitrationCases[_escrowId];
 
-        emit ArbitrationCanceled(_escrowId, block.timestamp);
+        emit ArbitrationCanceled(_escrowId);
     }
 
     function openDispute(uint _escrowId, address _openBy, string memory motive) internal {
@@ -84,7 +84,7 @@ contract Arbitrable {
             motive: motive
         });
 
-        emit ArbitrationRequired(_escrowId, block.timestamp);
+        emit ArbitrationRequired(_escrowId);
     }
 
     /**
@@ -108,7 +108,7 @@ contract Arbitrable {
             // Consider deducting a fee as reward for whoever opened the arbitration process.
         // }
 
-        emit ArbitrationResolved(_escrowId, _result, msg.sender, block.timestamp);
+        emit ArbitrationResolved(_escrowId, _result, msg.sender);
 
         if(_result == ArbitrationResult.BUYER){
             solveDispute(_escrowId, true, msg.sender);
