@@ -32,7 +32,10 @@ contract ArbitratorLicense {
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
-    event RequestAccepted(address arbitrator, address seller);
+  
+    event RequestAccepted(uint id, address arbitrator, address seller);
+    event RequestRejected(uint id, address arbitrator, address seller);
+    event RequestCanceled(uint id, address arbitrator, address seller);
 
     /**
      * @notice Buy an arbitrator license
@@ -79,23 +82,52 @@ contract ArbitratorLicense {
     }
 
     /**
-     * @notice Allows arbitrator to accept a seller
-     * @param _seller address of an accepted seller
+     * @notice Allows arbitrator to accept a seller's request
      * @param _id request id     
      */
-    function acceptRequest(address _seller, uint _id) public {
+    function acceptRequest(uint _id) public {
         require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
-        require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already acceps all cases");
+        require(requests[_id].status == RequestStatus.AWAIT, "This request is not pending");
+        require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already accepts all cases");
         
         requests[_id].status = RequestStatus.ACCEPTED;
 
-        arbitratorlicenseDetails[msg.sender].accepted.push(_seller);
-        emit RequestAccepted(msg.sender, _seller);
+        arbitratorlicenseDetails[msg.sender].accepted.push(requests[_id].seller);
+        emit RequestAccepted(_id, msg.sender, requests[_id].seller);
     }
 
-    // TODO:
-    // func reject seller
+    /**
+     * @notice Allows arbitrator to reject a request
+     * @param _id request id     
+     */
+    function rejectRequest(uint _id) public {
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");       
+        require(requests[_id].status == RequestStatus.AWAIT, "This request is not pending");
+        require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator accepts all cases");
+        
+        requests[_id].status = RequestStatus.REJECTED;
+
+        emit RequestRejected(_id, msg.sender, requests[_id].seller);
+
+    }
+
+    /**
+     * @notice Allows seller to cancel a request
+     * @param _id request id     
+     */
+    function cancelRequest(uint _id) public {
+        require(requests[_id].seller == msg.sender,  "This request id does not belong to the message sender");
+        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is already inactive");
+
+        requests[_id].status = RequestStatus.CLOSED;
+
+        emit RequestCanceled(_id, msg.sender, requests[_id].seller);
+    }    
+
     // func deactivate license
+    function deactivateLicense() public {}    
+
     // func getLicense
-    // func cancel arbitrator
+    function getLicense() public {}    
+
 }
