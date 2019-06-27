@@ -758,7 +758,7 @@ contract("Escrow", function() {
       messageToSign = await Escrow.methods.openCaseSignHash(escrowId, "My motive is...").call();
       signature = await web3.eth.sign(messageToSign, accounts[1]);
 
-      receipt = await Escrow.methods.openCaseWithSignature(escrowId, "My motive is...", signature).send({from: accounts[9]});
+      receipt = await Escrow.methods['openCase(uint256,string,bytes)'](escrowId, "My motive is...", signature).send({from: accounts[9]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
       assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");

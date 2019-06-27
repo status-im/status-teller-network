@@ -65,7 +65,7 @@ module.exports = {
     //            when not specified
     // - explicit will only attempt to deploy the contracts that are explicity specified inside the
     //            contracts section.
-    strategy: 'implicit',
+    strategy: 'explicit',
 
     contracts: {
       License: {
@@ -90,13 +90,16 @@ module.exports = {
           "$StakingPool"
         ]
       },
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
+      EscrowRelay: {
+        args: ["$MetadataStore", "$Escrow", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
         ]
+      }, 
+      Escrow: {
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": {

@@ -1,9 +1,13 @@
 module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
+    const main = addresses[0];
+
+
+    await deps.contracts.Escrow.methods.setRelayer(deps.contracts.EscrowRelay.options.address).send({from: main});
 
     const arbitrator = addresses[9];
-    const main = addresses[0];
+  
     const sntToken = 10000000;
     const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
     if (balance !== '0') {
@@ -96,6 +100,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
       let gas;
 
+      /*
       const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
       gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
       const receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
@@ -109,10 +114,10 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const rating = Math.floor(Math.random() * 5) + 1;
       const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
       gas = await rate.estimateGas({from: buyerAddress});
-      await rate.send({from: buyerAddress, gas: gas + 1000});
+      await rate.send({from: buyerAddress, gas: gas + 1000});*/
     }));
 
-
+    /*
     console.log('Creating arbitrations');
 
 
@@ -134,7 +139,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       gas = await openCase.estimateGas({from: buyerAddress});
       receipt = await openCase.send({from: buyerAddress, gas: gas + 1000});
     }));
-
+*/
     const accounts = await Promise.all(addresses.map(async(address) => {
       const ethBalance = await deps.web3.eth.getBalance(address);
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();

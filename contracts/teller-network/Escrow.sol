@@ -47,6 +47,10 @@ contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable
         metadataStore = MetadataStore(_metadataStore);
     }
 
+    function setRelayer(address _relayer) public onlyOwner {
+        relayer = _relayer;
+    }
+
     function init(
         address _relayer,
         address _license,
@@ -398,7 +402,7 @@ contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCaseWithSignature(uint _escrowId, string calldata motive, bytes calldata _signature) external {
+    function openCase(uint _escrowId, string calldata motive, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
