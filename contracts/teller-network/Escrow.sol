@@ -6,7 +6,6 @@ pragma solidity >=0.5.0 <0.6.0;
 import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
-import "../proxy/ProxyData.sol";
 
 import "./License.sol";
 import "./MetadataStore.sol";
@@ -18,7 +17,7 @@ import "./IEscrow.sol";
  * @title Escrow
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
-contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
+contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     EscrowTransaction[] public transactions;
 
@@ -33,6 +32,8 @@ contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable
     event Canceled(uint indexed escrowId);
     event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating);
 
+    bool internal _initialized;
+
     constructor(
         address _relayer,
         address _license,
@@ -43,9 +44,12 @@ contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable
         Fees(_feeDestination, _feeMilliPercent)
         Arbitrable(_arbitrationLicense)
         public {
+        _initialized = true;
         license = License(_license);
         metadataStore = MetadataStore(_metadataStore);
     }
+
+    // TODO: add initialization functions
 
     function setRelayer(address _relayer) public onlyOwner {
         relayer = _relayer;
@@ -58,13 +62,17 @@ contract Escrow is ProxyData, IEscrow, Pausable, MessageSigned, Fees, Arbitrable
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent
-    ) public onlyOwner {
-        relayer = _relayer;
+    ) public {
+        _initialized = true;
+
         license = License(_license);
         metadataStore = MetadataStore(_metadataStore);
+        arbitratorLicenses = License(_arbitrationLicense);
+        relayer = _relayer;
         feeDestination = _feeDestination;
         feeMilliPercent = _feeMilliPercent;
-        arbitratorLicenses = License(_arbitrationLicense);
+        paused = false;
+        _setOwner(msg.sender);
     }
 
     /**

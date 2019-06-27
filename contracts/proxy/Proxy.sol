@@ -1,25 +1,23 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-import "ProxyData.sol";
+// Adapted from
+// https://github.com/zeppelinos/labs/tree/master/upgradeability_using_unstructured_storage
 
-contract Proxy is ProxyData {
+contract Proxy {
 
-    constructor(address _impl) public {
-        _implementation = _impl;
-    }
+    /**
+  * @dev Tells the address of the implementation where every call will be delegated.
+  * @return address of the implementation to which it will be delegated
+  */
+  function implementation() public view returns (address);
 
-
-     function implementation() public view returns (address) {
-        return _implementation;
-    }
-
-    function proxyType() public pure returns (uint256) {
-        return 2;
-    }
-
+  /**
+  * @dev Fallback function allowing to perform a delegatecall to the given implementation.
+  * This function will return whatever the implementation call returns
+  */
     function () payable external {
-        address _impl = _implementation;
-        assert(_impl != address(0));
+        address _impl = implementation();
+        require(_impl != address(0));
 
         assembly {
             let ptr := mload(0x40)
@@ -32,6 +30,10 @@ contract Proxy is ProxyData {
             case 0 { revert(ptr, size) }
             default { return(ptr, size) }
         }
-  }
+    }
 
+
+    function proxyType() public pure returns (uint256) {
+        return 1;
+    }
 }
