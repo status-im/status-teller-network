@@ -485,7 +485,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         (sig, value1, value2) = abiDecodeFundCall(_data);
 
-        if (sig == bytes4(0x111d7d50)){ // fund(uint,uint,uint)
+        if (sig == bytes4(0xa65e2cfd)){ // fund(uint,uint,uint)
             _fund(_from, uint256(value1), uint256(value2));
         } else {
             revert("Wrong method selector");
