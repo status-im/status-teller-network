@@ -22,7 +22,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     EscrowTransaction[] public transactions;
 
     address public relayer;
-    License public license;
+    License public sellerLicenses;
     MetadataStore public metadataStore;
 
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
@@ -36,43 +36,50 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     constructor(
         address _relayer,
-        address _license,
-        address _arbitrationLicense,
+        address _sellerLicenses,
+        address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent)
         Fees(_feeDestination, _feeMilliPercent)
-        Arbitrable(_arbitrationLicense)
+        Arbitrable(_arbitratorLicenses)
         public {
         _initialized = true;
-        license = License(_license);
+        sellerLicenses = License(_sellerLicenses);
         metadataStore = MetadataStore(_metadataStore);
-    }
-
-    // TODO: add initialization functions
-
-    function setRelayer(address _relayer) public onlyOwner {
-        relayer = _relayer;
     }
 
     function init(
         address _relayer,
-        address _license,
-        address _arbitrationLicense,
+        address _sellerLicenses,
+        address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent
     ) public {
         _initialized = true;
 
-        license = License(_license);
+        sellerLicenses = License(_sellerLicenses);
+        arbitratorLicenses = License(_arbitratorLicenses);
         metadataStore = MetadataStore(_metadataStore);
-        arbitratorLicenses = License(_arbitrationLicense);
         relayer = _relayer;
         feeDestination = _feeDestination;
         feeMilliPercent = _feeMilliPercent;
         paused = false;
         _setOwner(msg.sender);
+    }
+
+    function setRelayer(address _relayer) public onlyOwner {
+        relayer = _relayer;
+    }
+
+    function setLicenses(address _sellerLicenses, address _arbitratorLicenses) public onlyOwner {
+        sellerLicenses = License(_sellerLicenses);
+        arbitratorLicenses = License(_arbitratorLicenses);
+    }
+
+    function setMetadataStore(address _metadataStore) public onlyOwner {
+        metadataStore = MetadataStore(_metadataStore);
     }
 
     /**
@@ -134,7 +141,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
             require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer fund");
         }
 
-        payFee(_from, _escrowId, _tokenAmount, token);
+        _payFee(_from, _escrowId, _tokenAmount, token);
 
         emit Funded(_escrowId, block.timestamp + 5 days, _tokenAmount);
     }
@@ -156,7 +163,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         require(!deleted, "Offer is not valid");
         require(msg.sender == _buyer || msg.sender == seller, "Must participate in the trade");
-        require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
+        require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
         require(_tradeAmount != 0 && _assetPrice != 0, "Prices cannot be 0");
@@ -392,16 +399,19 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(trx.buyer == msg.sender || metadataStore.getOfferOwner(trx.offerId) == msg.sender, "Only participants can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        openDispute(_escrowId, msg.sender, motive);
+        _openDispute(_escrowId, msg.sender, motive);
     }
 
     function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external {
         assert(msg.sender == relayer);
+        
         EscrowTransaction storage trx = transactions[_escrowId];
+        
         require(!isDisputed(_escrowId), "Case already exist");
         require(trx.buyer == _sender, "Only the buyer can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
-        openDispute(_escrowId, _sender, _motive);
+        
+        _openDispute(_escrowId, _sender, _motive);
     }
 
     /**
@@ -420,7 +430,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         require(trx.buyer == senderAddress || trx.seller == senderAddress, "Only participants can invoke this function");
 
-        openDispute(_escrowId, msg.sender, motive);
+        _openDispute(_escrowId, msg.sender, motive);
     }
 
     /**
@@ -429,7 +439,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _releaseFunds Release funds to buyer or cancel escrow
      * @param _arbitrator Arbitrator address
      */
-    function solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal {
+    function _solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.buyer != _arbitrator && trx.seller != _arbitrator, "Arbitrator cannot be part of transaction");
@@ -483,7 +493,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         bytes32 value1;
         bytes32 value2;
 
-        (sig, value1, value2) = abiDecodeFundCall(_data);
+        (sig, value1, value2) = _abiDecodeFundCall(_data);
 
         if (sig == bytes4(0xa65e2cfd)){ // fund(uint,uint,uint)
             _fund(_from, uint256(value1), uint256(value2));
@@ -497,7 +507,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeFundCall(bytes memory _data) internal pure returns (
+    function _abiDecodeFundCall(bytes memory _data) internal pure returns (
             bytes4 sig,
             bytes32 value1,
             bytes32 value2

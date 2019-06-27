@@ -41,7 +41,7 @@ contract Arbitrable {
      * @param _arbitrator Address of the arbitrator solving the dispute
      * @dev Abstract contract used to perform actions after a dispute has been settled
      */
-    function solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal;
+    function _solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal;
 
     /**
      * @notice Get arbitrator of an escrow
@@ -72,7 +72,7 @@ contract Arbitrable {
         emit ArbitrationCanceled(_escrowId);
     }
 
-    function openDispute(uint _escrowId, address _openBy, string memory motive) internal {
+    function _openDispute(uint _escrowId, address _openBy, string memory motive) internal {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
@@ -111,9 +111,9 @@ contract Arbitrable {
         emit ArbitrationResolved(_escrowId, _result, msg.sender);
 
         if(_result == ArbitrationResult.BUYER){
-            solveDispute(_escrowId, true, msg.sender);
+            _solveDispute(_escrowId, true, msg.sender);
         } else {
-            solveDispute(_escrowId, false, msg.sender);
+            _solveDispute(_escrowId, false, msg.sender);
         }
     }
 }
