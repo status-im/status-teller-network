@@ -87,7 +87,7 @@ contract("Escrow", function() {
 
   const {toBN} = web3.utils;
 
-  const tradeAmount = 100;
+  const tradeAmount = 1000000;
   const feeAmount = Math.round(tradeAmount * (feePercent / 100));
 
   // util
@@ -250,8 +250,7 @@ contract("Escrow", function() {
       }
     });
 
-    it("A seller can cancel their ETH escrows", async () => {
-      await StandardToken.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+    it("A seller can cancel their expired ETH escrows", async () => {
       receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, tradeAmount, expirationTime, FIAT, 140).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
@@ -267,7 +266,7 @@ contract("Escrow", function() {
       assert.equal(escrow.status, ESCROW_CANCELED, "Should have been canceled");
     });
 
-    it("A seller can cancel their token escrows", async () => {
+    it("A seller can cancel their expired token escrows and gets back the fee", async () => {
       await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
       await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
@@ -409,7 +408,8 @@ contract("Escrow", function() {
       const contractBalanceAfterEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
       assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
-      assert.equal(contractBalanceAfterEscrow, toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount)), "Invalid contract balance");
+      const after = toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount).add(toBN(feeAmount)));
+      assert.equal(contractBalanceAfterEscrow, after, "Invalid contract balance");
     });
 
     it("Released escrow cannot be released again", async() => {
@@ -743,13 +743,17 @@ contract("Escrow", function() {
       assert.strictEqual(arbitrationCanceled.returnValues.escrowId, escrowId, "Invalid escrowId");
     });
 
-    it("should transfer to buyer if case is solved in their favor", async() => {
+    it("should transfer to buyer if case is solved in their favor and the fee goes to arbitrator", async() => {
+      const arbitratorBalanceBefore = await web3.eth.getBalance(arbitrator);
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
 
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
       const released = receipt.events.Released;
       assert(!!released, "Released() not triggered");
+
+      const arbitratorBalanceAfter = await web3.eth.getBalance(arbitrator);
+      assert.strictEqual((toBN(arbitratorBalanceAfter).add(toBN(receipt.gasUsed))).toString(), (toBN(arbitratorBalanceBefore).add(toBN(feeAmount))).toString(), 'Arbitrator balance should have the fee');
     });
 
     it("should cancel escrow if case is solved in favor of the seller", async() => {
@@ -798,22 +802,6 @@ contract("Escrow", function() {
 
       assert.strictEqual(parseInt(ethFeeBalance, 10), parseInt(ethFeeBalanceBefore, 10) + feeAmount, "Fee balance did not increase");
       assert.strictEqual(parseInt(totalEthAfter, 10), parseInt(totalEthBefore, 10) + feeAmount + tradeAmount, "Total balance did not increase");
-    });
-
-    it("fees can be withdrawn to burn address", async() => {
-      const ethFeeBalanceBefore = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
-      const totalEthBefore = await web3.eth.getBalance(Escrow.options.address);
-      const destAddressBalanceBefore = await web3.eth.getBalance(await Escrow.methods.feeDestination().call());
-
-      receipt = await Escrow.methods.withdrawFees(TestUtils.zeroAddress).send({from: accounts[0]});
-
-      const ethFeeBalanceAfter = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
-      const totalEthAfter = await web3.eth.getBalance(Escrow.options.address);
-      const destAddressBalanceAfter = await web3.eth.getBalance(await Escrow.methods.feeDestination().call());
-
-      assert.strictEqual(toBN(totalEthAfter).toString(), (toBN(totalEthBefore).sub(toBN(ethFeeBalanceBefore)).toString()), "Invalid contract balance");
-      assert.strictEqual(parseInt(ethFeeBalanceAfter, 10), 0, "Invalid fee balance");
-      assert.strictEqual(toBN(destAddressBalanceAfter).toString(), (toBN(destAddressBalanceBefore).add(toBN(ethFeeBalanceBefore)).toString()), "Invalid address balance");
     });
   });
 

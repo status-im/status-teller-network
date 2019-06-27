@@ -16,7 +16,6 @@ contract Fees is Ownable {
     event FeeDestinationChanged(address payable);
     event FeeMilliPercentChanged(uint amount);
     event FeesWithdrawn(uint amount, address token);
-    event MyEvent(uint fees, address destination, uint balance);
 
     /**
      * @param _feeDestination Address to send the fees once withdraw is called
@@ -51,26 +50,42 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Withdraw fees by sending them to the fee destination address
-     */
-    function withdrawFees(address _tokenAddress) public {
-        uint fees = feeTokenBalances[_tokenAddress];
-        feeTokenBalances[_tokenAddress] = 0;
-        if (_tokenAddress == address(0)) {
-            require(address(this).balance >= fees, "Not enough balance");
-            feeDestination.transfer(fees);
-            emit MyEvent(fees, feeDestination, address(this).balance);
+     * @notice Release fee to fee destination and arbitrator
+     * @param _arbitrator Arbitrator address to transfer fee to
+     * @param _value Value sold in the escrow
+     * @param _isDispute Boolean telling if it was from a dispute. With a dispute, the arbitrator gets more
+    */
+    function releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal {
+        uint _milliPercentToArbitrator;
+        if (_isDispute) {
+            _milliPercentToArbitrator = 100000; // 100%
         } else {
-            ERC20Token tokenToWithdraw = ERC20Token(_tokenAddress);
-            require(tokenToWithdraw.transfer(feeDestination, fees), "Error transferring fees");
+            _milliPercentToArbitrator = 10000; // 10%
         }
-        emit FeesWithdrawn(fees, _tokenAddress);
+
+        uint feeAmount = getValueOffMillipercent(_value, feeMilliPercent);
+        uint arbitratorValue = getValueOffMillipercent(feeAmount, _milliPercentToArbitrator);
+        uint destinationValue = feeAmount - arbitratorValue;
+
+        if (_tokenAddress != address(0)) {
+            ERC20Token tokenToPay = ERC20Token(_tokenAddress);
+            // Arbitrator transfer
+            require(tokenToPay.transfer(_arbitrator, arbitratorValue), "Unsuccessful token transfer abri");
+            if (destinationValue > 0) {
+                require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer destination");
+            }
+        } else {
+            _arbitrator.transfer(arbitratorValue);
+            if (destinationValue > 0) {
+                feeDestination.transfer(destinationValue);
+            }
+        }
     }
 
-    function getFeeFromAmount(uint _value) internal returns(uint) {
+    function getValueOffMillipercent(uint _value, uint _milliPercent) internal returns(uint) {
         // To get the factor, we divide like 100 like a normal percent, but we multiply that by 1000 because it's a milliPercent
         // Eg: 1 % = 1000 millipercent => Factor is 0.01, so 1000 divided by 100 * 1000
-        return (_value * feeMilliPercent) / (100 * 1000);
+        return (_value * _milliPercent) / (100 * 1000);
     }
 
     /**
@@ -85,12 +100,12 @@ contract Fees is Ownable {
         if (feePaid[_id]) return;
 
         feePaid[_id] = true;
-        uint feeAmount = getFeeFromAmount(_value);
+        uint feeAmount = getValueOffMillipercent(_value, feeMilliPercent);
         feeTokenBalances[_tokenAddress] += feeAmount;
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer");
+            require(tokenToPay.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer pay fee");
         } else {
             require(msg.value == (_value + feeAmount), "ETH amount is required");
         }

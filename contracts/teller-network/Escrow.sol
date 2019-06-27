@@ -50,7 +50,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         TradeType tradeType;
         EscrowStatus status;
         address payable buyer;
-        address arbitrator;
+        address payable arbitrator;
     }
 
     enum TradeType {FIAT, CRYPTO}
@@ -180,7 +180,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         if (token != address(0)) {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
             ERC20Token erc20token = ERC20Token(token);
-            require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer");
+            require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer fund");
         }
         payFee(_from, _escrowId, _tokenAmount, token);
 
@@ -220,7 +220,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         uint _assetPrice
     ) internal returns(uint escrowId) {
         address seller;
-        address arbitrator;
+        address payable arbitrator;
         bool deleted;
 
         (,,,,seller, arbitrator, deleted) = metadataStore.offer(_offerId);
@@ -257,7 +257,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         EscrowStatus mStatus = transactions[_escrowId].status;
         require(metadataStore.getOfferOwner(transactions[_escrowId].offerId) == get_sender(), "Only the seller can release the escrow");
         require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
-        _release(_escrowId, transactions[_escrowId]);
+        _release(_escrowId, transactions[_escrowId], false);
     }
 
     /**
@@ -265,16 +265,16 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _escrowId Id of the escrow
      * @param trx EscrowTransaction with data of transaction to be released
      */
-    function _release(uint _escrowId, EscrowTransaction storage trx) internal {
+    function _release(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
         trx.status = EscrowStatus.RELEASED;
 
         address token = metadataStore.getAsset(trx.offerId);
         if(token == address(0)){
-            trx.buyer.transfer(trx.tokenAmount); // TODO: transfer fee to Status?
+            trx.buyer.transfer(trx.tokenAmount);
         } else {
-            ERC20Token erc20token = ERC20Token(token);
-            require(erc20token.transfer(trx.buyer, trx.tokenAmount), "Couldn't transfer funds");
+            require(ERC20Token(token).transfer(trx.buyer, trx.tokenAmount), "Couldn't transfer funds");
         }
+        releaseFee(trx.arbitrator, trx.tokenAmount, token, isDispute);
 
         emit Released(_escrowId, block.timestamp);
     }
@@ -362,7 +362,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
             }
         }
 
-        _cancel(_escrowId, seller, trx);
+        _cancel(_escrowId, seller, trx, false);
     }
 
     /**
@@ -370,10 +370,15 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _escrowId Id of the escrow
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
-    function _cancel(uint _escrowId, address payable _seller, EscrowTransaction storage trx) internal {
+    function _cancel(uint _escrowId, address payable _seller, EscrowTransaction storage trx, bool isDispute) internal {
         if(trx.status == EscrowStatus.FUNDED){
             address token = metadataStore.getAsset(trx.offerId);
-            uint amount = trx.tokenAmount + getFeeFromAmount(trx.tokenAmount);
+            uint amount;
+            if (isDispute) {
+                amount = trx.tokenAmount;
+            } else {
+                amount = trx.tokenAmount + getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
+            }
             if(token == address(0)){
                 _seller.transfer(amount);
             } else {
@@ -398,7 +403,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
 
         address payable seller = metadataStore.getOfferOwner(trx.offerId);
-        _cancel(_escrowId, seller, trx);
+        _cancel(_escrowId, seller, trx, false);
     }
 
     /**
@@ -481,9 +486,10 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(trx.buyer != _arbitrator && seller != _arbitrator, "Arbitrator cannot be part of transaction");
 
         if(_releaseFunds){
-            _release(_escrowId, trx);
+            _release(_escrowId, trx, true);
         } else {
-            _cancel(_escrowId, seller, trx);
+            _cancel(_escrowId, seller, trx, true);
+            releaseFee(trx.arbitrator, trx.tokenAmount, metadataStore.getAsset(trx.offerId), true);
         }
     }
 

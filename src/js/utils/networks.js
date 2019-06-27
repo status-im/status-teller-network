@@ -584,7 +584,7 @@ export const Tokens = {
     {
       symbol: 'SNT',
       name: "Status Network Token",
-      address: SNT.address.toLowerCase(),
+      address: SNT.address && SNT.address.toLowerCase(),
       decimals: 18
     },
     {
@@ -596,13 +596,13 @@ export const Tokens = {
     {
       symbol: 'DAI',
       name: 'DAI',
-      address: DAI.address.toLowerCase(),
+      address: DAI.address && DAI.address.toLowerCase(),
       decimals: 18
     },
     {
       symbol: 'MKR',
       name: "MKR",
-      address: MKR.address.toLowerCase(),
+      address: MKR.address && MKR.address.toLowerCase(),
       decimals: 18
     }
   ],
