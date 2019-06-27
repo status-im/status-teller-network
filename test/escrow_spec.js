@@ -96,7 +96,7 @@ contract("Escrow", function() {
     expirationTime += addTime;
   };
 
-  let receipt, escrowId, escrowTokenId, _offerId, ethOfferId, tokenOfferId, hash, signature, nonce;
+  let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, hash, signature, nonce;
   let created;
 
   this.timeout(0);
@@ -118,6 +118,8 @@ contract("Escrow", function() {
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    sntOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Creating a new escrow", async () => {
@@ -228,6 +230,29 @@ contract("Escrow", function() {
       const escrow = await Escrow.methods.transactions(escrowTokenId).call();
 
       assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
+    });
+
+    it("Can fund an SNT escrow with approveAndCall", async () => {
+      await SNT.methods.approve(Escrow.options.address, 0).send({from: accounts[0]});
+
+      await SNT.methods.generateTokens(accounts[0], tradeAmount + feeAmount).send();
+
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+
+      let receipt = await Escrow.methods.create(sntOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      const created = receipt.events.Created;
+      escrowTokenId = receipt.events.Created.returnValues.escrowId;
+
+
+      SNT.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name == 'Funded'));
+      const encodedCall = Escrow.methods.fund(escrowTokenId, tradeAmount).encodeABI();
+      receipt = await SNT.methods.approveAndCall(Escrow.options.address, tradeAmount + feeAmount, encodedCall).send({from: accounts[0]});
+
+      const funded = receipt.events.Funded;
+      assert(!!funded, "Funded() not triggered");
+
     });
   });
 

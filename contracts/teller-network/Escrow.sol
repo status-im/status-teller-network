@@ -487,7 +487,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function receiveApproval(address _from, uint256 _amount, address _token, bytes memory _data) public {
         require(_token == address(msg.sender), "Wrong call");
-        require(_data.length == 100, "Wrong data length");
+        require(_data.length == 68, "Wrong data length");
 
         bytes4 sig;
         bytes32 value1;
