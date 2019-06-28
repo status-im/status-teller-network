@@ -54,12 +54,24 @@ contract ArbitratorLicense {
         emit ArbitratorLicensed(_id, _acceptAny);
     }
 
+
+    /**
+     * @notice Change acceptAny parameter for arbitrator
+     * @param _acceptAny indicates does arbitrator allow to accept any seller/choose sellers 
+     */
+    function changeAcceptAny(bool _acceptAny) public {
+        require(isLicenseOwner(msg.sender), "Message sender should have a valid arbitrator license");
+        require(arbitratorlicenseDetails[msg.sender].acceptAny != _acceptAny, "Message sender should pass parameter different from the current one");
+
+        arbitratorlicenseDetails[msg.sender].acceptAny = _acceptAny;         
+    }
+
     /**
      * @notice Check if a license owner
      * @param _address address that you want to check
      */
     function isLicenseOwner(address _address) public view returns (bool) {
-        bool response =license.isLicenseOwner(_address);
+        bool response = license.isLicenseOwner(_address);
         return response;
     }
 
@@ -123,11 +135,5 @@ contract ArbitratorLicense {
 
         emit RequestCanceled(_id, msg.sender, requests[_id].seller);
     }    
-
-    // func deactivate license
-    function deactivateLicense() public {}    
-
-    // func getLicense
-    function getLicense() public {}    
 
 }
