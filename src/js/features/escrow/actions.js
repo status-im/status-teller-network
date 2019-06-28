@@ -24,7 +24,7 @@ export const createEscrow = (signature, username, tradeAmount, assetPrice, statu
     escrow: {
       tradeAmount,
       offerId: offer.id,
-      assetPrice
+      assetPrice: assetPrice.toFixed(2).toString().replace('.', '')
     }
   };
 };
