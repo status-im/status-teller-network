@@ -1,10 +1,15 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
+import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
+import OwnedUpgradeabilityProxy from '../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare} from './utils/address';
 
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
-  "create(address,uint256,uint256,uint8,uint256,bytes,string,string)": "a63c5162",
+  "create(uint256,uint256,uint8,uint256,bytes,string,string,uint256,bytes)": "b22bd55a",
   "openCase(uint256,string)": "58b67904",
   "pay(uint256)": "c290d691"
 };
@@ -22,7 +27,7 @@ class Provider {
     const fSend = (payload, callback) => {
       const params = payload.params[0];
 
-      if (!(params && params.to && addressCompare(params.to, Escrow.options.address.toLowerCase()) &&
+      if (!(params && params.to && addressCompare(params.to, Escrow.options.address) &&
         payload.method === "eth_sendTransaction" &&
         Object.values(VALID_OPERATIONS).includes(params.data.substring(2, 10)))) {
         this.origProviderSend(payload, callback);
@@ -39,7 +44,11 @@ class Provider {
           // to set this gas price as a parameter. Tabookey will then use this value directly
           // without applying the factor percent
           const useGasPrice = web3.utils.toBN(gasPrice).mul(web3.utils.toBN("120")).div(web3.utils.toBN("100"));
+          
+          payload.params[0].to = EscrowRelay.options.address;
+          payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
           payload.params[0].gasPrice = web3.utils.toHex(useGasPrice);
+
           this.relayProviderSend(payload, (error, result) => {
             callback(error, result);
           });

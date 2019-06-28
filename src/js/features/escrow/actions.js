@@ -8,8 +8,9 @@ import {
 } from './constants';
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-
 import { toTokenDecimals } from '../../utils/numbers';
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 export const createEscrow = (signature, username, tradeAmount, assetPrice, statusContactCode, offer, nonce) => {
   tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
@@ -30,14 +31,12 @@ export const createEscrow = (signature, username, tradeAmount, assetPrice, statu
 };
 
 export const fundEscrow = (escrow) => {
-  const expirationTime = Math.floor((new Date()).getTime() / 1000) + (86400 * 2); // TODO: what will be the expiration time?
   const value = escrow.tradeAmount;
 
   return {
     type: FUND_ESCROW,
     value,
     escrowId: escrow.escrowId,
-    expirationTime,
     token: web3.utils.toChecksumAddress(escrow.offer.asset)
   };
 

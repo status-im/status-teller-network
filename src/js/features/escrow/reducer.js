@@ -53,7 +53,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case FUND_ESCROW_SUCCEEDED:
       escrowsClone[escrowId].fundStatus = States.success;
-      escrowsClone[escrowId].expirationTime = action.expirationTime;
+      escrowsClone[escrowId].expirationTime = (Date.now() / 1000) + (86400 * 5);
       escrowsClone[escrowId].status = escrowStatus.FUNDED;
       return {
         ...state,
