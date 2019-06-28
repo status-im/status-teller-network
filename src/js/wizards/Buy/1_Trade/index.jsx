@@ -110,6 +110,12 @@ class Trade extends Component {
     this.setState({currencyQuantity, assetQuantity});
   };
 
+  componentWillUnmount() {
+    if (this.props.createEscrowStatus === States.failed) {
+      this.props.resetCreateStatus();
+    }
+  }
+
   render() {
     if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
       return <Loading page/>;
