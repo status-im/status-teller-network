@@ -76,7 +76,7 @@ class Trade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer, this.props.nonce);
+    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price, this.props.statusContactCode, this.props.offer, this.props.nonce);
   };
 
   _calcPrice = () => {
