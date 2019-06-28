@@ -128,7 +128,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
         require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
 
-        require(license.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
+        require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
 
         transactions[_escrowId].tokenAmount = _tokenAmount;
         transactions[_escrowId].expirationTime = block.timestamp + 5 days;
