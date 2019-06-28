@@ -15,6 +15,8 @@ import {
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 export function *loadUser({address}) {
   try {

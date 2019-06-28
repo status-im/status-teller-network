@@ -102,9 +102,7 @@ module.exports = {
         args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT]
       },
       "MiniMeToken": { "deploy": false },
-      "MiniMeTokenFactory": {
-
-      },
+      "MiniMeTokenFactory": { },
       "Fees": {
         "deploy": false
       },
@@ -131,6 +129,8 @@ module.exports = {
       },
       "RelayHub": {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
+      },
+      OwnedUpgradeabilityProxy: {
       }
     }
   },
@@ -277,13 +277,17 @@ module.exports = {
   ropsten: {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_MILLI_PERCENT],
+      EscrowRelay: {
+        args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 8000000000})",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 8000000000, value: 300000000000000000})"
         ]
+      }, 
+      Escrow: {
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
+        gasPrice: "10000000000"
       },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
@@ -293,7 +297,10 @@ module.exports = {
       },
       "RelayHub": {
         address: "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
-      }
+      },
+      "MiniMeTokenFactory": {
+        deploy: false
+       }
     },
     deployment: {
       accounts: [

@@ -1,5 +1,7 @@
 import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE, CANCEL_DISPUTE} from './constants';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
 

@@ -51,7 +51,7 @@ config({
       args: ["$SNT"]
     },
     EscrowRelay: {
-      args: ["$MetadataStore", "$Escrow", "$SNT"],
+      args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
     }, 
     OwnedUpgradeabilityProxy: {
     },

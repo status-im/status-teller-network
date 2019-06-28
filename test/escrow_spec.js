@@ -124,19 +124,6 @@ contract("Escrow", function() {
 
   describe("Creating a new escrow", async () => {
 
-    it("Seller must be licensed to participate in escrow", async () => {
-      try {
-        hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
-        signature = await web3.eth.sign(hash, accounts[1]);
-        nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-
-        await Escrow.methods.create(ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[8]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
-      }
-    });
-
     it("Buyer can create escrow", async () => {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
