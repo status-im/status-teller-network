@@ -21,7 +21,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
   event ProxyOwnershipTransferred(address previousOwner, address newOwner);
 
   // Storage position of the owner of the contract
-  bytes32 private constant proxyOwnerPosition = keccak256("org.zeppelinos.proxy.owner");
+  bytes32 private constant proxyOwnerPosition = keccak256("im.status.proxy.owner");
 
   /**
   * @dev the constructor sets the original owner of the contract to the sender account.
