@@ -4,7 +4,21 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const main = addresses[0];
 
 
-    await deps.contracts.Escrow.methods.setRelayer(deps.contracts.EscrowRelay.options.address).send({from: main});
+    const abiEncode = deps.contracts.Escrow.methods.init(
+      deps.contracts.EscrowRelay.options.address,
+      deps.contracts.SellerLicense.options.address,
+      deps.contracts.ArbitrationLicense.options.address,
+      deps.contracts.MetadataStore.options.address,
+      "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
+      1000
+    ).encodeABI();
+
+    console.log(deps.contracts.EscrowRelay.options.address);
+
+    // Here we are setting the initial "template", and calling the init() function
+    const receipt = await deps.contracts.OwnedUpgradeabilityProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
+    
+    deps.contracts.Escrow.options.address = deps.contracts.OwnedUpgradeabilityProxy.options.address;
 
     const arbitrator = addresses[9];
   

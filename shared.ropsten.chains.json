@@ -9,41 +9,37 @@
         "name": "RelayHub",
         "address": "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
       },
-      "0x573ce922ef30ea27239add0fb9f2af8d008314dc4a0b3eaefa0adaf8963e44fa": {
-        "name": "StandardToken",
-        "address": "0xEAFb5d3c2c79B48896589ec1dfd1E95ed24D6f93"
-      },
-      "0x5cd70a563902729e50887cf8436b89ccf72107e0acf1a98fd78d1b68c0a8edcc": {
-        "name": "MiniMeTokenFactory",
-        "address": "0x1B3748Bdc4aF6f6BE159DDDEA0154fa3717cB516"
-      },
-      "0x90633e0d0e44dedf48012ba2f1f863ad09468d7fb9793830f6e1a8adbeaaf2e7": {
+      "0x72d7d444a797a01d23556de876848a6b7c602b8dfae24fbe1b506585a91242d0": {
         "name": "SNT",
         "address": "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
       },
-      "0x823f81eb5239fd857afd6bb050d2d628acddcaf2394ef641cd91cf0b8ff874b9": {
-        "name": "ERC20Receiver",
-        "address": "0xB59B23736D852b854aE0eE6687c2b90B01A02AB4"
+      "0xa74f6f7ecb0bfe9416200cb5131f4d385bbbb68d5287c02804af57dd82dffc56": {
+        "name": "OwnedUpgradeabilityProxy",
+        "address": "0x0f35d4cc9271859EaE727f400b80FCF65e017005"
       },
-      "0x2677020cbbcaa18ce69dd8bb8df64aa0e52a0223b292a7a9abb9a9bdef750dd3": {
-        "name": "License",
-        "address": "0x0c7e44b251861a8D4E5E1C81E100CAAd4DCD1DEc"
+      "0x43860c1078a0905618ad0e9a65d6c4dd924cafe396cd871b1ef677b0ce5d3d44": {
+        "name": "StakingPool",
+        "address": "0xbBD9bE3D63a5FBFFce3a378a9b9c7D9d5494802c"
       },
-      "0x744d8dd8d4284e8cdebc5adaf2047826cb846f723c7ec842d12ad5b52678a73a": {
-        "name": "Arbitration",
-        "address": "0xaCd119C6049D3cDAe874d73b944a25592233Dd14"
+      "0xdbb720f23e2fb9a02bf2dd15fde98a186f4978ea8a9e627acb4d0f76f6e15963": {
+        "name": "ArbitrationLicense",
+        "address": "0x1CE9b3ED2939628Fb17E0BD8EBD5Bf837F2413CB"
       },
-      "0xf0e3441440660cc814b11ddb03e1e1f801b6208fe8d821643596e92ac3af2450": {
+      "0xfb608930deee9929e81c1b2b00c6394f85d6efb124320c2d2cc5924cd01ebd20": {
+        "name": "SellerLicense",
+        "address": "0x864014cdC1fC767b6e03064c9119bC44d12414a9"
+      },
+      "0x988ab4edc2380d7adbdf04d32110524c01a208e2fa413a9703b844563cee1550": {
         "name": "MetadataStore",
-        "address": "0x72296A3Bd9bdcdE4bCa5fa63920D40388D84cafB"
+        "address": "0x1ba03504D7e3C8193e6A2077dCa0e487B1AB60dA"
       },
-      "0x6736899f25ec619bbd3b81360f73a21009700e238aa3d743aaa8f9456e4ea5d3": {
-        "name": "Escrow",
-        "address": "0xe515E50DeB4280a3C4f57509CCA9310B0D75b501"
+      "0xd7cb516b7e8a3250795c32a0a646e16a9aceba3de3020e2b3e022d55836331db": {
+        "name": "EscrowRelay",
+        "address": "0xAfC5dE5A66758FeBeE430753b4F5E08139994Caf"
       },
-      "0x35ba4c78cf630e8a7a346283d2e884bb53f450527d7fdd73648520427d1a0909": {
+      "0xd83ce64ff7959b96d213a137b2bbdffe56599ed2dfd1c2d46965838ce540e601": {
         "name": "Escrow",
-        "address": "0xEC9D640726355787ddFcD2d600f65b13B92bf640"
+        "address": "0x7c2382978051Ce39F321bcCD97d09d21F3Be47CB"
       }
     }
   }
