@@ -57,6 +57,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         address payable _feeDestination,
         uint _feeMilliPercent
     ) public {
+        assert(_initialized == false);
+
         _initialized = true;
 
         sellerLicenses = License(_sellerLicenses);
@@ -162,7 +164,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         (token, , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
 
         require(!deleted, "Offer is not valid");
-        require(msg.sender == _buyer || msg.sender == seller, "Must participate in the trade");
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
