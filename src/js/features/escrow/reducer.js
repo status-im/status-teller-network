@@ -16,6 +16,8 @@ import { escrowStatus, eventTypes } from './helpers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import merge from 'merge';
 
+const FIVE_DAYS = 86400 * 5;
+
 const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
@@ -53,7 +55,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case FUND_ESCROW_SUCCEEDED:
       escrowsClone[escrowId].fundStatus = States.success;
-      escrowsClone[escrowId].expirationTime = (Date.now() / 1000) + (86400 * 5);
+      escrowsClone[escrowId].expirationTime = (Date.now() / 1000) + FIVE_DAYS;
       escrowsClone[escrowId].status = escrowStatus.FUNDED;
       return {
         ...state,

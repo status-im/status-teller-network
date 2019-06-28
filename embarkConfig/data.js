@@ -13,8 +13,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       1000
     ).encodeABI();
 
-    console.log(deps.contracts.EscrowRelay.options.address);
-
     // Here we are setting the initial "template", and calling the init() function
     const receipt = await deps.contracts.OwnedUpgradeabilityProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
     
