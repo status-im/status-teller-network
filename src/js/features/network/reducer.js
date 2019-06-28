@@ -51,15 +51,30 @@ function reducer(state = DEFAULT_STATE, action) {
       const balance = fromTokenDecimals(action.value, action.token.decimals);
       if (action.address && !addressCompare(action.address, state.address)) {
         return {
-          ...state, tokens: {
-            ...state.tokens, [action.token.symbol]: {
-              ...action.token, balances: {...state.tokens[action.token.symbol].balances, [action.address]: balance}
+          ...state,
+          tokens: {
+            ...state.tokens,
+            [action.token.symbol]: {
+              ...action.token,
+              balances: {
+                ...state.tokens[action.token.symbol],
+                ...state.tokens[action.token.symbol].balances,
+                [action.address]: balance
+              }
             }
           }
         };
       }
       return {
-        ...state, tokens: { ...state.tokens, [action.token.symbol]: {...action.token, balance} }
+        ...state,
+        tokens: {
+          ...state.tokens,
+          [action.token.symbol]: {
+            ...state.tokens[action.token.symbol],
+            ...action.token,
+            balance
+          }
+        }
       };
     }
     case GET_GAS_PRICE_SUCCEEDED: {
