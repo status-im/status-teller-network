@@ -1,127 +1,88 @@
 /* solium-disable security/no-block-members */
 /* solium-disable security/no-inline-assembly */
 
-pragma solidity ^0.5.8;
+pragma solidity >=0.5.0 <0.6.0;
 
-import "../common/Ownable.sol";
 import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
+
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
 import "./Arbitrable.sol";
-import "tabookey-gasless/contracts/RelayRecipient.sol";
+import "./IEscrow.sol";
 
 /**
  * @title Escrow
  * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
  */
-contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
-    bytes4 private constant CREATE_SIGNATURE = bytes4(keccak256("create(bytes,uint256,uint256,uint8,uint256,bytes,string,string)"));
-    bytes4 private constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
-    bytes4 private constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
-    bytes4 private constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
+contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
+
+    EscrowTransaction[] public transactions;
+
+    address public relayer;
+    License public sellerLicenses;
+    MetadataStore public metadataStore;
+
+    event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
+    event Funded(uint indexed escrowId, uint expirationTime, uint amount);
+    event Paid(uint indexed escrowId);
+    event Released(uint indexed escrowId);
+    event Canceled(uint indexed escrowId);
+    event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating);
+
+    bool internal _initialized;
 
     constructor(
-        address _license,
-        address _arbitrationLicense,
+        address _relayer,
+        address _sellerLicenses,
+        address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent)
         Fees(_feeDestination, _feeMilliPercent)
-        Arbitrable(_arbitrationLicense)
+        Arbitrable(_arbitratorLicenses)
         public {
-        license = License(_license);
+        _initialized = true;
+        sellerLicenses = License(_sellerLicenses);
         metadataStore = MetadataStore(_metadataStore);
     }
 
-    function setRelayHubAddress(address _relayHub) public onlyOwner {
-        set_relay_hub(RelayHub(_relayHub));
+    function init(
+        address _relayer,
+        address _sellerLicenses,
+        address _arbitratorLicenses,
+        address _metadataStore,
+        address payable _feeDestination,
+        uint _feeMilliPercent
+    ) public {
+        assert(_initialized == false);
+
+        _initialized = true;
+
+        sellerLicenses = License(_sellerLicenses);
+        arbitratorLicenses = License(_arbitratorLicenses);
+        metadataStore = MetadataStore(_metadataStore);
+        relayer = _relayer;
+        feeDestination = _feeDestination;
+        feeMilliPercent = _feeMilliPercent;
+        paused = false;
+        _setOwner(msg.sender);
     }
 
-    struct EscrowTransaction {
-        uint256 offerId;
-        uint256 tokenAmount;
-        uint256 expirationTime;
-        uint256 rating;
-        uint256 tradeAmount;
-        uint256 assetPrice;
-        TradeType tradeType;
-        EscrowStatus status;
-        address payable buyer;
-        address payable arbitrator;
+    function setRelayer(address _relayer) public onlyOwner {
+        relayer = _relayer;
     }
 
-    enum TradeType {FIAT, CRYPTO}
-    enum EscrowStatus {CREATED, FUNDED, PAID, RELEASED, CANCELED}
-
-    EscrowTransaction[] public transactions;
-    mapping(uint => uint[]) public transactionsByOfferId;
-
-    License public license;
-    MetadataStore public metadataStore;
-
-    event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId, uint date);
-    event Funded(uint indexed escrowId, uint expirationTime, uint amount, uint date);
-
-    event Paid(uint indexed escrowId, uint date);
-    event Released(uint indexed escrowId, uint date);
-    event Canceled(uint indexed escrowId, uint date);
-    event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating, uint date);
-
-    mapping(address => uint) public lastActivity;
-
-    function accept_relayed_call(address relay, address from, bytes memory encoded_function, uint gas_price,
-      uint transaction_fee ) public view returns(uint32) {
-
-        bytes4 fSign = abiDecodeFunctionSignature(encoded_function);
-
-        if(fSign != CREATE_SIGNATURE && fSign != PAY_SIGNATURE && fSign != CANCEL_SIGNATURE && fSign != OPEN_CASE_SIGNATURE)
-            return 11;
-
-        // According to tests, 333450 is the cost of creating an escrow, so 500000 should be good
-        if(from.balance > 500000 * gas_price) return 12;
-
-        // Only allow trxs where the user is a buyer
-        if(fSign == PAY_SIGNATURE || fSign == CANCEL_SIGNATURE || fSign == OPEN_CASE_SIGNATURE){
-            bytes memory escrowBytes = slice(encoded_function, 4, 32);
-            uint escrowId;
-            assembly {
-                escrowId := mload(add(escrowBytes, add(0x20, 0)))
-            }
-            if(escrowId >= transactions.length) return 13;
-            if(transactions[escrowId].buyer != from) return 14;
-            if(metadataStore.getAsset(transactions[escrowId].offerId) != address(0)) return 15; // Must be eth trx
-
-            if(fSign == CANCEL_SIGNATURE){ // Allow activity after 15min have passed
-                if((lastActivity[from] + 15 minutes) > block.timestamp) return 17;
-            }
-        } else if(fSign == CREATE_SIGNATURE) {
-            bytes memory offerIdBytes = slice(encoded_function, 36, 32);
-            uint offerId;
-            assembly {
-                offerId := mload(add(offerIdBytes, add(0x20, 0)))
-            }
-            if(metadataStore.getAsset(offerId) != address(0)) return 15; // Must be eth trx
-            // Allow activity after 15 min have passed
-            if((lastActivity[from] + 15 minutes) > block.timestamp) return 16;
-        }
-
-        return 0;
+    function setLicenses(address _sellerLicenses, address _arbitratorLicenses) public onlyOwner {
+        sellerLicenses = License(_sellerLicenses);
+        arbitratorLicenses = License(_arbitratorLicenses);
     }
 
-    function canCreateOrCancel(address account) public view returns(bool) {
-        return (lastActivity[account] + 15 minutes) < block.timestamp;
+    function setMetadataStore(address _metadataStore) public onlyOwner {
+        metadataStore = MetadataStore(_metadataStore);
     }
-
-    function post_relayed_call(address relay, address from,
-        bytes memory encoded_function, bool success,
-        uint used_gas, uint transaction_fee ) public {
-        // nothing to be done post-call.
-        // still, we must implement this method.
-    }
-
 
     /**
      * @notice Create a new escrow
@@ -136,8 +97,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      */
-    function create(
-        bytes memory _signature,
+    function create (
         uint _offerId,
         uint _tradeAmount,
         uint8 _tradeType,
@@ -145,71 +105,47 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         bytes memory _statusContactCode,
         string memory _location,
         string memory _username,
-        uint _nonce
-    ) public whenNotPaused returns(uint escrowId) {
+        uint _nonce,
+        bytes memory _signature
+    ) public returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
-        lastActivity[_buyer] = block.timestamp;
         escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
     }
 
     /**
      * @notice Fund a new escrow
      * @param _tokenAmount How much ether/tokens will be put in escrow
-     * @param _expirationTime Unix timestamp before the transaction is considered expired
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function fund(uint _escrowId, uint _tokenAmount, uint _expirationTime) external payable whenNotPaused {
-        _fund(get_sender(), _escrowId, _tokenAmount, _expirationTime);
+    function fund(uint _escrowId, uint _tokenAmount) external payable whenNotPaused {
+        _fund(msg.sender, _escrowId, _tokenAmount);
     }
 
-    function _fund(address _from, uint _escrowId, uint _tokenAmount, uint _expirationTime) internal whenNotPaused {
-        require(_expirationTime > (block.timestamp + 600), "Expiration time must be at least 10min in the future");
-        require(license.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
+    // TODO: check if tokenAmount should be input value
 
-        require(_from == metadataStore.getOfferOwner(transactions[_escrowId].offerId), "Only the seller can fund this escrow");
+    function _fund(address _from, uint _escrowId, uint _tokenAmount) internal whenNotPaused {
+        require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
         require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
 
+        require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
+
         transactions[_escrowId].tokenAmount = _tokenAmount;
-        transactions[_escrowId].expirationTime = _expirationTime;
+        transactions[_escrowId].expirationTime = block.timestamp + 5 days;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
-        address token = metadataStore.getAsset(transactions[_escrowId].offerId);
+        address token = transactions[_escrowId].token;
         if (token != address(0)) {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
             ERC20Token erc20token = ERC20Token(token);
             require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer fund");
         }
-        payFee(_from, _escrowId, _tokenAmount, token);
 
-        emit Funded(_escrowId, _expirationTime, _tokenAmount, block.timestamp);
-    }
+        _payFee(_from, _escrowId, _tokenAmount, token);
 
-    /**
-     * @notice Create and fund escrow
-     * @param _buyer Buyer address
-     * @param _offerId Offer id
-     * @param _tradeAmount Amount buyer is willing to trade
-     * @param _tradeType Indicates if the amount is in crypto or fiat
-     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
-     * @param _expirationTime Unix timestamp before the transaction is considered expired
-     * @dev Requires contract to be unpaused.
-     *         The seller needs to be licensed.
-     *         The expiration time must be at least 10min in the future
-     *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
-     */
-    function create_and_fund(
-        address payable _buyer,
-        uint _offerId,
-        uint _tradeAmount,
-        uint _expirationTime,
-        uint8 _tradeType,
-        uint _assetPrice
-    ) external payable whenNotPaused {
-        uint escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
-        _fund(get_sender(), escrowId, _tradeAmount, _expirationTime);
+        emit Funded(_escrowId, block.timestamp + 5 days, _tokenAmount);
     }
 
     function _createTransaction(
@@ -218,16 +154,17 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         uint _tradeAmount,
         uint8 _tradeType,
         uint _assetPrice
-    ) internal returns(uint escrowId) {
-        address seller;
+    ) internal whenNotPaused returns(uint escrowId) {
+        
+        address payable seller;
         address payable arbitrator;
         bool deleted;
+        address token;
 
-        (,,,,seller, arbitrator, deleted) = metadataStore.offer(_offerId);
+        (token, , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
 
         require(!deleted, "Offer is not valid");
-        require(get_sender() == _buyer || get_sender() == seller, "Must participate in the trade");
-        require(license.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
+        require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
         require(_tradeAmount != 0 && _assetPrice != 0, "Prices cannot be 0");
@@ -235,15 +172,24 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         escrowId = transactions.length++;
 
         transactions[escrowId].offerId = _offerId;
+        transactions[escrowId].token = token;
         transactions[escrowId].buyer = _buyer;
+        transactions[escrowId].seller = seller;
+        transactions[escrowId].arbitrator = arbitrator;
         transactions[escrowId].tradeAmount = _tradeAmount;
         transactions[escrowId].tradeType = TradeType(_tradeType);
         transactions[escrowId].assetPrice = _assetPrice;
-        transactions[escrowId].arbitrator = arbitrator;
 
-        transactionsByOfferId[_offerId].push(escrowId);
+        emit Created(_offerId, seller, _buyer, escrowId);
+    }
 
-        emit Created(_offerId, seller, _buyer, escrowId, block.timestamp);
+    function getRelayData(uint _escrowId) external view returns(address payable buyer, address payable seller, address token, uint tokenAmount) {
+        buyer = transactions[_escrowId].buyer;
+        seller = transactions[_escrowId].seller;
+        tokenAmount = transactions[_escrowId].tokenAmount;
+        token = transactions[_escrowId].token;
+        
+        return (buyer, seller, token, tokenAmount);
     }
 
     /**
@@ -255,7 +201,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      */
     function release(uint _escrowId) external {
         EscrowStatus mStatus = transactions[_escrowId].status;
-        require(metadataStore.getOfferOwner(transactions[_escrowId].offerId) == get_sender(), "Only the seller can release the escrow");
+        require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
         require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
         _release(_escrowId, transactions[_escrowId], false);
     }
@@ -267,8 +213,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      */
     function _release(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
         trx.status = EscrowStatus.RELEASED;
-
-        address token = metadataStore.getAsset(trx.offerId);
+        address token = trx.token;
         if(token == address(0)){
             trx.buyer.transfer(trx.tokenAmount);
         } else {
@@ -276,7 +221,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         }
         releaseFee(trx.arbitrator, trx.tokenAmount, token, isDispute);
 
-        emit Released(_escrowId, block.timestamp);
+        emit Released(_escrowId);
     }
 
     /**
@@ -289,12 +234,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         require(trx.status == EscrowStatus.FUNDED, "Transaction is not funded");
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
-        require(trx.buyer == _sender || metadataStore.getOfferOwner(trx.offerId) == _sender,
-                "Function can only be invoked by the escrow buyer or seller");
+        require(trx.buyer == _sender || trx.seller == _sender, "Only participants can invoke this function");
 
         trx.status = EscrowStatus.PAID;
 
-        emit Paid(_escrowId, block.timestamp);
+        emit Paid(_escrowId);
     }
 
     /**
@@ -303,7 +247,13 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @dev Can only be executed by the buyer
      */
     function pay(uint _escrowId) external {
-        _pay(get_sender(), _escrowId);
+        _pay(msg.sender, _escrowId);
+    }
+
+
+    function pay_relayed(address _sender, uint _escrowId) external {
+        assert(msg.sender == relayer);
+        _pay(_sender, _escrowId);
     }
 
     /**
@@ -349,20 +299,27 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         require(mStatus == EscrowStatus.FUNDED || mStatus == EscrowStatus.CREATED,
                 "Only transactions in created or funded state can be canceled");
 
-        address payable seller = metadataStore.getOfferOwner(trx.offerId);
-        require(trx.buyer == get_sender() || seller == get_sender(), "Function can only be invoked by the escrow buyer or seller");
-
-        if(trx.buyer == get_sender()){
-            lastActivity[trx.buyer] = block.timestamp;
-        }
+        require(trx.buyer == msg.sender || trx.seller == msg.sender, "Only participants can invoke this function");
 
         if(mStatus == EscrowStatus.FUNDED){
-            if(get_sender() == seller){
+            if(msg.sender == trx.seller){
                 require(trx.expirationTime < block.timestamp, "Can only be canceled after expiration");
             }
         }
 
-        _cancel(_escrowId, seller, trx, false);
+        _cancel(_escrowId, trx, false);
+    }
+
+    function cancel_relayed(address _sender, uint _escrowId) external {
+        assert(msg.sender == relayer);
+
+        EscrowTransaction storage trx = transactions[_escrowId];
+        EscrowStatus mStatus = trx.status;
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
+        require(mStatus == EscrowStatus.FUNDED || mStatus == EscrowStatus.CREATED,
+                "Only transactions in created or funded state can be canceled");
+
+         _cancel(_escrowId, trx, false);
     }
 
     /**
@@ -370,25 +327,26 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _escrowId Id of the escrow
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
-    function _cancel(uint _escrowId, address payable _seller, EscrowTransaction storage trx, bool isDispute) internal {
+    function _cancel(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
         if(trx.status == EscrowStatus.FUNDED){
-            address token = metadataStore.getAsset(trx.offerId);
+            address token = trx.token;
             uint amount;
             if (isDispute) {
                 amount = trx.tokenAmount;
             } else {
                 amount = trx.tokenAmount + getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
             }
+            
             if(token == address(0)){
-                _seller.transfer(amount);
+                trx.seller.transfer(amount);
             } else {
                 ERC20Token erc20token = ERC20Token(token);
-                require(erc20token.transfer(_seller, amount), "Transfer failed");
+                require(erc20token.transfer(trx.seller, amount), "Transfer failed");
             }
         }
 
         trx.status = EscrowStatus.CANCELED;
-        emit Canceled(_escrowId, block.timestamp);
+        emit Canceled(_escrowId);
     }
 
     /**
@@ -402,14 +360,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         EscrowTransaction storage trx = transactions[_escrowId];
         require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
 
-        address payable seller = metadataStore.getOfferOwner(trx.offerId);
-        _cancel(_escrowId, seller, trx, false);
-    }
-
-    /**
-    * @dev Fallback function
-    */
-    function() external {
+        _cancel(_escrowId, trx, false);
     }
 
     /**
@@ -420,7 +371,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      *         Can only be executed by the buyer
      *         Transaction must released
      */
-    function rateTransaction(uint _escrowId, uint _rate) external whenNotPaused {
+    function rateTransaction(uint _escrowId, uint _rate) external {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         require(!isDisputed(_escrowId), "Can't rate a transaction that has an arbitration process");
@@ -429,11 +380,11 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         require(trx.rating == 0, "Transaction already rated");
         require(trx.status == EscrowStatus.RELEASED, "Transaction not released yet");
-        require(trx.buyer == get_sender(), "Function can only be invoked by the escrow buyer");
+        require(trx.buyer == msg.sender, "Only the buyer can invoke this function");
 
         trx.rating = _rate;
 
-        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate, block.timestamp);
+        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
     }
 
 
@@ -446,10 +397,22 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
-        require(trx.buyer == get_sender() || metadataStore.getOfferOwner(trx.offerId) == get_sender(), "Only a buyer or seller can open a case");
+        require(trx.buyer == msg.sender || metadataStore.getOfferOwner(trx.offerId) == msg.sender, "Only participants can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        openDispute(_escrowId, get_sender(), motive);
+        _openDispute(_escrowId, msg.sender, motive);
+    }
+
+    function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external {
+        assert(msg.sender == relayer);
+        
+        EscrowTransaction storage trx = transactions[_escrowId];
+        
+        require(!isDisputed(_escrowId), "Case already exist");
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
+        require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
+        
+        _openDispute(_escrowId, _sender, _motive);
     }
 
     /**
@@ -458,7 +421,7 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCaseWithSignature(uint _escrowId, string calldata motive, bytes calldata _signature) external {
+    function openCase(uint _escrowId, string calldata motive, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
@@ -466,10 +429,9 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
 
         address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId, motive)), _signature);
 
-        require(trx.buyer == senderAddress || metadataStore.getOfferOwner(trx.offerId) == senderAddress,
-                "Only a buyer or seller can open a case");
+        require(trx.buyer == senderAddress || trx.seller == senderAddress, "Only participants can invoke this function");
 
-        openDispute(_escrowId, get_sender(), motive);
+        _openDispute(_escrowId, msg.sender, motive);
     }
 
     /**
@@ -478,18 +440,16 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _releaseFunds Release funds to buyer or cancel escrow
      * @param _arbitrator Arbitrator address
      */
-    function solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal {
+    function _solveDispute(uint _escrowId, bool _releaseFunds, address _arbitrator) internal {
         EscrowTransaction storage trx = transactions[_escrowId];
 
-        address payable seller = metadataStore.getOfferOwner(trx.offerId);
-
-        require(trx.buyer != _arbitrator && seller != _arbitrator, "Arbitrator cannot be part of transaction");
+        require(trx.buyer != _arbitrator && trx.seller != _arbitrator, "Arbitrator cannot be part of transaction");
 
         if(_releaseFunds){
             _release(_escrowId, trx, true);
         } else {
-            _cancel(_escrowId, seller, trx, true);
-            releaseFee(trx.arbitrator, trx.tokenAmount, metadataStore.getAsset(trx.offerId), true);
+            _cancel(_escrowId, trx, true);
+            releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);
         }
     }
 
@@ -501,7 +461,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
     function getArbitrator(uint _escrowId) public view returns(address) {
         return transactions[_escrowId].arbitrator;
     }
-
 
     /**
      * @notice Obtain message hash to be signed for opening a case
@@ -520,10 +479,6 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
         );
     }
 
-    function getTransactionsIdByOfferId(uint _offerId) public view returns(uint[] memory) {
-        return transactionsByOfferId[_offerId];
-    }
-
     /**
      * @notice Support for "approveAndCall". Callable only by the fee token.
      * @param _from Who approved.
@@ -532,23 +487,20 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _data Abi encoded data with selector of `register(bytes32,address,bytes32,bytes32)`.
      */
     function receiveApproval(address _from, uint256 _amount, address _token, bytes memory _data) public {
-        require(_token == address(get_sender()), "Wrong call");
-        require(_data.length == 100, "Wrong data length");
+        require(_token == address(msg.sender), "Wrong call");
+        require(_data.length == 68, "Wrong data length");
 
         bytes4 sig;
         bytes32 value1;
         bytes32 value2;
-        bytes32 value3;
-        bytes32 value4;
 
-        (sig, value1, value2, value3) = abiDecodeFundCall(_data);
+        (sig, value1, value2) = _abiDecodeFundCall(_data);
 
-        if (sig == bytes4(0x111d7d50)){
-            _fund(_from, uint256(value1), uint256(value2), uint256(value3));
+        if (sig == bytes4(0xa65e2cfd)){ // fund(uint,uint,uint)
+            _fund(_from, uint256(value1), uint256(value2));
         } else {
             revert("Wrong method selector");
         }
-
     }
 
     /**
@@ -556,91 +508,16 @@ contract Escrow is Pausable, MessageSigned, Fees, Arbitrable, RelayRecipient {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeFundCall(bytes memory _data) internal pure returns (
+    function _abiDecodeFundCall(bytes memory _data) internal pure returns (
             bytes4 sig,
             bytes32 value1,
-            bytes32 value2,
-            bytes32 value3
+            bytes32 value2
         )
     {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
             value1 := mload(add(_data, 36))
             value2 := mload(add(_data, 68))
-            value3 := mload(add(_data, 100))
         }
-    }
-
-    function abiDecodeFunctionSignature(bytes memory _data) internal pure returns (
-            bytes4 sig
-        )
-    {
-        assembly {
-            sig := mload(add(_data, add(0x20, 0)))
-        }
-    }
-
-    function slice(
-        bytes memory _bytes,
-        uint _start,
-        uint _length
-    )
-        internal
-        pure
-        returns (bytes memory)
-    {
-        require(_bytes.length >= (_start + _length), "Length does not match _start + _length");
-
-        bytes memory tempBytes;
-        assembly {
-            switch iszero(_length)
-            case 0 {
-                // Get a location of some free memory and store it in tempBytes as
-                // Solidity does for memory variables.
-                tempBytes := mload(0x40)
-
-                // The first word of the slice result is potentially a partial
-                // word read from the original array. To read it, we calculate
-                // the length of that partial word and start copying that many
-                // bytes into the array. The first word we copy will start with
-                // data we don't care about, but the last `lengthmod` bytes will
-                // land at the beginning of the contents of the new array. When
-                // we're done copying, we overwrite the full first word with
-                // the actual length of the slice.
-                let lengthmod := and(_length, 31)
-
-                // The multiplication in the next line is necessary
-                // because when slicing multiples of 32 bytes (lengthmod == 0)
-                // the following copy loop was copying the origin's length
-                // and then ending prematurely not copying everything it should.
-                let mc := add(add(tempBytes, lengthmod), mul(0x20, iszero(lengthmod)))
-                let end := add(mc, _length)
-
-                for {
-                    // The multiplication in the next line has the same exact purpose
-                    // as the one above.
-                    let cc := add(add(add(_bytes, lengthmod), mul(0x20, iszero(lengthmod))), _start)
-                } lt(mc, end) {
-                    mc := add(mc, 0x20)
-                    cc := add(cc, 0x20)
-                } {
-                    mstore(mc, mload(cc))
-                }
-
-                mstore(tempBytes, _length)
-
-                //update free-memory pointer
-                //allocating the array padded to 32 bytes like the compiler does now
-                mstore(0x40, and(add(mc, 31), not(31)))
-            }
-            //if we want a zero-length slice let's just return a zero-length array
-            default {
-                tempBytes := mload(0x40)
-
-                mstore(0x40, add(tempBytes, 0x20))
-            }
-        }
-
-        return tempBytes;
     }
 }

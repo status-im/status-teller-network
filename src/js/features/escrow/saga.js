@@ -1,6 +1,7 @@
 /*global web3*/
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
+import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
@@ -25,6 +26,8 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 const { toBN } = web3.utils;
 
@@ -33,7 +36,6 @@ window.Escrow = Escrow;
 
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
-    user.signature,
     escrow.offerId,
     escrow.tradeAmount,
     1,
@@ -41,7 +43,8 @@ export function *createEscrow({user, escrow}) {
     user.statusContactCode,
     '',
     user.username,
-    user.nonce
+    user.nonce,
+    user.signature
     );
   yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
 }
@@ -58,18 +61,17 @@ export function *onPayEscrow() {
   yield takeEvery(PAY_ESCROW, doTransaction.bind(null, PAY_ESCROW_PRE_SUCCESS, PAY_ESCROW_SUCCEEDED, PAY_ESCROW_FAILED));
 }
 
-export function *fundEscrow({value, escrowId, expirationTime, token}) {
+export function *fundEscrow({value, escrowId, token}) {
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount = toBN(value).div(toBN(divider));
   const totalAmount = toBN(value).add(feeAmount);
 
-  const toSend = Escrow.methods.fund(escrowId, value.toString(), expirationTime.toString());
+  const toSend = Escrow.methods.fund(escrowId, value.toString());
 
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
     value: (token !== zeroAddress) ? '0' : totalAmount.toString(),
     escrowId,
-    expirationTime,
     toSend
   });
 }
@@ -285,7 +287,7 @@ export function *onAddUserRating() {
 
 export function *doGetLastActivity({address}){
   try {
-    const lastActivity = yield Escrow.methods.lastActivity(address).call();
+    const lastActivity = yield EscrowRelay.methods.lastActivity(address).call();
     return yield put({type: GET_LAST_ACTIVITY_SUCCEEDED, lastActivity});
   } catch (error) {
     console.error(error);

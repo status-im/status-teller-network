@@ -96,7 +96,7 @@ contract Fees is Ownable {
      * @param _tokenAddress Address of the token sold in the escrow
      * @dev This will only transfer funds if the fee  has not been paid
      */
-    function payFee(address _from, uint _id, uint _value, address _tokenAddress) internal {
+    function _payFee(address _from, uint _id, uint _value, address _tokenAddress) internal {
         if (feePaid[_id]) return;
 
         feePaid[_id] = true;

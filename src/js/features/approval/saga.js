@@ -6,8 +6,9 @@ import {zeroAddress} from '../../utils/address';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
-
 import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, GET_SNT_ALLOWANCE, GET_SNT_ALLOWANCE_SUCCEEDED, GET_SNT_ALLOWANCE_FAILED, GET_TOKEN_ALLOWANCE, GET_TOKEN_ALLOWANCE_FAILED, GET_TOKEN_ALLOWANCE_SUCCEEDED } from './constants';
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 const {toBN} = web3.utils;
 

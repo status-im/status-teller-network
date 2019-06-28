@@ -107,7 +107,7 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(_token == address(msg.sender), "Wrong call");
         require(_data.length == 4, "Wrong data length");
 
-        require(abiDecodeRegister(_data) == bytes4(0xa6f2ae3a), "Wrong method selector"); //bytes4(keccak256("buy()"))
+        require(_abiDecodeBuy(_data) == bytes4(0xa6f2ae3a), "Wrong method selector"); //bytes4(keccak256("buy()"))
 
         buyFrom(_from);
     }
@@ -117,7 +117,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeRegister(bytes memory _data) internal pure returns(bytes4 sig) {
+    function _abiDecodeBuy(bytes memory _data) internal pure returns(bytes4 sig) {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
         }

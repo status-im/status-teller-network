@@ -71,7 +71,7 @@ contract MetadataStore is MessageSigned {
      * @param _nonce Nonce value (obtained from user_nonce)
      * @return bytes32 to sign
      */
-    function dataHash(string memory _username, bytes memory _statusContactCode, uint _nonce) internal view returns (bytes32) {
+    function _dataHash(string memory _username, bytes memory _statusContactCode, uint _nonce) internal view returns (bytes32) {
         return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _nonce));
     }
 
@@ -82,7 +82,7 @@ contract MetadataStore is MessageSigned {
      * @return bytes32 to sign
      */
     function getDataHash(string calldata _username, bytes calldata _statusContactCode) external view returns (bytes32) {
-        return dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
+        return _dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
     }
 
     /**
@@ -93,13 +93,13 @@ contract MetadataStore is MessageSigned {
      * @param _signature Signature obtained from the previous parameters
      * @return Signing user address
      */
-    function getSigner(
+    function _getSigner(
         string memory _username,
         bytes memory _statusContactCode,
         uint _nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, _nonce)), _signature);
+        return recoverAddress(getSignHash(_dataHash(_username, _statusContactCode, _nonce)), _signature);
     }
 
     /**
@@ -116,7 +116,7 @@ contract MetadataStore is MessageSigned {
         uint _nonce,
         bytes calldata _signature
     ) external view returns(address) {
-        return getSigner(_username, _statusContactCode, _nonce, _signature);
+        return _getSigner(_username, _statusContactCode, _nonce, _signature);
     }
 
     /**
@@ -160,8 +160,8 @@ contract MetadataStore is MessageSigned {
         string memory _username,
         uint _nonce
     ) public returns(address payable _user) {
-        _user = address(uint160(getSigner(_username, _statusContactCode, _nonce, _signature)));
-
+        _user = address(uint160(_getSigner(_username, _statusContactCode, _nonce, _signature)));
+        
         require(_nonce == user_nonce[_user], "Invalid nonce");
 
         user_nonce[_user]++;

@@ -56,7 +56,7 @@ config({
       args: ["$SNT"]
     },
     Escrow: {
-      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
     },
     StandardToken: {
     }
@@ -108,7 +108,7 @@ contract("Escrow Funding", function() {
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       const signature = await web3.eth.sign(hash, accounts[1]);
 
-      receipt = await Escrow.methods.create(signature, ethOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce)
+      receipt = await Escrow.methods.create(ethOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
 
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -118,7 +118,7 @@ contract("Escrow Funding", function() {
       // Still requires 2 transactions, because approveAndCall cannot send ETH
       // TODO: test if inside the contract we can encode the call, and call approveAndCall
 
-      receipt = await Escrow.methods.fund(escrowId, fundAmount, expirationTime)
+      receipt = await Escrow.methods.fund(escrowId, fundAmount)
                                     .send({from: accounts[0], value});
 
     });
@@ -136,7 +136,7 @@ contract("Escrow Funding", function() {
       let signature = await web3.eth.sign(hash, accounts[1]);
       let nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, SNTOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce)
+      receipt = await Escrow.methods.create(SNTOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce,  signature)
                                     .send({from: accounts[0]});
       escrowIdSNT = receipt.events.Created.returnValues.escrowId;
 
@@ -144,7 +144,7 @@ contract("Escrow Funding", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, tokenOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce)
+      receipt = await Escrow.methods.create(tokenOfferId, fundAmount, FIAT, 140, "0x00", "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
       escrowIdToken = receipt.events.Created.returnValues.escrowId;
     });
@@ -245,7 +245,7 @@ contract("Escrow Funding", function() {
     const tokenApprovalAndBuildTrx = async (token, escrowId) => {
       const tokenAllowance = await token.methods.allowance(accounts[0], Escrow.options.address).call();
 
-      const toSend = Escrow.methods.fund(escrowId, fundAmount, expirationTime);
+      const toSend = Escrow.methods.fund(escrowId, fundAmount);
       // const encodedCall = toSend.encodeABI();
 
       let approvalPromises = [];

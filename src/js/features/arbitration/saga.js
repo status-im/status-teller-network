@@ -6,7 +6,6 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
-
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
@@ -16,6 +15,8 @@ import {
   LOAD_PRICE, LOAD_PRICE_FAILED, LOAD_PRICE_SUCCEEDED, CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
   OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED
 } from './constants';
+import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
@@ -50,14 +51,14 @@ export function *doGetEscrows() {
     let escrows = [];
     for (let i = 0; i < events.length; i++) {
       const escrowId = events[i].returnValues.escrowId;
-
+      const block = yield web3.eth.getBlock(events[0].blockNumber);
       const escrow = yield call(Escrow.methods.transactions(escrowId).call);
       const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
       escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
-      escrow.arbitration.createDate = moment(events[i].returnValues.date * 1000).format("DD.MM.YY");
+      escrow.arbitration.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
 
       if(escrow.arbitration.open || escrow.arbitration.result !== 0) {
         escrows.push(escrow);
@@ -90,8 +91,8 @@ export function *doLoadArbitration({escrowId}) {
     const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
 
     const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
-
-    escrow.createDate = moment(events[0].returnValues.date * 1000).format("DD.MM.YY");
+    const block = yield web3.eth.getBlock(events[0].blockNumber);
+    escrow.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
     escrow.escrowId = escrowId;
     escrow.seller = offer.owner;
     escrow.offer = offer;
