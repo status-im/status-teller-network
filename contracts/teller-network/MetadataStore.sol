@@ -1,51 +1,15 @@
-pragma solidity ^0.5.8;
+pragma solidity >=0.5.0 <0.6.0;
 
 import "./License.sol";
 import "../common/MessageSigned.sol";
 
 /**
 * @title MetadataStore
-* @dev Metadata store
+* @dev User and offers registry
 */
 contract MetadataStore is MessageSigned {
 
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
-
-    event OfferAdded(
-        address owner,
-        uint256 offerId,
-        address asset,
-        bytes statusContactCode,
-        string location,
-        string currency,
-        string username,
-        PaymentMethods[] paymentMethods,
-        int8 margin
-    );
-
-    event OfferUpdated(
-        address owner,
-        uint256 id,
-        address asset,
-        bytes statusContactCode,
-        string location,
-        string currency,
-        string username,
-        PaymentMethods[] paymentMethods,
-        int8 margin
-    );
-
-    event OfferRemoved(
-        address owner,
-        uint256 offerId
-    );
-
-    event UserUpdated(
-        address owner,
-        bytes statusContactCode,
-        string location,
-        string username
-    );
 
     struct User {
         bytes statusContactCode;
@@ -59,84 +23,109 @@ contract MetadataStore is MessageSigned {
         address asset;
         string currency;
         address payable owner;
-        address arbitrator;
+        address payable arbitrator;
         bool deleted;
     }
 
-    address public license;
-    address public arbitrationLicense;
+    License public sellingLicenses;
+    License public arbitrationLicenses;
 
     User[] public users;
-    Offer[] public offers;
-
     mapping(address => bool) public userWhitelist;
     mapping(address => uint256) public addressToUser;
-
-    mapping(address => mapping (uint256 => bool)) public offerWhitelist;
-    mapping(address => uint256[]) public addressToOffers;
-
-    constructor(address _license, address _arbitrationLicense) public {
-        license = _license;
-        arbitrationLicense = _arbitrationLicense;
-    }
-
     mapping(address => uint) public user_nonce;
 
-    function getDataHash(
-        string calldata _username,
-        bytes calldata _statusContactCode
-    ) external view returns (bytes32) {
-        return dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
+    Offer[] public offers;
+    mapping(address => uint256[]) public addressToOffers;
+    mapping(address => mapping (uint256 => bool)) public offerWhitelist;
+
+    event OfferAdded(
+        address owner,
+        uint256 offerId,
+        address asset,
+        bytes statusContactCode,
+        string location,
+        string currency,
+        string username,
+        PaymentMethods[] paymentMethods,
+        int8 margin
+    );
+
+    event OfferRemoved(address owner, uint256 offerId);
+
+    event UserUpdated(address owner, bytes statusContactCode, string location, string username);
+
+    /**
+     * @param _sellingLicenses Sellers licenses contract address
+     * @param _arbitrationLicenses Arbitrators licenses contract address
+     */
+    constructor(address _sellingLicenses, address _arbitrationLicenses) public {
+        sellingLicenses = License(_sellingLicenses);
+        arbitrationLicenses = License(_arbitrationLicenses);
     }
 
-    function dataHash(
-        string memory _username,
-        bytes memory _statusContactCode,
-        uint nonce
-    ) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, nonce));
+    /**
+     * @dev Get datahash to be signed
+     * @param _username Username
+     * @param _statusContactCode Status Whisper Public Key (65bytes hex)
+     * @param _nonce Nonce value (obtained from user_nonce)
+     * @return bytes32 to sign
+     */
+    function _dataHash(string memory _username, bytes memory _statusContactCode, uint _nonce) internal view returns (bytes32) {
+        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _nonce));
     }
 
-    function getSigner(
+    /**
+     * @notice Get datahash to be signed
+     * @param _username Username
+     * @param _statusContactCode Status Whisper Public Key (65bytes hex)
+     * @return bytes32 to sign
+     */
+    function getDataHash(string calldata _username, bytes calldata _statusContactCode) external view returns (bytes32) {
+        return _dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
+    }
+
+    /**
+     * @dev Get signer address from signature. This uses the signature parameters to validate the signature
+     * @param _username Status username
+     * @param _statusContactCode Status Contact Code
+     * @param _nonce User nonce
+     * @param _signature Signature obtained from the previous parameters
+     * @return Signing user address
+     */
+    function _getSigner(
         string memory _username,
         bytes memory _statusContactCode,
-        uint nonce,
+        uint _nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        return recoverAddress(getSignHash(dataHash(_username, _statusContactCode, nonce)), _signature);
+        return recoverAddress(getSignHash(_dataHash(_username, _statusContactCode, _nonce)), _signature);
     }
 
+    /**
+     * @notice Get signer address from signature
+     * @param _username Status username
+     * @param _statusContactCode Status Contact Code
+     * @param _nonce User nonce
+     * @param _signature Signature obtained from the previous parameters
+     * @return Signing user address
+     */
     function getMessageSigner(
         string calldata _username,
         bytes calldata _statusContactCode,
-        bytes calldata _signature,
-        uint _nonce
+        uint _nonce,
+        bytes calldata _signature
     ) external view returns(address) {
-        return getSigner(_username, _statusContactCode, _nonce, _signature);
+        return _getSigner(_username, _statusContactCode, _nonce, _signature);
     }
 
-    function addOrUpdateUser(
-        bytes memory _signature,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username,
-        uint _nonce
-    ) public returns(address payable _user) {
-        _user = address(uint160(getSigner(_username, _statusContactCode, _nonce, _signature)));
-        require(_nonce == user_nonce[_user], "Invalid nonce");
-        user_nonce[_user]++;
-        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
-        return _user;
-    }
-
-    function addOrUpdateUser(
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public {
-        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
-    }
-
+    /**
+     * @dev Adds or updates user information
+     * @param _user User address to update
+     * @param _statusContactCode New status contact code
+     * @param _location New location
+     * @param _username New status username
+     */
     function _addOrUpdateUser(
         address _user,
         bytes memory _statusContactCode,
@@ -154,6 +143,46 @@ contract MetadataStore is MessageSigned {
             tmpUser.location = _location;
             tmpUser.username = _username;
         }
+    }
+
+    /**
+     * @notice Adds or updates user information via signature
+     * @param _signature Signature
+     * @param _statusContactCode New status contact code
+     * @param _location New location
+     * @param _username New status username
+     * @return Signing user address
+     */
+    function addOrUpdateUser(
+        bytes memory _signature,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username,
+        uint _nonce
+    ) public returns(address payable _user) {
+        _user = address(uint160(_getSigner(_username, _statusContactCode, _nonce, _signature)));
+        
+        require(_nonce == user_nonce[_user], "Invalid nonce");
+
+        user_nonce[_user]++;
+        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+
+        return _user;
+    }
+
+    /**
+     * @notice Adds or updates user information
+     * @param _statusContactCode New status contact code
+     * @param _location New location
+     * @param _username New status username
+     * @return Signing user address
+     */
+    function addOrUpdateUser(
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username
+    ) public {
+        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
     /**
@@ -175,10 +204,10 @@ contract MetadataStore is MessageSigned {
         string memory _username,
         PaymentMethods[] memory _paymentMethods,
         int8 _margin,
-        address _arbitrator
+        address payable _arbitrator
     ) public {
-        require(License(license).isLicenseOwner(msg.sender), "Not a license owner");
-        require(License(arbitrationLicense).isLicenseOwner(_arbitrator), "Not an arbitrator");
+        require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
+        require(arbitrationLicenses.isLicenseOwner(_arbitrator), "Not an arbitrator");
 
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");
@@ -192,22 +221,16 @@ contract MetadataStore is MessageSigned {
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
-        emit OfferAdded(
-            msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
-        );
+        emit OfferAdded(msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin);
     }
 
     /**
-    * @dev Update the user
-    * @param _statusContactCode The address of the status contact code
-    * @param _location The location on earth
-    * @param _username The username of the user
-    */
-    function updateUser(
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public {
+     * @notice Update the user information
+     * @param _statusContactCode Status contact code
+     * @param _location Location on earth
+     * @param _username Username of the user
+     */
+    function updateUser(bytes memory _statusContactCode, string memory _location, string memory _username) public {
         require(userWhitelist[msg.sender], "User does not exist");
 
         User storage tmpUser = users[addressToUser[msg.sender]];
@@ -219,55 +242,11 @@ contract MetadataStore is MessageSigned {
     }
 
     /**
-    * @dev Update the user and offer
-    * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContactCode The address of the status contact code
-    * @param _location The location on earth
-    * @param _currency The currency the user want to receive (USD, EUR...)
-    * @param _username The username of the user
-    * @param _paymentMethods The list of the payment methods the user accept
-    * @param _margin The margin for the user from 0 to 100
-    * @param _arbitrator The arbitrator used by the offer
-    */
-    function updateOffer(
-        uint256 _offerId,
-        address _asset,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _currency,
-        string memory _username,
-        PaymentMethods[] memory _paymentMethods,
-        int8 _margin,
-        address _arbitrator
-    ) public {
-        require(userWhitelist[msg.sender], "User does not exist");
-        require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
-        require(_margin <= 100, "Margin too high");
-        require(_margin >= -100, "Margin too low");
-
-        User storage tmpUser = users[addressToUser[msg.sender]];
-        tmpUser.statusContactCode = _statusContactCode;
-        tmpUser.location = _location;
-        tmpUser.username = _username;
-
-        offers[_offerId].asset = _asset;
-        offers[_offerId].currency = _currency;
-        offers[_offerId].paymentMethods = _paymentMethods;
-        offers[_offerId].margin = _margin;
-        offers[_offerId].arbitrator = _arbitrator;
-
-        emit OfferUpdated(
-            msg.sender, _offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin
-        );
-    }
-
-    /**
-    * @notice Remove user offer
-    * @param _offerId Id of the offer to remove
-    */
-    function removeOffer(
-        uint256 _offerId
-    ) public {
+     * @notice Remove user offer
+     * @dev Removed offers are marked as deleted instead of being deleted
+     * @param _offerId Id of the offer to remove
+     */
+    function removeOffer(uint256 _offerId) public {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
 
@@ -277,15 +256,18 @@ contract MetadataStore is MessageSigned {
     }
 
     /**
-    * @dev Get the offer by Id
-    */
+     * @notice Get the offer by Id
+     * @dev normally we'd access the offers array, but it would not return the payment methods
+     * @param _id Offer id
+     * @return Offer data (see Offer struct)
+     */
     function offer(uint256 _id) public view returns (
         address asset,
         string memory currency,
         int8 margin,
         PaymentMethods[] memory paymentMethods,
         address payable owner,
-        address arbitrator,
+        address payable arbitrator,
         bool deleted
     ) {
         return (
@@ -299,43 +281,58 @@ contract MetadataStore is MessageSigned {
         );
     }
 
+    /**
+     * @notice Get the offer's owner by Id
+     * @dev Helper function
+     * @param _id Offer id
+     * @return Seller address
+     */
     function getOfferOwner(uint256 _id) public view returns (address payable) {
         return (offers[_id].owner);
     }
 
+    /**
+     * @notice Get the offer's asset by Id
+     * @dev Helper function
+     * @param _id Offer id
+     * @return Token address used in the offer
+     */
     function getAsset(uint256 _id) public view returns (address) {
         return (offers[_id].asset);
     }
 
-    function getArbitrator(uint256 _id) public view returns (address) {
+    /**
+     * @notice Get the offer's arbitrator by Id
+     * @dev Helper function
+     * @param _id Offer id
+     * @return Arbitrator address
+     */
+    function getArbitrator(uint256 _id) public view returns (address payable) {
         return (offers[_id].arbitrator);
     }
 
     /**
-    * @dev Get the size of the users
-    */
+     * @notice Get the size of the users
+     * @return Number of users stored in the contract
+     */
     function usersSize() public view returns (uint256) {
         return users.length;
     }
 
     /**
-    * @dev Get the size of the offers
-    */
+     * @notice Get the size of the offers
+     * @return Number of offers stored in the contract
+     */
     function offersSize() public view returns (uint256) {
         return offers.length;
     }
 
     /**
-    * @dev Get all the offer ids of the address in params
-    * @param _address Address of the offers
-    */
+     * @notice Get all the offer ids of the address in params
+     * @param _address Address of the offers
+     * @return Array of offer ids for a specific address
+     */
     function getOfferIds(address _address) public view returns (uint256[] memory) {
         return addressToOffers[_address];
-    }
-
-    /**
-    * @dev Fallback function
-    */
-    function() external {
     }
 }

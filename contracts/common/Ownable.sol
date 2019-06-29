@@ -34,6 +34,13 @@ contract Ownable {
         _;
     }
 
+     /**
+      * @dev Sets an owner address
+      */
+    function _setOwner(address newOwner) internal {
+        _owner = newOwner;
+    }
+
     /**
      * @return true if `msg.sender` is the owner of the contract.
      */

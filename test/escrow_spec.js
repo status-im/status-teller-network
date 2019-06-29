@@ -1,5 +1,4 @@
 /*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
-const EthUtil = require('ethereumjs-util');
 const TestUtils = require("../utils/testUtils");
 
 const SellerLicense = embark.require('Embark/contracts/SellerLicense');
@@ -8,7 +7,6 @@ const MetadataStore = embark.require('Embark/contracts/MetadataStore');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const StandardToken = embark.require('Embark/contracts/StandardToken');
 const SNT = embark.require('Embark/contracts/SNT');
-
 
 const ESCROW_CREATED = 0;
 const ESCROW_FUNDED = 1;
@@ -23,7 +21,7 @@ let accounts;
 let arbitrator, arbitrator2;
 let _deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_revert/snapshot to reset state between tests
 
-const feeAmount = '10';
+const feePercent = 1;
 
 config({
   deployment: {
@@ -72,7 +70,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     Escrow: {
-      args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", "0x0000000000000000000000000000000000000001", feeAmount],
+      args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
     },
     StandardToken: {
     }
@@ -86,16 +84,20 @@ config({
 contract("Escrow", function() {
 
   const {toBN} = web3.utils;
-  const value = web3.utils.toWei("0.1", "ether");
+
+  const tradeAmount = 1000000;
+  const feeAmount = Math.round(tradeAmount * (feePercent / 100));
 
   // util
-  let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 1000;
+  let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + (5 * 86400);
   const expireTransaction = async() => {
-    await TestUtils.increaseTime(1001);
-    expirationTime += 1000;
+    const addTime = 5 * 86400;
+    await TestUtils.increaseTime(addTime + 1);
+    expirationTime += addTime;
   };
 
-  let receipt, escrowId, escrowTokenId, _offerId, ethOfferId, tokenOfferId, hash, signature, nonce;
+  let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, hash, signature, nonce;
+  let created;
 
   this.timeout(0);
 
@@ -116,29 +118,18 @@ contract("Escrow", function() {
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    sntOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Creating a new escrow", async () => {
-
-    it("Seller must be licensed to participate in escrow", async () => {
-      try {
-        hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
-        signature = await web3.eth.sign(hash, accounts[1]);
-        nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-
-        await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[8]});       
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Must participate in the trade");
-      }
-    });
 
     it("Buyer can create escrow", async () => {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});      
+
+      receipt = await Escrow.methods.create(ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -150,7 +141,7 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
 
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
@@ -175,73 +166,96 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
-      // Approve fee amount
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.fund(escrowId, value, expirationTime).send({from: accounts[0], value});
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
     });
 
     it("Funded escrow should contain valid data", async () => {
+      const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
+      assert.strictEqual(parseInt(ethFeeBalance, 10), feeAmount, 'Invalid fee balance');
       const contractBalance = await web3.eth.getBalance(Escrow.options.address);
-      assert.equal(contractBalance, value, "Invalid contract balance");
+      assert.equal(contractBalance, feeAmount + tradeAmount, "Invalid contract balance");
       const escrow = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(escrow.tokenAmount, value, "Invalid amount");
-      assert.equal(escrow.expirationTime, expirationTime, "Invalid expirationTime");
+      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
       assert.equal(escrow.status, ESCROW_FUNDED, "Invalid status");
     });
 
     it("Escrows can be created with ERC20 tokens", async () => {
-      await StandardToken.methods.mint(accounts[0], value).send();
+      await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
 
       const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
 
-      await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
+      await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
+      const allowance = await StandardToken.methods.allowance(accounts[0], Escrow.options.address).call();
+      assert(allowance >= tradeAmount + feeAmount, "Allowance needs to be equal or higher to the amount plus the fee");
 
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(signature, tokenOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
-      // Approve fee amount
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.fund(escrowTokenId, value, expirationTime).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
 
       const balanceAfterCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
 
-      assert(toBN(balanceAfterCreation), toBN(balanceBeforeCreation).sub(toBN(value)), "Token value wasn't deducted");
+      assert(toBN(balanceAfterCreation), toBN(balanceBeforeCreation).sub(toBN(tradeAmount)), "Token value wasn't deducted");
 
       const contractBalance = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      assert(toBN(contractBalance), toBN(value), "Contract token balance is incorrect");
+      assert(toBN(contractBalance), toBN(tradeAmount), "Contract token balance is incorrect");
 
       const escrow = await Escrow.methods.transactions(escrowTokenId).call();
 
-      assert.equal(escrow.tokenAmount, value, "Invalid amount");
+      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
+    });
+
+    it("Can fund an SNT escrow with approveAndCall", async () => {
+      await SNT.methods.approve(Escrow.options.address, 0).send({from: accounts[0]});
+
+      await SNT.methods.generateTokens(accounts[0], tradeAmount + feeAmount).send();
+
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+
+      let receipt = await Escrow.methods.create(sntOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      const created = receipt.events.Created;
+      escrowTokenId = receipt.events.Created.returnValues.escrowId;
+
+
+      SNT.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name == 'Funded'));
+      const encodedCall = Escrow.methods.fund(escrowTokenId, tradeAmount).encodeABI();
+      receipt = await SNT.methods.approveAndCall(Escrow.options.address, tradeAmount + feeAmount, encodedCall).send({from: accounts[0]});
+
+      const funded = receipt.events.Funded;
+      assert(!!funded, "Funded() not triggered");
+
     });
   });
 
 
   describe("Canceling an escrow", async () => {
-    let created;
-
     it("A seller cannot cancel an unexpired funded escrow", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
-      
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
@@ -251,10 +265,15 @@ contract("Escrow", function() {
     });
 
     it("A seller can cancel their ETH escrows", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await expireTransaction();
 
@@ -267,17 +286,22 @@ contract("Escrow", function() {
       assert.equal(escrow.status, ESCROW_CANCELED, "Should have been canceled");
     });
 
-    it("A seller can cancel their token escrows", async () => {
-      await StandardToken.methods.mint(accounts[0], value).send();
-      await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
+    it("A seller can cancel their expired token escrows and gets back the fee", async () => {
+      await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
+      await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
       const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
       const contractBalanceBeforeCreation = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0]});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
-      escrowTokenId = receipt.events.Created.returnValues.escrowId;
+      escrowTokenId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
 
       await expireTransaction();
 
@@ -294,29 +318,47 @@ contract("Escrow", function() {
     });
 
     it("A buyer can cancel an escrow that hasn't been funded yet", async () => {
+      // Create
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
-      receipt = await Escrow.methods.create(signature, ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce).send({from: accounts[1]});
-      receipt = await Escrow.methods.cancel(receipt.events.Created.returnValues.escrowId).send({from: accounts[1]});
+      receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
       assert(!!Canceled, "Canceled() not triggered");
     });
 
     it("A buyer can cancel an escrow that has been funded", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      escrowId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
       assert(!!Canceled, "Canceled() not triggered");
     });
 
     it("An escrow can only be canceled once", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      escrowId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await expireTransaction();
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
@@ -330,23 +372,34 @@ contract("Escrow", function() {
     });
 
     it("Accounts different from the escrow owner cannot cancel escrows", async() => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, "1", expirationTime, 123, FIAT, 140).send({from: accounts[0], value: "1"});
-      escrowId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[2]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
     it("A seller cannot cancel an escrow marked as paid", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       receipt = await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
@@ -362,9 +415,15 @@ contract("Escrow", function() {
 
   describe("Releasing escrows", async () => {
     beforeEach(async() => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1],ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      escrowId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("An invalid escrow cannot be released", async() => {
@@ -381,7 +440,7 @@ contract("Escrow", function() {
         await Escrow.methods.release(escrowId).send({from: accounts[1]}); // Buyer tries to release
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can release the escrow");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can invoke this function");
       }
     });
 
@@ -399,11 +458,17 @@ contract("Escrow", function() {
     });
 
     it("Escrow owner can release token funds to the buyer", async () => {
-      await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
+      await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0]});
-      escrowTokenId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowTokenId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
 
       const buyerBalanceBeforeEscrow = await StandardToken.methods.balanceOf(accounts[1]).call();
       const contractBalanceBeforeEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
@@ -415,7 +480,8 @@ contract("Escrow", function() {
       const contractBalanceAfterEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
       assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
-      assert.equal(contractBalanceAfterEscrow, toBN(contractBalanceBeforeEscrow).sub(toBN(value)), "Invalid contract balance");
+      const after = toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount).add(toBN(feeAmount)));
+      assert.equal(contractBalanceAfterEscrow, after, "Invalid contract balance");
     });
 
     it("Released escrow cannot be released again", async() => {
@@ -457,9 +523,15 @@ contract("Escrow", function() {
 
   describe("Buyer notifies payment of escrow", async () => {
     beforeEach(async() => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      escrowId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("A random account should not be able to mark a transaction as paid", async () => {
@@ -467,7 +539,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.pay(escrowId).send({from: accounts[7]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Function can only be invoked by the escrow buyer or seller");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
@@ -479,29 +551,20 @@ contract("Escrow", function() {
     });
 
     it("Anyone should be able to mark an escrow transaction as paid on behalf of the buyer", async () => {
-      // https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527
-      // personal_sign is the recommended way to sign messages. However, ganache does not support it yet.
-      // So we're using ethereumjs-utils for this on tests.
-
-      // We use an account with a known privateKey in order to sign the message.
-      // In a browser, just use web3.eth.persona.sign()
-
-      const privateKey = Buffer.from("1122334455667788990011223344556677889900112233445566778899001122", 'hex');
-      const publicKey  = EthUtil.privateToPublic(Buffer.from(privateKey, 'hex'));
-      const address = '0x' + EthUtil.pubToAddress(publicKey).toString('hex');
-
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      const created = receipt.events.Created;
-      escrowId = created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      escrowId = receipt.events.Created.returnValues.escrowId;
+      
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       const messageToSign = await Escrow.methods.paySignHash(escrowId).call();
-      const msgHash = EthUtil.hashPersonalMessage(Buffer.from(EthUtil.stripHexPrefix(messageToSign), 'hex'));
-      const signature = EthUtil.ecsign(msgHash, privateKey);
-      const signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s);
+      signature = await web3.eth.sign(messageToSign, accounts[1]);
 
-      receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signatureRPC).send({from: accounts[9]});
+      receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signature).send({from: accounts[9]});
 
       const paid = receipt.events.Paid;
       assert(!!paid, "Paid() not triggered");
@@ -524,15 +587,16 @@ contract("Escrow", function() {
 
   describe("Rating a released Transaction", async() => {
     beforeEach(async() => {
-      const isPaused = await Escrow.methods.paused().call();
-      if (isPaused) {
-        receipt = await Escrow.methods.unpause().send({from: accounts[0]});
-      }
-
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      const created = receipt.events.Created;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+
       await Escrow.methods.release(escrowId).send({from: accounts[0]});
     });
 
@@ -583,7 +647,7 @@ contract("Escrow", function() {
         assert.fail('should have reverted: should only allow the buyer to rate the transaction');
       } catch(error) {
         TestUtils.assertJump(error);
-        assert.ok(error.message.indexOf('Function can only be invoked by the escrow buyer') >= 0);
+        assert.ok(error.message.indexOf('Only the buyer can invoke this function') >= 0);
       }
     });
   });
@@ -593,15 +657,15 @@ contract("Escrow", function() {
     let receipt, created, escrowId;
 
     beforeEach(async() => {
-      const isPaused = await Escrow.methods.paused().call();
-      if (isPaused) {
-        receipt = await Escrow.methods.unpause().send({from: accounts[0]});
-      }
-
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("should not allow rating an unreleased transaction", async() => {
@@ -628,10 +692,16 @@ contract("Escrow", function() {
           receipt = await Escrow.methods.unpause().send({from: seller});
         }
 
-        await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-        receipt = await Escrow.methods.create_and_fund(buyer, ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: seller, value});
+        // Create
+        hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: buyer});
+        signature = await web3.eth.sign(hash, buyer);
+        nonce = await MetadataStore.methods.user_nonce(buyer).call();
+        receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
         created = receipt.events.Created;
         escrowId = created.returnValues.escrowId;
+        // Fund
+        receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: seller, value: tradeAmount + feeAmount});
+
         await Escrow.methods.release(escrowId).send({from: seller});
         await Escrow.methods.rateTransaction(escrowId, rating).send({from: buyer});
       }
@@ -646,219 +716,74 @@ contract("Escrow", function() {
     });
   });
 
-  describe("Transaction arbitration case", async() => {
-    beforeEach(async() => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      const created = receipt.events.Created;
-      escrowId = created.returnValues.escrowId;
-    });
-
-    it("should allow a buyer to open a case", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      const arbitrationRequired = receipt.events.ArbitrationRequired;
-      assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
-      assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");
-    });
-
-    it("random account cannot open a case for an existing escrow", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-
-      try {
-        await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[3]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only a buyer or seller can open a case");
-      }
-    });
-
-    it("should allow anyone to open an arbitration case on behalf of a buyer", async() => {
-      // https://medium.com/metamask/the-new-secure-way-to-sign-data-in-your-browser-6af9dd2a1527
-      // personal_sign is the recommended way to sign messages. However, ganache does not support it yet.
-      // So we're using ethereumjs-utils for this on tests.
-
-      // We use an account with a known privateKey in order to sign the message.
-      // In a browser, just use web3.eth.persona.sign()
-
-      const privateKey = Buffer.from("1122334455667788990011223344556677889900112233445566778899001122", 'hex');
-      const publicKey  = EthUtil.privateToPublic(Buffer.from(privateKey, 'hex'));
-      const address = '0x' + EthUtil.pubToAddress(publicKey).toString('hex');
-
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-
-      receipt = await Escrow.methods.create_and_fund(address, ethOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0], value});
-      const created = receipt.events.Created;
-      escrowId = created.returnValues.escrowId;
-
-      let messageToSign, msgHash, signature, signatureRPC;
-
-      messageToSign = await Escrow.methods.paySignHash(escrowId).call();
-      msgHash = EthUtil.hashPersonalMessage(Buffer.from(EthUtil.stripHexPrefix(messageToSign), 'hex'));
-      signature = EthUtil.ecsign(msgHash, privateKey);
-      signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s);
-
-      receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signatureRPC).send({from: accounts[8]});
-
-      messageToSign = await Escrow.methods.openCaseSignHash(escrowId, "My motive is...").call();
-      msgHash = EthUtil.hashPersonalMessage(Buffer.from(EthUtil.stripHexPrefix(messageToSign), 'hex'));
-      signature = EthUtil.ecsign(msgHash, privateKey);
-      signatureRPC = EthUtil.toRpcSig(signature.v, signature.r, signature.s);
-
-      receipt = await Escrow.methods.openCaseWithSignature(escrowId, "My motive is...", signatureRPC).send({from: accounts[9]});
-      const arbitrationRequired = receipt.events.ArbitrationRequired;
-      assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
-      assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");
-    });
-
-    const ARBITRATION_SOLVED_BUYER = 1;
-    const ARBITRATION_SOLVED_SELLER = 2;
-
-    it("non arbitrators cannot resolve a case", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-
-      try {
-        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only arbitrators can invoke this function");
-      }
-    });
-
-    it("non selected arbitrator cannot resolve a case", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-
-      try {
-        receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        TestUtils.assertJump(error);
-      }
-    });
-
-    it("should allow whoever opened an arbitration to cancel it", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-
-      try {
-        receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[0]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
-      }
-
-      receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
-      const arbitrationCanceled = receipt.events.ArbitrationCanceled;
-      assert(!!arbitrationCanceled, "ArbitrationCanceled() not triggered");
-      assert.equal(arbitrationCanceled.returnValues.escrowId, escrowId, "Invalid escrowId");
-    });
-
-    it("should transfer to buyer if case is solved in their favor", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-
-      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
-      const released = receipt.events.Released;
-      assert(!!released, "Released() not triggered");
-    });
-
-    it("should cancel escrow if case is solved in favor of the seller", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-
-      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
-
-      const released = receipt.events.Canceled;
-      assert(!!released, "Canceled() not triggered");
-    });
-
-    it("cannot cancel a solved arbitration", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
-
-      try {
-        receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
-        assert.fail('should have reverted before');
-      } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");
-      }
-    });
-
-    it("can open an arbitration on a escrow that had a canceled arbitration before", async() => {
-      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
-      const arbitrationRequired = receipt.events.ArbitrationRequired;
-      assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
-    });
-
-  });
-
    describe("Escrow fees", async() => {
     it("fee balance should increase with escrow funding", async() => {
-      const balanceBeforeCreation = await SNT.methods.balanceOf(Escrow.options.address).call();
+      const ethFeeBalanceBefore = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
+      const totalEthBefore = await web3.eth.getBalance(Escrow.options.address);
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, "1", expirationTime, 123, FIAT, 140).send({from: accounts[0], value: "1"});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
-      const balanceAfterCreation = await SNT.methods.balanceOf(Escrow.options.address).call();
+      const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
+      const totalEthAfter = await web3.eth.getBalance(Escrow.options.address);
 
-      assert(toBN(balanceAfterCreation), toBN(balanceBeforeCreation).add(toBN(feeAmount)), "Fee balance did not increase");
-    });
-
-    it("fees can be withdrawn to burn address", async() => {
-      const contractBalanceBefore = await SNT.methods.balanceOf(Escrow.options.address).call();
-      const feeBalanceBefore = await Escrow.methods.feeBalance().call();
-      const destAddressBalanceBefore =  await SNT.methods.balanceOf(await Escrow.methods.feeDestination().call()).call();
-
-      receipt = await Escrow.methods.withdrawFees().send({from: accounts[0]});
-
-      const contractBalanceAfter = await SNT.methods.balanceOf(Escrow.options.address).call();
-      const feeBalanceAfter = await Escrow.methods.feeBalance().call();
-      const destAddressBalanceAfter =  await SNT.methods.balanceOf(await Escrow.methods.feeDestination().call()).call();
-
-      assert(toBN(contractBalanceAfter), toBN(contractBalanceBefore).sub(toBN(feeBalanceBefore)), "Invalid contract balance");
-      assert(feeBalanceAfter, 0, "Invalid fee balance");
-      assert(toBN(destAddressBalanceAfter), toBN(destAddressBalanceBefore).add(toBN(feeBalanceBefore)), "Invalid address balance");
+      assert.strictEqual(parseInt(ethFeeBalance, 10), parseInt(ethFeeBalanceBefore, 10) + feeAmount, "Fee balance did not increase");
+      assert.strictEqual(parseInt(totalEthAfter, 10), parseInt(totalEthBefore, 10) + feeAmount + tradeAmount, "Total balance did not increase");
     });
   });
 
   describe("Other operations", async () => {
     it("Paused contract allows withdrawal by owner only on active escrows", async () => {
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, "1", expirationTime, 123, FIAT, 140).send({from: accounts[0], value: "1"});
-
-      const releasedEscrowId = receipt.events.Created.returnValues.escrowId;
+      const releasedEscrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(releasedEscrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await Escrow.methods.release(releasedEscrowId).send({from: accounts[0]});
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], ethOfferId, "1", expirationTime, 123, FIAT, 140).send({from: accounts[0], value: "1"});
-
-      escrowId = receipt.events.Created.returnValues.escrowId;
-
-      await StandardToken.methods.mint(accounts[0], value).send();
+      await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
 
       const balanceBeforeCreation = await StandardToken.methods.balanceOf(accounts[0]).call();
       const contractBalanceBeforeCancelation = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      await StandardToken.methods.approve(Escrow.options.address, value).send({from: accounts[0]});
+      await StandardToken.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
 
-      await SNT.methods.approve(Escrow.options.address, feeAmount).send({from: accounts[0]});
 
-      receipt = await Escrow.methods.create_and_fund(accounts[1], tokenOfferId, value, expirationTime, 123, FIAT, 140).send({from: accounts[0]});
-
-      escrowTokenId = receipt.events.Created.returnValues.escrowId;
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      signature = await web3.eth.sign(hash, accounts[1]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      created = receipt.events.Created;
+      escrowTokenId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
 
       try {
-        receipt = await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
+        receipt = await Escrow.methods.withdraw_emergency(escrowTokenId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Contract must be paused");
@@ -892,13 +817,6 @@ contract("Escrow", function() {
       assert.equal(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
     });
 
-    it("arbitrator should be valid", async () => {
-      const isArbitrator = await ArbitrationLicense.methods.isLicenseOwner(arbitrator).call();
-      assert.equal(isArbitrator, true, "Invalid arbitrator");
-
-      const nonArbitrator = await ArbitrationLicense.methods.isLicenseOwner(accounts[5]).call();
-      assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
-    });
   });
 
 });

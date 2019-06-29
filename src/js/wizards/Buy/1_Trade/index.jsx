@@ -76,7 +76,7 @@ class Trade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price.toFixed(2).toString().replace('.', ''), this.props.statusContactCode, this.props.offer, this.props.nonce);
+    this.props.createEscrow(this.props.signature, this.props.username, this.state.assetQuantity, this.props.price, this.props.statusContactCode, this.props.offer, this.props.nonce);
   };
 
   _calcPrice = () => {
@@ -87,9 +87,9 @@ class Trade extends Component {
   onAssetChange = (assetQuantity) => {
     let currencyQuantity = 0;
     if(assetQuantity !== ""){
-      assetQuantity = parseFloat(assetQuantity);
-      currencyQuantity = assetQuantity * this._calcPrice();
-      this.validate(currencyQuantity, assetQuantity);
+      const _assetQuantity = parseFloat(assetQuantity);
+      currencyQuantity = _assetQuantity * this._calcPrice();
+      this.validate(currencyQuantity, _assetQuantity);
       if (isNaN(currencyQuantity)) {
         return;
       }
@@ -100,15 +100,21 @@ class Trade extends Component {
   onCurrencyChange = (currencyQuantity) => {
     let assetQuantity = 0;
     if(currencyQuantity !== ""){
-      currencyQuantity = parseFloat(currencyQuantity);
-      assetQuantity = currencyQuantity / this._calcPrice();
-      this.validate(currencyQuantity, assetQuantity);
+      const _currencyQuantity = parseFloat(currencyQuantity);
+      assetQuantity = _currencyQuantity / this._calcPrice();
+      this.validate(_currencyQuantity, assetQuantity);
       if (isNaN(assetQuantity)) {
         return;
       }
     }
     this.setState({currencyQuantity, assetQuantity});
   };
+
+  componentWillUnmount() {
+    if (this.props.createEscrowStatus === States.failed) {
+      this.props.resetCreateStatus();
+    }
+  }
 
   render() {
     if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {

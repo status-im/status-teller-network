@@ -64,7 +64,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      */
     function buyFrom(address _owner) private returns(uint) {
         require(licenseDetails[_owner].creationTime == 0, "License already bought");
-        require(token.transferFrom(_owner, address(this), price), "Unsuccessful token transfer");
+        require(token.transferFrom(_owner, burnAddress, price), "Unsuccessful token transfer");
 
         licenseDetails[_owner] = LicenseDetails({
             price: price,
@@ -97,24 +97,6 @@ contract License is Ownable, ApproveAndCallFallBack {
     }
 
     /**
-     * @notice Withdraw not reserved tokens
-     * @param _token Address of ERC20 withdrawing excess, or address(0) if want ETH.
-     * @param _beneficiary Address to send the funds.
-     * @dev TODO: determine if we will send the fee to some address, if there's a slashing mechanism, or if
-     *      seller can forfeit their license, and remove this function accordinglu
-     **/
-    function withdrawExcessBalance(address _token, address payable _beneficiary) external onlyOwner {
-        require(_beneficiary != address(0), "Cannot burn token");
-        if (_token == address(0)) {
-            _beneficiary.transfer(address(this).balance);
-        } else {
-            ERC20Token excessToken = ERC20Token(_token);
-            uint256 amount = excessToken.balanceOf(address(this));
-            excessToken.transfer(_beneficiary, amount);
-        }
-    }
-
-    /**
      * @notice Support for "approveAndCall". Callable only by `token()`.
      * @param _from Who approved.
      * @param _amount Amount being approved, need to be equal `price()`.
@@ -127,7 +109,7 @@ contract License is Ownable, ApproveAndCallFallBack {
         require(_token == address(msg.sender), "Wrong call");
         require(_data.length == 4, "Wrong data length");
 
-        require(abiDecodeRegister(_data) == bytes4(0xa6f2ae3a), "Wrong method selector"); //bytes4(keccak256("buy()"))
+        require(_abiDecodeBuy(_data) == bytes4(0xa6f2ae3a), "Wrong method selector"); //bytes4(keccak256("buy()"))
 
         buyFrom(_from);
     }
@@ -137,7 +119,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function abiDecodeRegister(bytes memory _data) internal pure returns(bytes4 sig) {
+    function _abiDecodeBuy(bytes memory _data) internal pure returns(bytes4 sig) {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
         }

@@ -2,7 +2,7 @@ const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 
 
-const FEE_AMOUNT = "1000000000000000000"; // 1 * Math.pow(10, 18)
+const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
 
 const dataMigration = require('./data.js');
@@ -65,7 +65,7 @@ module.exports = {
     //            when not specified
     // - explicit will only attempt to deploy the contracts that are explicity specified inside the
     //            contracts section.
-    strategy: 'implicit',
+    strategy: 'explicit',
 
     contracts: {
       License: {
@@ -90,18 +90,19 @@ module.exports = {
           "$StakingPool"
         ]
       },
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+      EscrowRelay: {
+        args: ["$MetadataStore", "$Escrow", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 1000000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
         ]
+      }, 
+      Escrow: {
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT]
       },
       "MiniMeToken": { "deploy": false },
-      "MiniMeTokenFactory": {
-
-      },
+      "MiniMeTokenFactory": { },
       "Fees": {
         "deploy": false
       },
@@ -128,6 +129,8 @@ module.exports = {
       },
       "RelayHub": {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
+      },
+      OwnedUpgradeabilityProxy: {
       }
     }
   },
@@ -242,7 +245,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT)
   },
 
   // merges with the settings in default
@@ -267,20 +270,24 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
     dappConnection: ["$WEB3"]
   },
 
   ropsten: {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
-      Escrow: {
-        args: ["$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$SNT", BURN_ADDRESS, FEE_AMOUNT],
+      EscrowRelay: {
+        args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "Escrow.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$Escrow').send({value: 300000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 8000000000})",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 8000000000, value: 300000000000000000})"
         ]
+      }, 
+      Escrow: {
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
+        gasPrice: "10000000000"
       },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
@@ -290,7 +297,10 @@ module.exports = {
       },
       "RelayHub": {
         address: "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
-      }
+      },
+      "MiniMeTokenFactory": {
+        deploy: false
+       }
     },
     deployment: {
       accounts: [
@@ -305,7 +315,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_AMOUNT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
     dappConnection: ["$WEB3"]
   },
 

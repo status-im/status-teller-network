@@ -1,4 +1,3 @@
-/* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from 'reactstrap';
@@ -16,7 +15,7 @@ class MarginSelectorForm extends Component {
   };
 
   render() {
-    const {t, currency, margin, token, prices, fee} = this.props;
+    const {t, currency, margin, token, prices, feeMilliPercent} = this.props;
 
     const basePrice = prices[token.symbol][currency];
     const marginPrice = (margin || 0) / 100 * basePrice;
@@ -56,10 +55,10 @@ class MarginSelectorForm extends Component {
         </div>
         <small>{t('marginSelectorForm.priceOrigin')}</small>
 
-        {(fee || '0') !== '0' && <Fragment>
+        {(feeMilliPercent || '0') !== '0' && <Fragment>
           <h3 className="mt-4">{t('marginSelectorForm.ourFee')}</h3>
           <div className="border rounded p-3">
-            {web3.utils.fromWei(fee, 'ether')} SNT
+            {feeMilliPercent / 1000} %
           </div>
         </Fragment>}
 
@@ -73,7 +72,7 @@ MarginSelectorForm.propTypes = {
   t: PropTypes.func,
   token: PropTypes.object,
   prices: PropTypes.object,
-  fee: PropTypes.string,
+  feeMilliPercent: PropTypes.string,
   margin: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number

@@ -19,13 +19,13 @@ export function promiseEventEmitter(promiseEvent, emitter) {
 }
 
 export function *doTransaction(preSuccess, success, failed, {value = 0, toSend}) {
+  const parsedPayload = cloneDeep(arguments[3]);
+  delete parsedPayload.toSend;
+  delete parsedPayload.type;
   try {
-    const estimatedGas = yield call(toSend.estimateGas, {value});
+    const estimatedGas = yield call(toSend.estimateGas, {value, from: web3.eth.defaultAccount});
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
-    const parsedPayload = cloneDeep(arguments[3]);
-    delete parsedPayload.toSend;
-    delete parsedPayload.type;
     while (true) {
       const {hash, receipt, error} = yield take(channel);
       if (hash) {
@@ -44,7 +44,7 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
     }
   } catch (error) {
     console.error(error);
-    yield put({type: failed, error: error.message});
+    yield put({type: failed, error: error.message, ...parsedPayload});
   }
 }
 
