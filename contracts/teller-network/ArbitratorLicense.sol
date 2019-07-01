@@ -11,9 +11,9 @@ contract ArbitratorLicense {
 
     License public license;
 
-    enum RequestStatus {AWAIT,ACCEPTED,REJECTED, CLOSED}
+    enum RequestStatus {AWAIT,ACCEPTED,REJECTED,CLOSED}
 
-    struct Requests{
+    struct Request{
         address seller;
         address arbitrator;
         RequestStatus status;
@@ -25,8 +25,9 @@ contract ArbitratorLicense {
     }
 
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
+    mapping(address => mapping(address=>bool)) permissions;
 
-    Requests[] public requests;
+    Request[] public requests;
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
@@ -42,10 +43,8 @@ contract ArbitratorLicense {
     function buyLicense(bool _acceptAny) public {
     	uint _id = license.buy();
 
-        arbitratorlicenseDetails[msg.sender] = ArbitratorLicenseDetails({
-            id: _id,
-            acceptAny: _acceptAny
-        });
+        arbitratorlicenseDetails[msg.sender].id = _id;
+        arbitratorlicenseDetails[msg.sender].acceptAny = _acceptAny;
 
         emit ArbitratorLicensed(_id, _acceptAny);
     }
@@ -76,11 +75,11 @@ contract ArbitratorLicense {
      */
     function requestArbitrator(address _arbitrator) public {
        require(isLicenseOwner(_arbitrator), "Arbitrator should have a valid license");
-       require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already acceps all cases");
+       require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already accepts all cases");
 
        uint _id = requests.length++;
 
-       requests[_id] = Requests({
+       requests[_id] = Request({
             seller: msg.sender,
             arbitrator: _arbitrator,    
             status:  RequestStatus.AWAIT         
@@ -99,6 +98,9 @@ contract ArbitratorLicense {
         
         requests[_id].status = RequestStatus.ACCEPTED;
 
+        address _seller = requests[_id].seller;
+        permissions[msg.sender][_seller] = true;
+
         emit RequestAccepted(_id, msg.sender, requests[_id].seller);
     }
 
@@ -113,6 +115,9 @@ contract ArbitratorLicense {
         
         requests[_id].status = RequestStatus.REJECTED;
 
+        address _seller = requests[_id].seller;
+        permissions[msg.sender][_seller] = false;
+
         emit RequestRejected(_id, msg.sender, requests[_id].seller);
 
     }
@@ -126,6 +131,8 @@ contract ArbitratorLicense {
         require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is inactive");
 
         requests[_id].status = RequestStatus.CLOSED;
+        address _arbitrator = requests[_id].arbitrator;
+        permissions[_arbitrator][msg.sender] = false;
 
         emit RequestCanceled(_id, msg.sender, requests[_id].seller);
     }    
@@ -135,6 +142,6 @@ contract ArbitratorLicense {
      * @param arbitrator arbitrators address     
      */
     function isPermitted(address payable arbitrator) public view returns(bool) {
-        return arbitratorlicenseDetails[arbitrator].acceptAny; // TODO: add additional checks
+        return arbitratorlicenseDetails[arbitrator].acceptAny && permissions[arbitrator][msg.sender]; 
     }
 }   
