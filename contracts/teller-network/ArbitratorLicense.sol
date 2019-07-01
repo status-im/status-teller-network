@@ -22,14 +22,11 @@ contract ArbitratorLicense {
 	struct ArbitratorLicenseDetails {
         uint id; 
         bool acceptAny; // accept any seller
-        address[] accepted; // addresses of accepted sellers
     }
 
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
 
     Requests[] public requests;
-    // mapping(uint => uint[]) public requestsById;
-    // mapping(address => uint[]) public requestsByAddress;
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
@@ -44,12 +41,10 @@ contract ArbitratorLicense {
      */
     function buyLicense(bool _acceptAny) public {
     	uint _id = license.buy();
-    	address[] memory addresses;
 
         arbitratorlicenseDetails[msg.sender] = ArbitratorLicenseDetails({
             id: _id,
-            acceptAny: _acceptAny,
-            accepted: addresses    
+            acceptAny: _acceptAny
         });
 
         emit ArbitratorLicensed(_id, _acceptAny);
@@ -104,7 +99,6 @@ contract ArbitratorLicense {
         
         requests[_id].status = RequestStatus.ACCEPTED;
 
-        arbitratorlicenseDetails[msg.sender].accepted.push(requests[_id].seller);
         emit RequestAccepted(_id, msg.sender, requests[_id].seller);
     }
 
@@ -129,7 +123,7 @@ contract ArbitratorLicense {
      */
     function cancelRequest(uint _id) public {
         require(requests[_id].seller == msg.sender,  "This request id does not belong to the message sender");
-        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is already inactive");
+        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is inactive");
 
         requests[_id].status = RequestStatus.CLOSED;
 
@@ -141,6 +135,6 @@ contract ArbitratorLicense {
      * @param arbitrator arbitrators address     
      */
     function isPermitted(address payable arbitrator) public view returns(bool) {
-        return arbitratorlicenseDetails[arbitrator].acceptAny; 
+        return arbitratorlicenseDetails[arbitrator].acceptAny; // TODO: add additional checks
     }
 }   
