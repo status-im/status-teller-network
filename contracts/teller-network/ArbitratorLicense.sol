@@ -1,4 +1,3 @@
-
 pragma solidity ^0.5.8;
 
 import "./License.sol";
@@ -139,9 +138,10 @@ contract ArbitratorLicense {
 
     /**
      * @notice Checks if Arbitrator permits to use his/her services
-     * @param arbitrator arbitrators address     
+     * @param seller sellers's address     
+     * @param arbitrator arbitrator's address     
      */
-    function isPermitted(address payable arbitrator) public view returns(bool) {
-        return arbitratorlicenseDetails[arbitrator].acceptAny && permissions[arbitrator][msg.sender]; 
+    function isPermitted(address seller, address arbitrator) public view returns(bool) {
+        return arbitratorlicenseDetails[arbitrator].acceptAny || permissions[arbitrator][seller]; 
     }
 }   
