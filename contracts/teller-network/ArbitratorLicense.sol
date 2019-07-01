@@ -29,7 +29,7 @@ contract ArbitratorLicense {
 
     Requests[] public requests;
     // mapping(uint => uint[]) public requestsById;
-    mapping(address => uint[]) public requestsByAddress;
+    // mapping(address => uint[]) public requestsByAddress;
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
