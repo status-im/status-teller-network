@@ -28,7 +28,8 @@ contract ArbitratorLicense {
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
 
     Requests[] public requests;
-    mapping(uint => uint[]) public requestsById;
+    // mapping(uint => uint[]) public requestsById;
+    mapping(address => uint[]) public requestsByAddress;
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
@@ -53,7 +54,6 @@ contract ArbitratorLicense {
 
         emit ArbitratorLicensed(_id, _acceptAny);
     }
-
 
     /**
      * @notice Change acceptAny parameter for arbitrator
@@ -136,4 +136,11 @@ contract ArbitratorLicense {
         emit RequestCanceled(_id, msg.sender, requests[_id].seller);
     }    
 
-}
+    /**
+     * @notice Checks if Arbitrator permits to use his/her services
+     * @param arbitrator arbitrators address     
+     */
+    function isPermitted(address payable arbitrator) public view returns(bool) {
+        return arbitratorlicenseDetails[arbitrator].acceptAny; 
+    }
+}   
