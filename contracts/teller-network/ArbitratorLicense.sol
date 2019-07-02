@@ -1,4 +1,3 @@
-
 pragma solidity ^0.5.8;
 
 import "./License.sol";
@@ -11,9 +10,9 @@ contract ArbitratorLicense {
 
     License public license;
 
-    enum RequestStatus {AWAIT,ACCEPTED,REJECTED, CLOSED}
+    enum RequestStatus {AWAIT,ACCEPTED,REJECTED,CLOSED}
 
-    struct Requests{
+    struct Request{
         address seller;
         address arbitrator;
         RequestStatus status;
@@ -22,13 +21,12 @@ contract ArbitratorLicense {
 	struct ArbitratorLicenseDetails {
         uint id; 
         bool acceptAny; // accept any seller
-        address[] accepted; // addresses of accepted sellers
     }
 
     mapping(address => ArbitratorLicenseDetails) arbitratorlicenseDetails;
+    mapping(address => mapping(address=>bool)) permissions;
 
-    Requests[] public requests;
-    mapping(uint => uint[]) public requestsById;
+    Request[] public requests;
 
     event ArbitratorRequested(uint id, address seller, address arbitrator);
     event ArbitratorLicensed(uint id, bool acceptAny);
@@ -43,17 +41,12 @@ contract ArbitratorLicense {
      */
     function buyLicense(bool _acceptAny) public {
     	uint _id = license.buy();
-    	address[] memory addresses;
 
-        arbitratorlicenseDetails[msg.sender] = ArbitratorLicenseDetails({
-            id: _id,
-            acceptAny: _acceptAny,
-            accepted: addresses    
-        });
+        arbitratorlicenseDetails[msg.sender].id = _id;
+        arbitratorlicenseDetails[msg.sender].acceptAny = _acceptAny;
 
         emit ArbitratorLicensed(_id, _acceptAny);
     }
-
 
     /**
      * @notice Change acceptAny parameter for arbitrator
@@ -81,11 +74,11 @@ contract ArbitratorLicense {
      */
     function requestArbitrator(address _arbitrator) public {
        require(isLicenseOwner(_arbitrator), "Arbitrator should have a valid license");
-       require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already acceps all cases");
+       require(!arbitratorlicenseDetails[_arbitrator].acceptAny, "Arbitrator already accepts all cases");
 
        uint _id = requests.length++;
 
-       requests[_id] = Requests({
+       requests[_id] = Request({
             seller: msg.sender,
             arbitrator: _arbitrator,    
             status:  RequestStatus.AWAIT         
@@ -104,7 +97,9 @@ contract ArbitratorLicense {
         
         requests[_id].status = RequestStatus.ACCEPTED;
 
-        arbitratorlicenseDetails[msg.sender].accepted.push(requests[_id].seller);
+        address _seller = requests[_id].seller;
+        permissions[msg.sender][_seller] = true;
+
         emit RequestAccepted(_id, msg.sender, requests[_id].seller);
     }
 
@@ -119,6 +114,9 @@ contract ArbitratorLicense {
         
         requests[_id].status = RequestStatus.REJECTED;
 
+        address _seller = requests[_id].seller;
+        permissions[msg.sender][_seller] = false;
+
         emit RequestRejected(_id, msg.sender, requests[_id].seller);
 
     }
@@ -129,11 +127,21 @@ contract ArbitratorLicense {
      */
     function cancelRequest(uint _id) public {
         require(requests[_id].seller == msg.sender,  "This request id does not belong to the message sender");
-        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is already inactive");
+        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED, "This request is inactive");
 
         requests[_id].status = RequestStatus.CLOSED;
+        address _arbitrator = requests[_id].arbitrator;
+        permissions[_arbitrator][msg.sender] = false;
 
         emit RequestCanceled(_id, msg.sender, requests[_id].seller);
     }    
 
-}
+    /**
+     * @notice Checks if Arbitrator permits to use his/her services
+     * @param seller sellers's address     
+     * @param arbitrator arbitrator's address     
+     */
+    function isPermitted(address seller, address arbitrator) public view returns(bool) {
+        return arbitratorlicenseDetails[arbitrator].acceptAny || permissions[arbitrator][seller]; 
+    }
+}   
