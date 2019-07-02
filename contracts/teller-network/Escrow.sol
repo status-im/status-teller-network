@@ -45,6 +45,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         Arbitrable(_arbitratorLicenses)
         public {
         _initialized = true;
+        relayer = _relayer;
         sellerLicenses = License(_sellerLicenses);
         metadataStore = MetadataStore(_metadataStore);
     }
@@ -56,7 +57,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent
-    ) public {
+    ) external {
         assert(_initialized == false);
 
         _initialized = true;
@@ -71,16 +72,16 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _setOwner(msg.sender);
     }
 
-    function setRelayer(address _relayer) public onlyOwner {
+    function setRelayer(address _relayer) external onlyOwner {
         relayer = _relayer;
     }
 
-    function setLicenses(address _sellerLicenses, address _arbitratorLicenses) public onlyOwner {
+    function setLicenses(address _sellerLicenses, address _arbitratorLicenses) external onlyOwner {
         sellerLicenses = License(_sellerLicenses);
         arbitratorLicenses = License(_arbitratorLicenses);
     }
 
-    function setMetadataStore(address _metadataStore) public onlyOwner {
+    function setMetadataStore(address _metadataStore) external onlyOwner {
         metadataStore = MetadataStore(_metadataStore);
     }
 
@@ -145,7 +146,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _tokenAmount,
         uint _assetPrice
     ) internal whenNotPaused returns(uint escrowId) {
-        
+                
         address payable seller;
         address payable arbitrator;
         bool deleted;

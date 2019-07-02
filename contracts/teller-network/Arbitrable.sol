@@ -62,7 +62,7 @@ contract Arbitrable {
      * @notice Cancel arbitration
      * @param _escrowId Escrow to cancel
      */
-    function cancelArbitration(uint _escrowId) public {
+    function cancelArbitration(uint _escrowId) external {
         require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open,
                 "Arbitration already solved or not open");
@@ -92,7 +92,7 @@ contract Arbitrable {
      * @param _escrowId Id of the escrow
      * @param _result Result of the arbitration
      */
-    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) public {
+    function setArbitrationResult(uint _escrowId, ArbitrationResult _result) external {
         require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED,
                 "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");

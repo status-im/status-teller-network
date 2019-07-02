@@ -43,7 +43,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _address The address to check
      * @return bool
      */
-    function isLicenseOwner(address _address) public view returns (bool) {
+    function isLicenseOwner(address _address) external view returns (bool) {
         return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime != 0;
     }
 
@@ -52,7 +52,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Requires value to be equal to the price of the license.
      *      The msg.sender must not already own a license.
      */
-    function buy() public {
+    function buy() external {
         buyFrom(msg.sender);
     }
 
@@ -61,19 +61,20 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Requires value to be equal to the price of the license.
      *      The _owner must not already own a license.
      */
-    function buyFrom(address _owner) private {
-        require(licenseDetails[_owner].creationTime == 0, "License already bought");
-        require(token.transferFrom(_owner, burnAddress, price), "Unsuccessful token transfer");
+    function buyFrom(address _licenseOwner) private {
+        require(licenseDetails[_licenseOwner].creationTime == 0, "License already bought");
 
-        licenseDetails[_owner] = LicenseDetails({
+        licenseDetails[_licenseOwner] = LicenseDetails({
             price: price,
             creationTime: block.timestamp
         });
 
-        uint idx = licenseOwners.push(_owner);
-        idxLicenseOwners[_owner] = idx;
+        uint idx = licenseOwners.push(_licenseOwner);
+        idxLicenseOwners[_licenseOwner] = idx;
 
-        emit Bought(_owner, price);
+        emit Bought(_licenseOwner, price);
+
+        require(token.transferFrom(_licenseOwner, burnAddress, price), "Unsuccessful token transfer");
     }
 
     /**
@@ -81,7 +82,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _price The new price of the license
      * @dev Only the owner of the contract can perform this action
     */
-    function setPrice(uint256 _price) public onlyOwner {
+    function setPrice(uint256 _price) external onlyOwner {
         price = _price;
         emit PriceChanged(_price);
     }
@@ -90,7 +91,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Get number of license owners
      * @return uint
      */
-    function getNumLicenseOwners() public view returns (uint256) {
+    function getNumLicenseOwners() external view returns (uint256) {
         return licenseOwners.length;
     }
 

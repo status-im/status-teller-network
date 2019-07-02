@@ -23,13 +23,13 @@ contract Pausable is Ownable {
         _;
     }
 
-    function pause() public onlyOwner whenNotPaused {
+    function pause() external onlyOwner whenNotPaused {
         paused = true;
         emit Paused();
     }
 
 
-    function unpause() public onlyOwner whenPaused {
+    function unpause() external onlyOwner whenPaused {
         paused = false;
         emit Unpaused();
     }

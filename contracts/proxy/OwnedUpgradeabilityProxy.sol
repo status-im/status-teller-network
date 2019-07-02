@@ -63,7 +63,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the current owner to transfer control of the contract to a newOwner.
    * @param newOwner The address to transfer ownership to.
    */
-  function transferProxyOwnership(address newOwner) public onlyProxyOwner {
+  function transferProxyOwnership(address newOwner) external onlyProxyOwner {
     require(newOwner != address(0), "Invalid newOwner");
     emit ProxyOwnershipTransferred(proxyOwner(), newOwner);
     setUpgradeabilityOwner(newOwner);
@@ -73,7 +73,7 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @dev Allows the proxy owner to upgrade the current version of the proxy.
    * @param implementation representing the address of the new implementation to be set.
    */
-  function upgradeTo(address implementation) public onlyProxyOwner {
+  function upgradeTo(address implementation) external onlyProxyOwner {
     _upgradeTo(implementation);
   }
 
@@ -84,8 +84,8 @@ contract OwnedUpgradeabilityProxy is UpgradeabilityProxy {
    * @param data represents the msg.data to bet sent in the low level call. This parameter may include the function
    * signature of the implementation to be called with the needed payload
    */
-  function upgradeToAndCall(address implementation, bytes memory data) public payable onlyProxyOwner {
-    upgradeTo(implementation);
+  function upgradeToAndCall(address implementation, bytes calldata data) external payable onlyProxyOwner {
+    _upgradeTo(implementation);
     (bool success,) = implementation.delegatecall(data);
     require(success, "Upgrade failed");
   }
