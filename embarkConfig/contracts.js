@@ -275,19 +275,19 @@ module.exports = {
   },
 
   ropsten: {
+    gasPrice: "20000000000",
     tracking: 'shared.ropsten.chains.json',
     contracts: {
       EscrowRelay: {
         args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 8000000000})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 8000000000, value: 300000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 300000000000000000, gas: 1000000})"
         ]
       }, 
       Escrow: {
         args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
-        gasPrice: "10000000000"
       },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"

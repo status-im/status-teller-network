@@ -19,7 +19,7 @@ export const getArbitration = (state) => {
   return {
     ...arbitration,
     token,
-    tokenAmount: fromTokenDecimals(arbitration.tradeAmount, token.decimals)
+    tokenAmount: fromTokenDecimals(arbitration.tokenAmount, token.decimals)
   };
 };
 

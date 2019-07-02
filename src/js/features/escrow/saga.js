@@ -37,8 +37,7 @@ window.Escrow = Escrow;
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
     escrow.offerId,
-    escrow.tradeAmount,
-    1,
+    escrow.tokenAmount,
     escrow.assetPrice,
     user.statusContactCode,
     '',
@@ -67,7 +66,7 @@ export function *fundEscrow({value, escrowId, token}) {
   const feeAmount = toBN(value).div(toBN(divider));
   const totalAmount = toBN(value).add(feeAmount);
 
-  const toSend = Escrow.methods.fund(escrowId, value.toString());
+  const toSend = Escrow.methods.fund(escrowId);
 
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
     value: (token !== zeroAddress) ? '0' : totalAmount.toString(),

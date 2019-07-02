@@ -34,14 +34,14 @@ class CancelEscrow extends Component {
   };
  
   render(){
-    const {trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETH} = this.props;
+    const {trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETHorSNT} = this.props;
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
     const relayFutureDate = escrow.helpers.nextRelayDate(lastActivity);
     
     let disabled; 
     if(isBuyer){
       if(notEnoughETH){
-        disabled = !canRelay || !isETH;
+        disabled = !canRelay || !isETHorSNT;
       }
     } else {
       disabled = (parseInt(this.props.trade.expirationTime, 10) * 1000 > Date.now());
@@ -70,11 +70,11 @@ class CancelEscrow extends Component {
           disabled && isBuyer && <Row>
             <Col xs="2">
             </Col>
-            {isETH && <Col xs="10" className="text-small">
+            {isETHorSNT && <Col xs="10" className="text-small">
               Escrow can be canceled in {moment(relayFutureDate).toNow(true)}
             </Col>}
-            {!isETH && <Col xs="10" className="text-small">
-              Only ETH transactions can be canceled when you don&quot;t have enough balance in your wallet
+            {!isETHorSNT && <Col xs="10" className="text-small">
+              Only ETH and SNT transactions can be canceled when you don&quot;t have enough balance in your wallet
             </Col>}
           </Row>
         }
@@ -88,7 +88,7 @@ class CancelEscrow extends Component {
 CancelEscrow.defaultProps = {
   notEnoughETH: false,
   canRelay: false,
-  isETH: false
+  isETHorSNT: false
 };
 
 CancelEscrow.propTypes = {
@@ -98,7 +98,7 @@ CancelEscrow.propTypes = {
   notEnoughETH: PropTypes.bool,
   canRelay: PropTypes.bool,
   lastActivity: PropTypes.number,
-  isETH: PropTypes.bool,
+  isETHorSNT: PropTypes.bool
 };
 
 export default CancelEscrow;
