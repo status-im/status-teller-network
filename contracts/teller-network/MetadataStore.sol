@@ -154,12 +154,12 @@ contract MetadataStore is MessageSigned {
      * @return Signing user address
      */
     function addOrUpdateUser(
-        bytes memory _signature,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username,
+        bytes calldata _signature,
+        bytes calldata _statusContactCode,
+        string calldata _location,
+        string calldata _username,
         uint _nonce
-    ) public returns(address payable _user) {
+    ) external returns(address payable _user) {
         _user = address(uint160(_getSigner(_username, _statusContactCode, _nonce, _signature)));
         
         require(_nonce == user_nonce[_user], "Invalid nonce");
@@ -178,10 +178,10 @@ contract MetadataStore is MessageSigned {
      * @return Signing user address
      */
     function addOrUpdateUser(
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username
-    ) public {
+        bytes calldata _statusContactCode,
+        string calldata _location,
+        string calldata _username
+    ) external {
         _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
     }
 
@@ -215,9 +215,9 @@ contract MetadataStore is MessageSigned {
 
         _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
 
-        Offer memory offer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
+        Offer memory newOffer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
 
-        uint256 offerId = offers.push(offer) - 1;
+        uint256 offerId = offers.push(newOffer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
@@ -230,7 +230,7 @@ contract MetadataStore is MessageSigned {
      * @param _location Location on earth
      * @param _username Username of the user
      */
-    function updateUser(bytes memory _statusContactCode, string memory _location, string memory _username) public {
+    function updateUser(bytes calldata _statusContactCode, string calldata _location, string calldata _username) external {
         require(userWhitelist[msg.sender], "User does not exist");
 
         User storage tmpUser = users[addressToUser[msg.sender]];
@@ -246,7 +246,7 @@ contract MetadataStore is MessageSigned {
      * @dev Removed offers are marked as deleted instead of being deleted
      * @param _offerId Id of the offer to remove
      */
-    function removeOffer(uint256 _offerId) public {
+    function removeOffer(uint256 _offerId) external {
         require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
 
@@ -261,7 +261,7 @@ contract MetadataStore is MessageSigned {
      * @param _id Offer id
      * @return Offer data (see Offer struct)
      */
-    function offer(uint256 _id) public view returns (
+    function offer(uint256 _id) external view returns (
         address asset,
         string memory currency,
         int8 margin,
@@ -287,7 +287,7 @@ contract MetadataStore is MessageSigned {
      * @param _id Offer id
      * @return Seller address
      */
-    function getOfferOwner(uint256 _id) public view returns (address payable) {
+    function getOfferOwner(uint256 _id) external view returns (address payable) {
         return (offers[_id].owner);
     }
 
@@ -297,7 +297,7 @@ contract MetadataStore is MessageSigned {
      * @param _id Offer id
      * @return Token address used in the offer
      */
-    function getAsset(uint256 _id) public view returns (address) {
+    function getAsset(uint256 _id) external view returns (address) {
         return (offers[_id].asset);
     }
 
@@ -307,7 +307,7 @@ contract MetadataStore is MessageSigned {
      * @param _id Offer id
      * @return Arbitrator address
      */
-    function getArbitrator(uint256 _id) public view returns (address payable) {
+    function getArbitrator(uint256 _id) external view returns (address payable) {
         return (offers[_id].arbitrator);
     }
 
@@ -315,7 +315,7 @@ contract MetadataStore is MessageSigned {
      * @notice Get the size of the users
      * @return Number of users stored in the contract
      */
-    function usersSize() public view returns (uint256) {
+    function usersSize() external view returns (uint256) {
         return users.length;
     }
 
@@ -323,7 +323,7 @@ contract MetadataStore is MessageSigned {
      * @notice Get the size of the offers
      * @return Number of offers stored in the contract
      */
-    function offersSize() public view returns (uint256) {
+    function offersSize() external view returns (uint256) {
         return offers.length;
     }
 
@@ -332,7 +332,7 @@ contract MetadataStore is MessageSigned {
      * @param _address Address of the offers
      * @return Array of offer ids for a specific address
      */
-    function getOfferIds(address _address) public view returns (uint256[] memory) {
+    function getOfferIds(address _address) external view returns (uint256[] memory) {
         return addressToOffers[_address];
     }
 }

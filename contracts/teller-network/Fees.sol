@@ -33,7 +33,7 @@ contract Fees is Ownable {
      * @dev Can only be called by the owner of the contract
      *      TODO: if the contract will be changed to remove ownership, remove this function
      */
-    function setFeeDestinationAddress(address payable _addr) public onlyOwner {
+    function setFeeDestinationAddress(address payable _addr) external onlyOwner {
         feeDestination = _addr;
         emit FeeDestinationChanged(_addr);
     }
@@ -44,7 +44,7 @@ contract Fees is Ownable {
      * @dev Can only be called by the owner of the contract
      *      TODO: if the contract will be changed to remove ownership, remove this function
      */
-    function setFeeAmount(uint _feeMilliPercent) public onlyOwner {
+    function setFeeAmount(uint _feeMilliPercent) external onlyOwner {
         feeMilliPercent = _feeMilliPercent;
         emit FeeMilliPercentChanged(_feeMilliPercent);
     }

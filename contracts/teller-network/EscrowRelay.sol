@@ -47,7 +47,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @dev Only contract owner can execute this function
    * @param _metadataStore New metadata store address
    */
-  function setMetadataStore(address _metadataStore) public onlyOwner {
+  function setMetadataStore(address _metadataStore) external onlyOwner {
     metadataStore = MetadataStore(_metadataStore);
   }
 
@@ -56,7 +56,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @dev Only contract owner can execute this function
    * @param _escrow New escrow address
    */
-  function setEscrow(address _escrow) public onlyOwner {
+  function setEscrow(address _escrow) external onlyOwner {
     escrow = IEscrow(_escrow);
   }
 
@@ -65,7 +65,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @dev Only contract owner can execute this function
    * @param _relayHub New relay hub address
    */
-  function setRelayHubAddress(address _relayHub) public onlyOwner {
+  function setRelayHubAddress(address _relayHub) external onlyOwner {
     set_relay_hub(RelayHub(_relayHub));
   }
 
@@ -74,7 +74,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _account Account to verify
    * @return bool
    */
-  function canCreateOrCancel(address _account) public view returns(bool) {
+  function canCreateOrCancel(address _account) external view returns(bool) {
     return (lastActivity[_account] + 15 minutes) < block.timestamp;
   }
 
@@ -100,7 +100,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes memory _signature
   ) public returns (uint escrowId) {
     lastActivity[get_sender()] = block.timestamp;
-    return escrow.create(
+    escrowId = escrow.create(
          _offerId,
          _tokenAmount,
          _assetPrice,
