@@ -104,7 +104,7 @@ contract("Escrow Relay", function() {
     const signature = await web3.eth.sign(hash, accounts[1]);
     const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-    receipt = await EscrowRelay.methods.create(ethOfferId, 123, 1, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+    receipt = await EscrowRelay.methods.create(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
     escrowId = receipt.events.Created.returnValues.escrowId;
   });
 
