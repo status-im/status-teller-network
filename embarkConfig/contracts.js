@@ -76,7 +76,7 @@ module.exports = {
         args: [
           "$SNT",
           LICENSE_PRICE,
-          "$StakingPool"
+          "0x0000000000000000000000000000000000000009"
         ]
       },
       "MetadataStore": {
@@ -87,7 +87,7 @@ module.exports = {
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
-          "$StakingPool"
+          "0x0000000000000000000000000000000000000009"
         ]
       },
       EscrowRelay: {
@@ -116,12 +116,6 @@ module.exports = {
           18,
           "STT",
           true
-        ]
-      },
-      "StakingPool": {
-        file: 'staking-pool/contracts/StakingPool.sol',
-        args: [
-          "$SNT"
         ]
       },
       "RLPReader": {
