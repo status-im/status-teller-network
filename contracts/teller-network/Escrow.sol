@@ -137,9 +137,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
         address token = transactions[_escrowId].token;
-        if (token != address(0)) {
-            require(msg.value == 0, "Cannot send ETH with token address different from 0");
-        }
 
         _payFee(_from, _escrowId, _tokenAmount, token);
 

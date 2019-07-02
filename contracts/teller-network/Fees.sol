@@ -104,6 +104,8 @@ contract Fees is Ownable {
         feeTokenBalances[_tokenAddress] += feeAmount;
 
         if (_tokenAddress != address(0)) {
+            require(msg.value == 0, "Cannot send ETH with token address different from 0");
+
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
             require(tokenToPay.transferFrom(_from, address(this), feeAmount + _value), "Unsuccessful token transfer");
         } else {
