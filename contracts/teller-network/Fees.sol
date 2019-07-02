@@ -105,7 +105,7 @@ contract Fees is Ownable {
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transferFrom(_from, address(this), feeAmount), "Unsuccessful token transfer pay fee");
+            require(tokenToPay.transferFrom(_from, address(this), feeAmount + _value), "Unsuccessful token transfer");
         } else {
             require(msg.value == (_value + feeAmount), "ETH amount is required");
         }

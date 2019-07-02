@@ -139,8 +139,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         address token = transactions[_escrowId].token;
         if (token != address(0)) {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
-            ERC20Token erc20token = ERC20Token(token);
-            require(erc20token.transferFrom(_from, address(this), _tokenAmount), "Unsuccessful token transfer fund");
         }
 
         _payFee(_from, _escrowId, _tokenAmount, token);
