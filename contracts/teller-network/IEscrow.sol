@@ -2,8 +2,6 @@ pragma solidity >=0.5.0 <0.6.0;
 
 contract IEscrow {
 
-  enum TradeType {FIAT, CRYPTO}
-
   enum EscrowStatus {CREATED, FUNDED, PAID, RELEASED, CANCELED}
 
   struct EscrowTransaction {
@@ -12,9 +10,7 @@ contract IEscrow {
       uint256 tokenAmount;
       uint256 expirationTime;
       uint256 rating;
-      uint256 tradeAmount;
       uint256 assetPrice;
-      TradeType tradeType;
       EscrowStatus status;
       address payable buyer;
       address payable seller;
@@ -23,8 +19,7 @@ contract IEscrow {
 
   function create(
         uint _offerId,
-        uint _tradeAmount,
-        uint8 _tradeType,
+        uint _tokenAmount,
         uint _assetPrice,
         bytes memory _statusContactCode,
         string memory _location,
@@ -45,6 +40,6 @@ contract IEscrow {
 
   function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external;
 
-  function getRelayData(uint _escrowId) external view returns(address payable buyer, address payable seller, address token, uint tokenAmount);
+  function getBasicTradeData(uint _escrowId) external view returns(address payable buyer, address payable seller, address token, uint tokenAmount);
 
 }
