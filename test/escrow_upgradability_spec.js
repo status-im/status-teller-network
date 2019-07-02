@@ -105,7 +105,7 @@ contract("Escrow Funding", function() {
       const signature = await web3.eth.sign(hash, accounts[1]);
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(ethOfferId, 123, 1, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");

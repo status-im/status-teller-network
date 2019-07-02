@@ -19,5 +19,5 @@ export const checkNotEnoughETH = (gasPrice, ethBalance) => {
 };
 
 export const filterValidGaslessOffers = (offers, noBalance) => {
-  return noBalance ? offers.filter(x => x.token.symbol === 'ETH') : offers;
+  return noBalance ? offers.filter(x => ['ETH', 'SNT'].indexOf(x.token.symbol) > -1) : offers;
 };

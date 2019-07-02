@@ -88,8 +88,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @notice Create a new escrow
      * @param _signature buyer's signature
      * @param _offerId Offer
-     * @param _tradeAmount Amount buyer is willing to trade
-     * @param _tradeType Indicates if the amount is in crypto or fiat
+     * @param _tokenAmount Amount buyer is willing to trade
      * @param _assetPrice Indicates the price of the asset in the FIAT of choice
      * @param _statusContactCode The address of the status contact code
      * @param _location The location on earth
@@ -99,8 +98,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function create (
         uint _offerId,
-        uint _tradeAmount,
-        uint8 _tradeType,
+        uint _tokenAmount,
         uint _assetPrice,
         bytes memory _statusContactCode,
         string memory _location,
@@ -109,45 +107,42 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         bytes memory _signature
     ) public returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tradeAmount, _tradeType, _assetPrice);
+        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
     }
 
     /**
      * @notice Fund a new escrow
-     * @param _tokenAmount How much ether/tokens will be put in escrow
      * @dev Requires contract to be unpaused.
      *         The seller needs to be licensed.
      *         The expiration time must be at least 10min in the future
      *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
-    function fund(uint _escrowId, uint _tokenAmount) external payable whenNotPaused {
-        _fund(msg.sender, _escrowId, _tokenAmount);
+    function fund(uint _escrowId) external payable whenNotPaused {
+        _fund(msg.sender, _escrowId);
     }
 
-    // TODO: check if tokenAmount should be input value
-
-    function _fund(address _from, uint _escrowId, uint _tokenAmount) internal whenNotPaused {
+    function _fund(address _from, uint _escrowId) internal whenNotPaused {
         require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
         require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
 
         require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
 
-        transactions[_escrowId].tokenAmount = _tokenAmount;
         transactions[_escrowId].expirationTime = block.timestamp + 5 days;
         transactions[_escrowId].status = EscrowStatus.FUNDED;
 
+        uint tokenAmount = transactions[_escrowId].tokenAmount;
+
         address token = transactions[_escrowId].token;
 
-        _payFee(_from, _escrowId, _tokenAmount, token);
+        _payFee(_from, _escrowId, tokenAmount, token);
 
-        emit Funded(_escrowId, block.timestamp + 5 days, _tokenAmount);
+        emit Funded(_escrowId, block.timestamp + 5 days, tokenAmount);
     }
 
     function _createTransaction(
         address payable _buyer,
         uint _offerId,
-        uint _tradeAmount,
-        uint8 _tradeType,
+        uint _tokenAmount,
         uint _assetPrice
     ) internal whenNotPaused returns(uint escrowId) {
         
@@ -162,7 +157,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
-        require(_tradeAmount != 0 && _assetPrice != 0, "Prices cannot be 0");
+        require(_tokenAmount != 0 && _assetPrice != 0, "Trade amounts cannot be 0");
 
         escrowId = transactions.length++;
 
@@ -171,14 +166,33 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         transactions[escrowId].buyer = _buyer;
         transactions[escrowId].seller = seller;
         transactions[escrowId].arbitrator = arbitrator;
-        transactions[escrowId].tradeAmount = _tradeAmount;
-        transactions[escrowId].tradeType = TradeType(_tradeType);
+        transactions[escrowId].tokenAmount = _tokenAmount;
         transactions[escrowId].assetPrice = _assetPrice;
 
         emit Created(_offerId, seller, _buyer, escrowId);
     }
 
-    function getRelayData(uint _escrowId) external view returns(address payable buyer, address payable seller, address token, uint tokenAmount) {
+
+    function createAndFund (
+        uint _offerId,
+        uint _tokenAmount,
+        uint _assetPrice,
+        bytes memory _bStatusContactCode,
+        string memory _bLocation,
+        string memory _bUsername,
+        uint _bNonce,
+        bytes memory _bSignature
+    ) public payable returns(uint escrowId) {
+        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bStatusContactCode, _bLocation, _bUsername, _bNonce);
+        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
+        _fund(msg.sender, escrowId);
+    }
+
+
+    function getBasicTradeData(uint _escrowId)
+      external
+      view
+      returns(address payable buyer, address payable seller, address token, uint tokenAmount) {
         buyer = transactions[_escrowId].buyer;
         seller = transactions[_escrowId].seller;
         tokenAmount = transactions[_escrowId].tokenAmount;
@@ -214,7 +228,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         } else {
             require(ERC20Token(token).transfer(trx.buyer, trx.tokenAmount), "Couldn't transfer funds");
         }
-        releaseFee(trx.arbitrator, trx.tokenAmount, token, isDispute);
+        _releaseFee(trx.arbitrator, trx.tokenAmount, token, isDispute);
 
         emit Released(_escrowId);
     }
@@ -325,13 +339,11 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     function _cancel(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
         if(trx.status == EscrowStatus.FUNDED){
             address token = trx.token;
-            uint amount;
-            if (isDispute) {
-                amount = trx.tokenAmount;
-            } else {
-                amount = trx.tokenAmount + getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
+            uint amount = trx.tokenAmount;
+            if (!isDispute) {
+                amount += _getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
             }
-            
+
             if(token == address(0)){
                 trx.seller.transfer(amount);
             } else {
@@ -444,7 +456,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
             _release(_escrowId, trx, true);
         } else {
             _cancel(_escrowId, trx, true);
-            releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);
+            _releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);
         }
     }
 
@@ -483,16 +495,17 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function receiveApproval(address _from, uint256 _amount, address _token, bytes memory _data) public {
         require(_token == address(msg.sender), "Wrong call");
-        require(_data.length == 68, "Wrong data length");
+        require(_data.length == 36, "Wrong data length");
 
         bytes4 sig;
-        bytes32 value1;
-        bytes32 value2;
+        uint256 escrowId;
 
-        (sig, value1, value2) = _abiDecodeFundCall(_data);
+        (sig, escrowId) = _abiDecodeFundCall(_data);
 
-        if (sig == bytes4(0xa65e2cfd)){ // fund(uint,uint,uint)
-            _fund(_from, uint256(value1), uint256(value2));
+        if (sig == bytes4(0xca1d209d)){ // fund(uint256)
+            uint tokenAmount = transactions[escrowId].tokenAmount;
+            require(_amount == tokenAmount + _getValueOffMillipercent(tokenAmount, feeMilliPercent), "Invalid amount");
+            _fund(_from, escrowId);
         } else {
             revert("Wrong method selector");
         }
@@ -505,14 +518,12 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function _abiDecodeFundCall(bytes memory _data) internal pure returns (
             bytes4 sig,
-            bytes32 value1,
-            bytes32 value2
+            uint256 escrowId
         )
     {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
-            value1 := mload(add(_data, 36))
-            value2 := mload(add(_data, 68))
+            escrowId := mload(add(_data, 36))
         }
     }
 }

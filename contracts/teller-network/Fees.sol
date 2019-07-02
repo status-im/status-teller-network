@@ -55,7 +55,7 @@ contract Fees is Ownable {
      * @param _value Value sold in the escrow
      * @param _isDispute Boolean telling if it was from a dispute. With a dispute, the arbitrator gets more
     */
-    function releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal {
+    function _releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal {
         uint _milliPercentToArbitrator;
         if (_isDispute) {
             _milliPercentToArbitrator = 100000; // 100%
@@ -63,16 +63,16 @@ contract Fees is Ownable {
             _milliPercentToArbitrator = 10000; // 10%
         }
 
-        uint feeAmount = getValueOffMillipercent(_value, feeMilliPercent);
-        uint arbitratorValue = getValueOffMillipercent(feeAmount, _milliPercentToArbitrator);
+        uint feeAmount = _getValueOffMillipercent(_value, feeMilliPercent);
+        uint arbitratorValue = _getValueOffMillipercent(feeAmount, _milliPercentToArbitrator);
         uint destinationValue = feeAmount - arbitratorValue;
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
             // Arbitrator transfer
-            require(tokenToPay.transfer(_arbitrator, arbitratorValue), "Unsuccessful token transfer abri");
+            require(tokenToPay.transfer(_arbitrator, arbitratorValue), "Unsuccessful token transfer - arbitrator");
             if (destinationValue > 0) {
-                require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer destination");
+                require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer - destination");
             }
         } else {
             _arbitrator.transfer(arbitratorValue);
@@ -82,7 +82,7 @@ contract Fees is Ownable {
         }
     }
 
-    function getValueOffMillipercent(uint _value, uint _milliPercent) internal returns(uint) {
+    function _getValueOffMillipercent(uint _value, uint _milliPercent) internal pure returns(uint) {
         // To get the factor, we divide like 100 like a normal percent, but we multiply that by 1000 because it's a milliPercent
         // Eg: 1 % = 1000 millipercent => Factor is 0.01, so 1000 divided by 100 * 1000
         return (_value * _milliPercent) / (100 * 1000);
@@ -100,7 +100,7 @@ contract Fees is Ownable {
         if (feePaid[_id]) return;
 
         feePaid[_id] = true;
-        uint feeAmount = getValueOffMillipercent(_value, feeMilliPercent);
+        uint feeAmount = _getValueOffMillipercent(_value, feeMilliPercent);
         feeTokenBalances[_tokenAddress] += feeAmount;
 
         if (_tokenAddress != address(0)) {

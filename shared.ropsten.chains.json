@@ -13,33 +13,33 @@
         "name": "SNT",
         "address": "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
       },
-      "0xa74f6f7ecb0bfe9416200cb5131f4d385bbbb68d5287c02804af57dd82dffc56": {
-        "name": "OwnedUpgradeabilityProxy",
-        "address": "0x0f35d4cc9271859EaE727f400b80FCF65e017005"
-      },
       "0x43860c1078a0905618ad0e9a65d6c4dd924cafe396cd871b1ef677b0ce5d3d44": {
         "name": "StakingPool",
-        "address": "0xbBD9bE3D63a5FBFFce3a378a9b9c7D9d5494802c"
+        "address": "0x188d8281bf03af3B47A3175B7d7830c1B3E707C9"
       },
-      "0xdbb720f23e2fb9a02bf2dd15fde98a186f4978ea8a9e627acb4d0f76f6e15963": {
+      "0x2a02874b89dfbb346e1d7e08c966095b4fb0aec760a6250721cdaf61dbb5e319": {
         "name": "ArbitrationLicense",
-        "address": "0x1CE9b3ED2939628Fb17E0BD8EBD5Bf837F2413CB"
+        "address": "0x8a0BFE1b3048E7A77e7551080290E0F9b638A6e6"
       },
-      "0xfb608930deee9929e81c1b2b00c6394f85d6efb124320c2d2cc5924cd01ebd20": {
+      "0x651c5bdd97eab3c7388b6822f738a06aae54df66494568f22d24a5859fa4a408": {
+        "name": "OwnedUpgradeabilityProxy",
+        "address": "0xfA0d2aBE11f665020CE4664AD0b1890EEb4a693d"
+      },
+      "0xa64bfcd6efc4d560b0ef9c2df5850d254f77a8ef642add0ea195bed7c9e1965c": {
         "name": "SellerLicense",
-        "address": "0x864014cdC1fC767b6e03064c9119bC44d12414a9"
+        "address": "0x133b606af09824631d4CF37A8f12963C455fd1b2"
       },
-      "0x988ab4edc2380d7adbdf04d32110524c01a208e2fa413a9703b844563cee1550": {
+      "0x608fb3cf922eff1188863e1e48b2ee0f4ecfbd2ed014985e9eab39d7226ccc0a": {
         "name": "MetadataStore",
-        "address": "0x1ba03504D7e3C8193e6A2077dCa0e487B1AB60dA"
+        "address": "0xEbCc9e22B7Ea4F3c70648984bfd189aAd6398b3B"
       },
-      "0xd7cb516b7e8a3250795c32a0a646e16a9aceba3de3020e2b3e022d55836331db": {
+      "0xd29b6d758d2de46e724f93298ce392152a2729f291ec5f6966b5829816d1cb2c": {
         "name": "EscrowRelay",
-        "address": "0xAfC5dE5A66758FeBeE430753b4F5E08139994Caf"
+        "address": "0xfb5028cdCfeff6f6e661Eb4fA7a790a2945171dB"
       },
-      "0xd83ce64ff7959b96d213a137b2bbdffe56599ed2dfd1c2d46965838ce540e601": {
+      "0x4ea988920d5242a4c6ec2445be32b4a83bc955809b0f4a3999e217a3ff751d9e": {
         "name": "Escrow",
-        "address": "0x7c2382978051Ce39F321bcCD97d09d21F3Be47CB"
+        "address": "0xD3390bEe9E9AF5442F6348Bf63e62a3F56b414d1"
       }
     }
   }

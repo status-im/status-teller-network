@@ -17,6 +17,7 @@ import ApproveTokenFunds from './components/ApproveTokenFunds';
 
 import {zeroAddress, addressCompare} from '../../utils/address';
 import { States, checkNotEnoughETH } from '../../utils/transaction';
+import { toTokenDecimals } from '../../utils/numbers';
 
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
@@ -74,12 +75,12 @@ class Escrow extends Component {
   calculateRequiredBalance = () => {
     const {escrow, feeMilliPercent} = this.props;
 
-    const tradeAmount = toBN(escrow.tradeAmount);
+    const tokenAmount = toBN(toTokenDecimals(escrow.tokenAmount, escrow.token.decimals));
     const divider = 100 * (feeMilliPercent / 1000);
-    const feeAmount =  tradeAmount.div(toBN(divider));
+    const feeAmount =  tokenAmount.div(toBN(divider));
 
     // trade amount + fee
-    return tradeAmount.add(feeAmount).toString();
+    return tokenAmount.add(feeAmount).toString();
   };
 
   handleApprove = (amount, token) => () => {
@@ -106,9 +107,10 @@ class Escrow extends Component {
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
-    const isETH = escrow && escrow.offer.asset === zeroAddress;
+    
+    const isETHorSNT = escrow && (addressCompare(escrow.offer.asset, zeroAddress) || addressCompare(escrow.offer.asset, tokens.SNT.address));
 
-    if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETH && !tokenAllowance && tokenAllowance !== 0)) {
+    if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETHorSNT && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
     }
 
@@ -138,12 +140,12 @@ class Escrow extends Component {
     if(showApproveFundsScreen) {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
-                                 retry={this.handleApprove(escrow.tradeAmount, token.address)}
+                                 retry={this.handleApprove(escrow.tokenAmount, token.address)}
                                  transaction={true} cancel={this.props.cancelApproval}/>;
       }
       if (escrow.offer.asset !== zeroAddress) { // A token
         if (!isTokenApproved || shouldResetToken) {
-          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tradeAmount, token.address)}
+          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tokenAmount, token.address)}
                                     handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance}
                                     requiredToken={requiredBalance} shouldResetToken={shouldResetToken}/>;
         }
@@ -167,13 +169,13 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow}
                                         arbitrationDetails={arbitrationDetails}
                                         feeMilliPercent={feeMilliPercent}
-                                        isETH={isETH}/> }
+                                        isETHorSNT={isETHorSNT}/> }
 
         <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
-        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH} canRelay={canRelay} lastActivity={lastActivity} isETH={isETH} />
+        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH} canRelay={canRelay} lastActivity={lastActivity} isETHorSNT={isETHorSNT} />
         {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) && <CancelDispute trade={escrow} cancelDispute={cancelDispute} /> }
         {(!arbitrationDetails ||!arbitrationDetails.open) && <OpenDispute trade={escrow}  /> }
       </div>

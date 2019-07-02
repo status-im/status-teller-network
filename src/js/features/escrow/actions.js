@@ -12,8 +12,8 @@ import { toTokenDecimals } from '../../utils/numbers';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
-export const createEscrow = (signature, username, tradeAmount, assetPrice, statusContactCode, offer, nonce) => {
-  tradeAmount = toTokenDecimals(tradeAmount, offer.token.decimals);
+export const createEscrow = (signature, username, tokenAmount, assetPrice, statusContactCode, offer, nonce) => {
+  tokenAmount = toTokenDecimals(tokenAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
     user: {
@@ -23,7 +23,7 @@ export const createEscrow = (signature, username, tradeAmount, assetPrice, statu
       nonce
     },
     escrow: {
-      tradeAmount,
+      tokenAmount,
       offerId: offer.id,
       assetPrice: assetPrice.toFixed(2).toString().replace('.', '')
     }
@@ -31,8 +31,7 @@ export const createEscrow = (signature, username, tradeAmount, assetPrice, statu
 };
 
 export const fundEscrow = (escrow) => {
-  const value = escrow.tradeAmount;
-
+  const value =toTokenDecimals(escrow.tokenAmount, escrow.token.decimals);
   return {
     type: FUND_ESCROW,
     value,

@@ -14,9 +14,6 @@ const _ESCROW_PAID = 2;
 const ESCROW_RELEASED = 3;
 const ESCROW_CANCELED = 4;
 
-const FIAT = 0;
-const _CRYPTO = 1;
-
 let accounts;
 let arbitrator, arbitrator2;
 let _deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_revert/snapshot to reset state between tests
@@ -129,7 +126,7 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -141,7 +138,7 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(ethOfferId, 123, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
 
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
@@ -156,8 +153,7 @@ contract("Escrow", function() {
 
       assert.equal(escrow.offerId, ethOfferId, "Invalid offerId");
       assert.equal(escrow.buyer, accounts[1], "Invalid buyer");
-      assert.equal(escrow.tradeAmount, 123, "Invalid trade amount");
-      assert.equal(escrow.tradeType, FIAT, "Invalid trade trade type");
+      assert.equal(escrow.tokenAmount, 123, "Invalid trade amount");
       assert.equal(escrow.status, ESCROW_CREATED, "Invalid status");
     });
 
@@ -166,10 +162,10 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
       escrowId = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
     });
@@ -197,12 +193,12 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
-      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId).send({from: accounts[0]});
       const funded = receipt.events.Funded;
       assert(!!funded, "Funded() not triggered");
 
@@ -228,13 +224,13 @@ contract("Escrow", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      let receipt = await Escrow.methods.create(sntOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
+      let receipt = await Escrow.methods.create(sntOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0]});
       const created = receipt.events.Created;
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
 
-      SNT.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name == 'Funded'));
-      const encodedCall = Escrow.methods.fund(escrowTokenId, tradeAmount).encodeABI();
+      SNT.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name === 'Funded'));
+      const encodedCall = Escrow.methods.fund(escrowTokenId).encodeABI();
       receipt = await SNT.methods.approveAndCall(Escrow.options.address, tradeAmount + feeAmount, encodedCall).send({from: accounts[0]});
 
       const funded = receipt.events.Funded;
@@ -246,16 +242,14 @@ contract("Escrow", function() {
 
   describe("Canceling an escrow", async () => {
     it("A seller cannot cancel an unexpired funded escrow", async () => {
-      // Create
+      // Create and Fund
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createAndFund(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
-      // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
-
+      
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
@@ -269,11 +263,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await expireTransaction();
 
@@ -297,11 +291,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowTokenId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId).send({from: accounts[0]});
 
       await expireTransaction();
 
@@ -322,11 +316,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
@@ -338,11 +332,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[1]});
       let Canceled = receipt.events.Canceled;
@@ -354,11 +348,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await expireTransaction();
       receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
@@ -376,11 +370,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[2]});
@@ -395,11 +389,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       receipt = await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
@@ -419,11 +413,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("An invalid escrow cannot be released", async() => {
@@ -464,11 +458,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowTokenId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId).send({from: accounts[0]});
 
       const buyerBalanceBeforeEscrow = await StandardToken.methods.balanceOf(accounts[1]).call();
       const contractBalanceBeforeEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
@@ -527,11 +521,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("A random account should not be able to mark a transaction as paid", async () => {
@@ -555,11 +549,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       escrowId = receipt.events.Created.returnValues.escrowId;
       
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       const messageToSign = await Escrow.methods.paySignHash(escrowId).call();
       signature = await web3.eth.sign(messageToSign, accounts[1]);
@@ -591,11 +585,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await Escrow.methods.release(escrowId).send({from: accounts[0]});
     });
@@ -661,11 +655,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
     });
 
     it("should not allow rating an unreleased transaction", async() => {
@@ -696,11 +690,11 @@ contract("Escrow", function() {
         hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: buyer});
         signature = await web3.eth.sign(hash, buyer);
         nonce = await MetadataStore.methods.user_nonce(buyer).call();
-        receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
+        receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: buyer});
         created = receipt.events.Created;
         escrowId = created.returnValues.escrowId;
         // Fund
-        receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: seller, value: tradeAmount + feeAmount});
+        receipt = await Escrow.methods.fund(escrowId).send({from: seller, value: tradeAmount + feeAmount});
 
         await Escrow.methods.release(escrowId).send({from: seller});
         await Escrow.methods.rateTransaction(escrowId, rating).send({from: buyer});
@@ -725,11 +719,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
       const totalEthAfter = await web3.eth.getBalance(Escrow.options.address);
@@ -745,12 +739,12 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
 
       const releasedEscrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(releasedEscrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(releasedEscrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await Escrow.methods.release(releasedEscrowId).send({from: accounts[0]});
 
@@ -758,11 +752,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowId, tradeAmount).send({from: accounts[0], value: tradeAmount + feeAmount});
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
       await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
 
@@ -776,11 +770,11 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, FIAT, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.create(tokenOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowTokenId = created.returnValues.escrowId;
       // Fund
-      receipt = await Escrow.methods.fund(escrowTokenId, tradeAmount).send({from: accounts[0]});
+      receipt = await Escrow.methods.fund(escrowTokenId).send({from: accounts[0]});
 
       try {
         receipt = await Escrow.methods.withdraw_emergency(escrowTokenId).send({from: accounts[0]});

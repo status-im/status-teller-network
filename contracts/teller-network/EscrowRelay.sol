@@ -81,8 +81,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
   /**
    * @notice Create a new escrow
    * @param _offerId Offer
-   * @param _tradeAmount Amount buyer is willing to trade
-   * @param _tradeType Indicates if the amount is in crypto or fiat
+   * @param _tokenAmount Amount buyer is willing to trade
    * @param _assetPrice Indicates the price of the asset in the FIAT of choice
    * @param _statusContactCode The address of the status contact code
    * @param _location The location on earth
@@ -92,20 +91,18 @@ contract EscrowRelay is RelayRecipient, Ownable {
    */
   function create (
     uint _offerId,
-    uint _tradeAmount,
-    uint8 _tradeType,
+    uint _tokenAmount,
     uint _assetPrice,
     bytes memory _statusContactCode,
     string memory _location,
     string memory _username,
     uint _nonce,
     bytes memory _signature
-  ) public returns (address instance) {
+  ) public returns (uint escrowId) {
     lastActivity[get_sender()] = block.timestamp;
-    escrow.create(
+    return escrow.create(
          _offerId,
-         _tradeAmount,
-         _tradeType,
+         _tokenAmount,
          _assetPrice,
          _statusContactCode,
          _location,
@@ -170,7 +167,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
         address token;
         address payable buyer;
 
-        (buyer, , token, ) = escrow.getRelayData(escrowId);
+        (buyer, , token, ) = escrow.getBasicTradeData(escrowId);
 
         if(buyer != from) return ERROR_INVALID_BUYER;
         if(token != snt && token != address(0)) return ERROR_INVALID_ASSET;

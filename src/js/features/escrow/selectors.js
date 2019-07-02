@@ -18,7 +18,7 @@ export const getTrades = (state, userAddress, offers) => {
                     ...escrow,
                     token,
                     status: getTradeStatus(escrow),
-                    tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
+                    tokenAmount: fromTokenDecimals(escrow.tokenAmount, token.decimals)
                   };
                 })
     .sort((a, b) => {
@@ -47,7 +47,7 @@ export const getEscrowById = (state, escrowId) => {
     ...escrow,
     token,
     status: getTradeStatus(escrow),
-    tokenAmount: fromTokenDecimals(escrow.tradeAmount, token.decimals)
+    tokenAmount: fromTokenDecimals(escrow.tokenAmount, token.decimals)
   };
 };
 
