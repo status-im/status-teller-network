@@ -28,7 +28,7 @@ export const loadArbitration = (escrowId) => {
   return {type: LOAD_ARBITRATION, escrowId};
 };
 
-export const getArbitrators = () => ({type: GET_ARBITRATORS});
+export const getArbitrators = (address) => ({type: GET_ARBITRATORS, address});
 
 export const buyLicense = () => ({ type: BUY_LICENSE });
 
