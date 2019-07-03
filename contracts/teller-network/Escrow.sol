@@ -15,7 +15,7 @@ import "./IEscrow.sol";
 
 /**
  * @title Escrow
- * @dev Escrow contract for buying/selling ETH. Current implementation lacks arbitrage, marking trx as paid, and ERC20 support
+ * @dev Escrow contract for selling ETH and ERC20 tokens
  */
 contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
@@ -34,6 +34,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     bool internal _initialized;
 
+    /**
+     * @param _relayer EscrowRelay contract address
+     * @param _sellerLicenses License contract instance address for sellers
+     * @param _arbitratorLicenses License contract instance address for arbitrators
+     * @param _metadataStore MetadataStore contract address
+     * @param _feeDestination Address where the fees are going to be sent
+     * @param _feeMilliPercent Percentage applied as a fee to each escrow. 1000 == 1%
+     */
     constructor(
         address _relayer,
         address _sellerLicenses,
@@ -50,6 +58,15 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         metadataStore = MetadataStore(_metadataStore);
     }
 
+    /**
+     * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _relayer EscrowRelay contract address
+     * @param _sellerLicenses License contract instance address for sellers
+     * @param _arbitratorLicenses License contract instance address for arbitrators
+     * @param _metadataStore MetadataStore contract address
+     * @param _feeDestination Address where the fees are going to be sent
+     * @param _feeMilliPercent Percentage applied as a fee to each escrow. 1000 == 1%
+     */
     function init(
         address _relayer,
         address _sellerLicenses,
@@ -72,81 +89,46 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _setOwner(msg.sender);
     }
 
+    /**
+     * @dev Update relayer contract address. Can only be called by the contract owner
+     * @param _relayer EscrowRelay contract address
+     */
     function setRelayer(address _relayer) external onlyOwner {
         relayer = _relayer;
     }
 
+    /**
+     * @dev Update license contract addresses
+     * @param _sellerLicenses License contract instance address for sellers
+     * @param _arbitratorLicenses License contract instance address for arbitrators
+     */
     function setLicenses(address _sellerLicenses, address _arbitratorLicenses) external onlyOwner {
         sellerLicenses = License(_sellerLicenses);
         arbitratorLicenses = License(_arbitratorLicenses);
     }
 
+    /**
+     * @dev Update MetadataStore contract address
+     * @param _metadataStore MetadataStore contract address
+     */
     function setMetadataStore(address _metadataStore) external onlyOwner {
         metadataStore = MetadataStore(_metadataStore);
     }
 
     /**
-     * @notice Create a new escrow
-     * @param _signature buyer's signature
+     * @dev Escrow creation logic. Requires contract to be unpaused
+     * @param _buyer Buyer Address
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _assetPrice Indicates the price of the asset in the FIAT of choice
-     * @param _statusContactCode The address of the status contact code
-     * @param _location The location on earth
-     * @param _username The username of the user
-     * @dev Requires contract to be unpaused.
-     *         The seller needs to be licensed.
+     * @return Id of the Escrow
      */
-    function create (
-        uint _offerId,
-        uint _tokenAmount,
-        uint _assetPrice,
-        bytes memory _statusContactCode,
-        string memory _location,
-        string memory _username,
-        uint _nonce,
-        bytes memory _signature
-    ) public returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
-    }
-
-    /**
-     * @notice Fund a new escrow
-     * @dev Requires contract to be unpaused.
-     *         The seller needs to be licensed.
-     *         The expiration time must be at least 10min in the future
-     *         For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
-     */
-    function fund(uint _escrowId) external payable whenNotPaused {
-        _fund(msg.sender, _escrowId);
-    }
-
-    function _fund(address _from, uint _escrowId) internal whenNotPaused {
-        require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
-        require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
-
-        require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
-
-        transactions[_escrowId].expirationTime = block.timestamp + 5 days;
-        transactions[_escrowId].status = EscrowStatus.FUNDED;
-
-        uint tokenAmount = transactions[_escrowId].tokenAmount;
-
-        address token = transactions[_escrowId].token;
-
-        _payFee(_from, _escrowId, tokenAmount, token);
-
-        emit Funded(_escrowId, block.timestamp + 5 days, tokenAmount);
-    }
-
     function _createTransaction(
         address payable _buyer,
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice
     ) internal whenNotPaused returns(uint escrowId) {
-                
         address payable seller;
         address payable arbitrator;
         bool deleted;
@@ -173,7 +155,87 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         emit Created(_offerId, seller, _buyer, escrowId);
     }
 
+    /**
+     * @notice Create a new escrow
+     * @param _offerId Offer
+     * @param _tokenAmount Amount buyer is willing to trade
+     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+     * @param _statusContactCode The address of the status contact code
+     * @param _location The location on earth
+     * @param _username The username of the user
+     * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
+     * @param _signature buyer's signature
+     * @return Id of the new escrow
+     * @dev Requires contract to be unpaused.
+     *      The seller needs to be licensed.
+     */
+    function create (
+        uint _offerId,
+        uint _tokenAmount,
+        uint _assetPrice,
+        bytes memory _statusContactCode,
+        string memory _location,
+        string memory _username,
+        uint _nonce,
+        bytes memory _signature
+    ) public returns(uint escrowId) {
+        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
+        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
+    }
 
+    /**
+     * @notice Fund a new escrow
+     * @param _escrowId Id of the escrow
+     * @dev Requires contract to be unpaused.
+     *      The seller needs to be licensed.
+     *      The expiration time must be at least 10min in the future
+     *      For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
+     */
+    function fund(uint _escrowId) external payable whenNotPaused {
+        _fund(msg.sender, _escrowId);
+    }
+
+    /**
+     * @dev Escrow funding logic
+     * @param _from Seller address
+     * @param _escrowId Id of the escrow
+     * @dev Requires contract to be unpaused.
+     *      The seller needs to be licensed.
+     *      The expiration time must be at least 10min in the future
+     *      For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
+     */
+    function _fund(address _from, uint _escrowId) internal whenNotPaused {
+        require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
+        require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
+
+        require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
+
+        transactions[_escrowId].expirationTime = block.timestamp + 5 days;
+        transactions[_escrowId].status = EscrowStatus.FUNDED;
+
+        uint tokenAmount = transactions[_escrowId].tokenAmount;
+
+        address token = transactions[_escrowId].token;
+
+        _payFee(_from, _escrowId, tokenAmount, token);
+
+        emit Funded(_escrowId, block.timestamp + 5 days, tokenAmount);
+    }
+
+    /**
+     * @notice Create and fund a new escrow, as a seller, once you get a buyer signature
+     * @param _offerId Offer
+     * @param _tokenAmount Amount buyer is willing to trade
+     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+     * @param _bStatusContactCode The address of the status contact code
+     * @param _bLocation The location on earth
+     * @param _bUsername The username of the user
+     * @param _bNonce The nonce for the user (from MetadataStore.user_nonce(address))
+     * @param _bSignature buyer's signature
+     * @return Id of the new escrow
+     * @dev Requires contract to be unpaused.
+     *      Restrictions from escrow creation and funding applies
+     */
     function createAndFund (
         uint _offerId,
         uint _tokenAmount,
@@ -189,55 +251,10 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _fund(msg.sender, escrowId);
     }
 
-
-    function getBasicTradeData(uint _escrowId)
-      external
-      view
-      returns(address payable buyer, address payable seller, address token, uint tokenAmount) {
-        buyer = transactions[_escrowId].buyer;
-        seller = transactions[_escrowId].seller;
-        tokenAmount = transactions[_escrowId].tokenAmount;
-        token = transactions[_escrowId].token;
-        
-        return (buyer, seller, token, tokenAmount);
-    }
-
     /**
-     * @notice Release escrow funds to buyer
-     * @param _escrowId Id of the escrow
-     * @dev Requires contract to be unpaused.
-     *      Can only be executed by the seller
-     *      Transaction must not be expired, or previously canceled or released
-     */
-    function release(uint _escrowId) external {
-        EscrowStatus mStatus = transactions[_escrowId].status;
-        require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
-        require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
-        _release(_escrowId, transactions[_escrowId], false);
-    }
-
-    /**
-     * @dev Release funds to buyer
-     * @param _escrowId Id of the escrow
-     * @param trx EscrowTransaction with data of transaction to be released
-     */
-    function _release(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
-        trx.status = EscrowStatus.RELEASED;
-        address token = trx.token;
-        if(token == address(0)){
-            trx.buyer.transfer(trx.tokenAmount);
-        } else {
-            require(ERC20Token(token).transfer(trx.buyer, trx.tokenAmount), "Couldn't transfer funds");
-        }
-        _releaseFee(trx.arbitrator, trx.tokenAmount, token, isDispute);
-
-        emit Released(_escrowId);
-    }
-
-    /**
-     * @dev Seller/Buyer marks transaction as paid
-     * @param _escrowId Id of the escrow
+     * @dev Buyer marks transaction as paid
      * @param _sender Address marking the transaction as paid
+     * @param _escrowId Id of the escrow
      */
     function _pay(address _sender, uint _escrowId) internal {
         EscrowTransaction storage trx = transactions[_escrowId];
@@ -260,7 +277,12 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _pay(msg.sender, _escrowId);
     }
 
-
+    /**
+     * @dev Relay function for marking a transaction as paid
+     *      Can only be called by relayer address
+     * @param _sender Address marking the transaction as paid
+     * @param _escrowId Id of the escrow
+     */
     function pay_relayed(address _sender, uint _escrowId) external {
         assert(msg.sender == relayer);
         _pay(_sender, _escrowId);
@@ -291,8 +313,41 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      *      TODO: consider deducting funds later on release to pay the relayer (?)
      */
     function pay(uint _escrowId, bytes calldata _signature) external {
-        address sender = recoverAddress(getSignHash(paySignHash(_escrowId)), _signature);
+        address sender = _recoverAddress(_getSignHash(paySignHash(_escrowId)), _signature);
         _pay(sender, _escrowId);
+    }
+
+    /**
+     * @dev Release funds to buyer
+     * @param _escrowId Id of the escrow
+     * @param _trx EscrowTransaction with data of transaction to be released
+     * @param _isDispute indicates if the release happened due to a dispute
+     */
+    function _release(uint _escrowId, EscrowTransaction storage _trx, bool _isDispute) internal {
+        _trx.status = EscrowStatus.RELEASED;
+        address token = _trx.token;
+        if(token == address(0)){
+            _trx.buyer.transfer(_trx.tokenAmount);
+        } else {
+            require(ERC20Token(token).transfer(_trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
+        }
+        _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
+
+        emit Released(_escrowId);
+    }
+
+    /**
+     * @notice Release escrow funds to buyer
+     * @param _escrowId Id of the escrow
+     * @dev Requires contract to be unpaused.
+     *      Can only be executed by the seller
+     *      Transaction must not be expired, or previously canceled or released
+     */
+    function release(uint _escrowId) external {
+        EscrowStatus mStatus = transactions[_escrowId].status;
+        require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
+        require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
+        _release(_escrowId, transactions[_escrowId], false);
     }
 
     /**
@@ -357,27 +412,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         emit Canceled(_escrowId);
     }
 
-    /**
-     * @dev Withdraws funds to the sellers in case of emergency
-     * @param _escrowId Id of the escrow
-     * @notice Requires contract to be paused.
-     *         Can be executed by anyone
-     *         Transaction must not be canceled or released
-     */
-    function withdraw_emergency(uint _escrowId) external whenPaused {
-        EscrowTransaction storage trx = transactions[_escrowId];
-        require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
-
-        _cancel(_escrowId, trx, false);
-    }
 
     /**
-     * @dev Rates a transaction
+     * @notice Rates a transaction
      * @param _escrowId Id of the escrow
      * @param _rate rating of the transaction from 1 to 5
-     * @notice Requires contract to not be paused.
-     *         Can only be executed by the buyer
-     *         Transaction must released
+     * @dev Requires contract to not be paused.
+     *      Can only be executed by the buyer
+     *      Transaction must released
      */
     function rateTransaction(uint _escrowId, uint _rate) external {
         require(_rate >= 1, "Rating needs to be at least 1");
@@ -395,51 +437,69 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
     }
 
+    function getBasicTradeData(uint _escrowId)
+      external
+      view
+      returns(address payable buyer, address payable seller, address token, uint tokenAmount) {
+        buyer = transactions[_escrowId].buyer;
+        seller = transactions[_escrowId].seller;
+        tokenAmount = transactions[_escrowId].tokenAmount;
+        token = transactions[_escrowId].token;
+
+        return (buyer, seller, token, tokenAmount);
+    }
 
     /**
      * @notice Open case as a buyer or seller for arbitration
      * @param _escrowId Id of the escrow
-     * @dev Consider using Aragon Court for this.
+     * @param _motive Motive for opening the dispute
      */
-    function openCase(uint _escrowId, string calldata motive) external {
+    function openCase(uint _escrowId, string calldata _motive) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
         require(trx.buyer == msg.sender || metadataStore.getOfferOwner(trx.offerId) == msg.sender, "Only participants can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        _openDispute(_escrowId, msg.sender, motive);
+        _openDispute(_escrowId, msg.sender, _motive);
     }
 
+    /**
+     * @dev Open case via relayer
+     * @param _sender Address initiating the relayed transaction
+     * @param _escrowId Id of the escrow
+     * @param _motive Motive for opening the dispute
+     */
     function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external {
         assert(msg.sender == relayer);
-        
+
         EscrowTransaction storage trx = transactions[_escrowId];
-        
+
         require(!isDisputed(_escrowId), "Case already exist");
         require(trx.buyer == _sender, "Only the buyer can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
-        
+
         _openDispute(_escrowId, _sender, _motive);
     }
 
     /**
      * @notice Open case as a buyer or seller for arbitration via a relay account
      * @param _escrowId Id of the escrow
+     * @param _motive Motive for opening the dispute
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCase(uint _escrowId, string calldata motive, bytes calldata _signature) external {
+    function openCase(uint _escrowId, string calldata _motive, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
-        address senderAddress = recoverAddress(getSignHash(openCaseSignHash(_escrowId, motive)), _signature);
+        address senderAddress = _recoverAddress(_getSignHash(openCaseSignHash(_escrowId, _motive)), _signature);
 
         require(trx.buyer == senderAddress || trx.seller == senderAddress, "Only participants can invoke this function");
 
-        _openDispute(_escrowId, msg.sender, motive);
+        _openDispute(_escrowId, msg.sender, _motive);
     }
 
     /**
@@ -488,7 +548,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     }
 
     /**
-     * @notice Support for "approveAndCall". Callable only by the fee token.
+     * @dev Support for "approveAndCall". Callable only by the fee token.
      * @param _from Who approved.
      * @param _amount Amount being approved, need to be equal `getPrice()`.
      * @param _token Token being approved, need to be equal `token()`.
@@ -517,14 +577,24 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _data Abi encoded data.
      * @return Decoded registry call.
      */
-    function _abiDecodeFundCall(bytes memory _data) internal pure returns (
-            bytes4 sig,
-            uint256 escrowId
-        )
-    {
+    function _abiDecodeFundCall(bytes memory _data) internal pure returns (bytes4 sig, uint256 escrowId) {
         assembly {
             sig := mload(add(_data, add(0x20, 0)))
             escrowId := mload(add(_data, 36))
         }
+    }
+
+    /**
+     * @dev Withdraws funds to the sellers in case of emergency
+     *      Requires contract to be paused.
+     *      Can be executed by anyone
+     *      Transaction must not be canceled or released
+     * @param _escrowId Id of the Escrow
+     */
+    function withdraw_emergency(uint _escrowId) external whenPaused {
+        EscrowTransaction storage trx = transactions[_escrowId];
+        require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
+
+        _cancel(_escrowId, trx, false);
     }
 }

@@ -20,7 +20,6 @@ contract Fees is Ownable {
     /**
      * @param _feeDestination Address to send the fees once withdraw is called
      * @param _feeMilliPercent Millipercent for the fee off teh amount sold
-     * @dev TODO: determine if the contract will hold the fees or if it will send them automatically to the fee destination address
      */
     constructor(address payable _feeDestination, uint _feeMilliPercent) public {
         feeDestination = _feeDestination;
@@ -28,10 +27,9 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Set Fee Destination Address
+     * @dev Set Fee Destination Address.
+     *      Can only be called by the owner of the contract
      * @param _addr New address
-     * @dev Can only be called by the owner of the contract
-     *      TODO: if the contract will be changed to remove ownership, remove this function
      */
     function setFeeDestinationAddress(address payable _addr) external onlyOwner {
         feeDestination = _addr;
@@ -39,10 +37,9 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Set Fee Amount
+     * @dev Set Fee Amount
+     * Can only be called by the owner of the contract
      * @param _feeMilliPercent New millipercent
-     * @dev Can only be called by the owner of the contract
-     *      TODO: if the contract will be changed to remove ownership, remove this function
      */
     function setFeeAmount(uint _feeMilliPercent) external onlyOwner {
         feeMilliPercent = _feeMilliPercent;
@@ -50,7 +47,7 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Release fee to fee destination and arbitrator
+     * @dev Release fee to fee destination and arbitrator
      * @param _arbitrator Arbitrator address to transfer fee to
      * @param _value Value sold in the escrow
      * @param _isDispute Boolean telling if it was from a dispute. With a dispute, the arbitrator gets more
@@ -82,6 +79,12 @@ contract Fees is Ownable {
         }
     }
 
+    /**
+     * @dev Calculate fee of an amount based in milliPercent
+     * @param _value Value to obtain the fee
+     * @param _milliPercent parameter to calculate the fee
+     * @return Fee amount for _value
+     */
     function _getValueOffMillipercent(uint _value, uint _milliPercent) internal pure returns(uint) {
         // To get the factor, we divide like 100 like a normal percent, but we multiply that by 1000 because it's a milliPercent
         // Eg: 1 % = 1000 millipercent => Factor is 0.01, so 1000 divided by 100 * 1000
@@ -89,12 +92,12 @@ contract Fees is Ownable {
     }
 
     /**
-     * @notice Pay fees for a transaction or element id
+     * @dev Pay fees for a transaction or element id
+     *      This will only transfer funds if the fee  has not been paid
      * @param _from Address from where the fees are being extracted
      * @param _id Escrow id or element identifier to mark as paid
      * @param _value Value sold in the escrow
      * @param _tokenAddress Address of the token sold in the escrow
-     * @dev This will only transfer funds if the fee  has not been paid
      */
     function _payFee(address _from, uint _id, uint _value, address _tokenAddress) internal {
         if (feePaid[_id]) return;
