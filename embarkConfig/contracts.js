@@ -83,7 +83,6 @@ module.exports = {
         args: ["$SellerLicense", "$ArbitrationLicense"]
       },
       ArbitrationLicense: {
-        instanceOf: "License",
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
