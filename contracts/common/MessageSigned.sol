@@ -1,54 +1,44 @@
+/* solium-disable no-empty-blocks */
+/* solium-disable security/no-inline-assembly */
+
 pragma solidity >=0.5.0 <0.6.0;
 
-/** 
- * @notice Uses ethereum signed messages
+/**
+ * @dev Uses ethereum signed messages
  */
 contract MessageSigned {
-    
+
     constructor() internal {}
 
     /**
-     * @notice recovers address who signed the message
+     * @dev recovers address who signed the message
      * @param _signHash operation ethereum signed message hash
      * @param _messageSignature message `_signHash` signature
      */
-    function recoverAddress(
-        bytes32 _signHash, 
-        bytes memory _messageSignature
-    )
+    function _recoverAddress(bytes32 _signHash, bytes memory _messageSignature)
         internal
         pure
-        returns(address) 
+        returns(address)
     {
         uint8 v;
         bytes32 r;
         bytes32 s;
         (v,r,s) = signatureSplit(_messageSignature);
-        return ecrecover(
-            _signHash,
-            v,
-            r,
-            s
-        );
+        return ecrecover(_signHash, v, r, s);
     }
 
     /**
-     * @notice Hash a hash with `"\x19Ethereum Signed Message:\n32"`
+     * @dev Hash a hash with `"\x19Ethereum Signed Message:\n32"`
      * @param _hash Sign to hash.
-     * @return signHash Hash to be signed.
+     * @return Hash to be signed.
      */
-    function getSignHash(
-        bytes32 _hash
-    )
-        internal
-        pure
-        returns (bytes32 signHash)
-    {
+    function _getSignHash(bytes32 _hash) internal pure returns (bytes32 signHash) {
         signHash = keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _hash));
     }
 
     /**
-     * @dev divides bytes signature into `uint8 v, bytes32 r, bytes32 s` 
+     * @dev divides bytes signature into `uint8 v, bytes32 r, bytes32 s`
+     * @param _signature Signature string
      */
     function signatureSplit(bytes memory _signature)
         internal
@@ -74,5 +64,4 @@ contract MessageSigned {
         }
         require(v == 27 || v == 28, "Bad signature version");
     }
-    
 }
