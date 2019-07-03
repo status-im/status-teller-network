@@ -43,7 +43,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @param _address The address to check
      * @return bool
      */
-    function isLicenseOwner(address _address) external view returns (bool) {
+    function isLicenseOwner(address _address) public view returns (bool) {
         return licenseDetails[_address].price != 0 && licenseDetails[_address].creationTime != 0;
     }
 
@@ -53,7 +53,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      *      The msg.sender must not already own a license.
      */
     function buy() external returns(uint) {
-        uint id = buyFrom(msg.sender);
+        uint id = _buyFrom(msg.sender);
         return id;
     }
 
@@ -62,7 +62,7 @@ contract License is Ownable, ApproveAndCallFallBack {
      * @dev Requires value to be equal to the price of the license.
      *      The _owner must not already own a license.
      */
-    function buyFrom(address _licenseOwner) private returns(uint) {
+    function _buyFrom(address _licenseOwner) internal returns(uint) {
         require(licenseDetails[_licenseOwner].creationTime == 0, "License already bought");
 
         licenseDetails[_licenseOwner] = LicenseDetails({
@@ -113,7 +113,7 @@ contract License is Ownable, ApproveAndCallFallBack {
 
         require(_abiDecodeBuy(_data) == bytes4(0xa6f2ae3a), "Wrong method selector"); //bytes4(keccak256("buy()"))
 
-        buyFrom(_from);
+        _buyFrom(_from);
     }
 
     /**

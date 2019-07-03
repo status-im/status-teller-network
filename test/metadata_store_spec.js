@@ -34,7 +34,6 @@ config({
       args: ["$SNT", 10, "$StakingPool"]
     },
     ArbitrationLicense: {
-      instanceOf: "License",
       args: ["$SNT", 10, "$StakingPool"]
     },
     StakingPool: {
@@ -57,11 +56,13 @@ contract("MetadataStore", function () {
     await SNT.methods.generateTokens(accounts[9], 1000).send();
 
     const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
+    
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall).send({from: accounts[9]});
+    
+    await ArbitrationLicense.methods.changeAcceptAny(true).send({from: accounts[9]});
 
     hash = await MetadataStore.methods.getDataHash("Iuri", SellerLicense.address).call();
     signature = await web3.eth.sign(hash, accounts[0]);
-
   });
 
   it("should not allow to add new user when not license owner", async function () {
