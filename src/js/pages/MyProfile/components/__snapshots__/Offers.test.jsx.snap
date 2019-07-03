@@ -170,6 +170,18 @@ exports[`Offers should render correctly 1`] = `
           <dd />
         </dl>
       </Row>
+      <Row
+        tag="div"
+      >
+        <dl
+          className="col-12"
+        >
+          <dt>
+            Arbitrator
+          </dt>
+          <dd />
+        </dl>
+      </Row>
     </CardBody>
   </Card>
   <ConfirmDialog

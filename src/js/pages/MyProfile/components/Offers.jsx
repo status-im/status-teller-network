@@ -4,9 +4,10 @@ import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faEllipsisV, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
+import {zeroAddress} from '../../../utils/address';
 
 
 class Offers extends Component {
@@ -68,6 +69,16 @@ class Offers extends Component {
             <dl className="col-6">
               <dt>{t('offers.rate')}</dt>
               <dd>{offer.rateForHuman}</dd>
+            </dl>
+          </Row>
+          <Row>
+            <dl className="col-12">
+              <dt>Arbitrator</dt>
+              {offer.arbitrator === zeroAddress && <dd className="text-danger text-small">
+                <FontAwesomeIcon className="mr-2" icon={faExclamationTriangle} size="sm"/>
+                This offer does not have an arbitrator. Disputes cannot be opened
+              </dd>}
+              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitrator}</dd> }       
             </dl>
           </Row>
         </CardBody>

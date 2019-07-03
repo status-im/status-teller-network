@@ -7,7 +7,9 @@ import Identicon from "../UserInformation/Identicon";
 import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
-import {addressCompare} from '../../utils/address';
+import {addressCompare, zeroAddress} from '../../utils/address';
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 
 const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;
@@ -57,6 +59,10 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
         </Col>
       </Row>}
       {isArbitrator && <span className="text-warning text-small">You are an arbitrator for this offer</span>}
+      {arbitrator === zeroAddress && <span className="text-danger text-small">
+        <FontAwesomeIcon className="mr-2" icon={faExclamationTriangle} size="sm"/>
+        This offer does not have an arbitrator. Disputes cannot be opened
+      </span>}
     </Col>
   </Row>);
 };
