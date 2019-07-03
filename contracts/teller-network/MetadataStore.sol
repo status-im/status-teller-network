@@ -99,7 +99,8 @@ contract MetadataStore is MessageSigned {
         uint _nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        return _recoverAddress(_getSignHash(_dataHash(_username, _statusContactCode, _nonce)), _signature);
+        bytes32 signHash = _getSignHash(_dataHash(_username, _statusContactCode, _nonce));
+        return _recoverAddress(signHash, _signature);
     }
 
     /**
