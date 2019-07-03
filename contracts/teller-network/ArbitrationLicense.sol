@@ -26,12 +26,12 @@ contract ArbitrationLicense is License {
 
     Request[] public requests;
 
-    event ArbitratorRequested(uint id, address seller, address arbitrator);
-    event ArbitratorLicensed(uint id, bool acceptAny);
+    event ArbitratorRequested(uint id, address indexed seller, address indexed arbitrator);
+    event ArbitratorLicensed(uint id,  address indexed arbitrator, bool indexed acceptAny);
 
-    event RequestAccepted(uint id, address arbitrator, address seller);
-    event RequestRejected(uint id, address arbitrator, address seller);
-    event RequestCanceled(uint id, address arbitrator, address seller);
+    event RequestAccepted(uint id, address indexed arbitrator, address indexed seller);
+    event RequestRejected(uint id, address indexed arbitrator, address indexed seller);
+    event RequestCanceled(uint id, address indexed arbitrator, address indexed seller);
 
     constructor(address _tokenAddress, uint256 _price, address _burnAddress)
       License(_tokenAddress, _price, _burnAddress)
@@ -53,7 +53,7 @@ contract ArbitrationLicense is License {
         arbitratorlicenseDetails[_sender].id = id;
         arbitratorlicenseDetails[_sender].acceptAny = _acceptAny;
 
-        emit ArbitratorLicensed(id, _acceptAny);
+        emit ArbitratorLicensed(id, _sender, _acceptAny);
     }
 
     /**
@@ -109,7 +109,8 @@ contract ArbitrationLicense is License {
      */
     function rejectRequest(uint _id) public {
         require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
-        require(requests[_id].status == RequestStatus.AWAIT, "This request is not pending");
+        require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED,
+            "Invalid request status");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator accepts all cases");
 
         requests[_id].status = RequestStatus.REJECTED;
