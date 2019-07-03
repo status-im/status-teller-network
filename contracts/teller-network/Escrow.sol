@@ -7,7 +7,7 @@ import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
 
-import "./ArbitratorLicense.sol";
+import "./ArbitrationLicense.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
@@ -81,7 +81,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _initialized = true;
 
         sellerLicenses = License(_sellerLicenses);
-        arbitratorLicenses = ArbitratorLicense(_arbitratorLicenses);
+        arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
         metadataStore = MetadataStore(_metadataStore);
         relayer = _relayer;
         feeDestination = _feeDestination;
@@ -105,7 +105,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function setLicenses(address _sellerLicenses, address _arbitratorLicenses) external onlyOwner {
         sellerLicenses = License(_sellerLicenses);
-        arbitratorLicenses = ArbitratorLicense(_arbitratorLicenses);
+        arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
     }
 
     /**

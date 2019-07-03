@@ -42,7 +42,6 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     ArbitrationLicense: {
-      instanceOf: "License",
       args: ["$SNT", 10, "$StakingPool"]
     },
     StakingPool: {
@@ -80,6 +79,7 @@ contract("Escrow Relay", function() {
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
+    await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
