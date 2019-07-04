@@ -39,7 +39,7 @@ class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
-    this.props.getArbitrators();
+    this.props.getArbitrators(this.props.address);
   }
 
   componentDidUpdate(oldProps){

@@ -53,12 +53,16 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       return generateToken.send({from: main, gas});
     }));
 
-    console.log("Buy arbitration license");
+    console.log("Buy arbitration license and accepting everyone");
     {
       const buyLicense = deps.contracts.ArbitrationLicense.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
+      let toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
+      let gas = await toSend.estimateGas({from: arbitrator});
+      await toSend.send({from: arbitrator, gas});
 
-      const gas = await toSend.estimateGas({from: arbitrator});
+      // Accepting everyone
+      toSend = deps.contracts.ArbitrationLicense.methods.changeAcceptAny(true);
+      gas = await toSend.estimateGas({from: arbitrator});
       await toSend.send({from: arbitrator, gas});
     }
 

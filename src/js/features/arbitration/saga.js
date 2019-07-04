@@ -30,12 +30,14 @@ export function *onCancelDispute() {
   yield takeEvery(CANCEL_DISPUTE, doTransaction.bind(null, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED));
 }
 
-export function *doGetArbitrators() {
+export function *doGetArbitrators({address}) {
   try {
     const cnt = yield call(ArbitrationLicense.methods.getNumLicenseOwners().call);
     const arbitrators = [];
     for(let i = 0; i < cnt; i++){
-      arbitrators.push(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
+      const arbitrator = yield call(ArbitrationLicense.methods.licenseOwners(i).call);
+      const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
+      if(isAllowed) arbitrators.push(arbitrator);
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
   } catch (error) {
