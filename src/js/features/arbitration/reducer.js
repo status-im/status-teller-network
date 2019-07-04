@@ -27,14 +27,24 @@ import {
   LOAD_PRICE_SUCCEEDED,
   CHECK_LICENSE_OWNER_FAILED,
   CHECK_LICENSE_OWNER_SUCCEEDED,
-  ARBITRATION_UNSOLVED
+  ARBITRATION_UNSOLVED,
+  REQUEST_ARBITRATOR_PRE_SUCCESS,
+  REQUEST_ARBITRATOR_SUCCEEDED,
+  REQUEST_ARBITRATOR_FAILED,
+  REQUEST_ARBITRATOR,
+  CANCEL_ARBITRATOR_SELECTION_ACTIONS,
+  AWAIT,
+  CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS,
+  CANCEL_ARBITRATOR_REQUEST_FAILED,
+  CANCEL_ARBITRATOR_REQUEST_SUCCEEDED,
+  CLOSED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
-import {toChecksumAddress, zeroAddress} from '../../utils/address';
+import {zeroAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
-  escrows: [], arbitration: null, arbitrators: [], licenseOwner: false,
+  escrows: [], arbitration: null, arbitrators: {}, licenseOwner: false,
   receipt: null,
   price: Number.MAX_SAFE_INTEGER,
   loading: false,
@@ -53,6 +63,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case CANCEL_DISPUTE_PRE_SUCCESS:
     case OPEN_DISPUTE_PRE_SUCCESS:
     case RESOLVE_DISPUTE_PRE_SUCCESS:
+    case REQUEST_ARBITRATOR_PRE_SUCCESS:
+    case CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS:
       return {
         ...state, ...{
           txHash: action.txHash
@@ -92,12 +104,15 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_DISPUTED_ESCROWS_FAILED:
     case RESOLVE_DISPUTE_FAILED:
     case GET_ARBITRATORS_FAILED:
+    case REQUEST_ARBITRATOR_FAILED:
+    case CANCEL_ARBITRATOR_REQUEST_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
           loading: false
         }
       };
+    case REQUEST_ARBITRATOR:
     case CANCEL_DISPUTE:
     case OPEN_DISPUTE:
     case RESOLVE_DISPUTE:
@@ -133,7 +148,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_ARBITRATORS_SUCCEEDED:
       return {
         ...state,
-        arbitrators: action.arbitrators.map(arbitratorAddr => toChecksumAddress(arbitratorAddr))
+        arbitrators: action.arbitrators
       };
     case BUY_LICENSE:
       return {
@@ -153,11 +168,36 @@ function reducer(state = DEFAULT_STATE, action) {
         loading: false,
         error: ''
       };
+    case REQUEST_ARBITRATOR_SUCCEEDED: 
+      {
+        const arbitrators = {...state.arbitrators};
+        arbitrators[action.arbitrator].request.status = AWAIT;
+        return {
+          ...state,
+          arbitrators,
+          loading: false,
+          error: ''
+        };
+      }
+    case CANCEL_ARBITRATOR_REQUEST_SUCCEEDED: 
+      {
+        console.log(action);
+        const arbitrators = {...state.arbitrators};
+        arbitrators[action.arbitrator].request.status = CLOSED;
+        return {
+          ...state,
+          arbitrators,
+          loading: false,
+          error: ''
+        };
+      }
+    case CANCEL_ARBITRATOR_SELECTION_ACTIONS:
     case BUY_LICENSE_CANCEL:
       return {
         ...state,
         loading: false,
-        error: ''
+        error: '',
+        errorGet: ''
       };
     case LOAD_PRICE_SUCCEEDED:
       return {

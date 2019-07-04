@@ -77,7 +77,7 @@ class Offers extends Component {
               {offer.arbitrator === zeroAddress && <dd>
                 <NoArbitratorWarning arbitrator={offer.arbitrator} />
               </dd>}
-              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitrator}</dd> }       
+              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitratorData.username} ({offer.arbitrator})</dd> }       
             </dl>
           </Row>
         </CardBody>

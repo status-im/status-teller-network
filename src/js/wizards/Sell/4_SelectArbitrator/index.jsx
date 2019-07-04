@@ -30,7 +30,7 @@ class SelectArbitrator extends Component {
 
   componentDidUpdate(prevProps) {
     if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length !== this.props.arbitrators.length) {
-      this.props.arbitrators.forEach(arbitratorAddr => {
+      Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
           this.loadedUsers.push(arbitratorAddr);
@@ -86,7 +86,7 @@ class SelectArbitrator extends Component {
       <Fragment>
         <ArbitratorSelectorForm
           value={this.state.selectedArbitrator}
-          arbitrators={this.props.arbitrators.filter(x => !addressCompare(x, this.props.address))}
+          arbitrators={Object.keys(this.props.arbitrators).filter(x => !addressCompare(x, this.props.address))}
           changeArbitrator={this.changeArbitrator} users={this.props.users}
           onSelectNoArbitrator={this.selectNoArbitrator} noArbitrator={this.state.noArbitrator}
         />

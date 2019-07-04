@@ -91,8 +91,10 @@ class MyProfile extends Component {
 
         <Fragment>
           <Trades trades={trades} address={this.props.address}/>
-          <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
-          <Arbitrators />
+          {profile.isSeller && <Fragment>
+            <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
+            <Arbitrators /> 
+          </Fragment>}
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment>
       </Fragment>
