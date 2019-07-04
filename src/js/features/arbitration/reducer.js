@@ -181,7 +181,6 @@ function reducer(state = DEFAULT_STATE, action) {
       }
     case CANCEL_ARBITRATOR_REQUEST_SUCCEEDED: 
       {
-        console.log(action);
         const arbitrators = {...state.arbitrators};
         arbitrators[action.arbitrator].request.status = CLOSED;
         return {

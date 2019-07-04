@@ -21,7 +21,7 @@ class Arbitrators extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length !== this.props.arbitrators.length) {
+    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length < this.props.arbitrators.length) {
       Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
