@@ -63,6 +63,8 @@ contract MetadataStore is MessageSigned {
     constructor(address _sellingLicenses, address _arbitrationLicenses) public {
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+
+        users.length++;
     }
 
     /**
