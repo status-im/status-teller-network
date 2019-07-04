@@ -4,12 +4,13 @@ import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
-export const approve = (tokenAddress, amount) => {
+export const approve = (tokenAddress, amount, tokenDecimals) => {
   ERC20Token.options.address = tokenAddress;
   return {
     type: APPROVE_TOKEN,
     toSend: ERC20Token.methods.approve(Escrow.options.address, amount),
-    amount
+    amount,
+    tokenDecimals
   };
 };
 

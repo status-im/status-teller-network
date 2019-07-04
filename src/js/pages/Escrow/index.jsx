@@ -83,8 +83,8 @@ class Escrow extends Component {
     return tokenAmount.add(feeAmount).toString();
   };
 
-  handleApprove = (amount, token) => () => {
-    this.props.approve(token, amount);
+  handleApprove = (amount, token, tokenDecimals) => () => {
+    this.props.approve(token, amount, tokenDecimals);
   };
 
   handleReset = token => () => {
@@ -141,12 +141,12 @@ class Escrow extends Component {
     if(showApproveFundsScreen) {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
-                                 retry={this.handleApprove(escrow.tokenAmount, token.address)}
+                                 retry={this.handleApprove(escrow.tokenAmount, token.address, token.decimals)}
                                  transaction={true} cancel={this.props.cancelApproval}/>;
       }
       if (escrow.offer.asset !== zeroAddress) { // A token
         if (!isTokenApproved || shouldResetToken) {
-          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tokenAmount, token.address)}
+          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tokenAmount, token.address, token.decimals)}
                                     handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance}
                                     requiredToken={requiredBalance} shouldResetToken={shouldResetToken}/>;
         }
