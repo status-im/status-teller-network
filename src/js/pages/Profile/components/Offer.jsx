@@ -15,7 +15,7 @@ const Offer = ({offer, prices, onClick, disabled}) => (
       <Button color={disabled ? "secondary" : "primary" } className={classnames('p-2', {disabled, 'not-clickable': disabled})} onClick={disabled ? null : onClick} id={`buy-btn-${offer.id}`}>
         Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
       </Button>
-      {<UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
+      {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
         Offer disabled because you are the seller or the arbitrator
       </UncontrolledTooltip>}
     </Col>
