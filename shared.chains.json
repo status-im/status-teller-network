@@ -184,6 +184,42 @@
       "0x6e48725583a5c42b775e7c94bb5b7959989bd4fa3ba9f74d63db0ad28169cd42": {
         "name": "Escrow",
         "address": "0xcd1107209d57B8A0C2dBd584f93be9d584217964"
+      },
+      "0x47a486077d3e6f7c81911ea49dc0a22e932277833f707494668d1c6953581180": {
+        "name": "MiniMeTokenFactory",
+        "address": "0x906952B7F06d2f045FF6e0F3012e350503eE6E75"
+      },
+      "0xe52e2dd53ef94f9b6e67b6f770abd04a13fabaf5658f336a3f6ce4322698001c": {
+        "name": "OwnedUpgradeabilityProxy",
+        "address": "0x2F5Ec8b8695fD6b024001fEB63EDFc6dC7A2Fe54"
+      },
+      "0xbe41177ac2276fd53ca173cf22ef35e0a1316650f017e24dc8d42f4f04b56059": {
+        "name": "SNT",
+        "address": "0xbf490bCbF15782414c0Fe6931Fef941A04781E9C"
+      },
+      "0x5a9be1e418b816c1613e0dd6206e174644370218725fc2384ec925cd57946641": {
+        "name": "StakingPool",
+        "address": "0xC446b7818D5F5f038eFD11eBd7146B43094d2316"
+      },
+      "0xd3d9de6f6c6a2b2ff4cfceb420015a6809cf091dc4ce2e738e026cac36658082": {
+        "name": "ArbitrationLicense",
+        "address": "0x83410fD656429686bA41DDdbbE71B9582933A2C4"
+      },
+      "0x4292b67b9d1dd8fcd8973f28b13953801a7ef6a8693f423f83c005d66151e490": {
+        "name": "SellerLicense",
+        "address": "0x6f0F41e1C6195670BFB0ddde4a5e478A1b5E174B"
+      },
+      "0xaa7f8b0188ce18a1186e9fb87220392dbbce05b4d785d26c196f9c6bf6a29529": {
+        "name": "MetadataStore",
+        "address": "0xC25fd084e9D76de3741c5fF5f5314e6f6529C50e"
+      },
+      "0x575950beaff750ce4d1a7f66a41db6f37e61b07c2483502b0b2cc587bbb3d4c5": {
+        "name": "Escrow",
+        "address": "0x18C2edDF3c336C6D64951C5d34e777260bA54310"
+      },
+      "0x5d58235fadf5c87bce4b4635ccd535af14895cb1a121a7ae70680932c40e4032": {
+        "name": "EscrowRelay",
+        "address": "0xAe777eD277b71d686E3b45F259d3e0d04DEE8E66"
       }
     }
   }

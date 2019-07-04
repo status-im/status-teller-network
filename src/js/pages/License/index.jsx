@@ -49,6 +49,12 @@ class License extends Component {
     this.checkBalance();
   }
 
+  componentWillUnmount() {
+    if (this.pollBalanceInterval) {
+      clearInterval(this.pollBalanceInterval);
+    }
+  }
+
   buyLicense = () => {
     this.setState({isBuying: true});
     this.props.buyLicense();
