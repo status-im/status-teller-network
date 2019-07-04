@@ -5,8 +5,7 @@ import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import moment from "moment";
 import {tradeStates} from '../../../features/escrow/helpers';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {zeroAddress} from '../../../utils/address';
+import NoArbitratorWarning from '../../../components/NoArbitratorWarning';
 
 const PERCENTAGE_THRESHOLD = 10; // If asset price is 10% different than the real price, show the warning
 
@@ -24,9 +23,7 @@ const EscrowDetail = ({escrow, currentPrice}) => {
     diffPercentage = 100 - (rateCurrentAndSellPrice * 100);
   }
 
-  console.log(escrow)
-
-return (<Row className="mt-4">
+  return (<Row className="mt-4">
     <Col xs="2">
       <RoundedIcon icon={faQuestionCircle} bgColor="grey"/>
     </Col>
@@ -41,10 +38,7 @@ return (<Row className="mt-4">
         <p className="text-danger font-weight-bold mb-0">The current price for {escrow.token.symbol} is {currentPriceForCurrency} {escrow.offer.currency}, which is {diffPercentage.toFixed(2)}% {isAbove ? "above" : "below"} the price for this trade</p>
         <p className="text-danger mb-2">Double-check whether you really want to go through with this trade</p>
       </Fragment> }
-      {escrow.offer.arbitrator === zeroAddress && <span className="text-danger">
-        <FontAwesomeIcon className="mr-2" icon={faExclamationTriangle} size="sm"/>
-        This Escrow does not have an arbitrator. Disputes cannot be opened
-      </span>}
+      <NoArbitratorWarning arbitrator={escrow.offer.arbitrator} />
       </Col>
   </Row>);
 };
