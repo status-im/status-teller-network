@@ -164,7 +164,7 @@ class CardEscrowSeller extends Component {
   render() {
     let step = this.state.step;
 
-    const {trade, showApproveScreen, fundEscrow, releaseEscrow, tokens, arbitrationDetails, feeMilliPercent, isETHorSNT} = this.props;
+    const {trade, showApproveScreen, fundEscrow, releaseEscrow, tokens, arbitrationDetails, feeMilliPercent, isETH} = this.props;
     let showFundButton = this.props.showFundButton;
 
     if(trade.status === escrow.helpers.tradeStates.released || trade.status === escrow.helpers.tradeStates.paid){
@@ -203,7 +203,7 @@ class CardEscrowSeller extends Component {
         break;
       case 2:
         component =
-          <PreFund tokens={tokens} showFundButton={showFundButton || isETHorSNT} fundEscrow={fundEscrow} trade={trade}
+          <PreFund tokens={tokens} showFundButton={showFundButton || isETH} fundEscrow={fundEscrow} trade={trade}
                    showApproveScreen={showApproveScreen} feeMilliPercent={feeMilliPercent}/>;
         break;
       case 1:
@@ -226,7 +226,7 @@ CardEscrowSeller.propTypes = {
   showApproveScreen: PropTypes.func,
   fundEscrow: PropTypes.func,
   showFundButton: PropTypes.bool,
-  isETHorSNT: PropTypes.bool,
+  isETH: PropTypes.bool,
   releaseEscrow: PropTypes.func,
   arbitrationDetails: PropTypes.object,
   feeMilliPercent: PropTypes.string

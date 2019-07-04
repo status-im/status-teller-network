@@ -107,8 +107,9 @@ class Escrow extends Component {
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
-    
-    const isETHorSNT = escrow && (addressCompare(escrow.offer.asset, zeroAddress) || addressCompare(escrow.offer.asset, tokens.SNT.address));
+
+    const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
+    const isETHorSNT = escrow && (isETH || addressCompare(escrow.offer.asset, tokens.SNT.address));
 
     if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETHorSNT && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
@@ -169,7 +170,7 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow}
                                         arbitrationDetails={arbitrationDetails}
                                         feeMilliPercent={feeMilliPercent}
-                                        isETHorSNT={isETHorSNT}/> }
+                                        isETH={isETH}/> }
 
         <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />

@@ -10,14 +10,15 @@ import { APPROVE_TOKEN, APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
-const {toBN} = web3.utils;
+const {toBN, toWei} = web3.utils;
 
 export function *approveToken({amount}) {
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+  const amountWei = toBN(toWei(amount));
   const divider = 100 * (feeMilliPercent / 1000);
-  const feeAmount =  toBN(amount).div(toBN(divider));
+  const feeAmount =  amountWei.div(toBN(divider));
 
-  const toSend = ERC20Token.methods.approve(Escrow.options.address, (toBN(amount).add(feeAmount)).toString());
+  const toSend = ERC20Token.methods.approve(Escrow.options.address, (amountWei.add(feeAmount)).toString());
   yield doTransaction(APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, {toSend});
 }
 
