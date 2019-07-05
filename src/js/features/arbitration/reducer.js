@@ -179,8 +179,9 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         loading: false,
-        error: false,
-        errorGet: false
+        error: '',
+        errorGet: '',
+        acceptAny: action.acceptAny
       };
     case REQUEST_ARBITRATOR_SUCCEEDED: 
       {

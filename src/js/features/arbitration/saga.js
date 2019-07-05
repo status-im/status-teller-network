@@ -164,8 +164,8 @@ export function *onLoadPrice() {
 export function *doCheckLicenseOwner() {
   try {
     const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
-    const acceptAny  = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
-    yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner, acceptAny});
+    const licenseDetails = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
+    yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner, acceptAny: licenseDetails.acceptAny});
   } catch (error) {
     console.error(error);
     yield put({type: CHECK_LICENSE_OWNER_FAILED, error: error.message});
