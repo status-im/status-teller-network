@@ -18,6 +18,7 @@ import Escrow from '../pages/Escrow';
 import OpenDispute from '../pages/OpenDispute';
 import Arbitration from '../pages/Arbitration';
 import Arbitrators from '../pages/Arbitrators';
+import SellerApproval from '../pages/SellerApproval';
 import MyProfile from '../pages/MyProfile';
 import EditMyContact from '../pages/EditMyContact';
 import License from '../pages/License';
@@ -131,6 +132,7 @@ class App extends Component {
                 <Route exact path="/escrow/:id" component={Escrow}/>
                 <Route exact path="/arbitration/:id" component={Arbitration}/>
                 <Route exact path="/arbitrators" component={Arbitrators} />
+                <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
                 <Route exact path="/offers/list" component={OffersList}/>

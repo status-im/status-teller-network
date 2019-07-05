@@ -37,14 +37,18 @@ import {
   CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS,
   CANCEL_ARBITRATOR_REQUEST_FAILED,
   CANCEL_ARBITRATOR_REQUEST_SUCCEEDED,
-  CLOSED
+  CLOSED,
+  CHANGE_ACCEPT_EVERYONE,
+  CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS,
+  CHANGE_ACCEPT_EVERYONE_FAILED,
+  CHANGE_ACCEPT_EVERYONE_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {zeroAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
-  escrows: [], arbitration: null, arbitrators: {}, licenseOwner: false,
+  escrows: [], arbitration: null, arbitrators: {}, licenseOwner: false, acceptAny: false,
   receipt: null,
   price: Number.MAX_SAFE_INTEGER,
   loading: false,
@@ -65,6 +69,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case RESOLVE_DISPUTE_PRE_SUCCESS:
     case REQUEST_ARBITRATOR_PRE_SUCCESS:
     case CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS:
+    case CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS:
       return {
         ...state, ...{
           txHash: action.txHash
@@ -106,6 +111,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_ARBITRATORS_FAILED:
     case REQUEST_ARBITRATOR_FAILED:
     case CANCEL_ARBITRATOR_REQUEST_FAILED:
+    case CHANGE_ACCEPT_EVERYONE_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
@@ -116,6 +122,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case CANCEL_DISPUTE:
     case OPEN_DISPUTE:
     case RESOLVE_DISPUTE:
+    case CHANGE_ACCEPT_EVERYONE:
       return {
         ...state, ...{
           loading: true
@@ -168,6 +175,13 @@ function reducer(state = DEFAULT_STATE, action) {
         loading: false,
         error: ''
       };
+    case CHANGE_ACCEPT_EVERYONE_SUCCEEDED:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        errorGet: false
+      };
     case REQUEST_ARBITRATOR_SUCCEEDED: 
       {
         const arbitrators = {...state.arbitrators};
@@ -205,7 +219,9 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case CHECK_LICENSE_OWNER_SUCCEEDED:
       return {
-        ...state, licenseOwner: action.isLicenseOwner
+        ...state, 
+        licenseOwner: action.isLicenseOwner,
+        acceptAny: action.acceptAny
       };
     case BUY_LICENSE_FAILED:
     case CHECK_LICENSE_OWNER_FAILED:

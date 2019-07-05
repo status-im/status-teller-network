@@ -125,3 +125,19 @@ $input-icon-height: 20px;
 .nowrap {
   white-space: nowrap;
 }
+
+
+
+.switch.btn-primary {
+  border-color: $blue;
+}
+
+.switch.btn.btn-primary .switch-on.btn.btn-primary {
+  background-color: $blue;
+  border-color: $blue;
+  color: $white;
+}
+
+.switch.btn .btn {
+  padding: 0.375rem 0.75rem;
+}
