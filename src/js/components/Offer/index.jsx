@@ -8,7 +8,6 @@ import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
 import {addressCompare} from '../../utils/address';
-import NoArbitratorWarning from '../NoArbitratorWarning';
 
 const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;

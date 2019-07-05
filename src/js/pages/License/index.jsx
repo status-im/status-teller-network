@@ -67,7 +67,7 @@ class License extends Component {
     }
 
     if (this.props.isLoading) {
-      return <Loading mining/>;
+      return <Loading mining txHash={this.props.txHash}/>;
     }
 
     return (
@@ -89,6 +89,7 @@ License.propTypes = {
   buyLicense: PropTypes.func,
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
+  txHash: PropTypes.string,
   error: PropTypes.string,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.oneOfType([
@@ -104,6 +105,7 @@ const mapStateToProps = state => {
   return {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isLoading: license.selectors.isLoading(state),
+    txHash: license.selectors.txHash(state),
     error: license.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: license.selectors.getLicensePrice(state)
