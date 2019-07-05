@@ -4,10 +4,11 @@ import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faEllipsisV, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
-
+import {zeroAddress} from '../../../utils/address';
+import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
 
 class Offers extends Component {
   state = {
@@ -68,6 +69,15 @@ class Offers extends Component {
             <dl className="col-6">
               <dt>{t('offers.rate')}</dt>
               <dd>{offer.rateForHuman}</dd>
+            </dl>
+          </Row>
+          <Row>
+            <dl className="col-12">
+              <dt>Arbitrator</dt>
+              {offer.arbitrator === zeroAddress && <dd>
+                <NoArbitratorWarning arbitrator={offer.arbitrator} />
+              </dd>}
+              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitratorData.username} ({offer.arbitrator})</dd> }       
             </dl>
           </Row>
         </CardBody>

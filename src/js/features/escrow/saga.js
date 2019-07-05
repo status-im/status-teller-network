@@ -31,9 +31,6 @@ Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 const { toBN } = web3.utils;
 
-window.MetadataStore = MetadataStore;
-window.Escrow = Escrow;
-
 export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.create(
     escrow.offerId,

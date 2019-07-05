@@ -1,6 +1,7 @@
 /* global web3 */
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
+import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
@@ -16,15 +17,18 @@ import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+import { zeroAddress, addressCompare } from '../../utils/address';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 export function *loadUser({address}) {
   try {
     const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
+    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call();
     const isUser = yield MetadataStore.methods.userWhitelist(address).call();
 
     let user = {
-      isArbitrator
+      isArbitrator,
+      isSeller
     };
 
     if (!isUser){
@@ -88,6 +92,11 @@ export function *loadOffers({address}) {
 
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call();
+
+      if(!addressCompare(offer.arbitrator, zeroAddress)){
+        const id = yield MetadataStore.methods.addressToUser(offer.arbitrator).call();
+        offer.arbitratorData = yield MetadataStore.methods.users(id).call();
+      }
 
       if (!loadedUsers.includes(offer.owner)) {
         loadedUsers.push(offer.owner);

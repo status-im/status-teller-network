@@ -1,6 +1,7 @@
 pragma solidity >=0.5.0 <0.6.0;
 
 import "./License.sol";
+import "./ArbitrationLicense.sol";
 import "../common/MessageSigned.sol";
 
 /**
@@ -28,7 +29,7 @@ contract MetadataStore is MessageSigned {
     }
 
     License public sellingLicenses;
-    License public arbitrationLicenses;
+    ArbitrationLicense public arbitrationLicenses;
 
     User[] public users;
     mapping(address => bool) public userWhitelist;
@@ -61,7 +62,9 @@ contract MetadataStore is MessageSigned {
      */
     constructor(address _sellingLicenses, address _arbitrationLicenses) public {
         sellingLicenses = License(_sellingLicenses);
-        arbitrationLicenses = License(_arbitrationLicenses);
+        arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+
+        users.length++;
     }
 
     /**
@@ -208,7 +211,9 @@ contract MetadataStore is MessageSigned {
         address payable _arbitrator
     ) public {
         require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
-        require(arbitrationLicenses.isLicenseOwner(_arbitrator), "Not an arbitrator");
+
+        if(_arbitrator != address(0))
+            require(arbitrationLicenses.isAllowed(msg.sender, _arbitrator), "Arbitrator does not allow this transaction");
 
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");

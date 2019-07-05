@@ -12,6 +12,7 @@ import EditContact from '../../components/EditContact';
 import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
 import DOMPurify from "dompurify";
+import {contactCodeRegExp} from "../../components/EditContact/validators";
 
 class EditMyContact extends Component {
   constructor(props) {
@@ -19,7 +20,7 @@ class EditMyContact extends Component {
     this.state = {
       username: props.profile ? props.profile.username || '' : '',
       statusContactCode: props.profile ? props.profile.statusContactCode || '' : '',
-      updateDisabled: props.profile ? !props.profile.username || !props.profile.statusContactCode : true
+      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.statusContactCode) : true
     };
   }
 
@@ -32,7 +33,7 @@ class EditMyContact extends Component {
       this.setState({
         username: this.props.profile.username || '',
         statusContactCode: this.props.profile.statusContactCode || '',
-        updateDisabled: !this.props.profile.username || !this.props.profile.statusContactCode
+        updateDisabled: this.isUpdateDisabled(this.props.profile.username, this.props.profile.statusContactCode)
       });
     }
 
@@ -55,8 +56,12 @@ class EditMyContact extends Component {
     });
   };
 
+  isUpdateDisabled(username, statusContactCode) {
+    return !username || !statusContactCode || !contactCodeRegExp.test(statusContactCode);
+  }
+
   validate(username, statusContactCode) {
-    this.setState({updateDisabled: !username || !statusContactCode});
+    this.setState({updateDisabled: this.isUpdateDisabled(username, statusContactCode)});
   }
 
   changeStatusContactCode = (statusContactCode) => {
@@ -75,7 +80,7 @@ class EditMyContact extends Component {
     } else {
       this.setState({ statusContactCode: this.props.statusContactCode });
     }
-  }
+  };
 
   render() {
     if(!this.props.profile){
