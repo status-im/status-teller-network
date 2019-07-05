@@ -1,4 +1,4 @@
-/* solium-disable security/no-block-members */
+ /* solium-disable security/no-block-members */
 /* solium-disable security/no-inline-assembly */
 
 pragma solidity >=0.5.0 <0.6.0;
@@ -7,6 +7,7 @@ import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
 
+import "./ArbitrationLicense.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
@@ -80,7 +81,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _initialized = true;
 
         sellerLicenses = License(_sellerLicenses);
-        arbitratorLicenses = License(_arbitratorLicenses);
+        arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
         metadataStore = MetadataStore(_metadataStore);
         relayer = _relayer;
         feeDestination = _feeDestination;
@@ -104,7 +105,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function setLicenses(address _sellerLicenses, address _arbitratorLicenses) external onlyOwner {
         sellerLicenses = License(_sellerLicenses);
-        arbitratorLicenses = License(_arbitratorLicenses);
+        arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
     }
 
     /**

@@ -8,6 +8,7 @@ import network from '../../features/network';
 import escrow from '../../features/escrow';
 import arbitration from '../../features/arbitration';
 
+import Arbitrators from './components/Arbitrators';
 import UserInformation from '../../components/UserInformation';
 import Trades from './components/Trades';
 import Offers from './components/Offers';
@@ -39,7 +40,6 @@ class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
-    this.props.getArbitrators();
   }
 
   componentDidUpdate(oldProps){
@@ -91,7 +91,10 @@ class MyProfile extends Component {
 
         <Fragment>
           <Trades trades={trades} address={this.props.address}/>
-          <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
+          {profile.isSeller && <Fragment>
+            <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
+            <Arbitrators /> 
+          </Fragment>}
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment>
       </Fragment>
@@ -107,8 +110,6 @@ MyProfile.propTypes = {
   disputes: PropTypes.array,
   loadProfile: PropTypes.func,
   getDisputedEscrows: PropTypes.func,
-  getArbitrators: PropTypes.func,
-  arbitrators: PropTypes.array,
   escrowEvents: PropTypes.object,
   watchEscrow: PropTypes.func,
   deleteOffer: PropTypes.func,
@@ -124,7 +125,6 @@ const mapStateToProps = state => {
     profile,
     trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
     disputes: arbitration.selectors.escrows(state),
-    arbitrators: arbitration.selectors.arbitrators(state),
     escrowEvents: events.selectors.getEscrowEvents(state),
     deleteOfferStatus: metadata.selectors.getDeleteOfferStatus(state),
     txHash: metadata.selectors.txHash(state)
@@ -136,7 +136,6 @@ export default connect(
   {
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
-    getArbitrators: arbitration.actions.getArbitrators,
     watchEscrow: escrow.actions.watchEscrow,
     deleteOffer: metadata.actions.deleteOffer
   })(withRouter(MyProfile));

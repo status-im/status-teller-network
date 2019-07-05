@@ -1,22 +1,25 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import ConfirmDialog from "../../../components/ConfirmDialog";
 import newSeller from "../../../features/newSeller";
 import arbitration from "../../../features/arbitration";
 import network from "../../../features/network";
 import metadata from "../../../features/metadata";
 import ArbitratorSelectorForm from "./components/ArbitratorSelectorForm";
-import {addressCompare} from '../../../utils/address';
+import {addressCompare, zeroAddress} from '../../../utils/address';
 
 class SelectArbitrator extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedArbitrator: props.seller.arbitrator
+      selectedArbitrator: props.seller.arbitrator,
+      noArbitrator: false,
+      displayDialog: false
     };
     this.loadedUsers = [];
 
-    props.getArbitrators();
+    props.getArbitrators(props.address);
 
     this.validate(props.seller.arbitrator);
 
@@ -27,7 +30,7 @@ class SelectArbitrator extends Component {
 
   componentDidUpdate(prevProps) {
     if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length !== this.props.arbitrators.length) {
-      this.props.arbitrators.forEach(arbitratorAddr => {
+      Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
           this.loadedUsers.push(arbitratorAddr);
@@ -58,13 +61,38 @@ class SelectArbitrator extends Component {
     this.setState({selectedArbitrator});
   };
 
+  selectNoArbitrator = () => {
+    this.setState({displayDialog: true});
+  }
+
+  noArbitrationSelected = () => {
+    this.setState(prevState => ({
+      noArbitrator: !prevState.noArbitrator,
+      selectedArbitrator: zeroAddress,
+      displayDialog: false
+    }), () => {
+      this.validate(zeroAddress);
+    });
+  }
+
+  displayDialog = show => (e) => {
+    if(e) e.preventDefault();
+    this.setState({displayDialog: show});
+    return false;
+  };
+
   render() {
     return (
-      <ArbitratorSelectorForm
-        value={this.state.selectedArbitrator}
-        arbitrators={this.props.arbitrators.filter(x => !addressCompare(x, this.props.address))}
-        changeArbitrator={this.changeArbitrator} users={this.props.users}
-      />);
+      <Fragment>
+        <ArbitratorSelectorForm
+          value={this.state.selectedArbitrator}
+          arbitrators={Object.keys(this.props.arbitrators).filter(x => !addressCompare(x, this.props.address))}
+          changeArbitrator={this.changeArbitrator} users={this.props.users}
+          onSelectNoArbitrator={this.selectNoArbitrator} noArbitrator={this.state.noArbitrator}
+        />
+        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.noArbitrationSelected} onCancel={this.displayDialog(false)} title="Use no arbitrator in this offer" content="Are you sure? Offers without an arbitrator are riskier for buyers and seller participating in an escrow since disputes cannot be created" cancelText="No" />
+      </Fragment>
+      );
   }
 }
 

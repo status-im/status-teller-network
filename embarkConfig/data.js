@@ -47,23 +47,33 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
     console.log('Generate Standard Tokens');
     const weiToken = "5000000000000";
-    await Promise.all(addresses.slice(0, 8).map(async (address) => {
+    await Promise.all(addresses.slice(0, 9).map(async (address) => {
       const generateToken = deps.contracts.StandardToken.methods.mint(address, weiToken.toString());
       const gas = await generateToken.estimateGas({from: main});
       return generateToken.send({from: main, gas});
     }));
 
-    console.log("Buy arbitration license");
+    console.log("Buy arbitration licenses");
     {
       const buyLicense = deps.contracts.ArbitrationLicense.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
-
-      const gas = await toSend.estimateGas({from: arbitrator});
+      let toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
+      let gas = await toSend.estimateGas({from: arbitrator});
       await toSend.send({from: arbitrator, gas});
+
+      toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
+      gas = await toSend.estimateGas({from: addresses[8]});
+      await toSend.send({from: addresses[8], gas});
+
+
+      // Accepting everyone
+      toSend = deps.contracts.ArbitrationLicense.methods.changeAcceptAny(true);
+      gas = await toSend.estimateGas({from: arbitrator});
+      await toSend.send({from: arbitrator, gas});
+
     }
 
     console.log('Buy Licenses...');
-    await Promise.all(addresses.slice(1, 8).map(async (address) => {
+    await Promise.all(addresses.slice(1, 7).map(async (address) => {
       const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
       const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense);
 

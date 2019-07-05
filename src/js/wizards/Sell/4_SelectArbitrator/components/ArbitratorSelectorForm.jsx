@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup} from 'reactstrap';
+import {FormGroup, Input, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import {withNamespaces} from 'react-i18next';
 import {compactAddress} from '../../../../utils/address';
@@ -45,8 +45,14 @@ class ArbitratorSelectorForm extends Component {
             submitFormOnEnter={true}
             emptyLabel={t("arbitratorSelectorForm.emptyLabel")}
             defaultSelected={defaultSelectedValue}
+            disabled={this.props.noArbitrator}
           />
           {!this.props.value && <p className="text-muted">{t("arbitratorSelectorForm.selectValid")}</p>}
+        </FormGroup>
+        <FormGroup>
+          <Label className="ml-4 text-muted">
+            <Input type="checkbox" onChange={this.props.onSelectNoArbitrator} checked={this.props.noArbitrator} /> Create offer without using an arbitrator
+          </Label>
         </FormGroup>
       </Fragment>
     );
@@ -58,7 +64,9 @@ ArbitratorSelectorForm.propTypes = {
   value: PropTypes.string,
   arbitrators: PropTypes.array,
   users: PropTypes.object,
-  changeArbitrator: PropTypes.func
+  changeArbitrator: PropTypes.func,
+  onSelectNoArbitrator: PropTypes.func,
+  noArbitrator: PropTypes.bool
 };
 
 export default withNamespaces()(ArbitratorSelectorForm);
