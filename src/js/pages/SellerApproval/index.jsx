@@ -17,7 +17,6 @@ class SellerApproval extends Component {
   }
 
   onToggleCheckbox = (checked) => {
-    console.log(checked);
     this.props.changeAcceptEveryone(checked);
   }
 
