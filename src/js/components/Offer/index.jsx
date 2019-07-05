@@ -12,7 +12,6 @@ import {addressCompare} from '../../utils/address';
 const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
   let user;
   let owner;
-  let arbitrator;
 
   if (!offer) {
     if (!offers) {
@@ -20,15 +19,13 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
     }
     user = offers[0].user;
     owner = offers[0].owner;
-    arbitrator = offers[0].arbitrator;
   } else {
     user = offer.user;
     owner = offer.owner;
-    arbitrator = offer.arbitrator;
     offers = [offer];
   }
   const isOwner = addressCompare(userAddress, owner);
-  const isArbitrator = addressCompare(userAddress, arbitrator);
+  let nbOffersArbitrator = 0;
 
   return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
     <Col className="p-0">
@@ -37,8 +34,7 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
         <Col xs={5}>
           <p className={classnames('seller-name', 'm-0', 'font-weight-bold', {
             'text-black': !isOwner,
-            'text-success': isOwner,
-            'text-warning': isArbitrator
+            'text-success': isOwner
           })}>{user.username}</p>
           <p className="text-dark m-0">{user.location}</p>
         </Col>
@@ -50,13 +46,20 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
       {withDetail && <Row>
         <Col>
           <p className="m-0">
-            {offers.map((offer, index) => <span key={`offer-${index}`} className="border d-inline-block rounded mr-2 p-1 text-black font-weight-medium text-small">
+            {offers.map((offer, index) => {
+              const isArbitrator = addressCompare(userAddress, offer.arbitrator);
+              if (isArbitrator) {
+                nbOffersArbitrator++;
+              }
+              return <span key={`offer-${index}`}
+                           className={classnames("border d-inline-block rounded mr-2 p-1 font-weight-medium text-small", {'text-warning': isArbitrator, 'text-black': !isArbitrator})}>
               {offer.token.symbol} &rarr; {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
-            </span>)}
+            </span>;
+            })}
           </p>
         </Col>
       </Row>}
-      {isArbitrator && <span className="text-warning text-small">You are an arbitrator for this offer</span>}
+      {nbOffersArbitrator > 0 && <span className="text-warning text-small">You are an arbitrator on {nbOffersArbitrator} offer{nbOffersArbitrator > 1 && 's'}</span>}
     </Col>
   </Row>);
 };
