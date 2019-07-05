@@ -13,7 +13,7 @@ import {
   RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED, GET_ARBITRATORS,
   GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED, BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_PRE_SUCCESS, BUY_LICENSE_SUCCEEDED,
   LOAD_PRICE, LOAD_PRICE_FAILED, LOAD_PRICE_SUCCEEDED, CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
-  OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED
+  OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED, REQUEST_ARBITRATOR, REQUEST_ARBITRATOR_PRE_SUCCESS, REQUEST_ARBITRATOR_SUCCEEDED, REQUEST_ARBITRATOR_FAILED, CANCEL_ARBITRATOR_REQUEST, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS
 } from './constants';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
@@ -30,14 +30,19 @@ export function *onCancelDispute() {
   yield takeEvery(CANCEL_DISPUTE, doTransaction.bind(null, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED));
 }
 
-export function *doGetArbitrators({address}) {
+export function *doGetArbitrators({address, includeAll}) {
   try {
     const cnt = yield call(ArbitrationLicense.methods.getNumLicenseOwners().call);
-    const arbitrators = [];
+    const arbitrators = {};
     for(let i = 0; i < cnt; i++){
-      const arbitrator = yield call(ArbitrationLicense.methods.licenseOwners(i).call);
+      const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
       const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
-      if(isAllowed) arbitrators.push(arbitrator);
+      if(isAllowed || includeAll) {
+        const id = web3.utils.soliditySha3(arbitrator, address);
+        arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
+        arbitrators[arbitrator].isAllowed = isAllowed;
+        arbitrators[arbitrator].request = yield call(ArbitrationLicense.methods.requests(id).call);
+      }
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
   } catch (error) {
@@ -170,4 +175,33 @@ export function *onCheckLicenseOwner() {
   yield takeEvery(CHECK_LICENSE_OWNER, doCheckLicenseOwner);
 }
 
-export default [fork(onGetEscrows), fork(onResolveDispute), fork(onLoadArbitration), fork(onGetArbitrators), fork(onBuyLicense), fork(onCheckLicenseOwner), fork(onLoadPrice), fork(onOpenDispute), fork(onCancelDispute)];
+export function *onRequestArbitrator() {
+  yield takeEvery(REQUEST_ARBITRATOR, doTransaction.bind(null, REQUEST_ARBITRATOR_PRE_SUCCESS, REQUEST_ARBITRATOR_SUCCEEDED, REQUEST_ARBITRATOR_FAILED));
+}
+
+export function *doCancelArbitratorRequest({arbitrator}){
+  const id = web3.utils.soliditySha3(arbitrator, web3.eth.defaultAccount);
+  const toSend = ArbitrationLicense.methods.cancelRequest(id);
+  yield doTransaction(CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, {
+    arbitrator,
+    toSend
+  });
+}
+
+export function *onCancelArbitratorRequest() {
+  yield takeEvery(CANCEL_ARBITRATOR_REQUEST, doCancelArbitratorRequest);
+}
+
+export default [
+  fork(onGetEscrows),
+  fork(onResolveDispute),
+  fork(onLoadArbitration),
+  fork(onGetArbitrators),
+  fork(onBuyLicense),
+  fork(onCheckLicenseOwner),
+  fork(onLoadPrice),
+  fork(onOpenDispute),
+  fork(onCancelDispute),
+  fork(onRequestArbitrator),
+  fork(onCancelArbitratorRequest)
+];
