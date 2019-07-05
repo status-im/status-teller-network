@@ -5,6 +5,7 @@ import {truncateTwo} from '../../../utils/numbers';
 import {TokenImages} from '../../../utils/images';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import classnames from 'classnames';
+import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
 
 const Offer = ({offer, prices, onClick, disabled}) => (
   <Row className="border py-2 mx-0 my-2 rounded">
@@ -19,6 +20,8 @@ const Offer = ({offer, prices, onClick, disabled}) => (
         Offer disabled because you are the seller or the arbitrator
       </UncontrolledTooltip>}
     </Col>
+
+    <NoArbitratorWarning arbitrator={offer.arbitrator} />
   </Row>
 );
 

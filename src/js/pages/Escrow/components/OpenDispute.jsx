@@ -5,9 +5,10 @@ import exclamationCircle from "../../../../images/exclamation-circle.png";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import {Link} from "react-router-dom";
+import {zeroAddress} from '../../../utils/address';
 
 const OpenDispute = ({trade}) => {
-  const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid;
+  const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid && trade.offer.arbitrator !== zeroAddress;
   return shouldDisplay && (
     <Row className="mt-4 text-danger" tag={Link} to={"/openCase/" + trade.escrowId}>
       <Col xs="2">
