@@ -83,8 +83,8 @@ class Escrow extends Component {
     return tokenAmount.add(feeAmount).toString();
   };
 
-  handleApprove = (amount, token) => () => {
-    this.props.approve(token, amount);
+  handleApprove = (amount, token, tokenDecimals) => () => {
+    this.props.approve(token, amount, tokenDecimals);
   };
 
   handleReset = token => () => {
@@ -107,8 +107,9 @@ class Escrow extends Component {
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
-    
-    const isETHorSNT = escrow && (addressCompare(escrow.offer.asset, zeroAddress) || addressCompare(escrow.offer.asset, tokens.SNT.address));
+
+    const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
+    const isETHorSNT = escrow && (isETH || addressCompare(escrow.offer.asset, tokens.SNT.address));
 
     if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETHorSNT && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
@@ -140,12 +141,12 @@ class Escrow extends Component {
     if(showApproveFundsScreen) {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
-                                 retry={this.handleApprove(escrow.tokenAmount, token.address)}
+                                 retry={this.handleApprove(escrow.tokenAmount, token.address, token.decimals)}
                                  transaction={true} cancel={this.props.cancelApproval}/>;
       }
       if (escrow.offer.asset !== zeroAddress) { // A token
         if (!isTokenApproved || shouldResetToken) {
-          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tokenAmount, token.address)}
+          return <ApproveTokenFunds token={token} handleApprove={this.handleApprove(escrow.tokenAmount, token.address, token.decimals)}
                                     handleReset={this.handleReset(token.address)} tokenAllowance={tokenAllowance}
                                     requiredToken={requiredBalance} shouldResetToken={shouldResetToken}/>;
         }
@@ -169,7 +170,7 @@ class Escrow extends Component {
                                         releaseEscrow={releaseEscrow}
                                         arbitrationDetails={arbitrationDetails}
                                         feeMilliPercent={feeMilliPercent}
-                                        isETHorSNT={isETHorSNT}/> }
+                                        isETH={isETH}/> }
 
         <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />

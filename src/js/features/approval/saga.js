@@ -3,6 +3,7 @@
 import {fork, put, takeEvery} from 'redux-saga/effects';
 import {doTransaction} from '../../utils/saga';
 import {zeroAddress} from '../../utils/address';
+import {toTokenDecimals} from '../../utils/numbers';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
@@ -12,12 +13,13 @@ Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
 const {toBN} = web3.utils;
 
-export function *approveToken({amount}) {
+export function *approveToken({amount, tokenDecimals}) {
   const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+  const amountWei = toBN(toTokenDecimals(amount, tokenDecimals || 18));
   const divider = 100 * (feeMilliPercent / 1000);
-  const feeAmount =  toBN(amount).div(toBN(divider));
+  const feeAmount =  amountWei.div(toBN(divider));
 
-  const toSend = ERC20Token.methods.approve(Escrow.options.address, (toBN(amount).add(feeAmount)).toString());
+  const toSend = ERC20Token.methods.approve(Escrow.options.address, (amountWei.add(feeAmount)).toString());
   yield doTransaction(APPROVE_PRE_SUCCEEDED, APPROVE_SUCCEEDED, APPROVE_FAILED, {toSend});
 }
 
