@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 
 import metadata from '../../features/metadata';
 import network from '../../features/network';
@@ -85,6 +85,7 @@ class MyProfile extends Component {
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
 
         {profile.isArbitrator && <Fragment>
+          <Link to={"/sellers"}>Seller Management (TODO: Add number of pending requests)</Link>
           <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} />
           <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} />
         </Fragment>}

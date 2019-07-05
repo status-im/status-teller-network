@@ -1,4 +1,4 @@
-import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE,CANCEL_ARBITRATOR_SELECTION_ACTIONS, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE, CANCEL_DISPUTE, REQUEST_ARBITRATOR, CANCEL_ARBITRATOR_REQUEST} from './constants';
+import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE,CANCEL_ARBITRATOR_SELECTION_ACTIONS, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE, CANCEL_DISPUTE, REQUEST_ARBITRATOR, CANCEL_ARBITRATOR_REQUEST, CHANGE_ACCEPT_EVERYONE} from './constants';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
@@ -42,3 +42,5 @@ export const requestArbitrator = (arbitrator) => ({ type: REQUEST_ARBITRATOR, ar
 export const cancelArbitratorRequest = (arbitrator) => ({type: CANCEL_ARBITRATOR_REQUEST, arbitrator});
 
 export const cancelArbitratorActions = () => ({type: CANCEL_ARBITRATOR_SELECTION_ACTIONS});
+
+export const changeAcceptEveryone = (acceptAny) => ({type: CHANGE_ACCEPT_EVERYONE, acceptAny, toSend: ArbitrationLicense.methods.changeAcceptAny(acceptAny)});

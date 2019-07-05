@@ -54,7 +54,7 @@ class Arbitrators extends Component {
         <ListGroup>
         {Object.keys(arbitrators).map((arb, i) => {
           const isUser = addressCompare(address, arb);
-          const enableDate = parseInt(arbitrators[arb].request.date, 10) + 86420;
+          const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
           return <ListGroupItem key={i}>
             <Row>
@@ -67,7 +67,7 @@ class Arbitrators extends Component {
                 { !isUser && !arbitrators[arb].isAllowed && [arbitration.constants.NONE, arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>Request</Button> }
                 { arbitrators[arb].isAllowed && !isUser && <span className="text-success">Available</span> }
                 { !isUser && arbitrators[arb].request.status === arbitration.constants.AWAIT && <Button onClick={this.cancelRequest(arb)}>Cancel request</Button> }
-                { !isUser && isDisabled && <span className="text-small text-muted">Retry in {moment(enableDate * 1000).toNow(true)}</span>}
+                { !isUser && [arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && isDisabled && <span className="text-small text-muted">Retry in {moment(enableDate * 1000).toNow(true)}</span>}
               </Col>
             </Row>
           </ListGroupItem>;

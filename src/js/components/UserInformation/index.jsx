@@ -6,7 +6,7 @@ import Address from './Address';
 import Identicon from "./Identicon";
 
 const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbReleasedTrades, nbCreatedTrades}) => (
-  <Row className="border rounded py-4 m-0 text-center shadow-sm">
+  <Row className="border rounded py-4 m-0 text-center shadow-sm mb-4">
     <Col xs="12">
       <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
       {isArbitrator && <span className="icon-badge">Arbiter</span>}
