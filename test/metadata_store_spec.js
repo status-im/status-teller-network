@@ -70,7 +70,7 @@ contract("MetadataStore", function () {
       await MetadataStore.methods.addOffer(SNT.address, signature, SellerLicense.address, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
     } catch(error) {
       const usersSize = await MetadataStore.methods.usersSize().call();
-      assert.strictEqual(usersSize, '0');
+      assert.strictEqual(usersSize, '1');
     }
   });
 
@@ -79,7 +79,7 @@ contract("MetadataStore", function () {
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send();
     const receipt = await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "USD", "Iuri", [0], 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '1');
+    assert.strictEqual(usersSize, '2');
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');
   });
@@ -87,7 +87,7 @@ contract("MetadataStore", function () {
   it("should allow to add new offer only when already a user", async function () {
     await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "EUR", "Iuri", [0], 1, accounts[9]).send();
     const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '1');
+    assert.strictEqual(usersSize, '2');
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '2');
   });
@@ -97,15 +97,15 @@ contract("MetadataStore", function () {
       await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "USD", "Iuri", [0], 101, accounts[9]).send();
     } catch(error) {
       const usersSize = await MetadataStore.methods.usersSize().call();
-      assert.strictEqual(usersSize, '1');
+      assert.strictEqual(usersSize, '2');
     }
   });
 
   it("should allow to update a user", async function () {
     await MetadataStore.methods.updateUser(SNT.address, "Montreal", "Anthony").send();
     const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '1');
-    const user = await MetadataStore.methods.users(0).call();
+    assert.strictEqual(usersSize, '2');
+    const user = await MetadataStore.methods.users(1).call();
     assert.strictEqual(user.location, 'Montreal');
     assert.strictEqual(user.username, 'Anthony');
   });

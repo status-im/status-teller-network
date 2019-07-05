@@ -76,10 +76,14 @@ contract Arbitrable {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
+        address arbitratorAddress = getArbitrator(_escrowId);
+        
+        require(arbitratorAddress != address(0), "Arbitrator is required");
+
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: _openBy,
-            arbitrator: address(0),
+            arbitrator: arbitratorAddress,
             result: ArbitrationResult.UNSOLVED,
             motive: motive
         });
@@ -97,16 +101,10 @@ contract Arbitrable {
                 "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
         require(arbitratorLicenses.isLicenseOwner(msg.sender), "Only arbitrators can invoke this function");
-        require(getArbitrator(_escrowId) == msg.sender, "Invalid escrow arbitrator");
+        require(arbitrationCases[_escrowId].arbitrator == msg.sender, "Invalid escrow arbitrator");
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;
-        arbitrationCases[_escrowId].arbitrator = msg.sender;
-
-        // TODO: incentive mechanism for opening arbitration process
-        // if(arbitrationCases[_escrowId].openBy != trx.seller || arbitrationCases[_escrowId].openBy != trx.buyer){
-            // Consider deducting a fee as reward for whoever opened the arbitration process.
-        // }
 
         emit ArbitrationResolved(_escrowId, _result, msg.sender);
 
