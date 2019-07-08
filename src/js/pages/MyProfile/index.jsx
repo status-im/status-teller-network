@@ -43,7 +43,7 @@ class MyProfile extends Component {
   }
 
   componentDidUpdate(oldProps){
-    if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.statusContactCode){
+    if(this.props.profile && (this.props.profile.isArbitrator || this.props.profile.isSeller) && !this.props.profile.statusContactCode){
       return this.props.history.push("/profile/contact/edit");
     }
 
@@ -94,7 +94,7 @@ class MyProfile extends Component {
           <Trades trades={trades} address={this.props.address}/>
           {profile.isSeller && <Fragment>
             <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />
-            <Arbitrators /> 
+            <Arbitrators />
           </Fragment>}
           {profile.username && <StatusContactCode value={profile.statusContactCode} />}
         </Fragment>

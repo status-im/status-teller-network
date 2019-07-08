@@ -9,6 +9,7 @@ import {
   DELETE_OFFER_FAILED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
+import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
@@ -98,6 +99,16 @@ function reducer(state = DEFAULT_STATE, action) {
           ...action.user
         }}
       };
+    case BUY_LICENSE_SUCCEEDED:
+      return {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(state.currentUser)]: {
+            ...state.users[toChecksumAddress(state.currentUser)],
+            isSeller: true
+          }
+        }
+      };
     case LOAD_USER_TRADE_NUMBER_SUCCEEDED:
       return {
         ...state, users: {
@@ -163,14 +174,14 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         signing: true
       };
-    case SIGN_MESSAGE_SUCCEEDED: 
+    case SIGN_MESSAGE_SUCCEEDED:
       return {
         ...state,
         signing: false,
         signature: action.signature,
         nonce: action.nonce
       };
-    case SIGN_MESSAGE_FAILED: 
+    case SIGN_MESSAGE_FAILED:
       return {
         ...state,
         signing: false,

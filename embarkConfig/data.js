@@ -13,13 +13,16 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       1000
     ).encodeABI();
 
+    console.log('Setting the initial Escrow "template", and calling the init() function');
     // Here we are setting the initial "template", and calling the init() function
     const receipt = await deps.contracts.OwnedUpgradeabilityProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
-    
+
+    console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`)
+
     deps.contracts.Escrow.options.address = deps.contracts.OwnedUpgradeabilityProxy.options.address;
 
     const arbitrator = addresses[9];
-  
+
     const sntToken = 10000000;
     const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
     if (balance !== '0') {

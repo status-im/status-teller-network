@@ -32,7 +32,7 @@ export function *loadUser({address}) {
     };
 
     if (!isUser){
-      if(isArbitrator) {
+      if(isArbitrator || isSeller) {
         yield put({type: LOAD_USER_SUCCEEDED, user, address});
       }
       return;
