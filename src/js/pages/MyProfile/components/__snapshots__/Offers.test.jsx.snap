@@ -179,7 +179,10 @@ exports[`Offers should render correctly 1`] = `
           <dt>
             Arbitrator
           </dt>
-          <dd />
+          <dd>
+             (
+            )
+          </dd>
         </dl>
       </Row>
     </CardBody>

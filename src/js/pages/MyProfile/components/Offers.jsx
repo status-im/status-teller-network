@@ -4,7 +4,7 @@ import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEllipsisV, faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
 import {zeroAddress} from '../../../utils/address';
@@ -77,7 +77,7 @@ class Offers extends Component {
               {offer.arbitrator === zeroAddress && <dd>
                 <NoArbitratorWarning arbitrator={offer.arbitrator} />
               </dd>}
-              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitratorData.username} ({offer.arbitrator})</dd> }       
+              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitratorData.username} ({offer.arbitrator})</dd> }
             </dl>
           </Row>
         </CardBody>
