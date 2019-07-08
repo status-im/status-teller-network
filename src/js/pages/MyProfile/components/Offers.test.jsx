@@ -15,17 +15,18 @@ describe('Offers', () => {
           currency: 'EUR',
           paymentMethods: ['Credit Card'],
           margin: 1,
-          marketType: 1
+          marketType: 1,
+          arbitratorData: {}
         }
       ]
     } />);
-  
+
     expect(component).toMatchSnapshot();
   });
 
   it('should render when empty', () => {
     const component = shallow(<Offers offers={[]} />);
-  
+
     expect(component).toMatchSnapshot();
   });
 });

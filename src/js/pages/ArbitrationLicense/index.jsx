@@ -27,10 +27,33 @@ class ArbitrationLicense extends Component {
     this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
   }
 
+  checkBalance() {
+    if (this.props.sntToken && this.props.sntToken.balance) {
+      if (this.enoughBalance()) {
+        if (this.pollBalanceInterval) {
+          clearInterval(this.pollBalanceInterval);
+        }
+      } else {
+        if (!this.pollBalanceInterval) {
+          this.pollBalanceInterval = setInterval(() => {
+            this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
+          }, 2000);
+        }
+      }
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
       this.props.loadProfile(this.props.address);
       return this.props.history.push('/profile/contact/edit');
+    }
+    this.checkBalance();
+  }
+
+  componentWillUnmount() {
+    if (this.pollBalanceInterval) {
+      clearInterval(this.pollBalanceInterval);
     }
   }
 
