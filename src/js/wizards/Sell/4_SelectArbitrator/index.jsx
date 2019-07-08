@@ -29,7 +29,7 @@ class SelectArbitrator extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length !== this.props.arbitrators.length) {
+    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length !== Object.keys(this.props.arbitrators).length) {
       Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
@@ -101,7 +101,7 @@ SelectArbitrator.propTypes = {
   footer: PropTypes.object,
   seller: PropTypes.object,
   address: PropTypes.string,
-  arbitrators: PropTypes.array,
+  arbitrators: PropTypes.object,
   users: PropTypes.object,
   setArbitrator: PropTypes.func,
   getArbitrators: PropTypes.func,

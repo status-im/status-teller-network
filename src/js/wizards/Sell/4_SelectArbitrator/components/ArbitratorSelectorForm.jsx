@@ -25,7 +25,7 @@ class ArbitratorSelectorForm extends Component {
       if (!user) {
         text = arbitratorAddr + ' - Loading...';
       } else {
-        text = `${index} - ${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
+        text = `${index + 1} - ${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
       }
       if (value && value === arbitratorAddr) {
         defaultSelectedValue.push(text);

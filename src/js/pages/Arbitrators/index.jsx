@@ -21,7 +21,7 @@ class Arbitrators extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length < this.props.arbitrators.length) {
+    if ((!prevProps.arbitrators && this.props.arbitrators) || Object.keys(prevProps.arbitrators).length !== Object.keys(this.props.arbitrators).length || Object.keys(this.props.users).length === Object.keys(this.props.arbitrators).length) {
       Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
@@ -56,12 +56,22 @@ class Arbitrators extends Component {
           const isUser = addressCompare(address, arb);
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
+
+          const user = users[arb];
+          let text;
+          if (!user) {
+            text = arb + ' - Loading...';
+          } else {
+            text = `${user.username || "No username available"} ${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
+          }
+          text += (isUser ? " (You)" : "");
+
           return <ListGroupItem key={i}>
             <Row>
               <Col  xs="12" sm="9" className="pb-3">
                 <span className="text-small">{arb}</span>
                 <br />
-                <span className={classnames("font-weight-bold", {'text-success': isUser})}>{(users[arb] && users[arb].username ?  users[arb].username : "Arbitrator has no username") + (isUser ? " (You)" : "") }</span>
+                <span className={classnames("font-weight-bold", {'text-success': isUser})}>{text}</span>
               </Col>
               <Col xs="12" sm="3" className="text-center">
                 { !isUser && !arbitrators[arb].isAllowed && [arbitration.constants.NONE, arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>Request</Button> }
