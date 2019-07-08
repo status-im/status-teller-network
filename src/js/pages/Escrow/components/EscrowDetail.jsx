@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import {Row, Col} from 'reactstrap';
-import {faQuestionCircle, faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import moment from "moment";

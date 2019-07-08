@@ -12,6 +12,7 @@ import BuyButton from '../License/components/BuyButton';
 import Balance from '../License/components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
+import license from "../../features/license";
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
@@ -76,7 +77,7 @@ class ArbitrationLicense extends Component {
     }
 
     if (this.props.isLoading) {
-      return <Loading mining/>;
+      return <Loading mining txHash={this.props.txHash}/>;
     }
 
     return (
@@ -100,6 +101,7 @@ ArbitrationLicense.propTypes = {
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
   error: PropTypes.string,
+  txHash: PropTypes.string,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
@@ -113,6 +115,7 @@ const mapStateToProps = state => {
     address: network.selectors.getAddress(state) || '',
     isLicenseOwner: arbitration.selectors.isLicenseOwner(state),
     isLoading: arbitration.selectors.isLoading(state),
+    txHash: arbitration.selectors.txHash(state),
     error: arbitration.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: arbitration.selectors.getLicensePrice(state)
