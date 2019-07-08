@@ -101,7 +101,7 @@ SelectArbitrator.propTypes = {
   footer: PropTypes.object,
   seller: PropTypes.object,
   address: PropTypes.string,
-  arbitrators: PropTypes.array,
+  arbitrators: PropTypes.object,
   users: PropTypes.object,
   setArbitrator: PropTypes.func,
   getArbitrators: PropTypes.func,

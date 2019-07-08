@@ -2,8 +2,9 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Input, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
-import {withNamespaces} from 'react-i18next';
+import {withNamespaces, Trans} from 'react-i18next';
 import {compactAddress} from '../../../../utils/address';
+import {Link} from "react-router-dom";
 
 class ArbitratorSelectorForm extends Component {
   onChange = (items) => {
@@ -49,6 +50,14 @@ class ArbitratorSelectorForm extends Component {
           />
           {!this.props.value && <p className="text-muted">{t("arbitratorSelectorForm.selectValid")}</p>}
         </FormGroup>
+        {(!arbitratorStrings || arbitratorStrings.length === 0) &&
+        <p className="text-warning">
+          <Trans i18nKey="arbitratorSelectorForm.noApprovals">
+            No arbitrator has approved you yet. To request approval from an arbitrator, go to <Link to="/arbitrators">Manage
+            arbitrators</Link> in your Profile
+          </Trans>
+        </p>
+        }
         <FormGroup>
           <Label className="ml-4 text-muted">
             <Input type="checkbox" onChange={this.props.onSelectNoArbitrator} checked={this.props.noArbitrator} /> Create offer without using an arbitrator
