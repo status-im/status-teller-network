@@ -42,6 +42,9 @@ export function *doGetArbitrators({address, includeAll}) {
         arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
         arbitrators[arbitrator].isAllowed = isAllowed;
         arbitrators[arbitrator].request = yield call(ArbitrationLicense.methods.requests(id).call);
+        const idArbitrator = yield MetadataStore.methods.addressToUser(arbitrator).call();
+        arbitrators[arbitrator].user = yield MetadataStore.methods.users(idArbitrator).call();
+    
       }
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
