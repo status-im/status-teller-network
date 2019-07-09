@@ -124,8 +124,7 @@ export function *onGetArbitratorApprovalRequests() {
 export function *doGetArbitratorApprovalRequests({address}) {
   try {
     const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: address} });
-    
-    const requests = yield all(events.map(events.map(function *(event) {
+    const requests = yield all(events.map(function *(event) {
       const request = event.returnValues;
       const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
 
@@ -133,7 +132,7 @@ export function *doGetArbitratorApprovalRequests({address}) {
 
       request.status = requestDetail.status;
       return request;
-    })));
+    }));
 
     yield put({type: GET_ARBITRATION_REQUESTS_SUCCEEDED, requests: requests.filter(x => x !== null)});
 
