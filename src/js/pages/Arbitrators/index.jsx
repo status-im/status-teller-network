@@ -11,6 +11,7 @@ import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { formatArbitratorName } from '../../utils/strings';
 
 class Arbitrators extends Component {
   constructor(props) {
@@ -57,14 +58,7 @@ class Arbitrators extends Component {
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
 
-          const user = users[arb];
-          let text;
-          if (!user) {
-            text = arb + ' - Loading...';
-          } else {
-            text = `${user.username || "No username available"} ${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
-          }
-          text += (isUser ? " (You)" : "");
+          const text = formatArbitratorName(users[arb], arb) + (isUser ? " (You)" : "");
 
           return <ListGroupItem key={i}>
             <Row>
