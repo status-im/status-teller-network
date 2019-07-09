@@ -40,6 +40,7 @@ class MyProfile extends Component {
   componentDidMount() {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
+    this.props.getArbitratorRequests();    
   }
 
   componentDidUpdate(oldProps){
@@ -65,7 +66,7 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {profile, address, deleteOfferStatus, txHash} = this.props;
+    const {profile, address, deleteOfferStatus, txHash, requests} = this.props;
     if(!profile) return <Loading page={true} />;
 
     if(deleteOfferStatus === States.pending) {
@@ -80,12 +81,16 @@ class MyProfile extends Component {
       return x;
     });
 
+    const pendingRequests = requests.reduce((a, b) => {
+      return a + (b.status === arbitration.constants.AWAIT ? 1 : 0);
+    }, 0);
+
     return (
       <Fragment>
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>
 
         {profile.isArbitrator && <Fragment>
-          <Link to={"/sellers"}>Seller Management (TODO: Add number of pending requests)</Link>
+          <Link to={"/sellers"}>Seller Management {pendingRequests > 0 && <span className="text-warining">({pendingRequests} pending requests)</span>}</Link>
           <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} />
           <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} />
         </Fragment>}
@@ -115,7 +120,9 @@ MyProfile.propTypes = {
   watchEscrow: PropTypes.func,
   deleteOffer: PropTypes.func,
   deleteOfferStatus: PropTypes.string,
-  txHash: PropTypes.string
+  txHash: PropTypes.string,
+  requests: PropTypes.array,
+  getArbitratorRequests: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -128,7 +135,8 @@ const mapStateToProps = state => {
     disputes: arbitration.selectors.escrows(state),
     escrowEvents: events.selectors.getEscrowEvents(state),
     deleteOfferStatus: metadata.selectors.getDeleteOfferStatus(state),
-    txHash: metadata.selectors.txHash(state)
+    txHash: metadata.selectors.txHash(state),
+    requests: arbitration.selectors.getArbitratorRequests(state)
   };
 };
 
@@ -138,5 +146,6 @@ export default connect(
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     watchEscrow: escrow.actions.watchEscrow,
-    deleteOffer: metadata.actions.deleteOffer
+    deleteOffer: metadata.actions.deleteOffer,
+    getArbitratorRequests: arbitration.actions.getArbitratorRequests
   })(withRouter(MyProfile));
