@@ -5,253 +5,49 @@
         "name": "ENSRegistry",
         "address": "0xe7410170f87102DF0055eB195163A03B7F2Bff4A"
       },
-      "0x573ce922ef30ea27239add0fb9f2af8d008314dc4a0b3eaefa0adaf8963e44fa": {
-        "name": "StandardToken",
-        "address": "0x59D8879eEF830dDA7d88D10E35C7B2cF038B33F1"
-      },
-      "0x823f81eb5239fd857afd6bb050d2d628acddcaf2394ef641cd91cf0b8ff874b9": {
-        "name": "ERC20Receiver",
-        "address": "0xebfBDa0F3cA6034ACe216Af75E57f7142674cfe3"
-      },
-      "0xc9e884a03e7e4f76203ccb9bf9e266d6618889baa506014d1bad4123e0404e60": {
-        "name": "MiniMeTokenFactory",
-        "address": "0x61c6e9EeA406231a402788D8FbCBEDBb7ab6b9b1"
-      },
-      "0x80ef9942fa92b4917e4fcfcb2d0e1770b837c9c9a86758a7ec10f74f2e58b8e2": {
-        "name": "SNT",
-        "address": "0xC2866aFd9594fAfE4e4B3b41b989Da84cA818783"
-      },
-      "0x7d188b6d86b8f51ea9c96e68023572a6e17ff441bfd8f7d84c8326151de8615c": {
-        "name": "Arbitration",
-        "address": "0x672D88a25E05235239Da96e87AD50DA9cfc8c3e1"
-      },
-      "0xf7197481ff573e6fa7581f71dcf69827114d0a45b03ac076a538c55275cd51d7": {
-        "name": "License",
-        "address": "0x6DEf7bDD45B0Fb7863398724A28630fEFAD9613a"
-      },
-      "0x44b24e729ff465bc6e0c683728c9b4a478e0ab28d308f0b2f1bd2700daf3d9df": {
-        "name": "MetadataStore",
-        "address": "0xAB74A51206E315a722bcE59D0A072BddEcE1eAe6"
-      },
-      "0xd0f70293e65e29a88e0c3aeec8cb5079de953adcf327a508171740571c39b7cb": {
-        "name": "Escrow",
-        "address": "0xB2609E888726e450bdA9D53Af4C475de3621f7bd"
-      },
-      "0x44b05182627fb704aa6f702eaf846f686981d3e143fe6aae1a8fa830282d9925": {
-        "name": "Escrow",
-        "address": "0xF8E1fb93a7c32A0f28bb50aD6352c25385D139A7"
-      },
-      "0x99dd2a44cd0cd62354f6e3c27c706a4fdc8df7af396f831216b3c3f241b62759": {
-        "name": "Arbitration",
-        "address": "0x123762d3be5dfA76B360D84FC582B897Cf73A823"
-      },
-      "0x72b23054d301af648f043fe14dcd48d1bab737247301441f7ca7412d84221ef4": {
-        "name": "MetadataStore",
-        "address": "0xD7636B1B683cE37C68eF2e2749993a153f8E9374"
-      },
-      "0x2204177e69a37ad4a5aada676ea0e3a943f739242fb43dc132413711d38bea16": {
-        "name": "Escrow",
-        "address": "0x6C2b3367fD76EcD2363f4f818F15E7655c195854"
-      },
-      "0xacd7275dcc7397adf479da0aa10e7adc0cbea8eb4f0d7f1fa6fc8af0c40d8eaf": {
-        "name": "Escrow",
-        "address": "0x257662a1866615f5c0E4A9D7633a3e317218e71A"
-      },
-      "0xefee7af745628c05176c41ac2b2405381b955e4e1adba0fa215725886952baa1": {
-        "name": "Arbitration",
-        "address": "0x9CA3431aC0841b77b08c7eaD74C3fca5dcEeCf5A"
-      },
-      "0xf5fd1b8de657b9575e8c060c28dc3408b227204bc6f4a6669ba47f69a6ada385": {
-        "name": "License",
-        "address": "0xB280d7dd9804C90B2466bB6da2cDfC77eA35120d"
-      },
-      "0xb6f7a024add470a4104ae7e6af00e64b5734bc5cfcfd27622523f31822b2b120": {
-        "name": "MetadataStore",
-        "address": "0x03450CD2DdfC8678B91EaCE1a81761597722F1cc"
-      },
-      "0xdf14773a44b2fa0ab93d7e6db5a13acdba12ed9d5d2e4a43f76364b122bc00ce": {
-        "name": "Escrow",
-        "address": "0xd477BD120F2E75b4b1f7cf7E85eEB1Af10B45619"
-      },
-      "0x7b5beefb6b4ebde4e4f66df6d5702071ccab2fd039cf97ceb25a5c2b8d668269": {
-        "name": "Arbitration",
-        "address": "0xa27264e03b4d81170fB6D7B6A14b78c9A578Ec3C"
-      },
-      "0x71fa4ca77b00a4cc7b6362c30d1d081c6ee8e443250af545a60cb258ec010dfe": {
-        "name": "MetadataStore",
-        "address": "0xc67d29E45e3cD34021539990E6a81f2f18A4aE17"
-      },
-      "0x93949676388cb2bcc137236d09f63234ceeb504076664d60916a1501112011e6": {
-        "name": "Escrow",
-        "address": "0xB5D0269FB48eC7025b74357DBCbcE1a406d5328c"
-      },
-      "0xf71b7767bda574374e09c5690b0834409ee9f4b3b9a534119363f18770e21d83": {
-        "name": "Escrow",
-        "address": "0xC4e09106a7CE7e0073dB8682F486CA6e333EAC62"
-      },
-      "0x640045a97c238d558f5618071e182a716f361a4d1ee587ef2dab65edb4b669d4": {
-        "name": "Arbitration",
-        "address": "0x9F71b26295a725ef6E0560f54792c0d26935c4DF"
-      },
-      "0x2b299ea77e760d0b0a0ec341f867097b9bafdd56f675fe0e4b190467f3e96f15": {
-        "name": "MetadataStore",
-        "address": "0x5b4D32279bb72e25bcFF67257D402f1eeE9053B2"
-      },
-      "0x2e8c05d27fd0d12701b3d09a6821f04f120602701f23e5c62210dfcc978e00a5": {
-        "name": "Escrow",
-        "address": "0x1c5BF079fc52c1E711b5aC73E189264Cb6593B92"
-      },
-      "0x693f9d3d55faf9ed73b613e053e0cc07b1d5f32fab9b75130d81ed76956a7083": {
-        "name": "MetadataStore",
-        "address": "0x5851F398e8e45E82B1dAd184500F2B77B721cAD1"
-      },
-      "0x9dc283c3470abbb50f9884281c97369abc9b735a6c5d35fa2b44d048e81ff119": {
-        "name": "Escrow",
-        "address": "0xcd92e2D0B901050DAb2e99b5A58CbC49E3a03071"
-      },
-      "0x74a5eaf0ca21e87809e68de57c27179e123c7a1b4392dd86ea3afae10901d05b": {
-        "name": "Escrow",
-        "address": "0xE64ceDFc7246dB806Ed74322EC6Ff423FC3E021C"
-      },
-      "0xfc0b73af9a68c5972a884b4a51aeecffffb8e15fa8d6b1cbb1579b9cbac714e9": {
-        "name": "DSMath",
-        "address": "0x06fBBaE6bA3a569f936a0eAcEd72078FA2E80e0e"
-      },
-      "0x06f60ca0ecbdf9c84e6656da9a79d6876dbfda058a781d2bbb6c90c01afade8c": {
-        "name": "SafeMath",
-        "address": "0xAFeE3E187b55Ec3b5c098d200DAf870dE7046Fa8"
-      },
-      "0x2051c628b61261391277f4e553f08ce365f4a14af2b505b1a60b2227d5a78e57": {
-        "name": "ERC20Burnable",
-        "address": "0xBD97b4756b4f9Cb0bd4fb7E508eF3cC73301F6Bf"
-      },
       "0xb3c02f4c9828a4e4e451db79c83d8383d0f4f280b56a0f2d4090548e538a10dc": {
         "name": "RLPReader",
-        "address": "0x9360b1A5bB83290DEc83De75931846bD1fa3b389"
-      },
-      "0xb19be93709d971a1a4647b7579c5b60f798496cef6e9bd2ae16ac87a586973bf": {
-        "name": "MiniMeTokenFactory",
-        "address": "0x02cF346614674e99f91bA57C1E101E105595c9A6"
-      },
-      "0x9037572d32a2a3c4c7de7cbc15f12453ee533542c93b582851b062f3bf77cdd5": {
-        "name": "ERC20",
-        "address": "0xC0586f56498a9f285C07e28d7d50783b3554bf8F"
-      },
-      "0x5d8d84a1a0c48412fa202cdd889ae7e3b238b67e96c1eb04734bba988b557383": {
-        "name": "RelayHub",
-        "address": "0x1F443beA385208858c62e5254D9f81466303Bb0b"
-      },
-      "0xd0b3e3d694c6e78b59668f32426519724bcef3a3767a3b62abeffaad11d31374": {
-        "name": "SNT",
-        "address": "0x126ecf0C180CbEDF712A6bF64c57D608f57E115F"
-      },
-      "0xf7e2b65a4576e66fe806e52891fb8321e365795df7f1c6a80925ab6963fbbf37": {
-        "name": "StakingPool",
-        "address": "0xe9090688609EaA8E7a3bFAfb9C5b31D2A339B75B"
-      },
-      "0x86f01b4167d0a78c141ca2c444f020bee92901d5dd6073060ac5cbd9588a88fb": {
-        "name": "SellerLicense",
-        "address": "0x615aE39DaB97dC880c5B0c92b5073f7432AADDaE"
-      },
-      "0xa2ab888a3fb475e5708a5307c80d2f41c5ef72cdae32e0422eb915e3d55d0341": {
-        "name": "ArbitrationLicense",
-        "address": "0x825EC373a10eB9c9A5933c8878581b296aF93415"
-      },
-      "0xec4eb79e45e32d9e0cdabbc860348b4d49e69149ab82116ede9d7dee50ce660a": {
-        "name": "MetadataStore",
-        "address": "0xfEDb9fBC25B51dAa4312Dba1747ae1BeFC748d4D"
-      },
-      "0x243b1fc854f17cfe515881f5d2fa88d13e335761be7ff309a3bcbda85c5c0657": {
-        "name": "Escrow",
-        "address": "0x6b0Fe7fD0195617d611D4d7C48Fc9B084c66Ab0F"
-      },
-      "0x7dcace6b87f6fdb9bbc007f97935903616540920c6e2ad29d775da0ad92f5ba6": {
-        "name": "SellerLicense",
-        "address": "0x587c8B39e9b93e157aA6868FBF026eadcD092806"
-      },
-      "0x875d12c948438b63284354c3f5b5bb3868124e3adbb7b30a2d999ffda8fd59ed": {
-        "name": "ArbitrationLicense",
-        "address": "0x7DeECdA728F9291fEee06a8141e84b26B5bb0496"
-      },
-      "0x46e306e5174128c9c45ae57df1f61547469fcc4601fd5d7051658427ca1d74a9": {
-        "name": "MetadataStore",
-        "address": "0xaA4Bcf44B00dA7Bb43522b21b54dAE9CB82634E4"
-      },
-      "0xf60e5d23e992bee7f624b9d45b5aa8649119c0175948eef360e5759b33fac38c": {
-        "name": "Escrow",
-        "address": "0xb15C531dc6284E566e0010B458CEb4039bfdf175"
-      },
-      "0x6e48725583a5c42b775e7c94bb5b7959989bd4fa3ba9f74d63db0ad28169cd42": {
-        "name": "Escrow",
-        "address": "0xcd1107209d57B8A0C2dBd584f93be9d584217964"
-      },
-      "0xe52e2dd53ef94f9b6e67b6f770abd04a13fabaf5658f336a3f6ce4322698001c": {
-        "name": "OwnedUpgradeabilityProxy",
-        "address": "0x5b3f4FFd9D04D2409859f20B754929AB1cA34132"
-      },
-      "0x47a486077d3e6f7c81911ea49dc0a22e932277833f707494668d1c6953581180": {
-        "name": "MiniMeTokenFactory",
-        "address": "0x8bcBbA1adD98D7613CDF7C196abd53fA3479F301"
-      },
-      "0x227136d381478989ef9f4f416fc2e41438b554441c80eb6b178845f1441ad321": {
-        "name": "SNT",
-        "address": "0xb40738fF06dBb778160B0C50f5d3f44380c901a3"
-      },
-      "0xb173fa826b72899c48a3e76d9b1ce2d3105068fecfc8b62599430bfff347ff25": {
-        "name": "StakingPool",
-        "address": "0xBad34c7f736465c848F062747F3b1A4027cc211c"
-      },
-      "0x80a482b708c345869057d67c413e3ab32589caedcc97e390e42833ba899957a9": {
-        "name": "SellerLicense",
-        "address": "0x58931755943e282A7586dbe4EA96Fd8A322d4248"
-      },
-      "0xe8650b761edae717648c277310a343617d1f579b85cd121a3858e3c96e59e16e": {
-        "name": "ArbitrationLicense",
-        "address": "0xf0C82a2E43ba9Db1E21063F4919AB906E0753D56"
-      },
-      "0xb7891a40250a4ce71d962cc1e4d8a68cad729353b2ccb9b0b7e4519ca43a9998": {
-        "name": "MetadataStore",
-        "address": "0xB4b68D56122EC351135409E17636e4211e359D48"
-      },
-      "0xfa7f4b322bafbc76b75920a5e37e111c5314415065ce302b20d5ee08f11bd688": {
-        "name": "Escrow",
-        "address": "0x5b15dE10d9E373f6CC6f8703Fe51e993Bc741859"
-      },
-      "0xfb29a9c44a7d2c0868b296a219ea7c45304230177bb447d50d404328ec90b5c7": {
-        "name": "EscrowRelay",
-        "address": "0x341D879610D39cD62eA18Ad60c9a80b1671a65C5"
+        "address": "0x48Be644DA74d5bEc6a722aE543C2f277A7F42073"
       },
       "0xeb56941153e5f25031e197f1c7455c17b547e57ae0eb2c8c1b5b4777864afc35": {
         "name": "MiniMeTokenFactory",
-        "address": "0x2FA626D1e6E3C25199b1910D8FC0001816A23d05"
+        "address": "0xC25b50916a08567996324e15F3059b342Ae3D146"
       },
-      "0x056a389c932c6c6d1dc57302146e38c42447aabb9bbbe0575dbbdad32e0849c2": {
+      "0xe52e2dd53ef94f9b6e67b6f770abd04a13fabaf5658f336a3f6ce4322698001c": {
+        "name": "OwnedUpgradeabilityProxy",
+        "address": "0xf8d96Fbf3a7162c2b18a4806d20B14ED209951cE"
+      },
+      "0x5d8d84a1a0c48412fa202cdd889ae7e3b238b67e96c1eb04734bba988b557383": {
+        "name": "RelayHub",
+        "address": "0x1EE379857a9102F0D45FDD769C872DECAc695875"
+      },
+      "0x5c3d5ced2e9a985c7ac2d439fa8337ae2ead58dcae0b82dc65e4dad6f28206af": {
         "name": "SNT",
-        "address": "0xFB3a9083857E762521324C6b7510652810C9f564"
+        "address": "0x442dc5e44Cb731e635532BbaEF9d98CDf17a01a3"
       },
-      "0xf597e44bd036b2603e4df1c15b719d294480b546450fc73de8216ef2c41dff31": {
+      "0xf59b0719962d2893636b3110644dd2ae5f36b8f1cddfd97b2485d1dc2598d24e": {
         "name": "StakingPool",
-        "address": "0x242923658F2971373F2939B2F1d26E12772fB4B3"
+        "address": "0x76ab85b507A9ADfD9D5508f16AE978957e655efE"
       },
-      "0x56b1a16432d9ebce4c086b65c46c73ccdeb19c6fbf909d1064af876fb607d6f3": {
-        "name": "SellerLicense",
-        "address": "0x6142F41C8625cad51FCac65aFcC28c73073CE9F6"
-      },
-      "0x67908feb7a94ead9d6608ebfad8aeaa03dafb873e300f965da08c3a173b74064": {
+      "0xaaab4b7f5e01e3245bad0ad3f83f8859fd9e5ae482bb7a87756b64cbb068f0ce": {
         "name": "ArbitrationLicense",
-        "address": "0x0498Ce7C8E701F8dCEbAcCa6423551C4c6deE3E7"
+        "address": "0x9070eb17425E45D2ed031e66f5d018e1f5666866"
       },
-      "0x4ffeb2e75c73428557aff3a68798d4b38115423f708972d4af88b93bccdd8f47": {
+      "0x01b00feb4aa8d61b8d17ea956caa189947711eb58dfd1a690602d83420d28d69": {
+        "name": "SellerLicense",
+        "address": "0xaB32a06E70cda6F7Ea20287AC060f6a3D68922b4"
+      },
+      "0xfac86ecc352cff49931bb5fbfe41b830896e6e1c2d40f6abee9e2322c566bdd5": {
         "name": "MetadataStore",
-        "address": "0x532B354Ac40DbA05a71831ddeEFDD46eA8A507BB"
+        "address": "0x074C5d29fC2797aeC7b38C80Be6C1A3bB80E1E9f"
       },
-      "0xc3b90fd3ff2e104403c93038af9f74b28baeb4826b19cd538110687c52137fb4": {
+      "0x13a95ee5aba91505fb4c724fc645e0827008b033fc159e003b13f15a7ff530fe": {
         "name": "Escrow",
-        "address": "0x219202F4cC20780E5f2087535bb37B190A4F672D"
+        "address": "0x34B40bFf612e027215AfE09a6A22d35A4b46Dfc7"
       },
-      "0x9fd0142e15be7a1d542efa0b2c3a1234d5c8dc825d2de43a5b5047a56301bfd7": {
+      "0xd0949dfc016294546a15ea6fe4c0b7e3cfd5694a7cefd629740e47baacde47d2": {
         "name": "EscrowRelay",
-        "address": "0x0A00c773E74916833Bd591953Ff7e3cECD845033"
+        "address": "0xfeB82d9fb2A3ebdF17FB3a4c11dA45f741aE479f"
       }
     }
   }

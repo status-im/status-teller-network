@@ -40,6 +40,34 @@
       "0x4ea988920d5242a4c6ec2445be32b4a83bc955809b0f4a3999e217a3ff751d9e": {
         "name": "Escrow",
         "address": "0xD3390bEe9E9AF5442F6348Bf63e62a3F56b414d1"
+      },
+      "0x5d8d84a1a0c48412fa202cdd889ae7e3b238b67e96c1eb04734bba988b557383": {
+        "name": "RelayHub",
+        "address": "0x1349584869A1C7b8dc8AE0e93D8c15F5BB3B4B87"
+      },
+      "0xe52e2dd53ef94f9b6e67b6f770abd04a13fabaf5658f336a3f6ce4322698001c": {
+        "name": "OwnedUpgradeabilityProxy",
+        "address": "0x05bB559CfBADdE9b4562FE84dfbbF869a9c097A3"
+      },
+      "0xa90c858bf2fe30ed3bc174fbb8b0973dd11b887f7d06c98249c145501a3d1387": {
+        "name": "SellerLicense",
+        "address": "0x2f92a460aD9CB9Aa0c7fDB4bc4d2913BeEB0E36e"
+      },
+      "0xdc1509586e1551f2935838a440a2043f2eec7f118e27152653f88447c15a80dc": {
+        "name": "ArbitrationLicense",
+        "address": "0x2098919B6AdC32317395859993b711ebf0bD7677"
+      },
+      "0xb15a973fefb44c2da92e5c7829cb77bccca7f703fc8a8675db53da2e456ce439": {
+        "name": "MetadataStore",
+        "address": "0x49AD0Ba413623BEDe1F71f2f1ab331AC08697bae"
+      },
+      "0x90fc39db516ca0a1eb67bf6e2385caf221d3840d581ce16592740f53352ad4b0": {
+        "name": "Escrow",
+        "address": "0x5f4CD3796467aFE160e911d108B1656DB7F3C62a"
+      },
+      "0xab65b653c597b4f1d097bfcca24d19ee77b9c2db333def133f43c066c9bb1040": {
+        "name": "EscrowRelay",
+        "address": "0x83731d44aCb2988B1fB7f0D124c094D1B858004f"
       }
     }
   }

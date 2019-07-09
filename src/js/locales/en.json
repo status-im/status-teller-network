@@ -32,7 +32,8 @@
     "selectValid": "Select a valid arbitrator to move to the next page",
     "placeholder": "0x0000...0000",
     "continue": "Next",
-    "emptyLabel": "No matches found."
+    "emptyLabel": "No matches found.",
+    "noApprovals": "No arbitrator has approved you yet. To request approval from an arbitrator, go to <1>Manage arbitrators</1> in your Profile"
   },
   "sellerMarginContainer": {
     "title": "What margin do you want to use for your rate?"
