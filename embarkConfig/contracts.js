@@ -130,6 +130,8 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       OwnedUpgradeabilityProxy: {
+      },
+      KyberNetworkProxy: {
       }
     }
   },
@@ -270,7 +272,13 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
-    dappConnection: ["$WEB3"]
+    dappConnection: ["$WEB3"],
+    contracts: {
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Rinkeby/
+        address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
+      }
+    }
   },
 
   ropsten: {
@@ -284,7 +292,7 @@ module.exports = {
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
           "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 300000000000000000, gas: 1000000})"
         ]
-      }, 
+      },
       Escrow: {
         args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
       },
@@ -299,7 +307,11 @@ module.exports = {
       },
       "MiniMeTokenFactory": {
         deploy: false
-       }
+      },
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Ropsten/
+        address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      }
     },
     deployment: {
       accounts: [
@@ -321,6 +333,12 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
+    contracts: {
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Mainnet/
+        address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      }
+    }
   }
 
   // you can name an environment with specific settings and then specify with
