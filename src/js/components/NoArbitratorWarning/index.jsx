@@ -4,16 +4,20 @@ import {zeroAddress} from '../../utils/address';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 
-const NoArbitratorWarning = ({arbitrator}) => <Fragment>
+const NoArbitratorWarning = ({arbitrator, label}) => <Fragment>
     {arbitrator === zeroAddress && <span className="text-danger text-small pl-2">
     <FontAwesomeIcon className="mr-2" icon={faExclamationTriangle} size="sm"/>
-    No arbitrator found. Disputes cannot be opened
+    {label}
   </span>}
 </Fragment>;
 
+NoArbitratorWarning.defaultProps = {
+  label: "No arbitrator found. Disputes cannot be opened"
+};
 
 NoArbitratorWarning.propTypes = {
-  arbitrator: PropTypes.string
+  arbitrator: PropTypes.string,
+  label: PropTypes.string
 };
 
 export default NoArbitratorWarning;
