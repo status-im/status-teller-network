@@ -13,7 +13,7 @@ class ArbitratorSelectorForm extends Component {
     if(items.length){
       const item = items[0];
       const index = item.substring(0, item.indexOf(' - '));
-      this.props.changeArbitrator(this.props.arbitrators[parseInt(index, 10)]);
+      this.props.changeArbitrator(this.props.arbitrators[parseInt(index, 10) - 1]);
     }
   };
 
