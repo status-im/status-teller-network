@@ -6,8 +6,8 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import moment from "moment";
 import {tradeStates} from '../../../features/escrow/helpers';
 import NoArbitratorWarning from '../../../components/NoArbitratorWarning';
-import { zeroAddress } from 'ethereumjs-util';
 import { formatArbitratorName } from '../../../utils/strings';
+import { zeroAddress } from '../../../utils/address';
 
 const PERCENTAGE_THRESHOLD = 10; // If asset price is 10% different than the real price, show the warning
 
