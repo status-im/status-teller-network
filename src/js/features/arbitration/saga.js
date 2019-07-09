@@ -6,7 +6,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
-import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
+import {fork, takeEvery, call, put, take, all} from 'redux-saga/effects';
 import {
   CLOSED, NONE,
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
@@ -124,16 +124,18 @@ export function *onGetArbitratorApprovalRequests() {
 export function *doGetArbitratorApprovalRequests({address}) {
   try {
     const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: address} });
-    const requests = [];
-    for (let i = 0; i < events.length; i++) {
-      const request = events[i].returnValues;
+    
+    const requests = yield all(events.map(events.map(function *(event) {
+      const request = event.returnValues;
       const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
-      if([NONE, CLOSED].indexOf(requestDetail.status) === -1){
-        request.status = requestDetail.status;
-        requests.push(request);
-      }
-    }
-    yield put({type: GET_ARBITRATION_REQUESTS_SUCCEEDED, requests});
+
+      if([NONE, CLOSED].indexOf(requestDetail.status) > -1) return null;
+
+      request.status = requestDetail.status;
+      return request;
+    })));
+
+    yield put({type: GET_ARBITRATION_REQUESTS_SUCCEEDED, requests: requests.filter(x => x !== null)});
 
   } catch (error) {
     console.error(error);

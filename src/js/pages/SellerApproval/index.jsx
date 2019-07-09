@@ -10,11 +10,13 @@ import PropTypes from 'prop-types';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import { ListGroup, ListGroupItem, Button, Row,  Col } from 'reactstrap';
 import classnames from 'classnames';
+import { formatArbitratorName } from '../../utils/strings';
 
-const requestStatus = {};
-requestStatus[arbitration.constants.AWAIT] = "Pending";
-requestStatus[arbitration.constants.ACCEPTED] = "Accepted";
-requestStatus[arbitration.constants.REJECTED] = "Rejected";
+const requestStatus = {
+  [arbitration.constants.AWAIT]: "Pending",
+  [arbitration.constants.ACCEPTED]: "Accepted",
+  [arbitration.constants.REJECTED]: "Rejected"
+};
 
 class SellerApproval extends Component {
 
@@ -71,13 +73,8 @@ class SellerApproval extends Component {
           <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
           <ListGroup>
           {requests.map((request, i) => {
-            const user = users[request.seller];
-            let text;
-            if (!user) {
-              text = request.seller + ' - Loading...';
-            } else {
-              text = `${user.username || "No username available"} ${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
-            }
+           const text = formatArbitratorName(users[request.seller], request.seller);
+
             return <ListGroupItem key={i}>
               <Row>
                 <Col  xs="12" sm="9" className="pb-3" tag={Link} to={`/profile/${request.seller}`}>
@@ -88,13 +85,13 @@ class SellerApproval extends Component {
                 <Col xs="12" sm="3" className="text-center">
                   {request.status === arbitration.constants.AWAIT && <Button onClick={this.acceptRequest(request.id)} className="m-2">Accept</Button> }
                   {(request.status === arbitration.constants.AWAIT || request.status === arbitration.constants.ACCEPTED) && <Button className="m-2" onClick={this.rejectRequest(request.id)}>Reject</Button> }
-
-                  <br />
-                  <span className={classnames('text-small', {
+                  <p className={classnames('text-small', {
                     'text-success': request.status === arbitration.constants.ACCEPTED,
                     'text-danger': request.status === arbitration.constants.REJECTED,
                     'text-muted': request.status === arbitration.constants.AWAIT
-                  })}>({requestStatus[request.status]})</span>
+                  })}>
+                    ({requestStatus[request.status]})
+                  </p>
                 </Col>
               </Row>
             </ListGroupItem>;

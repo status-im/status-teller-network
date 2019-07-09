@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import {FormGroup, Input, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import {withNamespaces} from 'react-i18next';
-import {compactAddress} from '../../../../utils/address';
+import {formatArbitratorName} from '../../../../utils/strings';
+import { compactAddress } from '../../../../utils/address';
 
 class ArbitratorSelectorForm extends Component {
   onChange = (items) => {
@@ -21,12 +22,8 @@ class ArbitratorSelectorForm extends Component {
     const arbitratorStrings = this.props.arbitrators.map((arbitratorAddr, index) => {
       const user = this.props.users[arbitratorAddr];
 
-      let text;
-      if (!user) {
-        text = arbitratorAddr + ' - Loading...';
-      } else {
-        text = `${index + 1} - ${user.username || compactAddress(arbitratorAddr, 3)}${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
-      }
+      let text = formatArbitratorName(user, arbitratorAddr, compactAddress(arbitratorAddr, 3), index);
+
       if (value && value === arbitratorAddr) {
         defaultSelectedValue.push(text);
       }
