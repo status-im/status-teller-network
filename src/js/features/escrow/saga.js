@@ -196,6 +196,8 @@ export function *doGetEscrow({escrowId}) {
     escrow.seller = yield MetadataStore.methods.users(sellerId).call();
     const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
     escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+    const arbitratorId = yield MetadataStore.methods.addressToUser(escrow.arbitrator).call();
+    escrow.arbitratorInfo = yield MetadataStore.methods.users(arbitratorId).call();
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);

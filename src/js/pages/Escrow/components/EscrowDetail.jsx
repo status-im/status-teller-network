@@ -6,6 +6,8 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import moment from "moment";
 import {tradeStates} from '../../../features/escrow/helpers';
 import NoArbitratorWarning from '../../../components/NoArbitratorWarning';
+import { zeroAddress } from 'ethereumjs-util';
+import { formatArbitratorName } from '../../../utils/strings';
 
 const PERCENTAGE_THRESHOLD = 10; // If asset price is 10% different than the real price, show the warning
 
@@ -39,6 +41,7 @@ const EscrowDetail = ({escrow, currentPrice}) => {
         <p className="text-danger mb-2">Double-check whether you really want to go through with this trade</p>
       </Fragment> }
       <NoArbitratorWarning arbitrator={escrow.offer.arbitrator} />
+      { escrow.arbitrator !== zeroAddress && <p className="text-dark m-0">Arbitrator: <span className="font-weight-bold">{formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}</span></p>}
       </Col>
   </Row>);
 };
