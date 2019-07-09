@@ -40,12 +40,8 @@ class Contact extends Component {
       this.changeStatusContactCode(this.props.apiContactCode);
     }
 
-    if (prevProps.statusContactCode !== this.props.statusContactCode) {
-      this.changeStatusContactCode(this.props.statusContactCode);
-    }
-
-    if (prevProps.username !== this.props.username) {
-      this.changeUsername(this.props.username);
+    if (prevProps.statusContactCode !== this.props.statusContactCode && prevProps.username !== this.props.username) {
+      this.change(this.props.statusContactCode, this.props.username);
     }
   }
 
@@ -60,14 +56,17 @@ class Contact extends Component {
     this.props.footer.disableNext();
   }
 
+  change = (statusContactCode, username) => {
+    this.validate(username, statusContactCode);
+    this.setState({statusContactCode, username});
+  };
+
   changeStatusContactCode = (statusContactCode) => {
-    this.validate(this.state.username, statusContactCode);
-    this.setState({statusContactCode});
+    this.change(statusContactCode, this.state.username);
   };
 
   changeUsername = (username) => {
-    this.validate(username, this.state.statusContactCode);
-    this.setState({username});
+    this.change(this.state.statusContactCode, username);
   };
 
   getContactCode = () => {
