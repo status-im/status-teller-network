@@ -128,7 +128,7 @@ export function *doGetArbitratorApprovalRequests({address}) {
       const request = event.returnValues;
       const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
 
-      if([NONE, CLOSED].indexOf(requestDetail.status) > -1) return null;
+      if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator,address)) return null;
 
       request.status = requestDetail.status;
       return request;
