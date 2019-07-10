@@ -132,6 +132,9 @@ module.exports = {
       OwnedUpgradeabilityProxy: {
       },
       KyberNetworkProxy: {
+      },
+      KyberFeeBurner: {
+        args: ["$SNT", "0x0000000000000000000000000000000000000002", "$KyberNetworkProxy"]
       }
     }
   },

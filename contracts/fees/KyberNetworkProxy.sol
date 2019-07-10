@@ -37,4 +37,30 @@ contract KyberNetworkProxy {
     {
       return maxDestAmount;
     }
+
+    /// @dev makes a trade between src and dest token and send dest tokens to msg sender
+    /// @param src Src token
+    /// @param srcAmount amount of src tokens
+    /// @param dest Destination token
+    /// @param minConversionRate The minimal conversion rate. If actual rate is lower, trade is canceled.
+    /// @return amount of actual dest tokens
+    function swapTokenToToken(
+        address src,
+        uint srcAmount,
+        address dest,
+        uint minConversionRate
+    )
+        public
+        returns(uint)
+    {
+        return 100;
+    }
+
+    /// @dev makes a trade from Ether to token. Sends token to msg sender
+    /// @param token Destination token
+    /// @param minConversionRate The minimal conversion rate. If actual rate is lower, trade is canceled.
+    /// @return amount of actual dest tokens
+    function swapEtherToToken(address token, uint minConversionRate) public payable returns(uint) {
+        return 200;
+    }
 }
