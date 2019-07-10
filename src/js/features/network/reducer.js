@@ -55,6 +55,7 @@ function reducer(state = DEFAULT_STATE, action) {
           tokens: {
             ...state.tokens,
             [action.token.symbol]: {
+              ...state.tokens[action.token.symbol],
               ...action.token,
               balances: {
                 ...state.tokens[action.token.symbol].balances,
