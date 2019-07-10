@@ -134,7 +134,7 @@ module.exports = {
       KyberNetworkProxy: {
       },
       KyberFeeBurner: {
-        args: ["$SNT", "0x0000000000000000000000000000000000000002", "$KyberNetworkProxy"]
+        args: ["$SNT", "0x0000000000000000000000000000000000000002", "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
       }
     }
   },
