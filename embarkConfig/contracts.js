@@ -3,7 +3,7 @@ const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 
 
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
-const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const dataMigration = require('./data.js');
 
@@ -76,7 +76,7 @@ module.exports = {
         args: [
           "$SNT",
           LICENSE_PRICE,
-          "$StakingPool"
+          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
         ]
       },
       "MetadataStore": {
@@ -86,7 +86,7 @@ module.exports = {
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
-          "$StakingPool"
+          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
         ]
       },
       EscrowRelay: {

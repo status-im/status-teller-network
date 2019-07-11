@@ -6,6 +6,8 @@ const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
 const SNT = require('Embark/contracts/SNT');
 const MetadataStore = require('Embark/contracts/MetadataStore');
 
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+
 let accounts;
 
 config({
@@ -31,15 +33,19 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
     ArbitrationLicense: {
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
+
+    /*
     StakingPool: {
       file: 'staking-pool/contracts/StakingPool.sol',
       args: ["$SNT"]
     },
+    */
+   
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     }
