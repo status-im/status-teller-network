@@ -1,3 +1,4 @@
+/* solium-disable security/no-block-members */
 pragma solidity ^0.5.8;
 
 import "./License.sol";
@@ -110,6 +111,7 @@ contract ArbitrationLicense is License {
         require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
         require(requests[_id].status == RequestStatus.AWAIT, "This request is not pending");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already accepts all cases");
+        require(requests[_id].arbitrator == msg.sender, "Invalid arbitrator");
 
         requests[_id].status = RequestStatus.ACCEPTED;
 
@@ -128,6 +130,7 @@ contract ArbitrationLicense is License {
         require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED,
             "Invalid request status");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator accepts all cases");
+        require(requests[_id].arbitrator == msg.sender, "Invalid arbitrator");
 
         requests[_id].status = RequestStatus.REJECTED;
         requests[_id].date = block.timestamp;

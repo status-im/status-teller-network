@@ -7,6 +7,7 @@ import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
 import {fork, takeEvery, call, put, take, all} from 'redux-saga/effects';
+import {addressCompare} from '../../utils/address';
 import {
   CLOSED, NONE,
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
@@ -18,6 +19,7 @@ import {
 } from './constants';
 import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
 Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
@@ -128,7 +130,7 @@ export function *doGetArbitratorApprovalRequests({address}) {
       const request = event.returnValues;
       const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
 
-      if([NONE, CLOSED].indexOf(requestDetail.status) > -1) return null;
+      if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator,address)) return null;
 
       request.status = requestDetail.status;
       return request;
