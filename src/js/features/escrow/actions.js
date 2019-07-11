@@ -9,8 +9,8 @@ import {
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import { toTokenDecimals } from '../../utils/numbers';
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+Escrow.options.address = EscrowProxy.options.address;
 
 export const createEscrow = (signature, username, tokenAmount, assetPrice, statusContactCode, offer, nonce) => {
   tokenAmount = toTokenDecimals(tokenAmount, offer.token.decimals);

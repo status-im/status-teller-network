@@ -1,11 +1,11 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
-import OwnedUpgradeabilityProxy from '../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
 
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare} from './utils/address';
 
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",

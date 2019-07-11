@@ -3,7 +3,6 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-
 import {fork, takeEvery, put, all} from 'redux-saga/effects';
 import {
   LOAD, LOAD_USER, LOAD_USER_FAILED, LOAD_USER_SUCCEEDED,
@@ -16,9 +15,16 @@ import {
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 import { zeroAddress, addressCompare } from '../../utils/address';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
+import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
+ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
+SellerLicense.options.address = SellerLicenseProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
   try {

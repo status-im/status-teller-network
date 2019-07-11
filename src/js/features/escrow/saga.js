@@ -26,8 +26,11 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 const { toBN } = web3.utils;
 
