@@ -3,6 +3,7 @@ pragma solidity >=0.5.0 <0.6.0;
 import "./License.sol";
 import "./ArbitrationLicense.sol";
 import "../common/MessageSigned.sol";
+import "../common/Ownable.sol";
 
 /**
 * @title MetadataStore
@@ -40,6 +41,8 @@ contract MetadataStore is MessageSigned {
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
 
+    bool internal _initialized;
+
     event OfferAdded(
         address owner,
         uint256 offerId,
@@ -61,6 +64,22 @@ contract MetadataStore is MessageSigned {
      * @param _arbitrationLicenses Arbitrators licenses contract address
      */
     constructor(address _sellingLicenses, address _arbitrationLicenses) public {
+        init(_sellingLicenses, _arbitrationLicenses);
+    }
+
+    /**
+     * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _sellingLicenses Sellers licenses contract address
+     * @param _arbitrationLicenses Arbitrators licenses contract address
+     */
+    function init(
+        address _sellingLicenses,
+        address _arbitrationLicenses
+    ) public {
+        assert(_initialized == false);
+
+        _initialized = true;
+
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
 
