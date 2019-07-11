@@ -48,6 +48,14 @@
       "0xd0949dfc016294546a15ea6fe4c0b7e3cfd5694a7cefd629740e47baacde47d2": {
         "name": "EscrowRelay",
         "address": "0xfeB82d9fb2A3ebdF17FB3a4c11dA45f741aE479f"
+      },
+      "0x581245059f2179305333c7ece446eea99b08e0f57896241bd68a56383e8c41a5": {
+        "name": "Escrow",
+        "address": "0x000323D48EA76D43bfd3cCFDCE434645ADd7B8Ac"
+      },
+      "0x80d2b17b38faff0e57144c2b494d38954994870de3d91fc1d0363470c245a783": {
+        "name": "EscrowRelay",
+        "address": "0x6124D1039D7D3034D7742A681a67F74ACb579684"
       }
     }
   }

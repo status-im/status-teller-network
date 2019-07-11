@@ -92,7 +92,7 @@ contract("Escrow", function() {
     expirationTime += addTime;
   };
 
-  let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, hash, signature, nonce;
+  let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, noArbiterOfferId, hash, signature, nonce;
   let created;
 
   this.timeout(0);
@@ -119,6 +119,8 @@ contract("Escrow", function() {
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
     receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     sntOfferId = receipt.events.OfferAdded.returnValues.offerId;
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, "0x00", "London", "USD", "Iuri", [0], 1, TestUtils.zeroAddress).send({from: accounts[0]});
+    noArbiterOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Creating a new escrow", async () => {
@@ -251,7 +253,7 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.createAndFund(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[0], value: tradeAmount + feeAmount});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
-      
+
       try {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
@@ -411,6 +413,8 @@ contract("Escrow", function() {
 
   describe("Releasing escrows", async () => {
     beforeEach(async() => {
+      await StandardToken.methods.mint(accounts[0], tradeAmount + feeAmount).send();
+
       // Create
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
@@ -474,6 +478,34 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.release(escrowTokenId).send({from: accounts[0]});
       const buyerBalanceAfterEscrow = await StandardToken.methods.balanceOf(accounts[1]).call();
       const contractBalanceAfterEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
+
+      assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
+      const after = toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount).add(toBN(feeAmount)));
+      assert.equal(contractBalanceAfterEscrow, after, "Invalid contract balance");
+    });
+
+    it("Escrow owner can release token funds to the buyer with no arbitrator offer", async () => {
+      await SNT.methods.generateTokens(accounts[0], tradeAmount + feeAmount).send();
+      await SNT.methods.approve(Escrow.options.address, tradeAmount + feeAmount).send({from: accounts[0]});
+
+      // Create
+      hash = await MetadataStore.methods.getDataHash("U", TestUtils.zeroAddress).call({from: accounts[2]});
+      signature = await web3.eth.sign(hash, accounts[2]);
+      nonce = await MetadataStore.methods.user_nonce(accounts[2]).call();
+      receipt = await Escrow.methods.create(noArbiterOfferId, tradeAmount, 140, TestUtils.zeroAddress, "L", "U", nonce, signature).send({from: accounts[2]});
+      created = receipt.events.Created;
+      escrowTokenId = created.returnValues.escrowId;
+      // Fund
+      receipt = await Escrow.methods.fund(escrowTokenId).send({from: accounts[0]});
+
+      const buyerBalanceBeforeEscrow = await SNT.methods.balanceOf(accounts[2]).call();
+      const contractBalanceBeforeEscrow = await SNT.methods.balanceOf(Escrow.options.address).call();
+
+      const escrow = await Escrow.methods.transactions(escrowTokenId).call();
+
+      receipt = await Escrow.methods.release(escrowTokenId).send({from: accounts[0]});
+      const buyerBalanceAfterEscrow = await SNT.methods.balanceOf(accounts[2]).call();
+      const contractBalanceAfterEscrow = await SNT.methods.balanceOf(Escrow.options.address).call();
 
       assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
       const after = toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount).add(toBN(feeAmount)));
@@ -553,7 +585,7 @@ contract("Escrow", function() {
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       escrowId = receipt.events.Created.returnValues.escrowId;
-      
+
       // Fund
       receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value: tradeAmount + feeAmount});
 
