@@ -3,7 +3,7 @@ const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 
 
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
-const BURN_ADDRESS = "0x0000000000000000000000000000000000000001";
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const dataMigration = require('./data.js');
 
@@ -76,7 +76,7 @@ module.exports = {
         args: [
           "$SNT",
           LICENSE_PRICE,
-          "$StakingPool"
+          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
         ]
       },
       "MetadataStore": {
@@ -86,7 +86,7 @@ module.exports = {
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
-          "$StakingPool"
+          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
         ]
       },
       EscrowRelay: {
@@ -98,7 +98,7 @@ module.exports = {
         ]
       }, 
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT]
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": { },
@@ -117,12 +117,16 @@ module.exports = {
           true
         ]
       },
+
+      /*
       "StakingPool": {
         file: 'staking-pool/contracts/StakingPool.sol',
         args: [
           "$SNT"
         ]
       },
+      */
+
       "RLPReader": {
         file: 'tabookey-gasless/contracts/RLPReader.sol'
       },
@@ -130,6 +134,11 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       OwnedUpgradeabilityProxy: {
+      },
+      KyberNetworkProxy: {
+      },
+      KyberFeeBurner: { // TODO: replace burn address by "$StakingPool"
+        args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
       }
     }
   },
@@ -270,7 +279,21 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
-    dappConnection: ["$WEB3"]
+    dappConnection: ["$WEB3"],
+    contracts: {
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Rinkeby/
+        address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
+      },
+      EscrowRelay: {
+        args: ["$MetadataStore", "$Escrow", "$SNT"],
+        deps: ['RelayHub'],
+        onDeploy: [
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})"
+        ]
+      }
+    }
   },
 
   ropsten: {
@@ -284,7 +307,7 @@ module.exports = {
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
           "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 300000000000000000, gas: 1000000})"
         ]
-      }, 
+      },
       Escrow: {
         args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
       },
@@ -299,7 +322,11 @@ module.exports = {
       },
       "MiniMeTokenFactory": {
         deploy: false
-       }
+      },
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Ropsten/
+        address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      }
     },
     deployment: {
       accounts: [
@@ -321,6 +348,12 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
+    contracts: {
+      KyberNetworkProxy: {
+        // https://developer.kyber.network/docs/Environments-Mainnet/
+        address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      }
+    }
   }
 
   // you can name an environment with specific settings and then specify with

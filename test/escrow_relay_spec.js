@@ -12,6 +12,8 @@ let accounts, arbitrator;
 let receipt;
 let ethOfferId;
 
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+
 config({
   deployment: {
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
@@ -36,28 +38,32 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     ArbitrationLicense: {
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
+
+    /*
     StakingPool: {
       file: 'staking-pool/contracts/StakingPool.sol',
       args: ["$SNT"]
     },
+    */
+
     EscrowRelay: {
       args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
     }, 
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     TestEscrowUpgrade: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     StandardToken: { }
   }
@@ -88,7 +94,7 @@ contract("Escrow Relay", function() {
       SellerLicense.options.address,
       ArbitrationLicense.options.address,
       MetadataStore.options.address,
-      "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
+      BURN_ADDRESS, // TODO: replace by StakingPool address
       1000
     ).encodeABI();
 
