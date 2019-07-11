@@ -1,25 +1,72 @@
-module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, deps) => {
+module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
 
+    {
+      console.log('Setting the initial SellerLicense "template", and calling the init() function');
 
-    const abiEncode = deps.contracts.Escrow.methods.init(
-      deps.contracts.EscrowRelay.options.address,
-      deps.contracts.SellerLicense.options.address,
-      deps.contracts.ArbitrationLicense.options.address,
-      deps.contracts.MetadataStore.options.address,
-      "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
-      1000
-    ).encodeABI();
+      const abiEncode = deps.contracts.SellerLicense.methods.init(
+        deps.contracts.SNT.options.address,
+        licensePrice,
+        burnAddress
+      ).encodeABI();
 
-    console.log('Setting the initial Escrow "template", and calling the init() function');
-    // Here we are setting the initial "template", and calling the init() function
-    const receipt = await deps.contracts.OwnedUpgradeabilityProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
+      const receipt = await deps.contracts.SellerLicenseProxy.methods.upgradeToAndCall(deps.contracts.SellerLicense.options.address, abiEncode).send({from: main, gas: 1000000});
 
-    console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`)
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
 
-    deps.contracts.Escrow.options.address = deps.contracts.OwnedUpgradeabilityProxy.options.address;
+
+    {
+      console.log('Setting the initial ArbitrationLicense "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.ArbitrationLicense.methods.init(
+        deps.contracts.SNT.options.address,
+        arbitrationLicensePrice,
+        burnAddress
+      ).encodeABI();
+
+      const receipt = await deps.contracts.ArbitrationLicenseProxy.methods.upgradeToAndCall(deps.contracts.ArbitrationLicense.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    {
+      console.log('Setting the initial MetadataStore "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.MetadataStore.methods.init(
+        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseProxy.options.address
+      ).encodeABI();
+
+      const receipt = await deps.contracts.MetadataStoreProxy.methods.upgradeToAndCall(deps.contracts.MetadataStore.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    {
+      console.log('Setting the initial Escrow "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.Escrow.methods.init(
+        deps.contracts.EscrowRelay.options.address,
+        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseProxy.options.address,
+        deps.contracts.MetadataStoreProxy.options.address,
+        burnAddress, // TODO: replace with StakingPool address
+        feeMilliPercent
+      ).encodeABI();
+
+      // Here we are setting the initial "template", and calling the init() function
+      const receipt = await deps.contracts.EscrowProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
+      
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
+    deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
+    deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
+    deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
     const arbitrator = addresses[9];
 
