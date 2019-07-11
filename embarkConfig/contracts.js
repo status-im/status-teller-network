@@ -98,7 +98,7 @@ module.exports = {
         ]
       }, 
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT]
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": { },
@@ -117,12 +117,16 @@ module.exports = {
           true
         ]
       },
+
+      /*
       "StakingPool": {
         file: 'staking-pool/contracts/StakingPool.sol',
         args: [
           "$SNT"
         ]
       },
+      */
+
       "RLPReader": {
         file: 'tabookey-gasless/contracts/RLPReader.sol'
       },
@@ -133,8 +137,8 @@ module.exports = {
       },
       KyberNetworkProxy: {
       },
-      KyberFeeBurner: {
-        args: ["$SNT", "0x0000000000000000000000000000000000000002", "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
+      KyberFeeBurner: { // TODO: replace burn address by "$StakingPool"
+        args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
       }
     }
   },
@@ -280,6 +284,14 @@ module.exports = {
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
+      },
+      EscrowRelay: {
+        args: ["$MetadataStore", "$Escrow", "$SNT"],
+        deps: ['RelayHub'],
+        onDeploy: [
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})"
+        ]
       }
     }
   },
