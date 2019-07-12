@@ -1,8 +1,11 @@
 import {ARBITRATION_UNSOLVED, GET_DISPUTED_ESCROWS, RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, BUY_LICENSE,CANCEL_ARBITRATOR_SELECTION_ACTIONS, CHECK_LICENSE_OWNER, LOAD_PRICE, LOAD_ARBITRATION, GET_ARBITRATORS, OPEN_DISPUTE, CANCEL_DISPUTE, REQUEST_ARBITRATOR, CANCEL_ARBITRATOR_REQUEST, CHANGE_ACCEPT_EVERYONE, GET_ARBITRATION_REQUESTS, ACCEPT_ARBITRATOR_REQUEST, REJECT_ARBITRATOR_REQUEST} from './constants';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+
+ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
 

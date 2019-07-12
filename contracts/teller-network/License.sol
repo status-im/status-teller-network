@@ -28,14 +28,37 @@ contract License is Ownable, ApproveAndCallFallBack {
     event Bought(address buyer, uint256 price);
     event PriceChanged(uint256 _price);
 
+    bool internal _initialized;
+
     /**
      * @param _tokenAddress Address of token used to pay for licenses (SNT)
      * @param _price Price of the licenses
+     * @param _burnAddress Address where the license fee is going to be sent
      */
     constructor(address _tokenAddress, uint256 _price, address _burnAddress) public {
+        init(_tokenAddress, _price, _burnAddress);
+    }
+
+    /**
+     * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _tokenAddress Address of token used to pay for licenses (SNT)
+     * @param _price Price of the licenses
+     * @param _burnAddress Address where the license fee is going to be sent
+     */
+    function init(
+        address _tokenAddress,
+        uint256 _price,
+        address _burnAddress
+    ) public {
+        assert(_initialized == false);
+
+        _initialized = true;
+
         price = _price;
         token = ERC20Token(_tokenAddress);
         burnAddress = _burnAddress;
+
+        _setOwner(msg.sender);
     }
 
     /**

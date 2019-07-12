@@ -1,7 +1,5 @@
 const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
 const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
-
-
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
@@ -68,6 +66,9 @@ module.exports = {
     strategy: 'explicit',
 
     contracts: {
+      OwnedUpgradeabilityProxy: {
+        deploy: false
+      },
       License: {
         deploy: false
       },
@@ -76,29 +77,47 @@ module.exports = {
         args: [
           "$SNT",
           LICENSE_PRICE,
-          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
+          BURN_ADDRESS  // TODO: replace with "$StakingPool"
         ]
       },
-      "MetadataStore": {
-        args: ["$SellerLicense", "$ArbitrationLicense"]
+      SellerLicenseProxy: {
+        instanceOf: "OwnedUpgradeabilityProxy"
       },
       ArbitrationLicense: {
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
-          BURN_ADDRESS  // TODO: replace burn address by "$StakingPool"
+          BURN_ADDRESS  // TODO: replace with "$StakingPool"
         ]
       },
+      ArbitrationLicenseProxy: {
+        instanceOf: "OwnedUpgradeabilityProxy"
+      },
+      "MetadataStore": {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
+      },
+      MetadataStoreProxy: {
+        instanceOf: "OwnedUpgradeabilityProxy"
+      },
+      "RLPReader": {
+        file: 'tabookey-gasless/contracts/RLPReader.sol'
+      },
+      "RelayHub": {
+        file: 'tabookey-gasless/contracts/RelayHub.sol'
+      },
       EscrowRelay: {
-        args: ["$MetadataStore", "$Escrow", "$SNT"],
+        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
           "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
         ]
-      }, 
+      },
       Escrow: {
         args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+      },
+      EscrowProxy: {
+        instanceOf: "OwnedUpgradeabilityProxy"
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": { },
@@ -126,18 +145,10 @@ module.exports = {
         ]
       },
       */
-
-      "RLPReader": {
-        file: 'tabookey-gasless/contracts/RLPReader.sol'
-      },
-      "RelayHub": {
-        file: 'tabookey-gasless/contracts/RelayHub.sol'
-      },
-      OwnedUpgradeabilityProxy: {
-      },
+     
       KyberNetworkProxy: {
       },
-      KyberFeeBurner: { // TODO: replace burn address by "$StakingPool"
+      KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
         args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
       }
     }
@@ -149,96 +160,7 @@ module.exports = {
     contracts: {
       StandardToken: { },
       DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
-      MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
-      // OMG: { instanceOf: "StandardToken" },
-      // PPT: { instanceOf: "StandardToken" },
-      // REP: { instanceOf: "StandardToken" },
-      // POWR: { instanceOf: "StandardToken" },
-      // PAY: { instanceOf: "StandardToken" },
-      // VRS: { instanceOf: "StandardToken" },
-      // GNT: { instanceOf: "StandardToken" },
-      // SALT: { instanceOf: "StandardToken" },
-      // BNB: { instanceOf: "StandardToken" },
-      // BAT: { instanceOf: "StandardToken" },
-      // KNC: { instanceOf: "StandardToken" },
-      // DGD: { instanceOf: "StandardToken" },
-      // AE: { instanceOf: "StandardToken" },
-      // TRX: { instanceOf: "StandardToken" },
-      // ETHOS: { instanceOf: "StandardToken" },
-      // RDN: { instanceOf: "StandardToken" },
-      // SNT: { instanceOf: "StandardToken" },
-      // SNGLS: { instanceOf: "StandardToken" },
-      // GNO: { instanceOf: "StandardToken" },
-      // STORJ: { instanceOf: "StandardToken" },
-      // ADX: { instanceOf: "StandardToken" },
-      // FUN: { instanceOf: "StandardToken" },
-      // CVC: { instanceOf: "StandardToken" },
-      // ICN: { instanceOf: "StandardToken" },
-      // WTC: { instanceOf: "StandardToken" },
-      // BTM: { instanceOf: "StandardToken" },
-      // ZRX: { instanceOf: "StandardToken" },
-      // BNT: { instanceOf: "StandardToken" },
-      // MTL: { instanceOf: "StandardToken" },
-      // PPP: { instanceOf: "StandardToken" },
-      // LINK: { instanceOf: "StandardToken" },
-      // KIN: { instanceOf: "StandardToken" },
-      // ANT: { instanceOf: "StandardToken" },
-      // MGO: { instanceOf: "StandardToken" },
-      // MCO: { instanceOf: "StandardToken" },
-      // LRC: { instanceOf: "StandardToken" },
-      // ZSC: { instanceOf: "StandardToken" },
-      // DATA: { instanceOf: "StandardToken" },
-      // RCN: { instanceOf: "StandardToken" },
-      // WINGS: { instanceOf: "StandardToken" },
-      // EDG: { instanceOf: "StandardToken" },
-      // MLN: { instanceOf: "StandardToken" },
-      // MDA: { instanceOf: "StandardToken" },
-      // PLR: { instanceOf: "StandardToken" },
-      // QRL: { instanceOf: "StandardToken" },
-      // MOD: { instanceOf: "StandardToken" },
-      // TAAS: { instanceOf: "StandardToken" },
-      // GRID: { instanceOf: "StandardToken" },
-      // SAN: { instanceOf: "StandardToken" },
-      // SNM: { instanceOf: "StandardToken" },
-      // REQ: { instanceOf: "StandardToken" },
-      // SUB: { instanceOf: "StandardToken" },
-      // MANA: { instanceOf: "StandardToken" },
-      // AST: { instanceOf: "StandardToken" },
-      // R: { instanceOf: "StandardToken" },
-      // 1ST: { instanceOf: "StandardToken" },
-      // CFI: { instanceOf: "StandardToken" },
-      // ENG: { instanceOf: "StandardToken" },
-      // AMB: { instanceOf: "StandardToken" },
-      // XPA: { instanceOf: "StandardToken" },
-      // OTN: { instanceOf: "StandardToken" },
-      // TRST: { instanceOf: "StandardToken" },
-      // TKN: { instanceOf: "StandardToken" },
-      // RHOC: { instanceOf: "StandardToken" },
-      // TGT: { instanceOf: "StandardToken" },
-      // EVX: { instanceOf: "StandardToken" },
-      // ICOS: { instanceOf: "StandardToken" },
-      // DNT: { instanceOf: "StandardToken" },
-      // //"٨": { instanceOf: "StandardToken" },
-      // EDO: { instanceOf: "StandardToken" },
-      // CSNO: { instanceOf: "StandardToken" },
-      // COB: { instanceOf: "StandardToken" },
-      // ENJ: { instanceOf: "StandardToken" },
-      // AVT: { instanceOf: "StandardToken" },
-      // TIME: { instanceOf: "StandardToken" },
-      // CND: { instanceOf: "StandardToken" },
-      // STX: { instanceOf: "StandardToken" },
-      // XAUR: { instanceOf: "StandardToken" },
-      // VIB: { instanceOf: "StandardToken" },
-      // PRG: { instanceOf: "StandardToken" },
-      // DPY: { instanceOf: "StandardToken" },
-      // CDT: { instanceOf: "StandardToken" },
-      // TNT: { instanceOf: "StandardToken" },
-      // DRT: { instanceOf: "StandardToken" },
-      // SPANK: { instanceOf: "StandardToken" },
-      // BRLN: { instanceOf: "StandardToken" },
-      // USDC: { instanceOf: "StandardToken" },
-      // LPT: { instanceOf: "StandardToken" },
-      // ST: { instanceOf: "StandardToken" }
+      MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] }
     },
     deployment: {
       // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
@@ -253,7 +175,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS)
   },
 
   // merges with the settings in default
@@ -278,7 +200,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
     dappConnection: ["$WEB3"],
     contracts: {
       KyberNetworkProxy: {
@@ -286,7 +208,7 @@ module.exports = {
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
       },
       EscrowRelay: {
-        args: ["$MetadataStore", "$Escrow", "$SNT"],
+        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
@@ -301,15 +223,15 @@ module.exports = {
     tracking: 'shared.ropsten.chains.json',
     contracts: {
       EscrowRelay: {
-        args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
+        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 300000000000000000, gas: 1000000})"
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 10000000000000000, gas: 1000000})"
         ]
       },
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, FEE_MILLI_PERCENT],
+        args: ["0x0000000000000000000000000000000000000000", "$SellerLicenseProxy", "$ArbitrationLicenseProxy", "$MetadataStoreProxy", BURN_ADDRESS, FEE_MILLI_PERCENT]
       },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
@@ -341,7 +263,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
     dappConnection: ["$WEB3"]
   },
 

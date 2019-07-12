@@ -13,6 +13,8 @@ import {
 } from './constants';
 import {promiseEventEmitter} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
+import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
+SellerLicense.options.address = SellerLicenseProxy.options.address;
 
 window.SNT = SNT;
 

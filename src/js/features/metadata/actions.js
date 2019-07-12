@@ -4,6 +4,9 @@ import {
   SIGN_MESSAGE, DELETE_OFFER
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
 
 export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
