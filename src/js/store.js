@@ -19,6 +19,17 @@ import arbitration from './features/arbitration';
 import metadata from './features/metadata';
 import approval from './features/approval';
 
+const emptyMiddleWare = store => next => action => {
+  next(action);
+}
+
+function getLogrocket() {
+  if (!process || !process.env || process.env.NODE_ENV !== 'development') {
+    return LogRocket.reduxMiddleware();
+  }
+  return emptyMiddleWare;
+}
+
 const persistConfig = {
   key: 'teller-network-store',
   storage,
@@ -49,7 +60,7 @@ const store = createStore(
     applyMiddleware(
       routerMiddleware(history),
       sagaMiddleware,
-      LogRocket.reduxMiddleware()
+      getLogrocket()
     ),
   ),
 );

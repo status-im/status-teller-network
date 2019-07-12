@@ -18,8 +18,10 @@ import App from './js/layout/App';
 import history from './js/history';
 import {store, persistor} from './js/store';
 
-LogRocket.init('lqnuu9/teller-network');
-setupLogRocketReact(LogRocket);
+if (!process || !process.env || process.env.NODE_ENV !== 'development') {
+  LogRocket.init('lqnuu9/teller-network');
+  setupLogRocketReact(LogRocket);
+}
 
 ReactDOM.render(
   <Provider store={store}>
