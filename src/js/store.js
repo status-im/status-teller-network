@@ -1,3 +1,4 @@
+import LogRocket from 'logrocket';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
@@ -47,7 +48,8 @@ const store = createStore(
   composeEnhancers(
     applyMiddleware(
       routerMiddleware(history),
-      sagaMiddleware
+      sagaMiddleware,
+      LogRocket.reduxMiddleware()
     ),
   ),
 );

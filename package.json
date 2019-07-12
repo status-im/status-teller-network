@@ -63,6 +63,8 @@
     "i18next-browser-languagedetector": "^2.2.4",
     "identicon.js": "^2.3.3",
     "lodash": "^4.17.11",
+    "logrocket": "^1.0.1",
+    "logrocket-react": "^3.0.0",
     "merge": "^1.2.1",
     "moment": "^2.23.0",
     "number-to-bn": "^1.7.0",

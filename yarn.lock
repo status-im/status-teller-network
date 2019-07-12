@@ -11886,6 +11886,16 @@ loglevel@^1.4.1:
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.1.tgz#e0fc95133b6ef276cdc8887cdaf24aa6f156f8fa"
   integrity sha1-4PyVEztu8nbNyIh82vJKpvFW+Po=
 
+logrocket-react@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/logrocket-react/-/logrocket-react-3.0.0.tgz#b0e1bfa4de25ae89c5da890fbb1c18276a1ac82f"
+  integrity sha512-vjx2MkFfvKDVilGuHBUuBPyr2en3tvd7bd9rozwEeYELk/DNL5z7Aqoqaz7DLlIhJndOG7/wIv873OdupySiRQ==
+
+logrocket@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-1.0.1.tgz#0555ec619d2db54a7b345c4e8df09baea835b176"
+  integrity sha512-oPA0c5GzMKsWp/6p19OaujZQMzttluqVOI+989uHeciPAljPZvGEpZRbNO3Rr+jC/8jVLJdlMP9IHuyhKsASGA==
+
 looper@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/looper/-/looper-2.0.0.tgz#66cd0c774af3d4fedac53794f742db56da8f09ec"
