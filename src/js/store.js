@@ -1,3 +1,4 @@
+import LogRocket from 'logrocket';
 import { applyMiddleware, compose, createStore } from 'redux';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
@@ -17,6 +18,17 @@ import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
 import approval from './features/approval';
+
+const emptyMiddleWare = store => next => action => {
+  next(action);
+}
+
+function getLogrocket() {
+  if (!process || !process.env || process.env.NODE_ENV !== 'development') {
+    return LogRocket.reduxMiddleware();
+  }
+  return emptyMiddleWare;
+}
 
 const persistConfig = {
   key: 'teller-network-store',
@@ -47,7 +59,8 @@ const store = createStore(
   composeEnhancers(
     applyMiddleware(
       routerMiddleware(history),
-      sagaMiddleware
+      sagaMiddleware,
+      getLogrocket()
     ),
   ),
 );
