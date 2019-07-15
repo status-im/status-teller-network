@@ -295,13 +295,19 @@ contract MetadataStore is MessageSigned {
         address payable arbitrator,
         bool deleted
     ) {
+        // In case arbitrator rejects the seller
+        address payable arbitrator = offers[_id].arbitrator;
+        if(!arbitrationLicenses.isAllowed(offers[_id].owner, arbitrator)){
+            arbitrator = address(0);
+        }
+
         return (
             offers[_id].asset,
             offers[_id].currency,
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].owner,
-            offers[_id].arbitrator,
+            arbitrator,
             offers[_id].deleted
         );
     }
