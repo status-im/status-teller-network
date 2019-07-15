@@ -48,7 +48,7 @@ export const cancelArbitratorActions = () => ({type: CANCEL_ARBITRATOR_SELECTION
 
 export const changeAcceptEveryone = (acceptAny) => ({type: CHANGE_ACCEPT_EVERYONE, acceptAny, toSend: ArbitrationLicense.methods.changeAcceptAny(acceptAny)});
 
-export const getArbitratorRequests = (arbitrator) => ({type: GET_ARBITRATION_REQUESTS, arbitrator}); 
+export const getArbitratorRequests = () => ({type: GET_ARBITRATION_REQUESTS}); 
 
 export const acceptRequest = (id) => ({type: ACCEPT_ARBITRATOR_REQUEST, id, toSend: ArbitrationLicense.methods.acceptRequest(id)});
 

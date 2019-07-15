@@ -127,14 +127,14 @@ export function *onGetArbitratorApprovalRequests() {
   yield takeEvery(GET_ARBITRATION_REQUESTS, doGetArbitratorApprovalRequests);
 }
 
-export function *doGetArbitratorApprovalRequests({address}) {
+export function *doGetArbitratorApprovalRequests() {
   try {
-    const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: address} });
+    const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
     const requests = yield all(events.map(function *(event) {
       const request = event.returnValues;
       const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
 
-      if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator,address)) return null;
+      if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator, web3.eth.defaultAccount)) return null;
 
       request.status = requestDetail.status;
       return request;
