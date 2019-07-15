@@ -2,7 +2,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { Card, CardBody, Button } from 'reactstrap';
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 import { fromTokenDecimals, toTokenDecimals } from '../../../utils/numbers';
 
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -29,6 +29,13 @@ const Done = () => (
     <h2 className="mt-4">Done.</h2>
     <p className="m-0 font-weight-bold">Trade complete. Funds are now in the buyer&apos;s wallet</p>
     <p className="m-0 text-muted">Thank you for using Status Teller Network</p>
+  </Fragment>
+);
+
+const Canceled = () => (
+  <Fragment>
+    <RoundedIcon icon={faTimes} bgColor="grey"/>
+    <h2 className="mt-4">Canceled</h2>
   </Fragment>
 );
 
@@ -178,6 +185,7 @@ class CardEscrowSeller extends Component {
     if (trade.releaseStatus === States.success || trade.status === escrow.helpers.tradeStates.released) step = 6;
     if (arbitrationDetails && arbitrationDetails.open && arbitrationDetails.result.toString() === "0") step = 10;
     if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) step = 11;
+    if (trade.status === escrow.helpers.tradeStates.canceled) step = 12;
 
     let component;
     switch (step) {
@@ -186,6 +194,9 @@ class CardEscrowSeller extends Component {
         break;
       case 11:
         component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_SELLER} isBuyer={false}/>;
+        break;
+      case 12:
+        component = <Canceled />;
         break;
       case 6:
         component = <Done/>;
