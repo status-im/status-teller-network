@@ -1,10 +1,19 @@
 pragma solidity ^0.5.7;
-
+/**
+ * @title KyberNetworkProxy
+ * @dev Mock of the KyberNetworkProxy. Only used in development
+ */
 contract KyberNetworkProxy {
 
     constructor() public {
     }
 
+    /**
+     * @dev Get a mocked up rate for the trade
+     * @param src Address of the source token
+     * @param dest Address of the destination token
+     * @param srcQty Quantity of the source token
+     */
     function getExpectedRate(address src, address dest, uint srcQty)
         public view
         returns(uint expectedRate, uint slippageRate)

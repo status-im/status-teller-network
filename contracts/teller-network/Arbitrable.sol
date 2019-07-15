@@ -72,12 +72,18 @@ contract Arbitrable {
         emit ArbitrationCanceled(_escrowId);
     }
 
+    /**
+     * @notice Opens a dispute between a seller and a buyer
+     * @param _escrowId Id of the Escrow that is being disputed
+     * @param _openBy Address of the person opening the dispute (buyer or seller)
+     * @param motive Description of the problem
+     */
     function _openDispute(uint _escrowId, address _openBy, string memory motive) internal {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
         address arbitratorAddress = getArbitrator(_escrowId);
-        
+
         require(arbitratorAddress != address(0), "Arbitrator is required");
 
         arbitrationCases[_escrowId] = ArbitrationCase({

@@ -376,6 +376,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         _cancel(_escrowId, trx, false);
     }
 
+    // Same as cancel, but relayed by a contract so we get the sender as param
     function cancel_relayed(address _sender, uint _escrowId) external {
         assert(msg.sender == relayer);
 
@@ -438,6 +439,10 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
     }
 
+    /**
+     * @notice Returns basic trade informations (buyer address, seller address, token address and token amount)
+     * @param _escrowId Id of the escrow
+     */
     function getBasicTradeData(uint _escrowId)
       external
       view
