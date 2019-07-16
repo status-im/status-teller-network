@@ -113,7 +113,7 @@ contract ArbitrationLicense is License {
      * @param _account Seller account
      * @return Request Id
      */
-    function getId(address _arbitrator, address _account) external view returns(bytes32){
+    function getId(address _arbitrator, address _account) external pure returns(bytes32){
         return keccak256(abi.encodePacked(_arbitrator,_account));
     }
 

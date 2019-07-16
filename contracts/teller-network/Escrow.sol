@@ -170,7 +170,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @dev Requires contract to be unpaused.
      *      The seller needs to be licensed.
      */
-    function create (
+    function createEscrow(
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice,

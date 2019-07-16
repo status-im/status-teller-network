@@ -17,7 +17,7 @@ contract IEscrow {
       address payable arbitrator;
   }
 
-  function create(
+  function createEscrow(
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice,

@@ -15,9 +15,12 @@ contract KyberNetworkProxy {
      * @param srcQty Quantity of the source token
      */
     function getExpectedRate(address src, address dest, uint srcQty)
-        public view
+        public pure
         returns(uint expectedRate, uint slippageRate)
     {
+        if (src == address(0) || dest == address(0) || srcQty == 0) {
+            // Useless condition to get rid of the unused warning
+        }
         return (32749000000000000000, 31766530000000000000);
     }
 
@@ -44,6 +47,9 @@ contract KyberNetworkProxy {
         payable
         returns(uint)
     {
+        if (src == address(0) || dest == address(0) || destAddress == address(0) || walletId == address(0) || srcAmount == 0 || maxDestAmount == 0 || minConversionRate == 0) {
+            // Useless condition to get rid of the unused warning
+        }
       return maxDestAmount;
     }
 
@@ -59,9 +65,12 @@ contract KyberNetworkProxy {
         address dest,
         uint minConversionRate
     )
-        public
+        public pure
         returns(uint)
     {
+        if (src == address(0) || dest == address(0) || srcAmount == 0 || minConversionRate == 0) {
+            // Useless condition to get rid of the unused warning
+        }
         return 100;
     }
 
@@ -70,6 +79,9 @@ contract KyberNetworkProxy {
     /// @param minConversionRate The minimal conversion rate. If actual rate is lower, trade is canceled.
     /// @return amount of actual dest tokens
     function swapEtherToToken(address token, uint minConversionRate) public payable returns(uint) {
+        if (token == address(0) || minConversionRate == 0) {
+            // Useless condition to get rid of the unused warning
+        }
         return 200;
     }
 }

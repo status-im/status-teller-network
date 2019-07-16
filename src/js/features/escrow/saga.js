@@ -35,7 +35,7 @@ Escrow.options.address = EscrowProxy.options.address;
 const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
-  const toSend = Escrow.methods.create(
+  const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
     escrow.assetPrice,

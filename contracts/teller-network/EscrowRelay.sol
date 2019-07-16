@@ -20,7 +20,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   mapping(address => uint) public lastActivity;
 
-  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("create(uint256,uint256,uint8,uint256,bytes,string,string,uint,bytes)"));
+  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint8,uint256,bytes,string,string,uint,bytes)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
@@ -89,7 +89,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _nonce buyer's nonce
    * @param _signature buyer's signature
    */
-  function create (
+  function createEscrow(
     uint _offerId,
     uint _tokenAmount,
     uint _assetPrice,
@@ -100,7 +100,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes memory _signature
   ) public returns (uint escrowId) {
     lastActivity[get_sender()] = block.timestamp;
-    escrowId = escrow.create(
+    escrowId = escrow.createEscrow(
          _offerId,
          _tokenAmount,
          _assetPrice,
@@ -151,6 +151,8 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param encoded_function Function that will be called on the Escrow contract
    * @param gas_price Gas price
    * @param transaction_fee Fee for the relay (unused by us)
+   * @dev relay and transaction_fee give warning because they are unused, but they are useless in our relay workflow
+   * @dev We cannot remove those parameters because they are called by an external contract
    */
   function accept_relayed_call(
     address relay,
