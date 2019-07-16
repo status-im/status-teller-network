@@ -47,7 +47,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case CHECK_LICENSE_OWNER:
       return {
-        ...state, licenseOwner: false
+        ...state
       };
     case CHECK_LICENSE_OWNER_SUCCEEDED:
       return {

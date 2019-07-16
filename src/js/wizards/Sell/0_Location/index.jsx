@@ -5,7 +5,6 @@ import {connect} from "react-redux";
 import DOMPurify from 'dompurify';
 
 import SellerPosition from './components/SellerPosition';
-import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 
@@ -13,22 +12,12 @@ class Location extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: props.seller.location,
-      ready: false
+      location: props.seller.location
     };
     this.validate(props.seller.location);
     this.props.footer.onPageChange(() => {
       this.props.setLocation(DOMPurify.sanitize(this.state.location));
     });
-  }
-
-  componentDidMount() {
-    if (this.props.profile && this.props.profile.location) {
-      this.props.setLocation(DOMPurify.sanitize(this.props.profile.location));
-      this.props.wizard.next();
-    } else {
-      this.setState({ready: true});
-    }
   }
 
   validate(location) {
@@ -45,10 +34,6 @@ class Location extends Component {
   };
 
   render() {
-    if (!this.state.ready) {
-      return <Loading page/>;
-    }
-
     return <SellerPosition changeLocation={this.changeLocation} location={this.state.location}/>;
   }
 }
