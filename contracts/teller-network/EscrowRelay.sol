@@ -89,7 +89,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _nonce buyer's nonce
    * @param _signature buyer's signature
    */
-  function create (
+  function createEscrow(
     uint _offerId,
     uint _tokenAmount,
     uint _assetPrice,
@@ -100,7 +100,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes memory _signature
   ) public returns (uint escrowId) {
     lastActivity[get_sender()] = block.timestamp;
-    escrowId = escrow.create(
+    escrowId = escrow.createEscrow(
          _offerId,
          _tokenAmount,
          _assetPrice,
@@ -162,6 +162,10 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes4 fSign;
     assembly {
       fSign := mload(add(encoded_function, add(0x20, 0)))
+    }
+
+    if (relay == address(0) || transaction_fee == 0) {
+      // Useless condition to get rid of the unused warning
     }
 
     if(from.balance > 600000 * gas_price) return ERROR_ENOUGH_BALANCE;
