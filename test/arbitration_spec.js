@@ -108,7 +108,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -142,7 +142,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
