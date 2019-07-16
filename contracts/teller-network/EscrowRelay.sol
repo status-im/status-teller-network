@@ -151,6 +151,8 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param encoded_function Function that will be called on the Escrow contract
    * @param gas_price Gas price
    * @param transaction_fee Fee for the relay (unused by us)
+   * @dev relay and transaction_fee give warning because they are unused, but they are useless in our relay workflow
+   * @dev We cannot remove those parameters because they are called by an external contract
    */
   function accept_relayed_call(
     address relay,
@@ -162,10 +164,6 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes4 fSign;
     assembly {
       fSign := mload(add(encoded_function, add(0x20, 0)))
-    }
-
-    if (relay == address(0) || transaction_fee == 0) {
-      // Useless condition to get rid of the unused warning
     }
 
     if(from.balance > 600000 * gas_price) return ERROR_ENOUGH_BALANCE;
