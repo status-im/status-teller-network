@@ -19,9 +19,9 @@ import arbitration from './features/arbitration';
 import metadata from './features/metadata';
 import approval from './features/approval';
 
-const emptyMiddleWare = store => next => action => {
+const emptyMiddleWare = _store => next => action => {
   next(action);
-}
+};
 
 function getLogrocket() {
   if (!process || !process.env || process.env.NODE_ENV !== 'development') {
