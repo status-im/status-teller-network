@@ -12,7 +12,6 @@ import BuyButton from '../License/components/BuyButton';
 import Balance from '../License/components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
-import license from "../../features/license";
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
