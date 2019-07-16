@@ -6754,10 +6754,10 @@ embark-solc@^4.0.3:
     semver "^5.6.0"
     shelljs "^0.8.1"
 
-embark-solium@0.0.1:
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/embark-solium/-/embark-solium-0.0.1.tgz#0a6ee5bccd74d8fb0c153c5b22adb06bdf113411"
-  integrity sha512-wAJJiSjfND/ICNBPTnAF12t9lYiFD1TT6ZXxRNFT+NzCwLDdYRYH3Ymq5G0P42gknne8X47hcwTT0T6Gggyxog==
+embark-solium@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/embark-solium/-/embark-solium-0.1.0.tgz#abdf3cfcbaa62ab39bd816fa4ac8ef7231378f75"
+  integrity sha512-4vX4kg/iO5Tn5v0vD5lZi2u4o/o+Uyi6o8j/FMc9TMbQf0HhgO43q1UU2sLr59GUZbSn00KaLX1r7B2+kHYthw==
   dependencies:
     solium "1.1.0"
     text-table "^0.2.0"
