@@ -33,7 +33,7 @@ class MarginSelectorForm extends Component {
                       onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
             <Col>
-              <InputGroup className="full-width-input">
+              <InputGroup className="full-width-input margin-input">
                 <Input type="number"
                        name="margin"
                        id="margin"

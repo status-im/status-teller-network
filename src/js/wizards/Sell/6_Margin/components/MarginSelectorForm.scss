@@ -19,3 +19,16 @@ $slider-height: 10px;
     border-color: $primary;
   }
 }
+
+.margin-input {
+  .input-group-append {
+    width: 52px;
+  }
+}
+@media screen and (max-width: 450px) {
+  .margin-input {
+    .form-control {
+      padding: 0.375rem 0.75rem;
+    }
+  }
+}
