@@ -348,6 +348,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         EscrowStatus mStatus = transactions[_escrowId].status;
         require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
         require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
+        require(!isDisputed(_escrowId), "Can't release a transaction that has an arbitration process");
         _release(_escrowId, transactions[_escrowId], false);
     }
 
