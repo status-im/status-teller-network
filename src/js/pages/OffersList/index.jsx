@@ -92,7 +92,7 @@ class OffersList extends Component {
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH);
 
     if (this.state.locationCoords) {
-      filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
+      filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
     }
 
     if (this.state.tokenFilter !== '') {
