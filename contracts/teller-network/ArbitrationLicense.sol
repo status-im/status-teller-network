@@ -33,6 +33,11 @@ contract ArbitrationLicense is License {
     event RequestRejected(bytes32 id, address indexed arbitrator, address indexed seller);
     event RequestCanceled(bytes32 id, address indexed arbitrator, address indexed seller);
 
+    /**
+     * @param _tokenAddress Address of token used to pay for licenses (SNT)
+     * @param _price Amount of token needed to buy a license
+     * @param _burnAddress Burn address where the price of the license is sent
+     */
     constructor(address _tokenAddress, uint256 _price, address _burnAddress)
       License(_tokenAddress, _price, _burnAddress)
       public {}
@@ -44,10 +49,19 @@ contract ArbitrationLicense is License {
         return _buy(msg.sender, false);
     }
 
+    /**
+     * @notice Buy an arbitrator license and set if the arbitrator accepts any seller
+     * @param _acceptAny When set to true, all sellers are accepted by the arbitrator
+     */
     function buy(bool _acceptAny) external returns(uint) {
         return _buy(msg.sender, _acceptAny);
     }
 
+    /**
+     * @notice Buy an arbitrator license and set if the arbitrator accepts any seller. Sets the arbitrator as the address in params instead of the sender
+     * @param _sender Address of the arbitrator
+     * @param _acceptAny When set to true, all sellers are accepted by the arbitrator
+     */
     function _buy(address _sender, bool _acceptAny) internal returns (uint id) {
         id = _buyFrom(_sender);
         arbitratorlicenseDetails[_sender].id = id;

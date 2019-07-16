@@ -144,6 +144,14 @@ contract EscrowRelay is RelayRecipient, Ownable {
   // ========================================================================
   // Gas station network
 
+  /**
+   * @notice Function returning if we accept or not the relayed call (do we pay or not for the gas)
+   * @param relay Address of the relay hub (that transmits to the worker)
+   * @param from Address of the buyer getting a free transaction
+   * @param encoded_function Function that will be called on the Escrow contract
+   * @param gas_price Gas price
+   * @param transaction_fee Fee for the relay (unused by us)
+   */
   function accept_relayed_call(
     address relay,
     address from,
@@ -192,6 +200,15 @@ contract EscrowRelay is RelayRecipient, Ownable {
     return OK;
   }
 
+  /**
+   * @notice Function executed after the relay. Unused by us
+   * @param relay Address of the relay hub (that transmits to the worker)
+   * @param from Address of the buyer getting a free transaction
+   * @param encoded_function Function that will be called on the Escrow contract
+   * @param success Boolean saying if the relay was a success
+   * @param used_gas Gas price
+   * @param transaction_fee Fee for the relay (unused by us)
+   */
   function post_relayed_call(
     address relay,
     address from,
