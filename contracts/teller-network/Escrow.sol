@@ -465,7 +465,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
-        require(trx.buyer == msg.sender || metadataStore.getOfferOwner(trx.offerId) == msg.sender, "Only participants can invoke this function");
+        require(trx.buyer == msg.sender || trx.seller == msg.sender, "Only participants can invoke this function");
         require(trx.status == EscrowStatus.PAID, "Cases can only be open for paid transactions");
 
         _openDispute(_escrowId, msg.sender, _motive);
