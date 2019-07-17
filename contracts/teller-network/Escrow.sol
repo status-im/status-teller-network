@@ -142,6 +142,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
         require(_tokenAmount != 0 && _assetPrice != 0, "Trade amounts cannot be 0");
+        require(arbitrator != address(0), "Arbitrator is required");
 
         escrowId = transactions.length++;
 
