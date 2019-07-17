@@ -219,7 +219,7 @@ module.exports = {
   },
 
   ropsten: {
-    gasPrice: "20000000000",
+    gasPrice: "10000000000",
     tracking: 'shared.ropsten.chains.json',
     contracts: {
       EscrowRelay: {
@@ -227,7 +227,7 @@ module.exports = {
         deps: ['RelayHub'],
         onDeploy: [
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 10000000000000000, gas: 1000000})"
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 100000000000000000, gas: 1000000})"
         ]
       },
       Escrow: {
