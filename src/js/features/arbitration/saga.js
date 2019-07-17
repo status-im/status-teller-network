@@ -44,7 +44,9 @@ export function *doGetArbitrators({address, includeAll}) {
     for(let i = 0; i < cnt; i++){
       const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
       const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
-      if(isAllowed || includeAll) {
+      const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(arbitrator).call);
+
+      if(isLicenseOwner && (isAllowed || includeAll)) {
         const id = web3.utils.soliditySha3(arbitrator, address);
         arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
         arbitrators[arbitrator].isAllowed = isAllowed;
