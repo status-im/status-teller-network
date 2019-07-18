@@ -230,9 +230,7 @@ contract MetadataStore is MessageSigned {
         address payable _arbitrator
     ) public {
         require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
-
-        if(_arbitrator != address(0))
-            require(arbitrationLicenses.isAllowed(msg.sender, _arbitrator), "Arbitrator does not allow this transaction");
+        require(arbitrationLicenses.isAllowed(msg.sender, _arbitrator), "Arbitrator does not allow this transaction");
 
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");

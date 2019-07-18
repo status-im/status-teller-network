@@ -17,7 +17,7 @@ import Loading from '../../components/Loading';
 import {sortByDate, sortByRating} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
-import {addressCompare} from "../../utils/address";
+import {addressCompare, zeroAddress} from "../../utils/address";
 import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 class OffersList extends Component {
@@ -89,7 +89,7 @@ class OffersList extends Component {
 
   render() {
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
-    let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH);
+    let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.1);
