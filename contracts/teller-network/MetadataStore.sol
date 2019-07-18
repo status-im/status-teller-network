@@ -296,9 +296,9 @@ contract MetadataStore is MessageSigned {
         bool deleted
     ) {
         // In case arbitrator rejects the seller
-        address payable arbitrator = offers[_id].arbitrator;
-        if(!arbitrationLicenses.isAllowed(offers[_id].owner, arbitrator)){
-            arbitrator = address(0);
+        address payable offerArbitrator = offers[_id].arbitrator;
+        if(!arbitrationLicenses.isAllowed(offers[_id].owner, offerArbitrator)){
+            offerArbitrator = address(0);
         }
 
         return (
@@ -307,7 +307,7 @@ contract MetadataStore is MessageSigned {
             offers[_id].margin,
             offers[_id].paymentMethods,
             offers[_id].owner,
-            arbitrator,
+            offerArbitrator,
             offers[_id].deleted
         );
     }
