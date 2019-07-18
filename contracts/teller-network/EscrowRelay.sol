@@ -146,20 +146,17 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   /**
    * @notice Function returning if we accept or not the relayed call (do we pay or not for the gas)
-   * @param relay Address of the relay hub (that transmits to the worker)
    * @param from Address of the buyer getting a free transaction
    * @param encoded_function Function that will be called on the Escrow contract
    * @param gas_price Gas price
-   * @param transaction_fee Fee for the relay (unused by us)
-   * @dev relay and transaction_fee give warning because they are unused, but they are useless in our relay workflow
-   * @dev We cannot remove those parameters because they are called by an external contract
+   * @dev relay and transaction_fee are useless in our relay workflow
    */
   function accept_relayed_call(
-    address relay,
+    address /* relay */,
     address from,
     bytes memory encoded_function,
     uint gas_price,
-    uint transaction_fee
+    uint /* transaction_fee */
   ) public view returns(uint32) {
     bytes4 fSign;
     assembly {
@@ -204,20 +201,14 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   /**
    * @notice Function executed after the relay. Unused by us
-   * @param relay Address of the relay hub (that transmits to the worker)
-   * @param from Address of the buyer getting a free transaction
-   * @param encoded_function Function that will be called on the Escrow contract
-   * @param success Boolean saying if the relay was a success
-   * @param used_gas Gas price
-   * @param transaction_fee Fee for the relay (unused by us)
    */
   function post_relayed_call(
-    address relay,
-    address from,
-    bytes memory encoded_function,
-    bool success,
-    uint used_gas,
-    uint transaction_fee
+    address /* relay */,
+    address /* from */,
+    bytes memory /* encoded_function */,
+    bool /* success */,
+    uint /* used_gas */,
+    uint /* transaction_fee */
   ) public {
     // nothing to be done post-call.
     // still, we must implement this method.
