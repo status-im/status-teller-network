@@ -262,7 +262,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         require(trx.status == EscrowStatus.FUNDED, "Transaction is not funded");
         require(trx.expirationTime > block.timestamp, "Transaction already expired");
-        require(trx.buyer == _sender || trx.seller == _sender, "Only participants can invoke this function");
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
 
         trx.status = EscrowStatus.PAID;
 

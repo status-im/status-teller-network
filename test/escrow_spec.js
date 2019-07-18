@@ -573,7 +573,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.pay(escrowId).send({from: accounts[7]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the buyer can invoke this function");
       }
     });
 
