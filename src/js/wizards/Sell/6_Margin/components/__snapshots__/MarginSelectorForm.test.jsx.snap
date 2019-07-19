@@ -70,7 +70,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
         }
       >
         <InputGroup
-          className="full-width-input"
+          className="full-width-input margin-input"
           tag="div"
         >
           <Control(s)
