@@ -13,6 +13,8 @@ import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../feat
 
 import './Trades.scss';
 
+const COMPLETED_STATES = [tradeStates.expired, tradeStates.canceled, tradeStates.arbitration_closed, tradeStates.released];
+
 const getTradeStyle = (trade, isBuyer) => {
   if (trade.mining) {
     return {text: 'Mining', className: 'bg-info'};
@@ -55,7 +57,8 @@ const getTradeStyle = (trade, isBuyer) => {
 class Trades extends Component {
   state = {
     filteredState: '',
-    showFilters: false
+    showFilters: false,
+    hideCompletedTrades: false
   };
 
   filterState(stateName) {
@@ -84,6 +87,17 @@ class Trades extends Component {
               </Input>
             </Col>
           </FormGroup>
+          <FormGroup row>
+            <Col sm={{size: 12}}>
+              <FormGroup check>
+                <Label check>
+                  <Input type="checkbox" id="hide-done-trades"
+                         onChange={() => this.setState({hideCompletedTrades: !this.state.hideCompletedTrades})}/>
+                         Hide completed trades
+                </Label>
+              </FormGroup>
+            </Col>
+          </FormGroup>
         </Form>}
 
         {!this.state.showFilters && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
@@ -92,6 +106,9 @@ class Trades extends Component {
           {(() => {
             const trades = this.props.trades.map((trade, index) => {
               if (this.state.filteredState && trade.status !== this.state.filteredState) {
+                return null;
+              }
+              if (this.state.hideCompletedTrades && COMPLETED_STATES.includes(trade.status)) {
                 return null;
               }
               const isBuyer = addressCompare(trade.buyer, address);
