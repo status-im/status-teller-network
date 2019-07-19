@@ -7,10 +7,12 @@ import metadata from '../../features/metadata';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import PropTypes from 'prop-types';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import { ListGroup, ListGroupItem, Button, Row,  Col } from 'reactstrap';
+import Switch from "react-switch";
 import classnames from 'classnames';
 import { formatArbitratorName } from '../../utils/strings';
+
+import './index.scss';
 
 const requestStatus = {
   [arbitration.constants.AWAIT]: "Pending",
@@ -23,14 +25,14 @@ class SellerApproval extends Component {
   constructor(props) {
     super(props);
     props.checkLicenseOwner();
-    props.getArbitratorRequests();    
+    props.getArbitratorRequests();
     this.loadedUsers = [];
   }
 
   onToggleCheckbox = (checked) => {
     this.props.changeAcceptEveryone(checked);
-  }
-  
+  };
+
 
   componentDidUpdate(prevProps) {
     if ((!prevProps.requests && this.props.requests) || prevProps.requests.length !== this.props.requests) {
@@ -45,11 +47,11 @@ class SellerApproval extends Component {
 
   acceptRequest = id => () => {
     this.props.acceptRequest(id);
-  }
+  };
 
   rejectRequest = id => () => {
     this.props.rejectRequest(id);
-  }
+  };
 
   render(){
     const {loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users} = this.props;
@@ -64,44 +66,50 @@ class SellerApproval extends Component {
     if(loading) return <Loading mining={true} txHash={txHash} />;
 
     return (
-    <Fragment>
+      <Fragment>
         <h2 className="mb-4">Seller Management</h2>
         <h3 className="mb-2">Accept all sellers</h3>
-        {<BootstrapSwitchButton onlabel="ON" offlabel="OFF" checked={acceptsEveryone} onChange={this.onToggleCheckbox}/>}
-        
-        { !acceptsEveryone && <Fragment>
+        <div>Off <Switch onChange={this.onToggleCheckbox} checked={acceptsEveryone} className="accept-all-switch"
+                         onColor="#44D058"/> On
+        </div>
+        <p className="mt-2">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
+
+        {!acceptsEveryone && <Fragment>
           <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
           <ListGroup>
-          {requests.map((request, i) => {
-           const text = formatArbitratorName(users[request.seller], request.seller);
+            {requests.length === 0 && <p>No requests</p>}
+            {requests.map((request, i) => {
+                const text = formatArbitratorName(users[request.seller], request.seller);
 
-            return <ListGroupItem key={i}>
-              <Row>
-                <Col  xs="12" sm="9" className="pb-3" tag={Link} to={`/profile/${request.seller}`}>
-                  <span className="text-small">{request.seller}</span>
-                  <br />
-                  <span className={classnames("font-weight-bold")}>{text}</span>
-                </Col>
-                <Col xs="12" sm="3" className="text-center">
-                  {request.status === arbitration.constants.AWAIT && <Button onClick={this.acceptRequest(request.id)} className="m-2">Accept</Button> }
-                  {(request.status === arbitration.constants.AWAIT || request.status === arbitration.constants.ACCEPTED) && <Button className="m-2" onClick={this.rejectRequest(request.id)}>Reject</Button> }
-                  <p className={classnames('text-small', {
-                    'text-success': request.status === arbitration.constants.ACCEPTED,
-                    'text-danger': request.status === arbitration.constants.REJECTED,
-                    'text-muted': request.status === arbitration.constants.AWAIT
-                  })}>
-                    ({requestStatus[request.status]})
-                  </p>
-                </Col>
-              </Row>
-            </ListGroupItem>;
-          }
-          )}
-          </ListGroup> 
+                return <ListGroupItem key={i}>
+                  <Row>
+                    <Col xs="12" sm="9" className="pb-3" tag={Link} to={`/profile/${request.seller}`}>
+                      <span className="text-small">{request.seller}</span>
+                      <br/>
+                      <span className={classnames("font-weight-bold")}>{text}</span>
+                    </Col>
+                    <Col xs="12" sm="3" className="text-center">
+                      {request.status === arbitration.constants.AWAIT &&
+                      <Button onClick={this.acceptRequest(request.id)} className="m-2">Accept</Button>}
+                      {(request.status === arbitration.constants.AWAIT || request.status === arbitration.constants.ACCEPTED) &&
+                      <Button className="m-2" onClick={this.rejectRequest(request.id)}>Reject</Button>}
+                      <p className={classnames('text-small', {
+                        'text-success': request.status === arbitration.constants.ACCEPTED,
+                        'text-danger': request.status === arbitration.constants.REJECTED,
+                        'text-muted': request.status === arbitration.constants.AWAIT
+                      })}>
+                        ({requestStatus[request.status]})
+                      </p>
+                    </Col>
+                  </Row>
+                </ListGroupItem>;
+              }
+            )}
+          </ListGroup>
         </Fragment>
         }
 
-    </Fragment>
+      </Fragment>
     );
   }
 }
