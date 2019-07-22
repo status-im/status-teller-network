@@ -421,19 +421,16 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @notice Rates a transaction
      * @param _escrowId Id of the escrow
      * @param _rate rating of the transaction from 1 to 5
-     * @dev Requires contract to not be paused.
-     *      Can only be executed by the buyer
+     * @dev Can only be executed by the buyer
      *      Transaction must released
      */
     function rateTransaction(uint _escrowId, uint _rate) external {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
-        require(!isDisputed(_escrowId), "Can't rate a transaction that has an arbitration process");
-
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.rating == 0, "Transaction already rated");
-        require(trx.status == EscrowStatus.RELEASED, "Transaction not released yet");
+        require(trx.status == EscrowStatus.RELEASED || hadDispute(_escrowId), "Transaction not completed yet");
         require(trx.buyer == msg.sender, "Only the buyer can invoke this function");
 
         trx.rating = _rate;

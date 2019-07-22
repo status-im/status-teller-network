@@ -59,6 +59,15 @@ contract Arbitrable {
     }
 
     /**
+     * @notice Determine if a dispute existed for an escrow
+     * @param _escrowId Escrow to verify
+     * @return bool result
+     */
+    function hadDispute(uint _escrowId) public view returns (bool) {
+        return arbitrationCases[_escrowId].result != ArbitrationResult.UNSOLVED;
+    }
+
+    /**
      * @notice Cancel arbitration
      * @param _escrowId Escrow to cancel
      */

@@ -678,7 +678,7 @@ contract("Escrow", function() {
         assert.fail('should have reverted: should not allow a score last less than 1');
       } catch(error) {
         TestUtils.assertJump(error);
-        assert.ok(error.message.indexOf('Transaction not released yet') >= 0);
+        assert.ok(error.message.indexOf('Transaction not completed yet') >= 0);
       }
     });
   });

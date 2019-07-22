@@ -133,7 +133,7 @@ class CardEscrowBuyer extends Component {
         component = <Dispute/>;
       }
       if (arbitrationDetails && arbitrationDetails.result.toString() !== ARBITRATION_UNSOLVED) {
-        component = <ResolvedDispute winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_BUYER} isBuyer={true}/>;
+        component = <ResolvedDispute trade={trade} winner={arbitrationDetails.result.toString() === ARBITRATION_SOLVED_BUYER} isBuyer={true} rateTransaction={rateTransaction} rateStatus={trade.rateStatus}/>;
       }
     }
 
