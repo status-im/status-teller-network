@@ -254,6 +254,22 @@ contract("Escrow", function() {
       const nonArbitrator = await ArbitrationLicense.methods.isLicenseOwner(accounts[5]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
     });
+
+    it("should not be able to rate an open dispute", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+
+      try {
+        await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction not completed yet");
+      }
+
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
+      
+      await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
+    });
   });
 
 });
