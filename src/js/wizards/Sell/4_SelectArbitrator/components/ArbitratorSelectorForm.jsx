@@ -7,7 +7,6 @@ import {compactAddress} from '../../../../utils/address';
 import {Link} from "react-router-dom";
 import {formatArbitratorName} from '../../../../utils/strings';
 
-
 class ArbitratorSelectorForm extends Component {
   onChange = (items) => {
     if(items.length){
