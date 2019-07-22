@@ -91,9 +91,10 @@ class SellerApproval extends Component {
         <div>Off <Switch onChange={this.onToggleCheckbox} checked={acceptsEveryone} className="accept-all-switch"
                          onColor="#44D058"/> On
         </div>
-        <p className="mt-2 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
 
         {!acceptsEveryone && <Fragment>
+          <p className="mt-2 mb-0 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
+          <p className="mt-0 text-muted">If you activate it, you will still be able to blacklist sellers individually</p>
           <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
           <ListGroup>
             {requests.length === 0 && <p>No requests</p>}
