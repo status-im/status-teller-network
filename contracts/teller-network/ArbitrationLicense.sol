@@ -25,6 +25,7 @@ contract ArbitrationLicense is License {
 
     mapping(address => ArbitratorLicenseDetails) public arbitratorlicenseDetails;
     mapping(address => mapping(address => bool)) public permissions;
+    mapping(address => mapping(address => bool)) public blacklist;
     mapping(bytes32 => Request) public requests;
 
     event ArbitratorRequested(bytes32 id, address indexed seller, address indexed arbitrator);
@@ -32,6 +33,8 @@ contract ArbitrationLicense is License {
     event RequestAccepted(bytes32 id, address indexed arbitrator, address indexed seller);
     event RequestRejected(bytes32 id, address indexed arbitrator, address indexed seller);
     event RequestCanceled(bytes32 id, address indexed arbitrator, address indexed seller);
+    event BlacklistSeller(address indexed arbitrator, address indexed seller);
+    event UnBlacklistSeller(address indexed arbitrator, address indexed seller);
 
     /**
      * @param _tokenAddress Address of token used to pay for licenses (SNT)
@@ -172,7 +175,30 @@ contract ArbitrationLicense is License {
         permissions[_arbitrator][msg.sender] = false;
 
         emit RequestCanceled(_id, arbitrator, requests[_id].seller);
+    }
 
+    /**
+     * @notice Allows arbitrator to blacklist a seller
+     * @param _seller Seller address
+     */
+    function blacklistSeller(address _seller) public {
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
+
+        blacklist[msg.sender][_seller] = true;
+
+        emit BlacklistSeller(msg.sender, _seller);
+    }
+
+    /**
+     * @notice Allows arbitrator to remove a seller from the blacklist
+     * @param _seller Seller address
+     */
+    function unBlacklistSeller(address _seller) public {
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
+
+        blacklist[msg.sender][_seller] = false;
+
+        emit UnBlacklistSeller(msg.sender, _seller);
     }
 
     /**
@@ -181,7 +207,7 @@ contract ArbitrationLicense is License {
      * @param _arbitrator arbitrator's address
      */
     function isAllowed(address _seller, address _arbitrator) public view returns(bool) {
-        return arbitratorlicenseDetails[_arbitrator].acceptAny || permissions[_arbitrator][_seller];
+        return (arbitratorlicenseDetails[_arbitrator].acceptAny && !blacklist[_arbitrator][_seller]) || permissions[_arbitrator][_seller];
     }
 
     /**
