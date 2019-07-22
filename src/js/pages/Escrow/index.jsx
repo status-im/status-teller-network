@@ -172,7 +172,7 @@ class Escrow extends Component {
                                         feeMilliPercent={feeMilliPercent}
                                         isETH={isETH}/> }
 
-        <EscrowDetail escrow={escrow} currentPrice={this.props.assetCurrentPrice} />
+        <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
         <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
         <hr />
