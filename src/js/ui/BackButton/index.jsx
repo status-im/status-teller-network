@@ -7,12 +7,14 @@ import arrow from "../../../images/arrow.png";
 const BLACK_LIST = ['/', '/offers/list', '/sell/*'];
 
 class BackButton extends Component {
+  recentHistory = [];
   state = {
     hidden: null
   };
 
   componentDidMount() {
     this.checkLocation();
+    this.recentHistory.push({pathname: this.props.location.pathname, timestamp: Date.now()});
   }
 
   checkLocation() {
@@ -29,7 +31,23 @@ class BackButton extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.state.hidden === null || prevProps.location.pathname !== this.props.location.pathname) {
-     this.checkLocation();
+      this.checkLocation();
+
+      // Check to see if we didn't just go back and forth
+      this.recentHistory.push({pathname: this.props.location.pathname, timestamp: Date.now()});
+      if (this.recentHistory.length > 3) {
+        this.recentHistory.splice(0, this.recentHistory.length - 3);
+      }
+      if (this.recentHistory.length === 3) {
+        if (this.recentHistory[0].pathname === this.recentHistory[2].pathname) {
+          // We went back and forth
+          if (this.recentHistory[2].timestamp - this.recentHistory[1].timestamp < 100) {
+            // If the delay between is less than 0.1 sec, it means the we have been redirected
+            // This means we need to go 2 back instead of 1 back
+            this.props.history.go(-2);
+          }
+        }
+      }
     }
   }
 
