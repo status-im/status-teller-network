@@ -8,7 +8,7 @@ const Escrow = embark.require('Embark/contracts/Escrow');
 const SNT = embark.require('Embark/contracts/SNT');
 
 let accounts;
-let arbitrator, arbitrator2;
+let arbitrator, arbitrator2, blacklistedAccount;
 
 const feePercent = 1;
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
@@ -71,6 +71,7 @@ config({
   accounts = web3_accounts;
   arbitrator = accounts[8];
   arbitrator2 = accounts[9];
+  blacklistedAccount = accounts[5];
 });
 
 contract("Escrow", function() {
@@ -88,6 +89,9 @@ contract("Escrow", function() {
     const encodedCall = SellerLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
 
+    await SNT.methods.generateTokens(blacklistedAccount, 1000).send();
+    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: blacklistedAccount});
+
     // Register arbitrators
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     await SNT.methods.generateTokens(arbitrator2, 1000).send();
@@ -97,6 +101,7 @@ contract("Escrow", function() {
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator2});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
+    await ArbitrationLicense.methods.blacklistSeller(blacklistedAccount).send({from: arbitrator});
 
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
@@ -267,8 +272,17 @@ contract("Escrow", function() {
       }
 
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
-      
+
       await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
+    });
+
+    it('should not allow a blacklisted seller to open an offer', async () => {
+      try {
+        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: blacklistedAccount});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");
+      }
     });
   });
 

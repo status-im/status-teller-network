@@ -29,3 +29,5 @@ export const isLoading = state => state.arbitration.loading;
 export const getLicensePrice = state => parseInt(state.arbitration.price, 10);
 
 export const getArbitratorRequests = state => state.arbitration.arbitratorRequests;
+
+export const getBlacklistedSellers = state => state.arbitration.blacklistedSellers;

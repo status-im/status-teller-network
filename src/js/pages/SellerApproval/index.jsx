@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {withRouter, Link} from "react-router-dom";
 import network from '../../features/network';
 import arbitration from '../../features/arbitration';
+import license from '../../features/license';
 import metadata from '../../features/metadata';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
@@ -27,12 +28,15 @@ class SellerApproval extends Component {
     props.checkLicenseOwner();
     props.getArbitratorRequests();
     this.loadedUsers = [];
+    if (props.acceptsEveryone) {
+      this.props.getLicenseOwners();
+      this.props.getBlacklistedSellers();
+    }
   }
 
   onToggleCheckbox = (checked) => {
     this.props.changeAcceptEveryone(checked);
   };
-
 
   componentDidUpdate(prevProps) {
     if ((!prevProps.requests && this.props.requests) || prevProps.requests.length !== this.props.requests) {
@@ -42,6 +46,11 @@ class SellerApproval extends Component {
           this.loadedUsers.push(seller);
         }
       });
+    }
+
+    if (!prevProps.acceptsEveryone && this.props.acceptsEveryone) {
+      this.props.getLicenseOwners();
+      this.props.getBlacklistedSellers();
     }
   }
 
@@ -53,8 +62,18 @@ class SellerApproval extends Component {
     this.props.rejectRequest(id);
   };
 
+  blacklist(e, sellerAddr) {
+    e.preventDefault();
+    this.props.blacklistSeller(sellerAddr);
+  }
+
+  unBlacklist(e, sellerAddr) {
+    e.preventDefault();
+    this.props.unBlacklistSeller(sellerAddr);
+  }
+
   render(){
-    const {loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users} = this.props;
+    const {loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users, sellers, blacklistedSellers} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
@@ -72,9 +91,10 @@ class SellerApproval extends Component {
         <div>Off <Switch onChange={this.onToggleCheckbox} checked={acceptsEveryone} className="accept-all-switch"
                          onColor="#44D058"/> On
         </div>
-        <p className="mt-2">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
 
         {!acceptsEveryone && <Fragment>
+          <p className="mt-2 mb-0 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
+          <p className="mt-0 text-muted">If you activate it, you will still be able to blacklist sellers individually</p>
           <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
           <ListGroup>
             {requests.length === 0 && <p>No requests</p>}
@@ -109,6 +129,25 @@ class SellerApproval extends Component {
         </Fragment>
         }
 
+        {acceptsEveryone &&
+        <Fragment>
+          <h3 className="mb-2 mt-5">Blacklist sellers</h3>
+          <p className="text-muted">Even though you accept every seller, you can blacklist some sellers if you suspect
+            them to be malicious</p>
+          <ListGroup>
+            {sellers.map((seller, i) => {
+              const isBlacklisted = blacklistedSellers.includes(seller.address);
+              return (<ListGroupItem key={i}>
+                <span
+                  className="mr-2">{users[seller.address] && formatArbitratorName(users[seller.address], seller.address, 'No username', i)}{!users[seller.address] && seller.address}</span>
+                {isBlacklisted &&
+                <Button color="success" className="float-right" onClick={(e) => this.unBlacklist(e, seller.address)}>Un-Blacklist</Button>}
+                {!isBlacklisted &&
+                <Button color="danger" className="float-right" onClick={(e) => this.blacklist(e, seller.address)}>Blacklist</Button>}
+              </ListGroupItem>);
+            })}
+          </ListGroup>
+        </Fragment>}
       </Fragment>
     );
   }
@@ -126,10 +165,16 @@ SellerApproval.propTypes = {
   acceptsEveryone: PropTypes.bool,
   profile: PropTypes.object,
   requests: PropTypes.array,
+  sellers: PropTypes.array,
+  blacklistedSellers: PropTypes.array,
   getArbitratorRequests: PropTypes.func,
   getUser: PropTypes.func,
+  blacklistSeller: PropTypes.func,
+  unBlacklistSeller: PropTypes.func,
   users: PropTypes.object,
   acceptRequest: PropTypes.func,
+  getLicenseOwners: PropTypes.func,
+  getBlacklistedSellers: PropTypes.func,
   rejectRequest: PropTypes.func
 };
 
@@ -141,11 +186,13 @@ const mapStateToProps = state => {
     loading: arbitration.selectors.isLoading(state),
     error: arbitration.selectors.errorGet(state),
     txHash: arbitration.selectors.txHash(state),
-    profile: metadata.selectors.getProfile(state, address) ,
+    profile: metadata.selectors.getProfile(state, address),
     acceptsEveryone: arbitration.selectors.acceptsEveryone(state),
     requests: arbitration.selectors.getArbitratorRequests(state),
-    users: metadata.selectors.getAllUsers(state)
-    };
+    users: metadata.selectors.getAllUsers(state),
+    sellers: license.selectors.licenseOwners(state),
+    blacklistedSellers: arbitration.selectors.getBlacklistedSellers(state)
+  };
 };
 
 export default connect(
@@ -157,5 +204,9 @@ export default connect(
     getArbitratorRequests: arbitration.actions.getArbitratorRequests,
     getUser: metadata.actions.loadUserOnly,
     acceptRequest: arbitration.actions.acceptRequest,
-    rejectRequest: arbitration.actions.rejectRequest
+    rejectRequest: arbitration.actions.rejectRequest,
+    getLicenseOwners: license.actions.getLicenseOwners,
+    blacklistSeller: arbitration.actions.blacklistSeller,
+    unBlacklistSeller: arbitration.actions.unBlacklistSeller,
+    getBlacklistedSellers: arbitration.actions.getBlacklistedSellers
   })(withRouter(SellerApproval));
