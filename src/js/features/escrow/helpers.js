@@ -11,6 +11,17 @@ export const tradeStates = {
   waiting: 'waiting'
 };
 
+export const tradeStatesFormatted = {
+  waiting: 'Open',
+  paid: 'Paid',
+  funded: 'Funded',
+  released: 'Done',
+  arbitration_open: 'Arbitration',
+  arbitration_closed: 'Resolved',
+  canceled: 'Canceled',
+  expired: 'Expired'
+};
+
 export const eventTypes = {
   paid: 'Paid',
   funded: 'Funded',
