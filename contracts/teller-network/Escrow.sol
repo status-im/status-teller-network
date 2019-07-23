@@ -140,19 +140,20 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(!deleted, "Offer is not valid");
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
-        require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
+        require(arbitrator != _buyer && arbitrator != address(0), "Cannot buy offers where buyer is arbitrator");
         require(_tokenAmount != 0 && _assetPrice != 0, "Trade amounts cannot be 0");
-        require(arbitrator != address(0), "Arbitrator is required");
 
         escrowId = transactions.length++;
 
-        transactions[escrowId].offerId = _offerId;
-        transactions[escrowId].token = token;
-        transactions[escrowId].buyer = _buyer;
-        transactions[escrowId].seller = seller;
-        transactions[escrowId].arbitrator = arbitrator;
-        transactions[escrowId].tokenAmount = _tokenAmount;
-        transactions[escrowId].assetPrice = _assetPrice;
+        EscrowTransaction storage trx = transactions[escrowId];
+
+        trx.offerId = _offerId;
+        trx.token = token;
+        trx.buyer = _buyer;
+        trx.seller = seller;
+        trx.arbitrator = arbitrator;
+        trx.tokenAmount = _tokenAmount;
+        trx.assetPrice = _assetPrice;
 
         emit Created(_offerId, seller, _buyer, escrowId);
     }
