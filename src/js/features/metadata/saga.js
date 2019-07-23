@@ -30,22 +30,20 @@ export function *loadUser({address}) {
   try {
     const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
     const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call();
-    const isUser = yield MetadataStore.methods.userWhitelist(address).call();
 
-    let user = {
+    let userLicenses = {
       isArbitrator,
       isSeller
     };
 
-    if (!isUser){
+    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call());
+    if(!user.statusContactCode){
       if(isArbitrator || isSeller) {
-        yield put({type: LOAD_USER_SUCCEEDED, user, address});
+        yield put({type: LOAD_USER_SUCCEEDED, user: userLicenses, address});
       }
-      return;
+      return; 
     }
 
-    const id = yield MetadataStore.methods.addressToUser(address).call();
-    user = Object.assign(user, yield MetadataStore.methods.users(id).call());
 
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
@@ -100,8 +98,7 @@ export function *loadOffers({address}) {
       const offer = yield MetadataStore.methods.offer(id).call();
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        const id = yield MetadataStore.methods.addressToUser(offer.arbitrator).call();
-        offer.arbitratorData = yield MetadataStore.methods.users(id).call();
+        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call();
       }
 
       if (!loadedUsers.includes(offer.owner)) {

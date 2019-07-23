@@ -32,9 +32,7 @@ contract MetadataStore is MessageSigned {
     License public sellingLicenses;
     ArbitrationLicense public arbitrationLicenses;
 
-    User[] public users;
-    mapping(address => bool) public userWhitelist;
-    mapping(address => uint256) public addressToUser;
+    mapping(address => User) public users;
     mapping(address => uint) public user_nonce;
 
     Offer[] public offers;
@@ -56,8 +54,6 @@ contract MetadataStore is MessageSigned {
     );
 
     event OfferRemoved(address owner, uint256 offerId);
-
-    event UserUpdated(address owner, bytes statusContactCode, string location, string username);
 
     /**
      * @param _sellingLicenses Sellers licenses contract address
@@ -82,8 +78,6 @@ contract MetadataStore is MessageSigned {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
-
-        users.length++;
     }
 
     /**
@@ -155,17 +149,10 @@ contract MetadataStore is MessageSigned {
         string memory _location,
         string memory _username
     ) internal {
-        if (!userWhitelist[_user]) {
-            User memory user = User(_statusContactCode, _location, _username);
-            uint256 userId = users.push(user) - 1;
-            addressToUser[_user] = userId;
-            userWhitelist[_user] = true;
-        } else {
-            User storage tmpUser = users[addressToUser[_user]];
-            tmpUser.statusContactCode = _statusContactCode;
-            tmpUser.location = _location;
-            tmpUser.username = _username;
-        }
+        User storage u = users[_user];
+        u.statusContactCode = _statusContactCode;
+        u.location = _location;
+        u.username = _username;
     }
 
     /**
@@ -248,29 +235,11 @@ contract MetadataStore is MessageSigned {
     }
 
     /**
-     * @notice Update the user information
-     * @param _statusContactCode Status contact code
-     * @param _location Location on earth
-     * @param _username Username of the user
-     */
-    function updateUser(bytes calldata _statusContactCode, string calldata _location, string calldata _username) external {
-        require(userWhitelist[msg.sender], "User does not exist");
-
-        User storage tmpUser = users[addressToUser[msg.sender]];
-        tmpUser.statusContactCode = _statusContactCode;
-        tmpUser.location = _location;
-        tmpUser.username = _username;
-
-        emit UserUpdated(msg.sender, _statusContactCode, _location, _username);
-    }
-
-    /**
      * @notice Remove user offer
      * @dev Removed offers are marked as deleted instead of being deleted
      * @param _offerId Id of the offer to remove
      */
     function removeOffer(uint256 _offerId) external {
-        require(userWhitelist[msg.sender], "User does not exist");
         require(offerWhitelist[msg.sender][_offerId], "Offer does not exist");
 
         offers[_offerId].deleted = true;
@@ -340,14 +309,6 @@ contract MetadataStore is MessageSigned {
      */
     function getArbitrator(uint256 _id) external view returns (address payable) {
         return (offers[_id].arbitrator);
-    }
-
-    /**
-     * @notice Get the size of the users
-     * @return Number of users stored in the contract
-     */
-    function usersSize() external view returns (uint256) {
-        return users.length;
     }
 
     /**

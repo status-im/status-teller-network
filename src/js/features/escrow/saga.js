@@ -172,10 +172,8 @@ export function *doLoadEscrows({address}) {
       const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call();
       escrow.escrowId = ev.returnValues.escrowId;
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-      const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
-      escrow.seller = yield MetadataStore.methods.users(sellerId).call();
-      const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-      escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+      escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
+      escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
       return escrow;
     }));
 
@@ -195,12 +193,9 @@ export function *doGetEscrow({escrowId}) {
     const escrow = yield Escrow.methods.transactions(escrowId).call();
     escrow.escrowId = escrowId;
     escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-    const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
-    escrow.seller = yield MetadataStore.methods.users(sellerId).call();
-    const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-    escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
-    const arbitratorId = yield MetadataStore.methods.addressToUser(escrow.arbitrator).call();
-    escrow.arbitratorInfo = yield MetadataStore.methods.users(arbitratorId).call();
+    escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
+    escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
+    escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call();
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);
