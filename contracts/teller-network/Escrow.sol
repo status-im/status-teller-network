@@ -350,7 +350,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         EscrowStatus mStatus = transactions[_escrowId].status;
         require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
         require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
-        require(!isDisputed(_escrowId), "Can't release a transaction that has an arbitration process");
+        require(!_isDisputed(_escrowId), "Can't release a transaction that has an arbitration process");
         _release(_escrowId, transactions[_escrowId], false);
     }
 
@@ -532,7 +532,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _escrowId Id of the escrow
      * @return Arbitrator address
      */
-    function getArbitrator(uint _escrowId) public view returns(address) {
+    function _getArbitrator(uint _escrowId) internal view returns(address) {
         return transactions[_escrowId].arbitrator;
     }
 

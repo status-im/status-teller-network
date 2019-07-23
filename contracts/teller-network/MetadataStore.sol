@@ -293,22 +293,22 @@ contract MetadataStore is MessageSigned {
         address payable arbitrator,
         bool deleted
     ) {
-        Offer memory offer = offers[_id];
+        Offer memory theOffer = offers[_id];
 
         // In case arbitrator rejects the seller
-        address payable offerArbitrator = offer.arbitrator;
-        if(!arbitrationLicenses.isAllowed(offer.owner, offerArbitrator)){
+        address payable offerArbitrator = theOffer.arbitrator;
+        if(!arbitrationLicenses.isAllowed(theOffer.owner, offerArbitrator)){
             offerArbitrator = address(0);
         }
 
         return (
-            offer.asset,
-            offer.currency,
-            offer.margin,
-            offer.paymentMethods,
-            offer.owner,
+            theOffer.asset,
+            theOffer.currency,
+            theOffer.margin,
+            theOffer.paymentMethods,
+            theOffer.owner,
             offerArbitrator,
-            offer.deleted
+            theOffer.deleted
         );
     }
 
