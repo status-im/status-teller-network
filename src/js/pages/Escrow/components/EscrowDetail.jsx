@@ -24,7 +24,13 @@ const getDiff = (rate) => {
   return {isAbove, diffPercentage};
 };
 
-const inRange = (percentage) => (100 - PERCENTAGE_THRESHOLD) < percentage && (100 + PERCENTAGE_THRESHOLD) > percentage;
+
+const shouldWarn = (diff, isBuyer) => {
+  if(isBuyer && !diff.isAbove && diff.diffPercentage > PERCENTAGE_THRESHOLD) return true;
+  if(!isBuyer && diff.isAbove && diff.diffPercentage > PERCENTAGE_THRESHOLD) return true;
+  return false;
+};
+
 
 const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
   const currentPriceForCurrency = parseFloat(currentPrice ? currentPrice[escrow.offer.currency] : null).toFixed(2);
@@ -46,13 +52,13 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
       <p className="text-dark m-0">{escrow.token.symbol} Price = {escrowAssetPrice.toFixed(2)} {escrow.offer.currency}</p>
       {escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">Expiration time: {moment(escrow.expirationTime * 1000).calendar()}</p>}
       
-      {escrow.status === tradeStates.waiting && isBuyer && currentPriceForCurrency && !inRange(buyerDiff.diffPercentage) &&
+      {escrow.status === tradeStates.waiting && isBuyer && currentPriceForCurrency && shouldWarn(buyerDiff, true) &&
        <Fragment>
         <p className="text-danger font-weight-bold mb-0">The current price for {escrow.token.symbol} is {currentPriceForCurrency} {escrow.offer.currency}, which is {buyerDiff.diffPercentage.toFixed(2)}% {buyerDiff.isAbove ? "above" : "below"} the price for this trade ({escrowAssetPrice.toFixed(2)} {escrow.offer.currency})</p>
         <p className="text-danger mb-2">Double-check whether you really want to go through with this trade</p>
       </Fragment> }
 
-      {escrow.status === tradeStates.waiting && !isBuyer && currentPriceForCurrency  && !inRange(sellerDiff.diffPercentage) &&
+      {escrow.status === tradeStates.waiting && !isBuyer && currentPriceForCurrency  && shouldWarn(sellerDiff, false)  &&
       <Fragment>
       <p className="text-danger font-weight-bold mb-0">Your current price for {escrow.token.symbol} in this offer is {currentOfferPrice.toFixed(2)} {escrow.offer.currency} which is {sellerDiff.diffPercentage.toFixed(2)}% {sellerDiff.isAbove ? "above" : "below"} the price for this trade ({escrowAssetPrice.toFixed(2)} {escrow.offer.currency})</p>
       <p className="text-danger mb-2">Double-check whether you really want to go through with this trade</p>
