@@ -14,7 +14,8 @@ contract MetadataStore is MessageSigned {
     enum PaymentMethods {Cash,BankTransfer,InternationalWire}
 
     struct User {
-        bytes statusContactCode;
+        bytes32 pubkeyA;
+        bytes32 pubkeyB;
         string location;
         string username;
     }
@@ -45,7 +46,6 @@ contract MetadataStore is MessageSigned {
         address owner,
         uint256 offerId,
         address asset,
-        bytes statusContactCode,
         string location,
         string currency,
         string username,
@@ -83,74 +83,83 @@ contract MetadataStore is MessageSigned {
     /**
      * @dev Get datahash to be signed
      * @param _username Username
-     * @param _statusContactCode Status Whisper Public Key (65bytes hex)
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _nonce Nonce value (obtained from user_nonce)
      * @return bytes32 to sign
      */
-    function _dataHash(string memory _username, bytes memory _statusContactCode, uint _nonce) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _statusContactCode, _nonce));
+    function _dataHash(string memory _username, bytes32 _pubkeyA, bytes32 _pubkeyB, uint _nonce) internal view returns (bytes32) {
+        return keccak256(abi.encodePacked(address(this), _username, _pubkeyA, _pubkeyB, _nonce));
     }
 
     /**
      * @notice Get datahash to be signed
      * @param _username Username
-     * @param _statusContactCode Status Whisper Public Key (65bytes hex)
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @return bytes32 to sign
      */
-    function getDataHash(string calldata _username, bytes calldata _statusContactCode) external view returns (bytes32) {
-        return _dataHash(_username, _statusContactCode, user_nonce[msg.sender]);
+    function getDataHash(string calldata _username, bytes32 _pubkeyA, bytes32 _pubkeyB) external view returns (bytes32) {
+        return _dataHash(_username, _pubkeyA, _pubkeyB, user_nonce[msg.sender]);
     }
 
     /**
      * @dev Get signer address from signature. This uses the signature parameters to validate the signature
      * @param _username Status username
-     * @param _statusContactCode Status Contact Code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _nonce User nonce
      * @param _signature Signature obtained from the previous parameters
      * @return Signing user address
      */
     function _getSigner(
         string memory _username,
-        bytes memory _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         uint _nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        bytes32 signHash = _getSignHash(_dataHash(_username, _statusContactCode, _nonce));
+        bytes32 signHash = _getSignHash(_dataHash(_username, _pubkeyA, _pubkeyB, _nonce));
         return _recoverAddress(signHash, _signature);
     }
 
     /**
      * @notice Get signer address from signature
      * @param _username Status username
-     * @param _statusContactCode Status Contact Code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _nonce User nonce
      * @param _signature Signature obtained from the previous parameters
      * @return Signing user address
      */
     function getMessageSigner(
         string calldata _username,
-        bytes calldata _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         uint _nonce,
         bytes calldata _signature
     ) external view returns(address) {
-        return _getSigner(_username, _statusContactCode, _nonce, _signature);
+        return _getSigner(_username, _pubkeyA, _pubkeyB, _nonce, _signature);
     }
 
     /**
      * @dev Adds or updates user information
      * @param _user User address to update
-     * @param _statusContactCode New status contact code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location New location
      * @param _username New status username
      */
     function _addOrUpdateUser(
         address _user,
-        bytes memory _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         string memory _location,
         string memory _username
     ) internal {
         User storage u = users[_user];
-        u.statusContactCode = _statusContactCode;
+        u.pubkeyA = _pubkeyA;
+        u.pubkeyB = _pubkeyB;
         u.location = _location;
         u.username = _username;
     }
@@ -158,47 +167,52 @@ contract MetadataStore is MessageSigned {
     /**
      * @notice Adds or updates user information via signature
      * @param _signature Signature
-     * @param _statusContactCode New status contact code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location New location
      * @param _username New status username
      * @return Signing user address
      */
     function addOrUpdateUser(
         bytes calldata _signature,
-        bytes calldata _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         string calldata _location,
         string calldata _username,
         uint _nonce
     ) external returns(address payable _user) {
-        _user = address(uint160(_getSigner(_username, _statusContactCode, _nonce, _signature)));
+        _user = address(uint160(_getSigner(_username, _pubkeyA, _pubkeyB, _nonce, _signature)));
         
         require(_nonce == user_nonce[_user], "Invalid nonce");
 
         user_nonce[_user]++;
-        _addOrUpdateUser(_user, _statusContactCode, _location, _username);
+        _addOrUpdateUser(_user, _pubkeyA, _pubkeyB, _location, _username);
 
         return _user;
     }
 
     /**
      * @notice Adds or updates user information
-     * @param _statusContactCode New status contact code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location New location
      * @param _username New status username
      * @return Signing user address
      */
     function addOrUpdateUser(
-        bytes calldata _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         string calldata _location,
         string calldata _username
     ) external {
-        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+        _addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
     }
 
     /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _statusContactCode The address of the status contact code
+    * @param _pubkeyA First coordinate of Status Whisper Public Key
+    * @param _pubkeyB Second coordinate of Status Whisper Public Key
     * @param _location The location on earth
     * @param _currency The currency the user want to receive (USD, EUR...)
     * @param _username The username of the user
@@ -208,7 +222,8 @@ contract MetadataStore is MessageSigned {
     */
     function addOffer(
         address _asset,
-        bytes memory _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         string memory _location,
         string memory _currency,
         string memory _username,
@@ -223,7 +238,7 @@ contract MetadataStore is MessageSigned {
         require(_margin >= -100, "Margin too low");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        _addOrUpdateUser(msg.sender, _statusContactCode, _location, _username);
+        _addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
 
         Offer memory newOffer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
 
@@ -231,7 +246,7 @@ contract MetadataStore is MessageSigned {
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
-        emit OfferAdded(msg.sender, offerId, _asset, _statusContactCode, _location, _currency, _username, _paymentMethods, _margin);
+        emit OfferAdded(msg.sender, offerId, _asset, _location, _currency, _username, _paymentMethods, _margin);
     }
 
     /**

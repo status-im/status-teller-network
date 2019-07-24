@@ -11,6 +11,9 @@ const TestEscrowUpgrade = embark.require('Embark/contracts/TestEscrowUpgrade');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
+const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 let accounts, arbitrator;
 let receipt;
 let ethOfferId;
@@ -86,7 +89,7 @@ contract("Escrow Funding", function() {
       const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
       await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
       await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
-      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     });
 
@@ -107,11 +110,11 @@ contract("Escrow Funding", function() {
     });
 
     it("Can create an escrow", async () => {
-      const hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      const hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       const signature = await web3.eth.sign(hash, accounts[1]);
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");

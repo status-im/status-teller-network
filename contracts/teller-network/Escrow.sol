@@ -163,7 +163,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _assetPrice Indicates the price of the asset in the FIAT of choice
-     * @param _statusContactCode The address of the status contact code
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location The location on earth
      * @param _username The username of the user
      * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
@@ -176,13 +177,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice,
-        bytes memory _statusContactCode,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
         string memory _location,
         string memory _username,
         uint _nonce,
         bytes memory _signature
     ) public returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _statusContactCode, _location, _username, _nonce);
+        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _pubkeyA, _pubkeyB, _location, _username, _nonce);
         escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
     }
 
@@ -230,7 +232,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _assetPrice Indicates the price of the asset in the FIAT of choice
-     * @param _bStatusContactCode The address of the status contact code
+     * @param _bPubkeyA First coordinate of Status Whisper Public Key
+     * @param _bPubkeyB Second coordinate of Status Whisper Public Key
      * @param _bLocation The location on earth
      * @param _bUsername The username of the user
      * @param _bNonce The nonce for the user (from MetadataStore.user_nonce(address))
@@ -243,13 +246,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice,
-        bytes memory _bStatusContactCode,
+        bytes32 _bPubkeyA,
+        bytes32 _bPubkeyB,
         string memory _bLocation,
         string memory _bUsername,
         uint _bNonce,
         bytes memory _bSignature
     ) public payable returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bStatusContactCode, _bLocation, _bUsername, _bNonce);
+        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bPubkeyA, _bPubkeyB, _bLocation, _bUsername, _bNonce);
         escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
         _fund(msg.sender, escrowId);
     }
