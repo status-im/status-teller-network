@@ -13,6 +13,10 @@ let arbitrator, arbitrator2, blacklistedAccount;
 const feePercent = 1;
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
+const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
+
 config({
   deployment: {
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
@@ -103,17 +107,17 @@ contract("Escrow", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
     await ArbitrationLicense.methods.blacklistSeller(blacklistedAccount).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Arbitrations", async() => {
     beforeEach(async() => {
       // Create
-      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -144,10 +148,10 @@ contract("Escrow", function() {
       let messageToSign, signature;
 
       // Create
-      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund

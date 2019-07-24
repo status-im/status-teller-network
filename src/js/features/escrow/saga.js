@@ -5,7 +5,7 @@ import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
-import {addressCompare, zeroAddress} from '../../utils/address';
+import {addressCompare, zeroAddress, generateXY, keyFromXY} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
@@ -35,11 +35,14 @@ Escrow.options.address = EscrowProxy.options.address;
 const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
+  const coords = generateXY(user.statusContactCode);
+  
   const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
     escrow.assetPrice,
-    user.statusContactCode,
+    coords.x,
+    coords.y,
     '',
     user.username,
     user.nonce,
@@ -174,6 +177,8 @@ export function *doLoadEscrows({address}) {
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
       escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
       escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
+      escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
+      escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
       return escrow;
     }));
 
@@ -196,6 +201,9 @@ export function *doGetEscrow({escrowId}) {
     escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
     escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
     escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call();
+    escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
+    escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
+    escrow.arbitratorInfo.statusContactCode = keyFromXY(escrow.arbitratorInfo.pubkeyA, escrow.arbitratorInfo.pubkeyB);
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);
