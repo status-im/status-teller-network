@@ -2,7 +2,7 @@
 import React, {Component, Fragment} from 'react';
 import {HashRouter, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
-import {Container} from 'reactstrap';
+import {Container, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -58,6 +58,9 @@ class App extends Component {
     super(props);
     this.props.init();
     this.watchingTrades = false;
+    this.state = {
+      hidePriceError: false
+    };
     setInterval(() => {
       this.props.getGasPrice();
       this.props.fetchExchangeRates();
@@ -66,7 +69,7 @@ class App extends Component {
       this.watchTradesForOffers();
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
@@ -79,6 +82,9 @@ class App extends Component {
     if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
       this.watchTradesForOffers();
     }
+    if (prevProps.priceError !== this.props.priceError) {
+      this.setState({hidePriceError: false});
+    }
   }
 
   watchTradesForOffers() {
@@ -88,13 +94,18 @@ class App extends Component {
     this.props.watchEscrowCreations(this.props.profile.offers);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return nextProps.isReady !== this.props.isReady ||
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
-      nextProps.isLicenseOwner !== this.props.isLicenseOwner;
+      nextProps.isLicenseOwner !== this.props.isLicenseOwner ||
+      nextState.hidePriceError !== this.state.hidePriceError;
   }
+
+  hidePriceError = () => {
+    this.setState({hidePriceError: true});
+  };
 
   render() {
     if (this.props.error) {
@@ -117,6 +128,9 @@ class App extends Component {
             <NotificationManager/>
             <Header profile={this.props.profile}/>
             <div className="body-content">
+              {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
+                Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
+              </Alert>}
               <BackButton/>
               <Switch>
                 <Route exact path="/" component={Home}/>
@@ -167,23 +181,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const address = network.selectors.getAddress(state) || '';
-  return {
-    address,
-    currentUser: metadata.selectors.currentUser(state),
-    isLicenseOwner: license.selectors.isLicenseOwner(state),
-    isReady: network.selectors.isReady(state),
-    hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
-    error: network.selectors.getError(state),
-    profile: metadata.selectors.getProfile(state, address),
-    newEscrow: escrow.selectors.newEscrow(state)
-  };
-};
-
 App.propTypes = {
   init: PropTypes.func,
   error: PropTypes.string,
+  priceError: PropTypes.string,
   fetchPrices: PropTypes.func,
   fetchExchangeRates: PropTypes.func,
   getGasPrice: PropTypes.func,
@@ -198,6 +199,21 @@ App.propTypes = {
   isLicenseOwner: PropTypes.bool,
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func
+};
+
+const mapStateToProps = (state) => {
+  const address = network.selectors.getAddress(state) || '';
+  return {
+    address,
+    currentUser: metadata.selectors.currentUser(state),
+    isLicenseOwner: license.selectors.isLicenseOwner(state),
+    isReady: network.selectors.isReady(state),
+    hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
+    error: network.selectors.getError(state),
+    profile: metadata.selectors.getProfile(state, address),
+    newEscrow: escrow.selectors.newEscrow(state),
+    priceError: prices.selectors.error(state)
+  };
 };
 
 export default connect(
