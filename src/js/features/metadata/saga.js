@@ -16,7 +16,7 @@ import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import { zeroAddress, addressCompare } from '../../utils/address';
+import { zeroAddress, addressCompare, zeroBytes, keyFromXY, generateXY } from '../../utils/address';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -37,7 +37,9 @@ export function *loadUser({address}) {
     };
 
     const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call());
-    if(!user.statusContactCode){
+    user.statusContactCode = keyFromXY(user.pubkeyA, user.pubkeyB);
+
+    if(user.pubkeyA === zeroBytes && user.pubkeyB === zeroBytes){
       if(isArbitrator || isSeller) {
         yield put({type: LOAD_USER_SUCCEEDED, user: userLicenses, address});
       }
@@ -99,6 +101,7 @@ export function *loadOffers({address}) {
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
         offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call();
+        offer.arbitratorData.statusContactCode = keyFromXY(offer.arbitratorData.pubkeyA, offer.arbitratorData.pubkeyB);
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -153,9 +156,12 @@ export function *onLoad() {
 }
 
 export function *addOffer({user, offer}) {
+  const coords = generateXY(user.statusContactCode);
+
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
-    user.statusContactCode,
+    coords.x,
+    coords.y,
     user.location,
     offer.currency,
     user.username,
@@ -171,8 +177,10 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = MetadataStore.methods['addOrUpdateUser(bytes,string,string)'](
-    user.statusContactCode,
+  const coords = generateXY(user.statusContactCode);
+  const toSend = MetadataStore.methods['addOrUpdateUser(bytes32,bytes32,string,string)'](
+    coords.x,
+    coords.y,
     user.location,
     user.username
   );
@@ -185,7 +193,8 @@ export function *onUpdateUser() {
 
 export function *signMessage({statusContactCode, username}) {
   try {
-    const hash = yield MetadataStore.methods.getDataHash(username, statusContactCode).call({from: web3.eth.defaultAccount});
+    const coords = generateXY(statusContactCode);
+    const hash = yield MetadataStore.methods.getDataHash(username, coords.x, coords.y).call({from: web3.eth.defaultAccount});
     const signature = yield web3.eth.personal.sign(hash, web3.eth.defaultAccount);
     const nonce = yield MetadataStore.methods.user_nonce(web3.eth.defaultAccount).call();
 

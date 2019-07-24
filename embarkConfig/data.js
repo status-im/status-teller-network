@@ -144,7 +144,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
-        address,
+        address + "112233445566778899001122",
         locations[Math.floor(Math.random() * locations.length)],
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
