@@ -17,9 +17,12 @@ class MarginSelectorForm extends Component {
   render() {
     const {t, currency, margin, token, prices, feeMilliPercent} = this.props;
 
-    const basePrice = prices[token.symbol][currency];
-    const marginPrice = (margin || 0) / 100 * basePrice;
-    const calcPrice = basePrice + marginPrice;
+    let calcPrice = null;
+    if (prices && !prices.error) {
+      const basePrice = prices[token.symbol][currency];
+      const marginPrice = (margin || 0) / 100 * basePrice;
+      calcPrice = basePrice + marginPrice;
+    }
 
     return (
       <Form ref={c => {
@@ -50,10 +53,13 @@ class MarginSelectorForm extends Component {
         </FormGroup>
 
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
-        <div className="border rounded p-3">
-          1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
-        </div>
-        <small>{t('marginSelectorForm.priceOrigin')}</small>
+        {calcPrice !== null && <Fragment>
+          <div className="border rounded p-3">
+            1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
+          </div>
+          <small>{t('marginSelectorForm.priceOrigin')}</small>
+        </Fragment>}
+        {calcPrice === null && <p>{t('marginSelectorForm.noPrice')}</p>}
 
         {(feeMilliPercent || '0') !== '0' && <Fragment>
           <h3 className="mt-4">{t('marginSelectorForm.ourFee')}</h3>

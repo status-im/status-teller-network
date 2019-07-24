@@ -45,7 +45,7 @@ const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
           <Reputation reputation={{upCount: user.upCount, downCount: user.downCount}} size="s"/>
         </Col>
       </Row>
-      {withDetail && <Row>
+      {withDetail && prices && !prices.error && <Row>
         <Col>
           <p className="m-0">
             {offers.map((offer, index) => {

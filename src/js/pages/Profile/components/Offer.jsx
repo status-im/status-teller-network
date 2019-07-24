@@ -7,23 +7,26 @@ import {calculateEscrowPrice} from '../../../utils/transaction';
 import classnames from 'classnames';
 import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
 
-const Offer = ({offer, prices, onClick, disabled}) => (
-  <Row className="border py-2 mx-0 my-2 rounded">
-    <Col xs="4" className="v-align-center">
-      <p className="font-weight-bold"><img src={TokenImages[`${offer.token.symbol}.png`] || TokenImages[`generic.png`]} alt="asset icon" className="mr-2"/>{offer.token.symbol}</p>
-    </Col>
-    <Col xs="8" className="v-align-center text-right">
-      <Button color={disabled ? "secondary" : "primary" } className={classnames('p-2', {disabled, 'not-clickable': disabled})} onClick={disabled ? null : onClick} id={`buy-btn-${offer.id}`}>
-        Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
-      </Button>
-      {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
-        Offer disabled because you are the seller or the arbitrator
-      </UncontrolledTooltip>}
-    </Col>
+const Offer = ({offer, prices, onClick, disabled}) => {
+  const isDisabled = disabled || !prices || prices.error;
+  return (
+    <Row className="border py-2 mx-0 my-2 rounded">
+      <Col xs="4" className="v-align-center">
+        <p className="font-weight-bold"><img src={TokenImages[`${offer.token.symbol}.png`] || TokenImages[`generic.png`]} alt="asset icon" className="mr-2"/>{offer.token.symbol}</p>
+      </Col>
+      <Col xs="8" className="v-align-center text-right">
+        <Button color={disabled ? "secondary" : "primary" } className={classnames('p-2', {disabled: isDisabled, 'not-clickable': isDisabled})} onClick={isDisabled ? null : onClick} id={`buy-btn-${offer.id}`}>
+          Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
+        </Button>
+        {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
+          Offer disabled because you are the seller or the arbitrator
+        </UncontrolledTooltip>}
+      </Col>
 
-    <NoArbitratorWarning arbitrator={offer.arbitrator} />
-  </Row>
-);
+      <NoArbitratorWarning arbitrator={offer.arbitrator} />
+    </Row>
+  );
+};
 
 Offer.defaultProps = {
   disabled: false
