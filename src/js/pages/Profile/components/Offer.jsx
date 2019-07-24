@@ -21,6 +21,9 @@ const Offer = ({offer, prices, onClick, disabled}) => {
         {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
           Offer disabled because you are the seller or the arbitrator
         </UncontrolledTooltip>}
+        {(!prices || prices.error) && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
+          Offer disabled because we failed to fetch the token prices. Check back later.
+        </UncontrolledTooltip>}
       </Col>
 
       <NoArbitratorWarning arbitrator={offer.arbitrator} />
