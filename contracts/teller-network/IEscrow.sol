@@ -11,10 +11,10 @@ contract IEscrow {
       uint256 expirationTime;
       uint256 rating;
       uint256 assetPrice;
-      EscrowStatus status;
       address payable buyer;
       address payable seller;
       address payable arbitrator;
+      EscrowStatus status;
   }
 
   function createEscrow(

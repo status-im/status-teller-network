@@ -47,7 +47,7 @@ contract Arbitrable {
      * @notice Get arbitrator of an escrow
      * @return address Arbitrator address
      */
-    function getArbitrator(uint _escrowId) public view returns(address);
+    function _getArbitrator(uint _escrowId) internal view returns(address);
 
     /**
      * @notice Determine if a dispute exists/existed for an escrow
@@ -55,6 +55,10 @@ contract Arbitrable {
      * @return bool result
      */
     function isDisputed(uint _escrowId) public view returns (bool) {
+        return _isDisputed(_escrowId);
+    }
+
+    function _isDisputed(uint _escrowId) internal view returns (bool) {
         return arbitrationCases[_escrowId].open || arbitrationCases[_escrowId].result != ArbitrationResult.UNSOLVED;
     }
 
@@ -91,7 +95,7 @@ contract Arbitrable {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
-        address arbitratorAddress = getArbitrator(_escrowId);
+        address arbitratorAddress = _getArbitrator(_escrowId);
 
         require(arbitratorAddress != address(0), "Arbitrator is required");
 

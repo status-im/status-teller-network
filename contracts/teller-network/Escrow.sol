@@ -140,19 +140,20 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(!deleted, "Offer is not valid");
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
-        require(arbitrator != _buyer, "Cannot buy offers where buyer is arbitrator");
+        require(arbitrator != _buyer && arbitrator != address(0), "Cannot buy offers where buyer is arbitrator");
         require(_tokenAmount != 0 && _assetPrice != 0, "Trade amounts cannot be 0");
-        require(arbitrator != address(0), "Arbitrator is required");
 
         escrowId = transactions.length++;
 
-        transactions[escrowId].offerId = _offerId;
-        transactions[escrowId].token = token;
-        transactions[escrowId].buyer = _buyer;
-        transactions[escrowId].seller = seller;
-        transactions[escrowId].arbitrator = arbitrator;
-        transactions[escrowId].tokenAmount = _tokenAmount;
-        transactions[escrowId].assetPrice = _assetPrice;
+        EscrowTransaction storage trx = transactions[escrowId];
+
+        trx.offerId = _offerId;
+        trx.token = token;
+        trx.buyer = _buyer;
+        trx.seller = seller;
+        trx.arbitrator = arbitrator;
+        trx.tokenAmount = _tokenAmount;
+        trx.assetPrice = _assetPrice;
 
         emit Created(_offerId, seller, _buyer, escrowId);
     }
@@ -349,7 +350,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         EscrowStatus mStatus = transactions[_escrowId].status;
         require(transactions[_escrowId].seller == msg.sender, "Only the seller can invoke this function");
         require(mStatus == EscrowStatus.PAID || mStatus == EscrowStatus.FUNDED, "Invalid transaction status");
-        require(!isDisputed(_escrowId), "Can't release a transaction that has an arbitration process");
+        require(!_isDisputed(_escrowId), "Can't release a transaction that has an arbitration process");
         _release(_escrowId, transactions[_escrowId], false);
     }
 
@@ -531,7 +532,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _escrowId Id of the escrow
      * @return Arbitrator address
      */
-    function getArbitrator(uint _escrowId) public view returns(address) {
+    function _getArbitrator(uint _escrowId) internal view returns(address) {
         return transactions[_escrowId].arbitrator;
     }
 

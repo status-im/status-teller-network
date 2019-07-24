@@ -73,10 +73,10 @@ contract("MetadataStore", function () {
 
   it("should not allow to add new user when not license owner", async function () {
     try {
-      await MetadataStore.methods.addOffer(SNT.address, signature, SellerLicense.address, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
-    } catch(error) {
-      const usersSize = await MetadataStore.methods.usersSize().call();
-      assert.strictEqual(usersSize, '1');
+      await MetadataStore.methods.addOffer(SNT.address, SellerLicense.address, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
+      assert.fail('should have reverted before');
+    } catch (error) {
+      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Not a license owner");
     }
   });
 
@@ -84,34 +84,35 @@ contract("MetadataStore", function () {
     const encodedCall = SellerLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send();
     const receipt = await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "USD", "Iuri", [0], 1, accounts[9]).send();
-    const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '2');
+    
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');
+    
+    const userInfo = await MetadataStore.methods.users(accounts[0]).call();
+    assert.strictEqual(userInfo.username, "Iuri");    
   });
 
   it("should allow to add new offer only when already a user", async function () {
     await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "EUR", "Iuri", [0], 1, accounts[9]).send();
-    const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '2');
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '2');
+
+    const offerIds = await MetadataStore.methods.getOfferIds(accounts[0]).call();
+    assert.strictEqual(offerIds.length, 2);
   });
 
   it("should not allow to add new offer when margin is more than 100", async function () {
     try {
       await MetadataStore.methods.addOffer(SNT.address, "0x00", "London", "USD", "Iuri", [0], 101, accounts[9]).send();
-    } catch(error) {
-      const usersSize = await MetadataStore.methods.usersSize().call();
-      assert.strictEqual(usersSize, '2');
+      assert.fail('should have reverted before');
+    } catch (error) {
+      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Margin too high");
     }
   });
 
   it("should allow to update a user", async function () {
-    await MetadataStore.methods.updateUser(SNT.address, "Montreal", "Anthony").send();
-    const usersSize = await MetadataStore.methods.usersSize().call();
-    assert.strictEqual(usersSize, '2');
-    const user = await MetadataStore.methods.users(1).call();
+    await MetadataStore.methods.addOrUpdateUser(SNT.address, "Montreal", "Anthony").send();
+    const user = await MetadataStore.methods.users(accounts[0]).call();
     assert.strictEqual(user.location, 'Montreal');
     assert.strictEqual(user.username, 'Anthony');
   });
