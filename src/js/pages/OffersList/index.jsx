@@ -19,19 +19,24 @@ import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transacti
 class OffersList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
+    this.defaultState = {
       tokenFilter: '',
       paymentMethodFilter: -1,
       sortType: 0,
       locationCoords: null,
       calculatingLocation: false
     };
+    this.state = this.defaultState;
   }
 
   componentDidMount() {
     this.props.loadOffers();
     this.props.updateBalance('ETH');
   }
+
+  clearFilters = () => {
+    this.setState(this.defaultState);
+  };
 
   setPaymentMethodFilter = (paymentMethodFilter) => {
     if (this.state.paymentMethodFilter === paymentMethodFilter) {
@@ -114,6 +119,7 @@ class OffersList extends Component {
                         sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
                         tokens={this.props.tokens}
+                        clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}
                         setSortType={this.setSortType}
                         setLocation={this.setLocation}

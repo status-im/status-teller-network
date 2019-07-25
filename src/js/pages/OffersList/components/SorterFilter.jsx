@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
-import {ButtonGroup, FormGroup, Input} from "reactstrap";
+import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
 
 import CheckButton from '../../../ui/CheckButton';
@@ -13,7 +13,6 @@ import './SorterFilter.scss';
 class FilterMenu extends Component {
   setLocation = (e) => {
     this.props.setLocation(e.target.value);
-    this.props.close();
   };
 
   onKeyUp = (e) => {
@@ -28,8 +27,26 @@ class FilterMenu extends Component {
       <Fragment>
         <div className={classnames({"filter-menu-backdrop": true, "open": props.open})} onClick={props.close}/>
         <div className={classnames("filter-menu", {"open": props.open})}>
+          <Button color="link" className="clear-all-btn p-0" onClick={props.clear}>Clear all</Button>
+
           <div className="filter-menu-content">
-            <h4>Sort and filter</h4>
+            <h5 className="mt-4">Cryptocurrency</h5>
+            <FormGroup>
+              <Typeahead
+                id="tokenFilter"
+                options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+                placeholder={'Select'}
+                value={props.tokenFilter}
+                onChange={props.setTokenFilter}
+              />
+            </FormGroup>
+
+            <h5 className="mt-4">Location</h5>
+            <FormGroup>
+              <Input type="text" placeholder="Enter an address, postal code, city, etc."
+                     onBlur={this.setLocation}
+                     onKeyUp={this.onKeyUp}/>
+            </FormGroup>
 
             <h5 className="mt-4">Sort</h5>
             <ButtonGroup vertical className="w-100">
@@ -37,7 +54,6 @@ class FilterMenu extends Component {
                 <CheckButton key={'sort-' + index}
                              onClick={() => {
                                props.setSortType(index);
-                               props.close();
                              }}
                              active={index === props.sortType}>
                   {sortType}
@@ -51,7 +67,6 @@ class FilterMenu extends Component {
                 <CheckButton key={'paymentMethod' + index}
                              onClick={() => {
                                props.setPaymentMethodFilter(index);
-                               props.close();
                              }}
                              active={index === props.paymentMethodFilter}>
                   {paymentMethod}
@@ -59,26 +74,7 @@ class FilterMenu extends Component {
               ))}
             </ButtonGroup>
 
-            <h5 className="mt-4">Location</h5>
-            <FormGroup>
-              <Input type="text" placeholder="Enter an address, postal code, city, etc."
-                     onBlur={this.setLocation}
-                     onKeyUp={this.onKeyUp}/>
-            </FormGroup>
-
-            <h5 className="mt-4">Asset</h5>
-            <FormGroup>
-              <Typeahead
-                id="tokenFilter"
-                options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-                placeholder={'Select'}
-                value={props.tokenFilter}
-                onChange={props.setTokenFilter}
-                onMenuToggle={(isOpen) => {
-                  if (!isOpen) props.close();
-                }}
-              />
-            </FormGroup>
+            <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
           </div>
         </div>
       </Fragment>
@@ -96,6 +92,7 @@ FilterMenu.propTypes = {
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,
   setLocation: PropTypes.func,
+  clear: PropTypes.func,
   tokenFilter: PropTypes.string,
   paymentMethodFilter: PropTypes.number,
   sortType: PropTypes.number
@@ -135,6 +132,7 @@ SorterFilter.propTypes = {
   setTokenFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,
+  clear: PropTypes.func,
   tokenFilter: PropTypes.string,
   paymentMethodFilter: PropTypes.number,
   sortType: PropTypes.number
