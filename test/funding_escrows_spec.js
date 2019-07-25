@@ -101,13 +101,13 @@ contract("Escrow Funding", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
 
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 

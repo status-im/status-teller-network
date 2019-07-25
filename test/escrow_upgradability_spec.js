@@ -76,7 +76,7 @@ config({
   arbitrator = accounts[8];
 });
 
-contract("Escrow Funding", function() {
+contract("Escrow", function() {
   this.timeout(0);
 
   describe("Upgradeable Escrows", async () => {
@@ -89,7 +89,7 @@ contract("Escrow Funding", function() {
       const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
       await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
       await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
-      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     });
 

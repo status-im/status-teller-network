@@ -107,7 +107,7 @@ contract("Escrow", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
     await ArbitrationLicense.methods.blacklistSeller(blacklistedAccount).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -282,7 +282,7 @@ contract("Escrow", function() {
 
     it('should not allow a blacklisted seller to open an offer', async () => {
       try {
-        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: blacklistedAccount});
+        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");

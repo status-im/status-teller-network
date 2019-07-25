@@ -11,8 +11,6 @@ import "../common/Ownable.sol";
 */
 contract MetadataStore is MessageSigned {
 
-    enum PaymentMethods {Cash,BankTransfer,InternationalWire}
-
     struct User {
         bytes32 pubkeyA;
         bytes32 pubkeyB;
@@ -22,7 +20,9 @@ contract MetadataStore is MessageSigned {
 
     struct Offer {
         int8 margin;
-        PaymentMethods[] paymentMethods;
+        uint[] paymentMethods;
+        uint limitL;
+        uint limitU;
         address asset;
         string currency;
         address payable owner;
@@ -49,7 +49,9 @@ contract MetadataStore is MessageSigned {
         string location,
         string currency,
         string username,
-        PaymentMethods[] paymentMethods,
+        uint[] paymentMethods,
+        uint limitL,
+        uint limitU,
         int8 margin
     );
 
@@ -217,6 +219,8 @@ contract MetadataStore is MessageSigned {
     * @param _currency The currency the user want to receive (USD, EUR...)
     * @param _username The username of the user
     * @param _paymentMethods The list of the payment methods the user accept
+    * @param _limitL Lower limit accepted
+    * @param _limitU Upper limit accepted
     * @param _margin The margin for the user from 0 to 100
     * @param _arbitrator The arbitrator used by the offer
     */
@@ -227,7 +231,9 @@ contract MetadataStore is MessageSigned {
         string memory _location,
         string memory _currency,
         string memory _username,
-        PaymentMethods[] memory _paymentMethods,
+        uint[] memory _paymentMethods,
+        uint _limitL,
+        uint _limitU,
         int8 _margin,
         address payable _arbitrator
     ) public {
@@ -236,17 +242,44 @@ contract MetadataStore is MessageSigned {
 
         require(_margin <= 100, "Margin too high");
         require(_margin >= -100, "Margin too low");
+        require(_limitL <= _limitU, "Invalid limits");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        _addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
+        _addOrUpdateUser(
+            msg.sender,
+            _pubkeyA,
+            _pubkeyB,
+            _location,
+            _username
+        );
 
-        Offer memory newOffer = Offer(_margin, _paymentMethods, _asset, _currency, msg.sender, _arbitrator, false);
+        Offer memory newOffer = Offer(
+            _margin,
+            _paymentMethods,
+            _limitL,
+            _limitU,
+            _asset,
+            _currency,
+            msg.sender,
+            _arbitrator,
+            false
+        );
 
         uint256 offerId = offers.push(newOffer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
 
-        emit OfferAdded(msg.sender, offerId, _asset, _location, _currency, _username, _paymentMethods, _margin);
+        emit OfferAdded(
+            msg.sender,
+            offerId,
+            _asset,
+            _location,
+            _currency,
+            _username,
+            _paymentMethods,
+            _limitL,
+            _limitU,
+            _margin);
     }
 
     /**
@@ -272,7 +305,9 @@ contract MetadataStore is MessageSigned {
         address asset,
         string memory currency,
         int8 margin,
-        PaymentMethods[] memory paymentMethods,
+        uint[] memory paymentMethods,
+        uint limitL,
+        uint limitH,
         address payable owner,
         address payable arbitrator,
         bool deleted
@@ -290,6 +325,8 @@ contract MetadataStore is MessageSigned {
             theOffer.currency,
             theOffer.margin,
             theOffer.paymentMethods,
+            theOffer.limitL,
+            theOffer.limitU,
             theOffer.owner,
             offerArbitrator,
             theOffer.deleted

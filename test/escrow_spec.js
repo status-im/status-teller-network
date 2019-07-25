@@ -122,11 +122,11 @@ contract("Escrow", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     sntOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -139,8 +139,6 @@ contract("Escrow", function() {
 
       receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "Username", nonce, signature).send({from: accounts[1]});
      
-      console.log(receipt.gasUsed);
-
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");

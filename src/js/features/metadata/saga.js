@@ -166,6 +166,8 @@ export function *addOffer({user, offer}) {
     offer.currency,
     user.username,
     offer.paymentMethods,
+    0, // TODO: replace with lower limit value
+    0, // TODO: replace with higher limit value
     offer.margin,
     offer.arbitrator
   );

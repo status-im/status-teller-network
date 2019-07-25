@@ -149,6 +149,8 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
         [paymentMethods[Math.floor(Math.random() * paymentMethods.length)]],
+        0,
+        0,
         Math.floor(Math.random() * 100),
         arbitrator
       );
