@@ -76,7 +76,7 @@ contract("MetadataStore", function () {
 
   it("should not allow to add new user when not license owner", async function () {
     try {
-      await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
+      await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send();
       assert.fail('should have reverted before');
     } catch (error) {
       assert.strictEqual(error.message, "VM Exception while processing transaction: revert Not a license owner");
@@ -86,7 +86,7 @@ contract("MetadataStore", function () {
   it("should allow to add new user and offer when license owner", async function () {
     const encodedCall = SellerLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send();
-    const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 1, accounts[9]).send();
+    const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send();
     
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');
@@ -96,7 +96,7 @@ contract("MetadataStore", function () {
   });
 
   it("should allow to add new offer only when already a user", async function () {
-    await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "EUR", "Iuri", [0], 1, accounts[9]).send();
+    await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "EUR", "Iuri", [0], 0, 0, 1, accounts[9]).send();
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '2');
 
@@ -106,7 +106,7 @@ contract("MetadataStore", function () {
 
   it("should not allow to add new offer when margin is more than 100", async function () {
     try {
-      await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 101, accounts[9]).send();
+      await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 101, accounts[9]).send();
       assert.fail('should have reverted before');
     } catch (error) {
       assert.strictEqual(error.message, "VM Exception while processing transaction: revert Margin too high");
@@ -121,7 +121,7 @@ contract("MetadataStore", function () {
   });
 
   it("should allow to delete an offer", async function () {
-    const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "EUR", "Iuri", [0], 1, accounts[9]).send();
+    const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "EUR", "Iuri", [0], 0, 0, 1, accounts[9]).send();
     const offerAdded = receipt.events.OfferAdded;
     const offerId = offerAdded.returnValues.offerId;
 

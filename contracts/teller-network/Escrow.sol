@@ -6,13 +6,13 @@ pragma solidity >=0.5.0 <0.6.0;
 import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
-
 import "./ArbitrationLicense.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
 import "./Fees.sol";
 import "./Arbitrable.sol";
 import "./IEscrow.sol";
+
 
 /**
  * @title Escrow
@@ -129,13 +129,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _assetPrice
-    ) internal whenNotPaused returns(uint escrowId) {
+    ) internal whenNotPaused returns(uint escrowId)
+    {
         address payable seller;
         address payable arbitrator;
         bool deleted;
         address token;
 
-        (token, , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
+        (token, , , , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
 
         require(!deleted, "Offer is not valid");
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
@@ -155,7 +156,12 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         trx.tokenAmount = _tokenAmount;
         trx.assetPrice = _assetPrice;
 
-        emit Created(_offerId, seller, _buyer, escrowId);
+        emit Created(
+            _offerId,
+            seller,
+            _buyer,
+            escrowId
+        );
     }
 
     /**
