@@ -24,7 +24,6 @@ class Reputation extends Component {
 
     return <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
       <span className={classnames("left-rating", {
-        "bg-secondary": !tradeWasRated || rating !== 5,
         "bg-primary": tradeWasRated && rating === 5,
         clickable: this.clickable
       })}>
@@ -32,7 +31,6 @@ class Reputation extends Component {
         &nbsp;<RatingIcon isPositiveRating={true} onClick={() => this.rateTrade('5')}/>
       </span>
       <span className={classnames("right-rating", {
-        "bg-secondary": !tradeWasRated || rating !== 1,
         "bg-primary": tradeWasRated && rating === 1,
         clickable: this.clickable
       })}>

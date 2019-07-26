@@ -69,3 +69,5 @@ export function canRelay(lastActivity) {
 export function nextRelayDate(lastActivity) {
   return new Date(lastActivity + RELAY_DELAY);
 }
+
+export const completedStates = [tradeStates.expired, tradeStates.canceled, tradeStates.arbitration_closed, tradeStates.released];

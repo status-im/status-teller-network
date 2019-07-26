@@ -19,8 +19,6 @@ import OpenDispute from '../pages/OpenDispute';
 import Arbitration from '../pages/Arbitration';
 import Arbitrators from '../pages/Arbitrators';
 import SellerApproval from '../pages/SellerApproval';
-import MyProfile from '../pages/MyProfile';
-import MyOffers from '../pages/MyOffers';
 import EditMyContact from '../pages/EditMyContact';
 import License from '../pages/License';
 import ArbitrationLicense from '../pages/ArbitrationLicense';
@@ -29,6 +27,12 @@ import OffersMap from '../pages/OffersMap';
 import Settings from '../pages/Settings';
 import BackButton from '../ui/BackButton';
 import NotificationManager from '../components/NotificationManager';
+
+// Profile
+import MyProfile from '../pages/MyProfile';
+import MyOffers from '../pages/MyOffers';
+import MyTrades from '../pages/MyTrades';
+import MyDisputes from '../pages/MyDisputes';
 
 // Buy
 import BuyContact from '../wizards/Buy/0_Contact';
@@ -127,6 +131,8 @@ class App extends Component {
                 <Route exact path="/profile" component={MyProfile}/>
                 <Route exact path="/profile/contact/edit" component={EditMyContact}/>
                 <Route exact path="/profile/offers" component={MyOffers} />
+                <Route exact path="/profile/trades" component={MyTrades} />
+                <Route exact path="/profile/disputes" component={MyDisputes} />
                 <Route exact path="/profile/:address" component={Profile}/>
 
                 <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>

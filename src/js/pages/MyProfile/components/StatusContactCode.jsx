@@ -20,7 +20,7 @@ class StatusContactCode extends Component {
     const {t, value} = this.props;
     const {showQRCode} = this.state;
     return  (
-      <FormGroup className="mt-3">
+      <FormGroup className="mt-5">
         <div>
           <h3 className="d-inline-block">
             {t('statusContactCode.title')}
