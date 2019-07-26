@@ -1,10 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {Link} from "react-router-dom";
-import {Button} from 'reactstrap';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faGlobe, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 import network from '../../features/network';
 import metadata from '../../features/metadata';
@@ -98,13 +94,9 @@ class OffersList extends Component {
     if (this.state.tokenFilter !== '') {
       filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
-
-    let groupedOffers = filteredOffers.reduce((grouped, offer) => {
-      offer.paymentMethods.forEach((paymentMethod) => (
-        (grouped[paymentMethod] || (grouped[paymentMethod] = [])).push(offer)
-      ));
-      return grouped;
-    }, {});
+    if (this.state.paymentMethodFilter !== -1) {
+      filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
+    }
 
     // Sort
     let sortFunction;
@@ -112,26 +104,7 @@ class OffersList extends Component {
       case 1: sortFunction = sortByDate; break;
       default: sortFunction = sortByRating;
     }
-    Object.keys(groupedOffers).forEach(key => {
-      groupedOffers[key].sort(sortFunction);
-    });
-
-    let groupedOffersByUser = {};
-    let sellers = {};
-    Object.keys(groupedOffers).forEach(paymentMethod => {
-      if (this.state.paymentMethodFilter !== -1 && paymentMethod.toString() !== this.state.paymentMethodFilter.toString()) {
-        return;
-      }
-      const offersForMethod = groupedOffers[paymentMethod];
-      groupedOffersByUser[paymentMethod] = offersForMethod.reduce((grouped, offer) => {
-        sellers[offer.owner] = true;
-        if (!grouped[offer.owner]) {
-          grouped[offer.owner] = [];
-        }
-        grouped[offer.owner].push(offer);
-        return grouped;
-      }, {});
-    });
+    filteredOffers.sort(sortFunction);
 
     return (
       <Fragment>
@@ -149,26 +122,17 @@ class OffersList extends Component {
                         paymentMethodFilter={this.state.paymentMethodFilter}/>
         </div>
 
-        { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+        {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
-        {Object.keys(groupedOffersByUser).map((paymentMethod) => (
-          <Fragment key={paymentMethod}>
-            <h4 className="clearfix mt-5">
-              {PAYMENT_METHODS[paymentMethod]}
-              <Button tag={Link}
-                      color="link"
-                      className="float-right p-0"
-                      to="/offers/map">On Map
-                <FontAwesomeIcon className="ml-2" icon={faArrowRight}/>
-              </Button>
-            </h4>
-            {Object.keys(groupedOffersByUser[paymentMethod]).map((owner, index) => <Offer
-              key={`${paymentMethod}${index}`} withDetail offers={groupedOffersByUser[paymentMethod][owner]}
-              prices={this.props.prices} userAddress={this.props.address}/>)}
-          </Fragment>
-        ))}
+        <div className="mt-4">
+          {filteredOffers.map((offer, index) => (
+            <Offer key={`offer-${index}`}
+                   withDetail offer={offer}
+                   prices={this.props.prices} userAddress={this.props.address}/>)
+          )}
+        </div>
       </Fragment>
     );
   }

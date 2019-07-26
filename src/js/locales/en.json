@@ -148,6 +148,10 @@
     "rate": "Rate",
     "locationLoading": "Calculating location distance..."
   },
+  "offer": {
+    "noArbitrator": "This offer does not have an arbitrator assigned",
+    "isArbitrator": "You are an arbitrator on this offer"
+  },
   "signatureForm": {
     "paying": "Paying using Signature..."
   },

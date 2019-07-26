@@ -121,7 +121,7 @@ class SorterFilter extends Component {
   render() {
     return (<Fragment>
       <FilterMenu open={this.state.open} close={this.closeMenu} {...this.props}/>
-      <span className="filter-icon bg-secondary text-primary rounded d-inline-block text-center float-right py-3" onClick={this.openMenu}>
+      <span className="filter-icon bg-secondary text-primary rounded d-inline-block text-center float-right py-3 clickable" onClick={this.openMenu}>
         <FontAwesomeIcon icon={faFilter}/>
       </span>
     </Fragment>);
