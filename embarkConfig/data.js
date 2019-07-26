@@ -59,7 +59,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
       // Here we are setting the initial "template", and calling the init() function
       const receipt = await deps.contracts.EscrowProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
-      
+
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
@@ -144,7 +144,8 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
-        address + "112233445566778899001122",
+        address,
+        address,
         locations[Math.floor(Math.random() * locations.length)],
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
@@ -220,10 +221,9 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
       let user = {};
       let offers = [];
-      const isUser = await deps.contracts.MetadataStore.methods.userWhitelist(address).call();
+      const isUser = await deps.contracts.MetadataStore.methods.users(address).call();
       if (isUser) {
-        const userId = await deps.contracts.MetadataStore.methods.addressToUser(address).call();
-        user = await deps.contracts.MetadataStore.methods.users(userId).call();
+        user = await deps.contracts.MetadataStore.methods.users(address).call();
         const offerIds = await deps.contracts.MetadataStore.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (
           deps.contracts.MetadataStore.methods.offer(offerId).call()
