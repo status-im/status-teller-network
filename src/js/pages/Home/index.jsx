@@ -28,9 +28,7 @@ class Home extends Component {
   }
 
   render() {
-    const t = this.props.t;
-    const hasPrices = this.props.hasPrices;
-    const isArbitrator = this.props.isArbitrator;
+    const {hasPrices, isArbitrator, t, priceError} = this.props;
 
     return (
       <div className="home">
@@ -49,8 +47,8 @@ class Home extends Component {
         <React.Fragment>
           <Row className="home--footer">
             <Col xs={6}>
-              <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
-                {hasPrices ? t('home.buy') : t('home.loadingData')}
+              <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" block to="/offers/list">
+                {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
               </Button>
             </Col>
             <Col xs={6}>
@@ -89,7 +87,8 @@ const mapStateToProps = (state) => {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isArbitrator: arbitrator.selectors.isLicenseOwner(state),
     profile: metadata.selectors.getProfile(state, address),
-    hasPrices: prices.selectors.hasPrices(state)
+    hasPrices: prices.selectors.hasPrices(state),
+    priceError: prices.selectors.error(state)
   };
 };
 

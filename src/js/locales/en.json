@@ -45,7 +45,8 @@
     "sellPrice": "Your sell price",
     "ourFee": "Our fee",
     "back": "Back",
-    "continue": "Confirm price"
+    "continue": "Confirm price",
+    "noPrice": "Unable to calculate your price since token prices are unavailable for now"
   },
   "escrowList": {
     "title": "Escrow List",
