@@ -15,7 +15,7 @@ const Header = ({profile, location}) => (
       <NavbarBrand tag={Link} to="/"><img src={logo} alt="Logo" width="32" height="32" /><span className="text-body text-logo">TN</span></NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {profile && location.pathname !== '/profile' && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="20" height="16" /></NavLink>}
+          {profile && location.pathname !== '/profile' && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="32" height="32" /></NavLink>}
           {profile && location.pathname === '/profile' && <NavLink tag={Link} to="/"><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
         </NavItem>
       </Nav>
