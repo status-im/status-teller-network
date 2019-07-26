@@ -14,13 +14,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUniversity, faGlobeAmericas, faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
 
 import './index.scss';
+import {TokenImages} from "../../utils/images";
 
 const Offer = ({offer, withDetail, prices, userAddress, t}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
 
-  return (<Card tag={Link} to={`/profile/${offer.owner}`} className="mb-3">
+  return (<Card tag={Link} to={`/profile/${offer.owner}`} className="mb-3 shadow p- border-0">
     <CardBody>
       <CardTitle className={classnames('seller-name', 'font-weight-bold', {
         'text-black': !isOwner,
@@ -40,12 +41,17 @@ const Offer = ({offer, withDetail, prices, userAddress, t}) => {
     </CardBody>
 
     {withDetail && prices && !prices.error &&
-    <CardFooter className={classnames('bg-white text-right', {
+    <CardFooter className={classnames('bg-white text-right border-0 pt-0', {
       'text-warning': isArbitrator,
       'text-dark': !isArbitrator && !noArbitrator,
       'text-danger': noArbitrator
     })}>
-      Buy <span className="text-black">{offer.token.symbol}</span> at <span className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+      <p className="m-0 border-top pt-2">
+        Buy <span className="text-black"><img
+        src={TokenImages[`${offer.token.symbol}.png`] || TokenImages[`generic.png`]}
+        alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
+        className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+      </p>
     </CardFooter>}
   </Card>);
 };
@@ -61,6 +67,5 @@ Offer.propTypes = {
   prices: PropTypes.object,
   userAddress: PropTypes.string
 };
-
 
 export default withNamespaces()(Offer);

@@ -223,8 +223,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       let offers = [];
       const isUser = await deps.contracts.MetadataStore.methods.users(address).call();
       if (isUser) {
-        const userId = await deps.contracts.MetadataStore.methods.addressToUser(address).call();
-        user = await deps.contracts.MetadataStore.methods.users(userId).call();
+        user = await deps.contracts.MetadataStore.methods.users(address).call();
         const offerIds = await deps.contracts.MetadataStore.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (
           deps.contracts.MetadataStore.methods.offer(offerId).call()
