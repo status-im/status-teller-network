@@ -26,7 +26,7 @@ export const getProfile = (state, address) => {
     return null;
   }
 
-  const offers = Object.values(state.metadata.offers).filter((offer) => !offer.deleted && addressCompare(offer.owner, lAddress)) || [];
+  const offers = Object.values(state.metadata.offers).filter((offer) => addressCompare(offer.owner, lAddress)) || [];
   return {
     address: lAddress,
     ...state.metadata.users[lAddress],

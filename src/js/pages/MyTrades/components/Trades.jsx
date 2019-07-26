@@ -4,16 +4,14 @@ import {Card, Row, Col, Form, FormGroup, Label, Input} from 'reactstrap';
 import {Link} from "react-router-dom";
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowRight, faCaretDown} from "@fortawesome/free-solid-svg-icons";
+import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 import Identicon from "../../../components/UserInformation/Identicon";
 import {formatBalance} from "../../../utils/numbers";
-import {tradeStates, tradeStatesFormatted} from "../../../features/escrow/helpers";
+import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 
 import './Trades.scss';
-
-const COMPLETED_STATES = [tradeStates.expired, tradeStates.canceled, tradeStates.arbitration_closed, tradeStates.released];
 
 const getTradeStyle = (trade, isBuyer) => {
   if (trade.mining) {
@@ -108,7 +106,7 @@ class Trades extends Component {
               if (this.state.filteredState && trade.status !== this.state.filteredState) {
                 return null;
               }
-              if (this.state.hideCompletedTrades && COMPLETED_STATES.includes(trade.status)) {
+              if (this.state.hideCompletedTrades && completedStates.includes(trade.status)) {
                 return null;
               }
               const isBuyer = addressCompare(trade.buyer, address);
@@ -157,9 +155,6 @@ class Trades extends Component {
       <div className="mt-3">
         <div>
           <h3 className="d-inline-block">{t('trades.title')}</h3>
-          <span className="float-right">
-            <Link to="/offers/list" className="float-right">{t('trades.find')} <FontAwesomeIcon icon={faArrowRight}/></Link>
-          </span>
         </div>
         {trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
       </div>

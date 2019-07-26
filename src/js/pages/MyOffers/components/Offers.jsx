@@ -9,6 +9,8 @@ import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
 import {zeroAddress} from '../../../utils/address';
 import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
+import classnames from 'classnames';
+import iconDelete from '../../../../images/delete.svg';
 
 class Offers extends Component {
   state = {
@@ -37,18 +39,20 @@ class Offers extends Component {
     this.setState({offerId: null, displayDialog: false});
   }
 
-  renderOffers() {
-    const {t, offers} = this.props;
+  renderOffers(offers, enabled) {
+    const {t} = this.props;
     return offers.map((offer, index) => (
-      <Card key={index} className="mb-2 shadow-sm">
+      <Card key={index} className={classnames('mb-2', 'shadow-sm', {'card-transparent': !enabled})}>
         <CardHeader>
           {offer.token.symbol}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
           <span className="text-small font-italic mr-2">{CURRENCY_DATA.find(x => x.id === offer.currency).symbol}</span>
           {offer.currency}
-          <Button className="p-0 pl-3 pr-3 m-0 float-right btn-link" onClick={this.confirmDelete(offer.id)}>
-            <FontAwesomeIcon icon={faEllipsisV} />
-          </Button>
+          { enabled && (
+            <Button className="p-0 pl-3 pr-3 m-0 float-right btn-primary-outline" onClick={this.confirmDelete(offer.id)}>
+              <img src={iconDelete} />
+            </Button> 
+          )}
         </CardHeader>
         <CardBody>
           <Row>
@@ -96,15 +100,22 @@ class Offers extends Component {
 
   render() {
     const {t, offers} = this.props;
+    const activeOffers = offers.filter(x => !x.deleted);
+    const inactiveOffers = offers.filter(x => x.deleted);
+
     return (
       <div className="mt-3">
         <div>
-          <h3 className="d-inline-block">{t('offers.title')}</h3>
+          <h3 className="d-inline-block">{t('offers.active')}</h3>
           <span className="float-right">
-            <Link to="/license" className="float-right">{t('offers.create')} <FontAwesomeIcon icon={faArrowRight}/></Link>
+            <Link to="/license" className="float-right text-small">{t('offers.create')}</Link>
           </span>
         </div>
-        {offers.length === 0 ? this.renderEmpty() : this.renderOffers()}
+        {activeOffers.length === 0 ? this.renderEmpty() : this.renderOffers(activeOffers, true)}
+        <div className="mt-5">
+          <h3 className="d-inline-block">{t('offers.past')}</h3>
+        </div>
+        {inactiveOffers.length === 0 ? this.renderEmpty() : this.renderOffers(inactiveOffers, false)}
         <ConfirmDialog display={this.state.displayDialog} onConfirm={this.deleteOffer} onCancel={this.displayDialog(false)} title="Delete offer" content="Are you sure?" cancelText="No" />
       </div>
     );

@@ -5,6 +5,8 @@ import Identicon from "../../../components/UserInformation/Identicon";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
+import classnames from 'classnames';
+import Loading from "../../../components/Loading";
 
 class Dispute extends Component {
   constructor(props) {
@@ -18,13 +20,13 @@ class Dispute extends Component {
   }
 
   render() {
-    const {dispute, buyerInfo, sellerInfo} = this.props;
+    const {dispute, buyerInfo, sellerInfo, enabled} = this.props;
 
     if (!buyerInfo || !sellerInfo) {
-      return null;
+      return <Loading />;
     }
 
-    return (<Card body className="py-2 px-3 mb-3 shadow-sm">
+    return (<Card body className={classnames("py-2", "px-3", "mb-3", "shadow-sm",  {'card-transparent': !enabled})}>
         <div className="d-flex my-1">
             <span className="flex-fill align-self-center">
               <Link to={"/arbitration/" + dispute.escrowId}>
@@ -46,7 +48,8 @@ Dispute.propTypes = {
   showDate: PropTypes.bool,
   sellerInfo: PropTypes.object,
   buyerInfo: PropTypes.object,
-  loadProfile: PropTypes.func
+  loadProfile: PropTypes.func,
+  enabled: PropTypes.bool
 };
 
 const mapStateToProps = (state, props) => {
