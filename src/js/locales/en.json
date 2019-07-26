@@ -1,8 +1,7 @@
 {
   "home": {
-    "login": "Login",
-    "buy": "Buy",
-    "sell": "Sell",
+    "buy": "Buy crypto",
+    "createOffer": "Create an offer",
     "welcome": "The best and most convenient way to buy and sell crypto",
     "loadingData": "Loading data"
   },
@@ -138,6 +137,7 @@
   },
   "offers": {
     "active": "Active offers",
+    "listTitle": "Browse offers",
     "past": "Past offers",
     "create": "Create an offer",
     "noOpen": "No open offers",

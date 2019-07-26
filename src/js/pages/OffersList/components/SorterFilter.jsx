@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleDown, faSortAmountDown} from "@fortawesome/free-solid-svg-icons";
+import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Input} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
@@ -121,13 +121,9 @@ class SorterFilter extends Component {
   render() {
     return (<Fragment>
       <FilterMenu open={this.state.open} close={this.closeMenu} {...this.props}/>
-      <div className="sorter-select font-weight-bold px-3 py-2 bg-secondary rounded v-align-center my-3"
-           onClick={this.openMenu}>
-        <span className="sort-icon text-white rounded-circle d-inline-block text-center p-2 mr-2">
-          <FontAwesomeIcon icon={faSortAmountDown}/>
-        </span> Sort and filter <span className="float-right pt-1"><FontAwesomeIcon size="2x"
-                                                                                    icon={faAngleDown}/></span>
-      </div>
+      <span className="filter-icon bg-secondary text-primary rounded d-inline-block text-center float-right py-3" onClick={this.openMenu}>
+        <FontAwesomeIcon icon={faFilter}/>
+      </span>
     </Fragment>);
   }
 }

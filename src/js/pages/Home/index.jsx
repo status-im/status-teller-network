@@ -46,18 +46,16 @@ class Home extends Component {
 
         <React.Fragment>
           <Row className="home--footer">
-            <Col xs={6}>
-              <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" block to="/offers/list">
+            <Col xs={12} className="text-center">
+              <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" block to="/offers/list" className="px-5">
                 {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
               </Button>
-            </Col>
-            <Col xs={6}>
-              <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
+              <p className="mt-3"><Link to={this.sellUrl()}>{t('home.createOffer')}</Link></p>
             </Col>
           </Row>
           { !isArbitrator && (
             <Row>
-              <Col xs={12} className="text-right text-small">
+              <Col xs={12} className="text-center text-small">
                 <Link to="/arbitrator/license">Be an arbitrator?</Link>
               </Col>
           </Row>

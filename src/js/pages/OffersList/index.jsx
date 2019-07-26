@@ -135,20 +135,19 @@ class OffersList extends Component {
 
     return (
       <Fragment>
-        <h2 className="text-center">
-          We found {Object.keys(sellers).length} sellers worldwide <FontAwesomeIcon icon={faGlobe}/>
-        </h2>
-
-        <SorterFilter paymentMethods={PAYMENT_METHODS}
-                      sortTypes={SORT_TYPES}
-                      sortType={this.state.sortType}
-                      tokens={this.props.tokens}
-                      setTokenFilter={this.setTokenFilter}
-                      setSortType={this.setSortType}
-                      setLocation={this.setLocation}
-                      setPaymentMethodFilter={this.setPaymentMethodFilter}
-                      tokenFilter={this.state.tokenFilter}
-                      paymentMethodFilter={this.state.paymentMethodFilter}/>
+        <div>
+          <h2 className="d-inline-block pt-2">{this.props.t('offers.listTitle')}</h2>
+          <SorterFilter paymentMethods={PAYMENT_METHODS}
+                        sortTypes={SORT_TYPES}
+                        sortType={this.state.sortType}
+                        tokens={this.props.tokens}
+                        setTokenFilter={this.setTokenFilter}
+                        setSortType={this.setSortType}
+                        setLocation={this.setLocation}
+                        setPaymentMethodFilter={this.setPaymentMethodFilter}
+                        tokenFilter={this.state.tokenFilter}
+                        paymentMethodFilter={this.state.paymentMethodFilter}/>
+        </div>
 
         { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
 

@@ -1,11 +1,8 @@
-.sorter-select {
-  font-size: 17px;
+@import "../../../../css/variable-overrides";
 
-  .sort-icon {
-    width: 40px;
-    height: 40px;
-    background-color: black;
-  }
+.filter-icon {
+  width: 50px;
+  font-size: 15px;
 }
 
 .filter-menu-backdrop {
