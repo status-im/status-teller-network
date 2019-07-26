@@ -133,6 +133,7 @@ class OffersList extends Component {
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
         <div className="mt-4">
+          {filteredOffers.length === 0 && this.props.t('offers.noOpen')}
           {filteredOffers.map((offer, index) => (
             <Offer key={`offer-${index}`}
                    withDetail offer={offer}

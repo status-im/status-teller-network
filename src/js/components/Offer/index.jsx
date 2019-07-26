@@ -33,7 +33,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t}) => {
         <p className="text-black m-0"><FontAwesomeIcon icon={faGlobeAmericas} className="text-primary"/> {offer.user.location}</p>
         <p className="text-black m-0"><FontAwesomeIcon icon={faUniversity}  className="text-primary"/> {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}</p>
         <p className="text-black m-0"><FontAwesomeIcon icon={faExchangeAlt}  className="text-primary"/> {offer.user.nbReleasedTrades} trade{offer.user.nbReleasedTrades !== 1 && 's'}</p>
-        <span className="offer-reputation"><Reputation reputation={{upCount: offer.user.upCount, downCount: offer.user.downCount}} size="s"/></span>
+        <span className="offer-reputation"><Reputation reputation={{averageCount: offer.user.averageCount}} size="s"/></span>
 
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
