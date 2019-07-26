@@ -3,18 +3,19 @@ import PropTypes from 'prop-types';
 import {Card} from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
 import Dispute from './Dispute';
+import classnames from 'classnames';
 
 class Disputes extends Component {
-  renderTrades() {
+  renderTrades(enabled) {
     return (
-        this.props.disputes.map((dispute, index) => <Dispute key={'dispute-' + index} dispute={dispute} showDate={this.props.showDate}/>)
+        this.props.disputes.map((dispute, index) => <Dispute key={'dispute-' + index} enabled={enabled} dispute={dispute} showDate={this.props.showDate}/>)
     );
   }
 
-  renderEmpty() {
+  renderEmpty(enabled) {
     const {t} = this.props;
     return (
-      <Card body className="text-center">
+      <Card body className={classnames("text-center", {'card-transparent': !enabled})}>
         {t("disputes.noRecords")}
       </Card>
     );
@@ -23,11 +24,11 @@ class Disputes extends Component {
   render() {
     const {t, disputes, open} = this.props;
     return (
-      <div className="mt-3">
+      <div className="mt-3 mb-4">
         <div>
           <h3 className="d-inline-block">{open ? t("disputes.openedDisputes") : t("disputes.resolvedDisputes")}</h3>
         </div>
-        {disputes.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
+        {disputes.length === 0 ? this.renderEmpty(open) : this.renderTrades(open)}
       </div>
     );
   }

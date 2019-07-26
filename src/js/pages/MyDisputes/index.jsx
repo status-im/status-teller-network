@@ -1,16 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {withRouter} from "react-router-dom";
 
 import metadata from '../../features/metadata';
 import network from '../../features/network';
+import arbitration from '../../features/arbitration';
 
-import Offers from './components/Offers';
-import { zeroAddress } from '../../utils/address';
+import Disputes from './components/Disputes';
+import { zeroAddress, addressCompare } from '../../utils/address';
 
+import "./index.scss";
 import Loading from "../../components/Loading";
-import { States } from '../../utils/transaction';
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -20,9 +21,11 @@ const NULL_PROFILE = {
   offers: []
 };
 
-class MyProfile extends Component {
+class MyDisputes extends Component {
+
   componentDidMount() {
     this.props.loadProfile(this.props.address);
+    this.props.getDisputedEscrows();
   }
 
   componentDidUpdate(){
@@ -30,26 +33,28 @@ class MyProfile extends Component {
       return this.props.history.push("/profile/contact/edit");
     }
   }
+
+
   render() {
-    const {profile, deleteOfferStatus, txHash} = this.props;
+    const {profile, address} = this.props;
     if(!profile) return <Loading page={true} />;
 
-    if(deleteOfferStatus === States.pending) {
-      return <Loading mining={true} txHash={txHash}/>;
-    }
-
-    return <Offers offers={profile.offers} location={profile.location} deleteOffer={this.props.deleteOffer} />;
+    return (
+      <Fragment>
+        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} />
+        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} />
+      </Fragment>
+    );
   }
 }
 
-MyProfile.propTypes = {
+MyDisputes.propTypes = {
   history: PropTypes.object,
   address: PropTypes.string,
   profile: PropTypes.object,
+  disputes: PropTypes.array,
   loadProfile: PropTypes.func,
-  deleteOffer: PropTypes.func,
-  deleteOfferStatus: PropTypes.string,
-  txHash: PropTypes.string
+  getDisputedEscrows: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -58,8 +63,7 @@ const mapStateToProps = state => {
   return {
     address,
     profile,
-    deleteOfferStatus: metadata.selectors.getDeleteOfferStatus(state),
-    txHash: metadata.selectors.txHash(state),
+    disputes: arbitration.selectors.escrows(state)
   };
 };
 
@@ -67,5 +71,5 @@ export default connect(
   mapStateToProps,
   {
     loadProfile: metadata.actions.load,
-    deleteOffer: metadata.actions.deleteOffer
-  })(withRouter(MyProfile));
+    getDisputedEscrows: arbitration.actions.getDisputedEscrows
+  })(withRouter(MyDisputes));
