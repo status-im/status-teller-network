@@ -112,12 +112,29 @@ class Trade extends Component {
       disabled = disabled && !canRelay;
     }
 
+    const price = this._calcPrice();
+
+    let minToken = MIN;
+    if(this.props.offer.limitL !== '0'){
+      minToken = (parseFloat(this.props.offer.limitL) / 100) / price;
+    }
+
+    let maxToken = this.props.sellerBalance;
+    if(this.props.offer.limitH !== '0'){
+      maxToken = (parseFloat(this.props.offer.limitH) / 100) / price;
+    }
+
+    let limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
+
     return (
       <OfferTrade statusContactCode={this.props.offer.user.statusContactCode}
                   name={this.props.offer.user.username}
-                  minToken={MIN} // TODO put here real values when we have it set in the contract
-                  maxToken={this.props.sellerBalance}
-                  price={this._calcPrice()}
+                  minToken={minToken}
+                  maxToken={maxToken}
+                  limitless={limitless}
+                  limitL={this.props.offer.limitL}
+                  limitH={this.props.offer.limitH}
+                  price={price}
                   asset={this.props.offer.token.symbol}
                   currency={{id: this.props.offer.currency}}
                   onClick={this.postEscrow}
