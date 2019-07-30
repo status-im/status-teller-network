@@ -139,7 +139,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const currencies = ['USD', 'EUR'];
     const offerStartIndex = 1;
 
-    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, 5).map(async (address) => {
+    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, offerStartIndex + 5).map(async (address) => {
       const addOffer = deps.contracts.MetadataStore.methods.addOffer(
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
@@ -161,35 +161,54 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     }));
 
     console.log('Creating escrows and rating them...');
-    const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
-    const FIAT = 0;
     const val = 1000;
     const feeAmount = Math.round(val * (feeMilliPercent / (100 * 1000)));
 
     const buyerAddress = addresses[offerStartIndex];
     const escrowStartIndex = offerStartIndex + 1;
-    await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
+    let receipt, hash, signature, nonce, created, escrowId;
+    const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
+    console.log('START', escrowStartIndex);
+    console.log('RECiptys', offerReceipts.length);
+    await Promise.all(addresses.slice(escrowStartIndex, escrowStartIndex + 1).map(async (creatorAddress, idx) => {
+      console.log('Index = ', idx - offerStartIndex + escrowStartIndex);
+      console.log('Address used:; ', creatorAddress);
+      console.log('OWNER', offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.owner);
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       // TODO when we re-enable creating tokens too, use this to know
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
 
       let gas;
 
-      /*
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
-      gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
-      const receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
-      const created = receipt.events.Created;
-      const escrowId = created.returnValues.escrowId;
+      // Create
+      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], PUBKEY_A, PUBKEY_B).call({from: buyerAddress});
+      signature = await deps.web3.eth.sign(hash, buyerAddress);
+      nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, PUBKEY_A, PUBKEY_B, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      gas = await creation.estimateGas({from: creatorAddress});
+      receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
+
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+
+      // Fund
+      const fund = deps.contracts.Escrow.methods.fund(escrowId);
+      gas = await fund.estimateGas({from: creatorAddress, value: val + feeAmount});
+      receipt = await fund.send({from: creatorAddress, gas: gas + 1000, value: val + feeAmount});
+
+      // Release
       const release = deps.contracts.Escrow.methods.release(escrowId);
       gas = await release.estimateGas({from: creatorAddress});
-      await release.send({from: creatorAddress, gas: gas + 1000});
+      receipt = await release.send({from: creatorAddress, gas: gas + 1000});
 
+      // Rate
       const rating = Math.floor(Math.random() * 5) + 1;
       const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
       gas = await rate.estimateGas({from: buyerAddress});
-      await rate.send({from: buyerAddress, gas: gas + 1000});*/
+      await rate.send({from: buyerAddress, gas: gas + 1000});
     }));
 
     /*

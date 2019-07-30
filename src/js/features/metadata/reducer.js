@@ -144,7 +144,8 @@ function reducer(state = DEFAULT_STATE, action) {
             ...state.users[toChecksumAddress(action.address)],
             downCount: action.downCount,
             upCount: action.upCount,
-            voteCount: action.voteCount
+            voteCount: action.voteCount,
+            averageCount: action.averageCount
           }
         }
       };

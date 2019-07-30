@@ -4,7 +4,7 @@ import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
 import {zeroAddress} from '../../../utils/address';
@@ -16,17 +16,13 @@ class Offers extends Component {
   state = {
     displayDialog: false,
     offerId: null
-  }
-
-  handleClose = () => {
-    this.setState({ displayDialog: false });
   };
 
   confirmDelete = offerId => (e) => {
     if(e) e.preventDefault();
     this.setState({ offerId, displayDialog: true });
     return false;
-  }
+  };
 
   displayDialog = show => () => {
     this.setState({displayDialog: show});
@@ -37,7 +33,7 @@ class Offers extends Component {
   deleteOffer = () => {
     this.props.deleteOffer(this.state.offerId);
     this.setState({offerId: null, displayDialog: false});
-  }
+  };
 
   renderOffers(offers, enabled) {
     const {t} = this.props;
@@ -50,8 +46,8 @@ class Offers extends Component {
           {offer.currency}
           { enabled && (
             <Button className="p-0 pl-3 pr-3 m-0 float-right btn-primary-outline" onClick={this.confirmDelete(offer.id)}>
-              <img src={iconDelete} />
-            </Button> 
+              <img src={iconDelete} alt="Delete icon" />
+            </Button>
           )}
         </CardHeader>
         <CardBody>

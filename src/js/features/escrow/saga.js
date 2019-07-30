@@ -36,7 +36,7 @@ const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
   const coords = generateXY(user.statusContactCode);
-  
+
   const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
@@ -260,11 +260,21 @@ export function *checkUserRating({address}) {
         ratings.push(parseInt(e.returnValues.rating, 10));
       });
     });
-    const downCount = ratings.filter(rating => rating < 3).length;
-    const upCount = ratings.filter(rating => rating > 3).length;
+    let downCount = 0;
+    let upCount = 0;
+    let average = 0;
+    ratings.forEach(rating => {
+      average += rating;
+      if (rating < 3) {
+        downCount++;
+      } else if (rating > 3) {
+        upCount++;
+      }
+    });
     const voteCount = ratings.length;
+    average /= voteCount;
 
-    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address});
+    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address, averageCount: average});
   } catch (error) {
     console.error(error);
     yield put({type: USER_RATING_FAILED, error: error.message});

@@ -22,6 +22,23 @@ class Reputation extends Component {
     const tradeWasRated = trade && rating !== 0;
     this.clickable = !tradeWasRated && rateTransaction && trade;
 
+    if (reputation.hasOwnProperty('averageCount')) {
+      let classes = 'average-rating py-1 px-3 rounded ';
+      if (!Number.isInteger(reputation.averageCount)) {
+        classes += 'bg-dark text-dark';
+      } else  if (reputation.averageCount >= 4) {
+        classes += 'bg-success text-success';
+      } else  if (reputation.averageCount < 4 && reputation.averageCount > 2) {
+        classes += 'bg-warning text-warning';
+      } else  if (reputation.averageCount < 2) {
+        classes += 'bg-danger text-danger';
+      }
+
+      return <span className={classes}>
+        {Number.isInteger(reputation.averageCount) ? reputation.averageCount : 'NA'}
+      </span>;
+    }
+
     return <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
       <span className={classnames("left-rating", {
         "bg-primary": tradeWasRated && rating === 5,
