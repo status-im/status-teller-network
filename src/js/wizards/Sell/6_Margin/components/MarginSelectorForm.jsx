@@ -15,8 +15,13 @@ class MarginSelectorForm extends Component {
   };
 
   render() {
-    const {t, currency, margin, token, prices, feeMilliPercent} = this.props;
+    let {t, currency, margin, token, prices, feeMilliPercent} = this.props;
 
+    margin = parseInt(margin, 10);
+    if(isNaN(margin)){
+      margin = 0;
+    }
+    
     let calcPrice = null;
     if (prices && !prices.error) {
       const basePrice = prices[token.symbol][currency];
