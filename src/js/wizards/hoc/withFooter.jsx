@@ -89,7 +89,7 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
 
     onNext = (cb) => {
       this.nextSubs.push(cb);
-    }
+    };
 
     render() {
       const controller = {

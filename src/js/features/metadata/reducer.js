@@ -10,6 +10,7 @@ import {
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
+import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
@@ -183,6 +184,13 @@ function reducer(state = DEFAULT_STATE, action) {
         nonce: action.nonce
       };
     case SIGN_MESSAGE_FAILED:
+      return {
+        ...state,
+        signing: false,
+        signature: "",
+        nonce: 0
+      };
+    case RESET_NEW_BUY:
       return {
         ...state,
         signing: false,
