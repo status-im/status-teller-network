@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from "react-i18next";
-import {Row, Col, FormGroup, Button, UncontrolledTooltip, Label} from 'reactstrap';
+import {Row, Col, FormGroup, UncontrolledTooltip, Label} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
@@ -10,7 +10,7 @@ import moment from "moment";
 import escrow from "../../../../features/escrow";
 
 const OfferTrade = ({
-  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, onClick, lastActivity,
+  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, lastActivity,
   assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay
 }) => (
   <Row>
@@ -53,7 +53,6 @@ const OfferTrade = ({
           </Row>
         </FormGroup>
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
-        <Button color="primary" className="px-4" onClick={onClick} disabled={disabled}>Open trade</Button>
         {notEnoughETH && !canRelay && <Col xs="12" className="text-small text-center text-danger">
               New orders can be created in {moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)}
         </Col>}
@@ -76,7 +75,6 @@ OfferTrade.propTypes = {
     PropTypes.number
   ]),
   asset: PropTypes.string,
-  onClick: PropTypes.func,
   price: PropTypes.number,
   assetQuantity: PropTypes.oneOfType([
     PropTypes.string,

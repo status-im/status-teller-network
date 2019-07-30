@@ -161,8 +161,8 @@ class App extends Component {
                 <Route exact path="/offers/map" component={OffersMap}/>
 
                 <Wizard path="/buy/" steps={[
-                  {path: '/buy/contact', component: BuyContact},
-                  {path: '/buy/trade', component: BuyTrade}
+                  {path: '/buy/trade', component: BuyTrade},
+                  {path: '/buy/contact', component: BuyContact, nextLabel: 'Confirm the trade'}
                 ]}/>
 
                 {this.props.isLicenseOwner &&

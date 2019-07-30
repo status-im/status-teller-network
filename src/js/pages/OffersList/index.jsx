@@ -15,6 +15,8 @@ import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare, zeroAddress} from "../../utils/address";
 import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
+import newBuy from "../../features/newBuy";
+import {withRouter} from "react-router-dom";
 
 class OffersList extends Component {
   constructor(props) {
@@ -33,6 +35,11 @@ class OffersList extends Component {
     this.props.loadOffers();
     this.props.updateBalance('ETH');
   }
+
+  offerClick = (offerId) => {
+    this.props.setOfferId(offerId);
+    this.props.history.push('/buy');
+  };
 
   clearFilters = () => {
     this.setState(this.defaultState);
@@ -137,7 +144,8 @@ class OffersList extends Component {
           {filteredOffers.map((offer, index) => (
             <Offer key={`offer-${index}`}
                    withDetail offer={offer}
-                   prices={this.props.prices} userAddress={this.props.address}/>)
+                   prices={this.props.prices} userAddress={this.props.address}
+                   offerClick={this.offerClick}/>)
           )}
         </div>
       </Fragment>
@@ -154,7 +162,9 @@ OffersList.propTypes = {
   address: PropTypes.string,
   gasPrice: PropTypes.string,
   updateBalance: PropTypes.func,
-  ethBalance: PropTypes.string
+  setOfferId: PropTypes.func,
+  ethBalance: PropTypes.string,
+  history: PropTypes.object
 };
 
 const mapStateToProps = state => {
@@ -168,10 +178,10 @@ const mapStateToProps = state => {
   };
 };
 
-
 export default connect(
   mapStateToProps,
   {
     loadOffers: metadata.actions.loadOffers,
-    updateBalance: network.actions.updateBalance
-  })(withNamespaces()(OffersList));
+    updateBalance: network.actions.updateBalance,
+    setOfferId: newBuy.actions.setOfferId
+  })(withNamespaces()(withRouter(OffersList)));

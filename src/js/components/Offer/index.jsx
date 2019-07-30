@@ -16,23 +16,28 @@ import {faUniversity, faGlobeAmericas, faExchangeAlt} from "@fortawesome/free-so
 import './index.scss';
 import {TokenImages} from "../../utils/images";
 
-const Offer = ({offer, withDetail, prices, userAddress, t}) => {
+const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
 
-  return (<Card tag={Link} to={`/profile/${offer.owner}`} className="mb-3 shadow p- border-0">
+  return (<Card className="mb-3 shadow p- border-0">
     <CardBody>
-      <CardTitle className={classnames('seller-name', 'font-weight-bold', {
+      <CardTitle tag={Link} to={`/profile/${offer.owner}`} className={classnames('seller-name', 'font-weight-bold', {
         'text-black': !isOwner,
         'text-success': isOwner
       })}>
         {offer.user.username}
       </CardTitle>
       <div>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faGlobeAmericas} className="text-primary"/> {offer.user.location}</p>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faUniversity}  className="text-primary"/> {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}</p>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faExchangeAlt}  className="text-primary"/> {offer.user.nbReleasedTrades} trade{offer.user.nbReleasedTrades !== 1 && 's'}</p>
+        <p className="text-black m-0"><FontAwesomeIcon icon={faGlobeAmericas}
+                                                       className="text-primary"/> {offer.user.location}</p>
+        <p className="text-black m-0"><FontAwesomeIcon icon={faUniversity}
+                                                       className="text-primary"/> {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
+        </p>
+        <p className="text-black m-0"><FontAwesomeIcon icon={faExchangeAlt}
+                                                       className="text-primary"/> {offer.user.nbReleasedTrades} trade{offer.user.nbReleasedTrades !== 1 && 's'}
+        </p>
         <span className="offer-reputation"><Reputation reputation={{averageCount: offer.user.averageCount}} size="s"/></span>
 
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
@@ -41,7 +46,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t}) => {
     </CardBody>
 
     {withDetail && prices && !prices.error &&
-    <CardFooter className={classnames('bg-white text-right border-0 pt-0', {
+    <CardFooter onClick={() => offerClick(offer.id)} className={classnames('bg-white text-right border-0 pt-0 clickable', {
       'text-warning': isArbitrator,
       'text-dark': !isArbitrator && !noArbitrator,
       'text-danger': noArbitrator
@@ -65,7 +70,8 @@ Offer.propTypes = {
   offer: PropTypes.object,
   withDetail: PropTypes.bool,
   prices: PropTypes.object,
-  userAddress: PropTypes.string
+  userAddress: PropTypes.string,
+  offerClick: PropTypes.func
 };
 
 export default withNamespaces()(Offer);
