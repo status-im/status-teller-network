@@ -12,42 +12,10 @@ exports[`Offers should render correctly 1`] = `
       className="float-right"
     >
       <Link
-        className="float-right"
+        className="float-right text-small"
         replace={false}
         to="/license"
-      >
-         
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f061",
-                "M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z",
-              ],
-              "iconName": "arrow-right",
-              "prefix": "fas",
-            }
-          }
-          inverse={false}
-          listItem={false}
-          mask={null}
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          title=""
-          transform={null}
-        />
-      </Link>
+      />
     </span>
   </div>
   <Card
@@ -96,40 +64,14 @@ exports[`Offers should render correctly 1`] = `
       </span>
       EUR
       <Button
-        className="p-0 pl-3 pr-3 m-0 float-right btn-link"
+        className="p-0 pl-3 pr-3 m-0 float-right btn-primary-outline"
         color="secondary"
         onClick={[Function]}
         tag="button"
       >
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                192,
-                512,
-                Array [],
-                "f142",
-                "M96 184c39.8 0 72 32.2 72 72s-32.2 72-72 72-72-32.2-72-72 32.2-72 72-72zM24 80c0 39.8 32.2 72 72 72s72-32.2 72-72S135.8 8 96 8 24 40.2 24 80zm0 352c0 39.8 32.2 72 72 72s72-32.2 72-72-32.2-72-72-72-72 32.2-72 72z",
-              ],
-              "iconName": "ellipsis-v",
-              "prefix": "fas",
-            }
-          }
-          inverse={false}
-          listItem={false}
-          mask={null}
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          title=""
-          transform={null}
+        <img
+          alt="Delete icon"
+          src="test-file-stub"
         />
       </Button>
     </CardHeader>
@@ -187,6 +129,18 @@ exports[`Offers should render correctly 1`] = `
       </Row>
     </CardBody>
   </Card>
+  <div
+    className="mt-5"
+  >
+    <h3
+      className="d-inline-block"
+    />
+  </div>
+  <Card
+    body={true}
+    className="text-center"
+    tag="div"
+  />
   <ConfirmDialog
     cancelText="No"
     content="Are you sure?"
@@ -210,43 +164,23 @@ exports[`Offers should render when empty 1`] = `
       className="float-right"
     >
       <Link
-        className="float-right"
+        className="float-right text-small"
         replace={false}
         to="/license"
-      >
-         
-        <FontAwesomeIcon
-          border={false}
-          className=""
-          fixedWidth={false}
-          flip={null}
-          icon={
-            Object {
-              "icon": Array [
-                448,
-                512,
-                Array [],
-                "f061",
-                "M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z",
-              ],
-              "iconName": "arrow-right",
-              "prefix": "fas",
-            }
-          }
-          inverse={false}
-          listItem={false}
-          mask={null}
-          pull={null}
-          pulse={false}
-          rotation={null}
-          size={null}
-          spin={false}
-          symbol={false}
-          title=""
-          transform={null}
-        />
-      </Link>
+      />
     </span>
+  </div>
+  <Card
+    body={true}
+    className="text-center"
+    tag="div"
+  />
+  <div
+    className="mt-5"
+  >
+    <h3
+      className="d-inline-block"
+    />
   </div>
   <Card
     body={true}
