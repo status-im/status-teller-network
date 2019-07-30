@@ -6,8 +6,9 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import CancelEscrow from './components/CancelEscrow';
 import CancelDispute from './components/CancelDispute';
-import CardEscrowSeller from './components/CardEscrowSeller';
-import CardEscrowBuyer from './components/CardEscrowBuyer';
+// import CardEscrowSeller from './components/CardEscrowSeller';
+// import CardEscrowBuyer from './components/CardEscrowBuyer';
+import FundingEscrow from "./components/FundingEscrow";
 import EscrowDetail from './components/EscrowDetail';
 import OpenChat from './components/OpenChat';
 import Profile from './components/Profile';
@@ -157,20 +158,22 @@ class Escrow extends Component {
 
     return (
       <div className="escrow">
-        { isBuyer && <CardEscrowBuyer trade={escrow}
-                                      payAction={payEscrow}
-                                      rateTransaction={rateTransaction}
-                                      arbitrationDetails={arbitrationDetails} /> }
+        <FundingEscrow isActive={true} isBuyer={isBuyer} isDone={false}/>
 
-        { !isBuyer && <CardEscrowSeller tokens={tokens}
-                                        trade={escrow}
-                                        showFundButton={showFundButton}
-                                        showApproveScreen={this.showApproveScreen}
-                                        fundEscrow={fundEscrow}
-                                        releaseEscrow={releaseEscrow}
-                                        arbitrationDetails={arbitrationDetails}
-                                        feeMilliPercent={feeMilliPercent}
-                                        isETH={isETH}/> }
+        {/*{ isBuyer && <CardEscrowBuyer trade={escrow}*/}
+        {/*                              payAction={payEscrow}*/}
+        {/*                              rateTransaction={rateTransaction}*/}
+        {/*                              arbitrationDetails={arbitrationDetails} /> }*/}
+
+        {/*{ !isBuyer && <CardEscrowSeller tokens={tokens}*/}
+        {/*                                trade={escrow}*/}
+        {/*                                showFundButton={showFundButton}*/}
+        {/*                                showApproveScreen={this.showApproveScreen}*/}
+        {/*                                fundEscrow={fundEscrow}*/}
+        {/*                                releaseEscrow={releaseEscrow}*/}
+        {/*                                arbitrationDetails={arbitrationDetails}*/}
+        {/*                                feeMilliPercent={feeMilliPercent}*/}
+        {/*                                isETH={isETH}/> }*/}
 
         <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice} />
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />

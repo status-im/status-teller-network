@@ -4,7 +4,6 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
 import ChatIcon from "../../../../images/read-chat.png";
 
-
 const OpenChat = ({statusContactCode, withBuyer}) => (
   <a href={"https://get.status.im/user/" + statusContactCode} rel="noopener noreferrer" target="_blank">
   <Row className="mt-4">

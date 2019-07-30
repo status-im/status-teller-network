@@ -4,23 +4,29 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
 import './index.scss';
+import FundingEscrow from "../../pages/Escrow/components/FundingEscrow";
 
-const RoundedIcon = ({icon, image, bgColor}) => (
+const RoundedIcon = ({icon, image, bgColor, size}) => (
   <div className={classnames("rounded-icon rounded-circle", {
     'rounded-icon__grey': bgColor === 'grey',
     'rounded-icon__blue': bgColor === 'blue',
     'rounded-icon__red': bgColor === 'red',
     'rounded-icon__green': bgColor === 'green'
   })}>
-    {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size="lg"/>}
+    {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
     {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon"/>}
   </div>
 );
 
+FundingEscrow.defaultProps = {
+  size: 'lg'
+};
+
 RoundedIcon.propTypes = {
   icon: PropTypes.object,
   image: PropTypes.string,
-  bgColor: PropTypes.string
+  bgColor: PropTypes.string,
+  size: PropTypes.string
 };
 
 export default RoundedIcon;
