@@ -7,6 +7,7 @@ import metadata from '../../features/metadata';
 import network from '../../features/network';
 import arbitration from '../../features/arbitration';
 
+import NoArbitratorLicense from './components/NoArbitratorLicense';
 import Disputes from './components/Disputes';
 import { zeroAddress, addressCompare } from '../../utils/address';
 
@@ -38,6 +39,10 @@ class MyDisputes extends Component {
   render() {
     const {profile, address} = this.props;
     if(!profile) return <Loading page={true} />;
+
+    if (!profile.isArbitrator){
+      return <NoArbitratorLicense />;
+    }
 
     return (
       <Fragment>

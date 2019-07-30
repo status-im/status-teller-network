@@ -28,7 +28,7 @@ class Home extends Component {
   }
 
   render() {
-    const {hasPrices, isArbitrator, t, priceError} = this.props;
+    const {hasPrices, t, priceError} = this.props;
 
     return (
       <div className="home">
@@ -53,13 +53,6 @@ class Home extends Component {
               <p className="mt-3"><Link to={this.sellUrl()}>{t('home.createOffer')}</Link></p>
             </Col>
           </Row>
-          { !isArbitrator && (
-            <Row>
-              <Col xs={12} className="text-center text-small">
-                <Link to="/arbitrator/license">Be an arbitrator?</Link>
-              </Col>
-          </Row>
-          )}
         </React.Fragment>
         <p className="teller-version text-muted"><Link to="/settings">Settings</Link> | Version: {version}</p>
       </div>
@@ -74,7 +67,8 @@ Home.propTypes = {
   isArbitrator: PropTypes.bool,
   isLicenseOwner: PropTypes.bool,
   profile: PropTypes.object,
-  hasPrices: PropTypes.bool
+  hasPrices: PropTypes.bool,
+  priceError: PropTypes.bool
 };
 
 
