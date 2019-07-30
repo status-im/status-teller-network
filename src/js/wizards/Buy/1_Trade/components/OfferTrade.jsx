@@ -10,19 +10,14 @@ import moment from "moment";
 import escrow from "../../../../features/escrow";
 
 const OfferTrade = ({
-  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, lastActivity,
-  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay
+  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, lastActivity, limitless,
+  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
+  limitH, limitL
 }) => (
   <Row>
     <Col xs="12" className="mt-5 text-center">
       <h2>Trade amount with <br/><span><Identicon seed={statusContactCode}
                                                   className="rounded-circle border"/> {name}</span></h2>
-      <p className="mt-3">
-        Min: {minToken} {asset} - <span id="max-token">Max: {maxToken} {asset}</span>
-        <UncontrolledTooltip placement="right" target="max-token">
-          This is the current balance of the seller. This is why it is the maximum
-        </UncontrolledTooltip>
-      </p>
     </Col>
     <Col xs="12" className="mt-4">
       <Form className="text-center">
@@ -55,6 +50,16 @@ const OfferTrade = ({
             </Col>
           </Row>
         </FormGroup>
+        { limitless && <p className="mt-3">
+        Limits: {minToken} {asset} to <span id="max-token">{maxToken} {asset}</span>
+        <UncontrolledTooltip placement="right" target="max-token">
+          This is the current balance of the seller. This is why it is the maximum
+        </UncontrolledTooltip>
+        </p> }
+        { !limitless && <p className="mt-3">
+        Limits: {(parseFloat(limitL) / 100).toFixed(2)} {currency.id} to <span id="max-token">{(parseFloat(limitH) / 100).toFixed(2)} {currency.id}</span>
+        </p>
+        }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
         {notEnoughETH && !canRelay && <Col xs="12" className="text-small text-center text-danger">
               New orders can be created in {moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)}
@@ -92,7 +97,10 @@ OfferTrade.propTypes = {
   disabled: PropTypes.bool,
   notEnoughETH: PropTypes.bool,
   canRelay: PropTypes.bool,
-  lastActivity: PropTypes.number
+  lastActivity: PropTypes.number,
+  limitless: PropTypes.bool,
+  limitL: PropTypes.string,
+  limitU: PropTypes.string
 };
 
 export default withNamespaces()(OfferTrade);
