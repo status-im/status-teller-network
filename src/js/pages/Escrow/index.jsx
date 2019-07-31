@@ -18,7 +18,7 @@ import ApproveTokenFunds from './components/ApproveTokenFunds';
 
 import {zeroAddress, addressCompare} from '../../utils/address';
 import { States, checkNotEnoughETH } from '../../utils/transaction';
-import { toTokenDecimals } from '../../utils/numbers';
+import { toTokenDecimals, fromTokenDecimals } from '../../utils/numbers';
 
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
@@ -30,6 +30,7 @@ import prices from '../../features/prices';
 import "./index.scss";
 import { ARBITRATION_UNSOLVED } from '../../features/arbitration/constants';
 import ErrorInformation from "../../components/ErrorInformation";
+import SendMoney from "./components/SendMoney";
 
 const {toBN} = web3.utils;
 
@@ -162,13 +163,24 @@ class Escrow extends Component {
     const feeAmount =  tokenAmount.div(toBN(divider));
     const totalAmount = tokenAmount.add(feeAmount);
 
+    const escrowAssetPrice = escrow.assetPrice / 100 * ((escrow.offer.margin / 100) + 1);
+    const escrowFiatAmount = (escrow.tokenAmount * escrowAssetPrice).toFixed(2);
+
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
 
     return (
       <div className="escrow">
-        <FundingEscrow isActive={escrow.fundStatus !== States.success} isBuyer={isBuyer} isDone={escrow.fundStatus === States.success} needsApproval={!showFundButton}
-                       enoughBalance={enoughBalance} feePercent={feePercent.toString()} feeAmount={feeAmount.toString()}
-                       tokenAmount={tokenAmount.toString()} tokenSymbol={escrow.token.symbol} action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
+        <FundingEscrow isActive={escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting} isBuyer={isBuyer}
+                       isDone={escrow.fundStatus === States.success || escrow.status === escrowF.helpers.tradeStates.funded || escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.release}
+                       needsApproval={!showFundButton}
+                       enoughBalance={enoughBalance} feePercent={feePercent.toString()} feeAmount={fromTokenDecimals(feeAmount, escrow.token.decimals).toString()}
+                       tokenAmount={escrow.tokenAmount.toString()} tokenSymbol={escrow.token.symbol}
+                       action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
+
+        <SendMoney
+          isDone={escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
+          isBuyer={isBuyer} isActive={escrow.status === escrowF.helpers.tradeStates.funded}
+          fiatAmount={escrowFiatAmount.toString()} fiatSymbol={escrow.offer.currency} action={() => payEscrow(escrow.escrowId)}/>
 
         {/*{ isBuyer && <CardEscrowBuyer trade={escrow}*/}
         {/*                              payAction={payEscrow}*/}

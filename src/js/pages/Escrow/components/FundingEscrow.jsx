@@ -22,10 +22,12 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
         <p className="m-0 text-muted text-small">
           {isBuyer ? 'Waiting for the seller to fund an escrow' : 'You need to fund an escrow. The buyer is waiting for you'}
         </p>
-        <p className="m-0 text-muted text-small">
-          Funding {tokenAmount} {tokenSymbol} + our fee of {feePercent} % ({feeAmount} {tokenSymbol})
-        </p>
-        {!enoughBalance && <p className="m-0 text-small text-danger">Not enough balance</p>}
+        {!isBuyer && <Fragment>
+          <p className="m-0 text-muted text-small">
+            Funding {tokenAmount} {tokenSymbol} + our fee of {feePercent} % ({feeAmount} {tokenSymbol})
+          </p>
+          {!enoughBalance && <p className="m-0 text-small text-danger">Not enough balance</p>}
+        </Fragment>}
       </Fragment>}
 
       {isDone && <p className="m-0 text-muted text-small">Tokens funded in the escrow</p>}
@@ -35,8 +37,8 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
       {isDone && <p className="text-muted text-small">Done</p>}
 
       {isActive && isBuyer && <div className="bg-dark rounded p-2">
-        <p className="text-white">Seller&apos;s turn</p>
-        <p className="text-white text-small">No action needed</p>
+        <p className="text-white text-small font-weight-bold m-0">Seller&apos;s turn</p>
+        <p className="text-white text-mini m-0">No action needed</p>
       </div>}
 
       {isActive && !isBuyer && <div className="bg-primary rounded p-2">
@@ -53,7 +55,6 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
           </UncontrolledTooltip>}
         </p>
       </div>}
-
     </Col>
   </Row>
 );

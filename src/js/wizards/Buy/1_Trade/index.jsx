@@ -161,7 +161,7 @@ Trade.propTypes = {
 
 const mapStateToProps = (state) => {
   const offerId = newBuy.selectors.offerId(state);
-  if (!offerId) {
+  if (isNaN(offerId)) {
     return {};
   }
   const offer = metadata.selectors.getOfferById(state, offerId);

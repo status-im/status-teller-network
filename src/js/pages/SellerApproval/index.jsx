@@ -82,7 +82,7 @@ class SellerApproval extends Component {
       return <ErrorInformation message={"This feature is only available to arbitrators"}/>;
     }
 
-    if(loading) return <Loading mining={true} txHash={txHash} />;
+    if(loading || (!sellers && acceptsEveryone)) return <Loading mining={true} txHash={txHash} />;
 
     return (
       <Fragment>

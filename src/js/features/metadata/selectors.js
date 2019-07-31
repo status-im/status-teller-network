@@ -48,7 +48,7 @@ export const currentUser = (state) => {
 };
 
 export const getOfferById = (state, id) => {
-  if (!id) {
+  if (isNaN(id)) {
     return null;
   }
   const offer = enhanceOffer(state, state.metadata.offers[id]);
