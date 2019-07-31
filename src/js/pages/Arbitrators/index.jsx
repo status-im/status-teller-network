@@ -12,6 +12,7 @@ import ErrorInformation from '../../components/ErrorInformation';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { formatArbitratorName } from '../../utils/strings';
+import NoLicense from '../../components/NoLicense';
 
 class Arbitrators extends Component {
   constructor(props) {
@@ -41,12 +42,16 @@ class Arbitrators extends Component {
   }
 
   render(){
-    const {arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions} = this.props;
+    const {arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions, profile} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
     if(loading) return <Loading mining={true} txHash={txHash} />;
+
+    if(!profile.isSeller){
+      return <NoLicense />;
+    }
 
     return (
     <Fragment>
@@ -93,7 +98,8 @@ Arbitrators.propTypes = {
   getUser: PropTypes.func,
   requestArbitrator: PropTypes.func,
   cancelArbitratorsActions: PropTypes.func,
-  cancelArbitratorRequest: PropTypes.func
+  cancelArbitratorRequest: PropTypes.func,
+  profile: PropTypes.object
 };
 
 
@@ -102,6 +108,7 @@ const mapStateToProps = state => {
   return {
     address,
     arbitrators: arbitration.selectors.arbitrators(state),
+    profile: metadata.selectors.getProfile(state, address),
     users: metadata.selectors.getAllUsers(state),
     loading: arbitration.selectors.isLoading(state),
     error: arbitration.selectors.errorGet(state),
