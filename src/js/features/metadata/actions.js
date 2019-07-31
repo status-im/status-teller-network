@@ -24,7 +24,9 @@ export const addOffer = (seller) => ({
     currency: seller.currency,
     paymentMethods: seller.paymentMethods,
     margin: seller.margin,
-    arbitrator: seller.arbitrator
+    arbitrator: seller.arbitrator,
+    limitL: seller.useCustomLimits ? seller.limitL.toFixed(2).toString().replace('.', '') : 0,
+    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0
   }
 });
 

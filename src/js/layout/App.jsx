@@ -46,6 +46,7 @@ import SellPaymentMethods from '../wizards/Sell/3_PaymentMethods';
 import SellArbitrator from '../wizards/Sell/4_SelectArbitrator';
 import SellCurrency from '../wizards/Sell/5_Currency';
 import SellMargin from '../wizards/Sell/6_Margin';
+import SellLimits from '../wizards/Sell/7_Limits';
 
 // Tmp
 import SignatureContainer from '../pages/tmp/SignatureContainer';
@@ -173,7 +174,8 @@ class App extends Component {
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/currency', component: SellCurrency},
-                  {path: '/sell/margin', component: SellMargin, nextLabel: 'Post the offer'}
+                  {path: '/sell/margin', component: SellMargin},
+                  {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
                 ]}/>
                 }
 
