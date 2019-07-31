@@ -11,6 +11,7 @@ import { zeroAddress } from '../../utils/address';
 
 import Loading from "../../components/Loading";
 import { States } from '../../utils/transaction';
+import NoLicense from '../../components/NoLicense';
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -33,6 +34,8 @@ class MyProfile extends Component {
   render() {
     const {profile, deleteOfferStatus, txHash} = this.props;
     if(!profile) return <Loading page={true} />;
+
+    if(!profile.isSeller) return <NoLicense />;
 
     if(deleteOfferStatus === States.pending) {
       return <Loading mining={true} txHash={txHash}/>;
