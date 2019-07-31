@@ -9,6 +9,7 @@ import CancelDispute from './components/CancelDispute';
 import FundingEscrow from "./components/FundingEscrow";
 import SendMoney from "./components/SendMoney";
 import ReleaseFunds from "./components/ReleaseFunds";
+import Done from "./components/Done";
 import EscrowDetail from './components/EscrowDetail';
 import OpenChat from './components/OpenChat';
 import Profile from './components/Profile';
@@ -169,46 +170,40 @@ class Escrow extends Component {
 
     return (
       <div className="escrow">
-        <FundingEscrow isActive={escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting} isBuyer={isBuyer}
-                       isDone={escrow.fundStatus === States.success || escrow.status === escrowF.helpers.tradeStates.funded||
-                       escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
-                       needsApproval={!showFundButton}
-                       enoughBalance={enoughBalance} feePercent={feePercent.toString()} feeAmount={fromTokenDecimals(feeAmount, escrow.token.decimals).toString()}
-                       tokenAmount={escrow.tokenAmount.toString()} tokenSymbol={escrow.token.symbol}
-                       action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
+        <FundingEscrow
+          isActive={escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting}
+          isBuyer={isBuyer}
+          isDone={escrow.fundStatus === States.success || escrow.status === escrowF.helpers.tradeStates.funded ||
+          escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
+          needsApproval={!showFundButton}
+          enoughBalance={enoughBalance} feePercent={feePercent.toString()}
+          feeAmount={fromTokenDecimals(feeAmount, escrow.token.decimals).toString()}
+          tokenAmount={escrow.tokenAmount.toString()} tokenSymbol={escrow.token.symbol}
+          action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
 
         <SendMoney
           isDone={escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
           isActive={escrow.status === escrowF.helpers.tradeStates.funded} isBuyer={isBuyer}
-          fiatAmount={escrowFiatAmount.toString()} fiatSymbol={escrow.offer.currency} action={() => payEscrow(escrow.escrowId)}/>
+          fiatAmount={escrowFiatAmount.toString()} fiatSymbol={escrow.offer.currency}
+          action={() => payEscrow(escrow.escrowId)}/>
 
         <ReleaseFunds
           isActive={escrow.status === escrowF.helpers.tradeStates.funded || escrow.status === escrowF.helpers.tradeStates.paid}
           isDone={escrow.status === escrowF.helpers.tradeStates.released} isBuyer={isBuyer}
           isPaid={escrow.status === escrowF.helpers.tradeStates.paid} action={() => releaseEscrow(escrow.escrowId)}/>
 
-        {/*{ isBuyer && <CardEscrowBuyer trade={escrow}*/}
-        {/*                              payAction={payEscrow}*/}
-        {/*                              rateTransaction={rateTransaction}*/}
-        {/*                              arbitrationDetails={arbitrationDetails} /> }*/}
+        <Done isDone={escrow.status === escrowF.helpers.tradeStates.released}/>
 
-        {/*{ !isBuyer && <CardEscrowSeller tokens={tokens}*/}
-        {/*                                trade={escrow}*/}
-        {/*                                showFundButton={showFundButton}*/}
-        {/*                                showApproveScreen={this.showApproveScreen}*/}
-        {/*                                fundEscrow={fundEscrow}*/}
-        {/*                                releaseEscrow={releaseEscrow}*/}
-        {/*                                arbitrationDetails={arbitrationDetails}*/}
-        {/*                                feeMilliPercent={feeMilliPercent}*/}
-        {/*                                isETH={isETH}/> }*/}
-
-        <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice} />
-        <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode } withBuyer={!isBuyer} />
-        <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer} />
-        <hr />
-        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH} canRelay={canRelay} lastActivity={lastActivity} isETHorSNT={isETHorSNT} />
-        {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) && <CancelDispute trade={escrow} cancelDispute={cancelDispute} /> }
-        {(!arbitrationDetails ||!arbitrationDetails.open) && <OpenDispute trade={escrow}  /> }
+        <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice}/>
+        <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode}
+                  withBuyer={!isBuyer}/>
+        <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer}/>
+        <hr/>
+        <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH}
+                      canRelay={canRelay} lastActivity={lastActivity} isETHorSNT={isETHorSNT}/>
+        {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) &&
+        <CancelDispute trade={escrow} cancelDispute={cancelDispute}/>}
+        {(!arbitrationDetails || !arbitrationDetails.open) && <OpenDispute trade={escrow}/>}
       </div>
     );
   }

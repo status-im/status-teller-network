@@ -42,7 +42,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
   const buyerDiff = getDiff(rateCurrentAndSellPrice);
   const sellerDiff = getDiff(rateCurrentAndBuyerPrice);
 
-  return (<Row className="mt-4">
+  return (<Row className="mt-5">
     <Col xs="2">
       <RoundedIcon icon={faQuestionCircle} bgColor="grey"/>
     </Col>
@@ -51,7 +51,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
       <p className="text-dark m-0">{(escrow.tokenAmount * escrowAssetPrice).toFixed(2)} {escrow.offer.currency} for {escrow.tokenAmount} {escrow.token.symbol}</p>
       <p className="text-dark m-0">{escrow.token.symbol} Price = {escrowAssetPrice.toFixed(2)} {escrow.offer.currency}</p>
       {escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">Expiration time: {moment(escrow.expirationTime * 1000).calendar()}</p>}
-      
+
       {escrow.status === tradeStates.waiting && isBuyer && currentPriceForCurrency && shouldWarn(buyerDiff, true) &&
        <Fragment>
         <p className="text-danger font-weight-bold mb-0">The current price for {escrow.token.symbol} is {currentPriceForCurrency} {escrow.offer.currency}, which is {buyerDiff.diffPercentage.toFixed(2)}% {buyerDiff.isAbove ? "above" : "below"} the price for this trade ({escrowAssetPrice.toFixed(2)} {escrow.offer.currency})</p>
