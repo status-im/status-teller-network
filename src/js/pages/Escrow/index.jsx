@@ -156,9 +156,19 @@ class Escrow extends Component {
       }
     }
 
+    const feePercent = feeMilliPercent / 1000;
+    const tokenAmount = toBN(toTokenDecimals(escrow.tokenAmount, escrow.token.decimals));
+    const divider = 100 * (feeMilliPercent / 1000);
+    const feeAmount =  tokenAmount.div(toBN(divider));
+    const totalAmount = tokenAmount.add(feeAmount);
+
+    const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
+
     return (
       <div className="escrow">
-        <FundingEscrow isActive={true} isBuyer={isBuyer} isDone={false}/>
+        <FundingEscrow isActive={escrow.fundStatus !== States.success} isBuyer={isBuyer} isDone={escrow.fundStatus === States.success} needsApproval={!showFundButton}
+                       enoughBalance={enoughBalance} feePercent={feePercent.toString()} feeAmount={feeAmount.toString()}
+                       tokenAmount={tokenAmount.toString()} tokenSymbol={escrow.token.symbol} action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
 
         {/*{ isBuyer && <CardEscrowBuyer trade={escrow}*/}
         {/*                              payAction={payEscrow}*/}

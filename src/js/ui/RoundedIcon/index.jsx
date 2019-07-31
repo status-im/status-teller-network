@@ -10,8 +10,10 @@ const RoundedIcon = ({icon, image, bgColor, size}) => (
   <div className={classnames("rounded-icon rounded-circle", {
     'rounded-icon__grey': bgColor === 'grey',
     'rounded-icon__blue': bgColor === 'blue',
+    'rounded-icon__primary': bgColor === 'primary',
     'rounded-icon__red': bgColor === 'red',
-    'rounded-icon__green': bgColor === 'green'
+    'rounded-icon__green': bgColor === 'green',
+    [size]: !!size
   })}>
     {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
     {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon"/>}
