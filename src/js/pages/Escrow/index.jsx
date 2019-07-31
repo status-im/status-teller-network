@@ -140,7 +140,7 @@ class Escrow extends Component {
     let showFundButton = isTokenApproved;
 
     // Show token approval UI
-    if(showApproveFundsScreen) {
+    if(showApproveFundsScreen && escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting) {
       if (approvalError) {
         return <ErrorInformation message={approvalError}
                                  retry={this.handleApprove(escrow.tokenAmount, token.address, token.decimals)}
@@ -188,7 +188,7 @@ class Escrow extends Component {
           action={() => payEscrow(escrow.escrowId)}/>
 
         <ReleaseFunds
-          isActive={escrow.status === escrowF.helpers.tradeStates.funded || escrow.status === escrowF.helpers.tradeStates.paid}
+          isActive={(!isBuyer && escrow.status === escrowF.helpers.tradeStates.funded) || escrow.status === escrowF.helpers.tradeStates.paid}
           isDone={escrow.status === escrowF.helpers.tradeStates.released} isBuyer={isBuyer}
           isPaid={escrow.status === escrowF.helpers.tradeStates.paid} action={() => releaseEscrow(escrow.escrowId)}/>
 

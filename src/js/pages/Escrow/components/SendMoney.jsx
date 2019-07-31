@@ -8,7 +8,7 @@ import classnames from 'classnames';
 const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol}) => (
   <Row className="mt-4">
     <Col xs="1">
-      {!isDone && <RoundedIcon size="xs" icon={faHandHoldingUsd} bgColor="primary"/>}
+      {!isDone && <RoundedIcon size="xs" icon={faHandHoldingUsd} bgColor={isActive ? "primary" : "grey"}/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
     </Col>
 
@@ -30,7 +30,7 @@ const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol}) 
     </Col>
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
-      {isDone && <p className="text-muted text-small">Done</p>}
+      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? 'You' : 'Buyer'}</p>}
 
       {isActive && !isBuyer && <div className="bg-dark rounded p-2">
         <p className="text-white text-small font-weight-bold m-0">Buyer&apos;s turn</p>

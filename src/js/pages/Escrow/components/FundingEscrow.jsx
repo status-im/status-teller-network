@@ -6,6 +6,7 @@ import FundIcon from "../../../../images/fund.png";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 
+// eslint-disable-next-line complexity
 const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance}) => (
   <Row className="mt-4">
     <Col xs="1">
@@ -34,7 +35,6 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
     </Col>
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
-      {isDone && <p className="text-muted text-small">Done</p>}
 
       {isActive && isBuyer && <div className="bg-dark rounded p-2">
         <p className="text-white text-small font-weight-bold m-0">Seller&apos;s turn</p>

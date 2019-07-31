@@ -9,7 +9,7 @@ import classnames from 'classnames';
 const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
   <Row className="mt-4">
     <Col xs="1">
-      {!isDone && <RoundedIcon size="xs" icon={faUserCheck} bgColor="primary"/>}
+      {!isDone && <RoundedIcon size="xs" icon={faUserCheck} bgColor={isActive ? "primary" : "grey"}/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
     </Col>
 
@@ -30,7 +30,7 @@ const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
     </Col>
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
-      {isDone && <p className="text-muted text-small">Done</p>}
+      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? 'Seller' : 'You'}</p>}
 
       {isActive && isBuyer && <div className="bg-dark rounded p-2">
         <p className="text-white text-small font-weight-bold m-0">Seller&apos;s turn</p>

@@ -7,7 +7,7 @@ import {faCheck} from "@fortawesome/free-solid-svg-icons";
 const Done = ({isDone}) => (
   <Row className="mt-4">
     <Col xs="1">
-      {!isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="primary"/>}
+      {!isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="grey"/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
     </Col>
 
