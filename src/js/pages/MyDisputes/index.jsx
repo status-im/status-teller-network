@@ -41,7 +41,7 @@ class MyDisputes extends Component {
     if(!profile) return <Loading page={true} />;
 
     if (!profile.isArbitrator){
-      return <NoLicense isArbitrator />;
+      return <NoLicense arbitratorPage />;
     }
 
     return (
