@@ -7,6 +7,7 @@ import Form from 'react-validation/build/form';
 import 'rc-slider/assets/index.css';
 import classnames from 'classnames';
 import CheckButton from '../../../../ui/CheckButton';
+import {conditionalRequire, isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 
 class LimitForm extends Component {
   setCustomLimits = (useCustomLimits) => {    
@@ -30,7 +31,8 @@ class LimitForm extends Component {
   };
 
   render() {
-    const {t, limitL, limitU, currency} = this.props;
+    let {t, limitL, limitU, currency} = this.props;
+
     return (
       <Form ref={c => {
         this.form = c;
@@ -55,7 +57,11 @@ class LimitForm extends Component {
                      value={limitL}
                      disabled={!this.props.useCustomLimits}
                      onChange={(e) => this.onLimitChange(e.target.value, 'lower')}
-                     placeholder="0" step="any"/>
+                     data-condition={this.props.useCustomLimits}
+                     data-maxvalue={parseFloat(limitU) || ''}
+                     data-minvalue={0}
+                     validations={[isNumber, lowerEqThan, higherEqThan, conditionalRequire]}
+                     placeholder="Min. sell limit" step="any"/>
               <span className="input-icon mr-3">{currency}</span>
             </Col>
           </Row>
@@ -70,8 +76,11 @@ class LimitForm extends Component {
                       value={limitU}
                       id="limitU-input"
                       disabled={!this.props.useCustomLimits}
+                      data-condition={this.props.useCustomLimits}
                       onChange={(e) => this.onLimitChange(e.target.value, 'upper')}
-                      placeholder="0" step="any"/>
+                      data-minvalue={parseFloat(limitL) || ''}
+                      validations={[isNumber, higherEqThan, conditionalRequire]}
+                      placeholder="Max. sell limit" step="any"/>
               <span className="input-icon mr-3">{currency}</span>
             </Col>
           </Row>

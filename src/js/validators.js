@@ -11,6 +11,16 @@ export const required = (value) => {
   }
 };
 
+export const conditionalRequire = (value, props) => {
+  const condition = props['data-condition'];
+  if (condition && !value.toString().trim().length) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.required')}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
+
 export const isInteger = (value) => {
   value = parseFloat(value);
   if (!Number.isInteger(value)) {
@@ -30,6 +40,7 @@ export const isNumber = (value) => {
 
 export const lowerThan = (value, props) => {
   const max = props['data-maxvalue'];
+  if(max === '') return;
   if (value >= max) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.lowerThan', {max})}</FormFeedback>}
@@ -39,6 +50,7 @@ export const lowerThan = (value, props) => {
 
 export const lowerEqThan = (value, props) => {
   const max = props['data-maxvalue'];
+  if(max === '') return;
   if (value > max) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.lowerEqThan', {max})}</FormFeedback>}
@@ -48,6 +60,7 @@ export const lowerEqThan = (value, props) => {
 
 export const higherThan = (value, props) => {
   const min = props['data-minvalue'];
+  if(min === '') return;
   if (value <= min) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.higherThan', {min})}</FormFeedback>}
@@ -57,6 +70,7 @@ export const higherThan = (value, props) => {
 
 export const higherEqThan = (value, props) => {
   const min = props['data-minvalue'];
+  if(min === '') return;
   if (value < min) {
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.higherEqThan', {min})}</FormFeedback>}

@@ -30,7 +30,7 @@ class Limits extends Component {
 
   postOffer = () => {
     this.props.footer.hide();
-    this.props.addOffer({...this.props.seller, useCustomLimits: this.state.useCustomLimits, limitL: this.state.limitL, limitU: this.state.limitU});
+    this.props.addOffer({...this.props.seller, useCustomLimits: this.state.useCustomLimits, limitL: this.state.limitL || 0, limitU: this.state.limitU || 0});
   };
 
   componentDidUpdate() {
@@ -43,14 +43,20 @@ class Limits extends Component {
   validate(useCustomLimits, limitL, limitU) {
     this.props.footer.enableNext(); 
 
+    limitL = limitL || 0;
+    limitU = limitU || 0;
+
+console.log(limitL, limitU);
+
     if(useCustomLimits){
-      if(limitL > limitU){
+      if((limitL > limitU) || (limitL === 0 && limitU === 0)){
         return this.props.footer.disableNext();
       }
     }
   }
 
   customLimitsChange = (useCustomLimits) => {
+    console.log(this.state);
     this.validate(useCustomLimits, this.state.limitL, this.state.limitU);
     this.setState({useCustomLimits});
   }
@@ -64,7 +70,8 @@ class Limits extends Component {
     if (isNaN(limitU)) {
       limitU = '';
     }
-    this.validate(limitL, limitU);
+    console.log("L", limitL);
+    this.validate(this.state.useCustomLimits, limitL, limitU);
     this.setState({limitL, limitU});
   };
 

@@ -34,8 +34,8 @@ const OfferTrade = ({
             <Col xs={10} sm={11}>
               <Input type="text"
                      name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
-                     data-maxvalue={parseFloat(maxToken)}
-                     data-minvalue={parseFloat(minToken)}
+                     data-maxvalue={parseFloat(maxToken) || ''}
+                     data-minvalue={parseFloat(minToken) || ''}
                      validations={[isNumber, lowerEqThan, higherEqThan]}
                      placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)} step="any"/>
               <span className="input-icon mr-3">{asset}</span>

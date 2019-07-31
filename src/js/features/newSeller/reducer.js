@@ -20,8 +20,8 @@ const DEFAULT_STATE = {
   arbitrator: '',
   paymentMethods: [],
   useCustomLimits: true,
-  limitL: 0,
-  limitU: 0,
+  limitL: '',
+  limitU: '',
   margin: 0
 };
 
