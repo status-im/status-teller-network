@@ -44,7 +44,7 @@ class Limits extends Component {
 
   continue = () => {
     this.props.resetAddOfferStatus();
-    this.props.history.push('/offers/list');
+    this.props.history.push('/profile');
   };
 
   cancel = () => {

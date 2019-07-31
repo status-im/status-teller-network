@@ -8,7 +8,7 @@ const Success = ({onClick}) => (
     <img src={successImage} alt="Success" width="160" height="160" className="mt-5" />
     <h2 className="mt-5 mb-5">Your offer has been successfully published</h2>
     <p>
-        <Button color="primary" onClick={onClick}>Ok</Button>
+        <Button color="primary" onClick={onClick}>Go to profile</Button>
     </p>
 </div>
 );
