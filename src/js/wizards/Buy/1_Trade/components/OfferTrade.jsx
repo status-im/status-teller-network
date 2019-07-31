@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from "react-i18next";
-import {Row, Col, FormGroup, UncontrolledTooltip, Label} from 'reactstrap';
+import {Row, Col, FormGroup, UncontrolledTooltip, Label, FormFeedback} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
@@ -10,11 +10,15 @@ import moment from "moment";
 import escrow from "../../../../features/escrow";
 
 const OfferTrade = ({
-  statusContactCode, name, minToken, maxToken, price: _price, currency, asset, lastActivity, limitless,
+  statusContactCode, name, minToken, maxToken, price, currency, asset, lastActivity, limitless,
   assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-  limitH, limitL
-}) => (
-  <Row>
+  limitH, limitL, sellerBalance
+}) => {
+  const minFiat = (parseFloat(limitL) / 100).toFixed(2);
+  const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
+  const amountGreaterThanBalance = currencyQuantity > parseFloat(sellerBalance) * price;
+
+  return <Row>
     <Col xs="12" className="mt-5 text-center">
       <h2>Trade amount with <br/><span><Identicon seed={statusContactCode}
                                                   className="rounded-circle border"/> {name}</span></h2>
@@ -44,7 +48,10 @@ const OfferTrade = ({
             </Col>
             <Col xs={10} sm={11}>
               <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
-                     validations={[isNumber]} id="fiat-quantity-input"
+                     data-maxvalue={limitless ? '' : maxFiat}
+                     data-minvalue={limitless ? 0 : minFiat}
+                     validations={[isNumber, lowerEqThan, higherEqThan]}
+                     id="fiat-quantity-input"
                      placeholder="Fiat quantity" onChange={(e) => onCurrencyChange(e.target.value)} step="any"/>
               <span className="input-icon mr-3">{currency.id}</span>
             </Col>
@@ -56,9 +63,10 @@ const OfferTrade = ({
           This is the current balance of the seller. This is why it is the maximum
         </UncontrolledTooltip>
         </p> }
-        { !limitless && <p className="mt-3">
-        Limits: {(parseFloat(limitL) / 100).toFixed(2)} {currency.id} to <span id="max-token">{(parseFloat(limitH) / 100).toFixed(2)} {currency.id}</span>
-        </p>
+        { !limitless && <Fragment>
+            { amountGreaterThanBalance && <FormFeedback className="d-block">Amount is greater than the seller&apos;s balance</FormFeedback> }
+            <p className="mt-3">Limits: {minFiat} {currency.id} to <span id="max-token">{maxFiat} {currency.id}</span></p>
+          </Fragment>
         }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
         {notEnoughETH && !canRelay && <Col xs="12" className="text-small text-center text-danger">
@@ -66,8 +74,9 @@ const OfferTrade = ({
         </Col>}
       </Form>
     </Col>
-  </Row>
-);
+  </Row>;
+}
+
 
 OfferTrade.propTypes = {
   t: PropTypes.func,
@@ -92,6 +101,7 @@ OfferTrade.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
+  sellerBalance: PropTypes.string,
   onCurrencyChange: PropTypes.func,
   onAssetChange: PropTypes.func,
   disabled: PropTypes.bool,
@@ -100,7 +110,7 @@ OfferTrade.propTypes = {
   lastActivity: PropTypes.number,
   limitless: PropTypes.bool,
   limitL: PropTypes.string,
-  limitU: PropTypes.string
+  limitH: PropTypes.string
 };
 
 export default withNamespaces()(OfferTrade);

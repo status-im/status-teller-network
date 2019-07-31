@@ -56,11 +56,22 @@ class Trade extends Component {
   }
 
   validate(currencyQuantity, assetQuantity) {
-    if (currencyQuantity < 0 || assetQuantity < 0 || assetQuantity > (this.props.sellerBalance || MAX)) {
-      this.props.footer.disableNext();
-      this.setState({disabled: true});
-      return;
+    const limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
+    if(limitless){
+      if (currencyQuantity < 0 || assetQuantity < 0 || assetQuantity > (this.props.sellerBalance || MAX)) {
+        this.props.footer.disableNext();
+        this.setState({disabled: true});
+        return;
+      }
+    } else {
+      if((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) || 
+         (currencyQuantity < (parseFloat(this.props.offer.limitL) / 100))){
+          this.props.footer.disableNext();
+          this.setState({disabled: true});
+          return;
+         }
     }
+    
     this.props.footer.enableNext();
     this.setState({disabled: false});
   }
@@ -135,6 +146,7 @@ class Trade extends Component {
                   limitL={this.props.offer.limitL}
                   limitH={this.props.offer.limitH}
                   price={price}
+                  sellerBalance={this.props.sellerBalance}
                   asset={this.props.offer.token.symbol}
                   currency={{id: this.props.offer.currency}}
                   onClick={this.postEscrow}
