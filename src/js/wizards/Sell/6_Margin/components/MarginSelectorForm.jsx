@@ -48,8 +48,10 @@ class MarginSelectorForm extends Component {
                        placeholder="0"
                        className="form-control prepend"
                        value={margin}
+                       data-maxvalue={100}
+                       data-minvalue={-100}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isNumber, lowerEqThan.bind(null, 100), higherThan.bind(null, -100)]}/>
+                       validations={[required, isNumber, lowerEqThan, higherThan]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>

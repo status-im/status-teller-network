@@ -32,8 +32,11 @@ const OfferTrade = ({
               <Label for="asset-quantity-input">Buy:</Label>
             </Col>
             <Col xs={10} sm={11}>
-              <Input type="text" name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
-                     validations={[isNumber, lowerEqThan.bind(null, parseFloat(maxToken)), higherEqThan.bind(null, parseFloat(minToken))]}
+              <Input type="text"
+                     name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
+                     data-maxvalue={parseFloat(maxToken)}
+                     data-minvalue={parseFloat(minToken)}
+                     validations={[isNumber, lowerEqThan, higherEqThan]}
                      placeholder="Asset quantity" onChange={(e) => onAssetChange(e.target.value)} step="any"/>
               <span className="input-icon mr-3">{asset}</span>
             </Col>
