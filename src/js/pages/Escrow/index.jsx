@@ -104,8 +104,9 @@ class Escrow extends Component {
   };
 
   render() {
+    // TODO re-add rating transaction. Missing in design
     let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
+      cancelEscrow, releaseEscrow, payEscrow, /*rateTransaction, */approvalTxHash, lastActivity,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
