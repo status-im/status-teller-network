@@ -263,7 +263,11 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
-    loading: (theEscrow && (theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending)) || approvalLoading || arbitrationLoading,
+    loading: theEscrow && ((theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending) ||
+      approvalLoading || arbitrationLoading || (theEscrow.releaseStatus === States.pending ||
+        (theEscrow.mining && (theEscrow.status === escrowF.helpers.tradeStates.funded || theEscrow.status === escrowF.helpers.tradeStates.paid))) ||
+      (theEscrow.fundStatus === States.pending || (theEscrow.mining && theEscrow.status === escrowF.helpers.tradeStates.waiting)) ||
+      theEscrow.payStatus === States.pending),
     escrowEvents: events.selectors.getEscrowEvents(state),
     lastActivity: escrowF.selectors.getLastActivity(state),
     assetCurrentPrice: (theEscrow && theEscrow.token) ? prices.selectors.getAssetPrice(state, theEscrow.token.symbol) : null,
