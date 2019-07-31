@@ -9,7 +9,7 @@ import metadata from "../../../features/metadata";
 import {States} from "../../../utils/transaction";
 import ErrorInformation from '../../../components/ErrorInformation';
 import {withRouter} from "react-router-dom";
-
+import Success from './components/Success';
 import "./index.scss";
 
 class Limits extends Component {
@@ -21,11 +21,11 @@ class Limits extends Component {
       useCustomLimits: props.seller.useCustomLimits
     };
     this.validate(props.seller.useCustomLimits, props.seller.limitL, props.seller.limitU);
+  }
 
-    props.footer.onPageChange(() => {
-      props.setLimits(this.state.useCustomLimits, this.state.limitL, this.state.limitU);
-    });
-    props.footer.onNext(this.postOffer);
+  componentDidMount(){
+    this.offerCreated = false;
+    this.props.footer.onNext(this.postOffer);
   }
 
   postOffer = () => {
@@ -34,10 +34,23 @@ class Limits extends Component {
   };
 
   componentDidUpdate() {
-    if (this.props.addOfferStatus === States.success) {
-      this.props.history.push('/profile');
-      this.props.resetAddOfferStatus();
+    if (this.props.addOfferStatus === States.success && !this.offerCreated) {
+      this.offerCreated = true;
+      this.props.footer.hide();
+    } else {
+      this.offerCreated = false;
     }
+  }
+
+  continue = () => {
+    this.props.resetAddOfferStatus();
+    this.props.history.push('/offers/list');
+  };
+
+  cancel = () => {
+    this.props.resetAddOfferStatus();
+    this.props.footer.onNext(this.postOffer);
+    this.props.footer.show();
   }
 
   validate(useCustomLimits, limitL, limitU) {
@@ -73,7 +86,7 @@ class Limits extends Component {
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postOffer} cancel={this.props.resetAddOfferStatus}/>;
+        return <ErrorInformation transaction retry={this.postOffer} cancel={this.cancel}/>;
       case States.none:
         return <LimitForm limitL={this.state.limitL}
                           limitU={this.state.limitU}
@@ -81,6 +94,8 @@ class Limits extends Component {
                           useCustomLimits={this.state.useCustomLimits}
                           customLimitsChange={this.customLimitsChange}
                           limitChange={this.limitChange} />;
+      case States.success:
+        return <Success onClick={this.continue} />;
       default:
         return <Fragment/>;
     }

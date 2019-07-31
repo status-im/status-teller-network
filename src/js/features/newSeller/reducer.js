@@ -9,7 +9,8 @@ import {
   SET_LIMITS
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
-import {ADD_OFFER_SUCCEEDED} from '../metadata/constants';
+import {ADD_OFFER_SUCCEEDED,RESET_NEW_OFFER} from '../metadata/constants';
+
 
 const DEFAULT_STATE = {
   asset: '',
@@ -71,6 +72,7 @@ function reducer(state = DEFAULT_STATE, action) {
         limitU: action.limitU
       };
     case ADD_OFFER_SUCCEEDED:
+    case RESET_NEW_OFFER:
     case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;

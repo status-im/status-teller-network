@@ -10,6 +10,7 @@ import network from "../../features/network";
 import metadata from "../../features/metadata";
 import prices from "../../features/prices";
 import arbitrator from "../../features/arbitration";
+import newSeller from "../../features/newSeller";
 
 import { version } from '../../../../package.json';
 
@@ -21,6 +22,7 @@ class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
     this.props.checkIsArbitrator();
+    this.props.resetNewOfferData();
   }
 
   sellUrl(){
@@ -68,7 +70,8 @@ Home.propTypes = {
   isLicenseOwner: PropTypes.bool,
   profile: PropTypes.object,
   hasPrices: PropTypes.bool,
-  priceError: PropTypes.bool
+  priceError: PropTypes.bool,
+  resetNewOfferData: PropTypes.func
 };
 
 
@@ -88,6 +91,7 @@ export default connect(
   mapStateToProps,
   {
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    checkIsArbitrator: arbitrator.actions.checkLicenseOwner
+    checkIsArbitrator: arbitrator.actions.checkLicenseOwner,
+    resetNewOfferData: newSeller.actions.resetNewOfferData
   }
 )(withNamespaces()(Home));
