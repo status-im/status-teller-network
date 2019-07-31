@@ -46,8 +46,6 @@ class Limits extends Component {
     limitL = limitL || 0;
     limitU = limitU || 0;
 
-console.log(limitL, limitU);
-
     if(useCustomLimits){
       if((limitL > limitU) || (limitL === 0 && limitU === 0)){
         return this.props.footer.disableNext();
@@ -56,7 +54,6 @@ console.log(limitL, limitU);
   }
 
   customLimitsChange = (useCustomLimits) => {
-    console.log(this.state);
     this.validate(useCustomLimits, this.state.limitL, this.state.limitU);
     this.setState({useCustomLimits});
   }
@@ -70,7 +67,6 @@ console.log(limitL, limitU);
     if (isNaN(limitU)) {
       limitU = '';
     }
-    console.log("L", limitL);
     this.validate(this.state.useCustomLimits, limitL, limitU);
     this.setState({limitL, limitU});
   };
