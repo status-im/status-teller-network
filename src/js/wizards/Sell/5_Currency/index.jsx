@@ -22,11 +22,10 @@ class Currency extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.arbitrator) {
-      this.props.wizard.previous();
-    } else {
-      this.setState({ready: true});
+    if (!this.props.seller.paymentMethods.length) {
+      return this.props.wizard.previous();
     }
+    this.setState({ready: true});
   }
 
   validate(currency) {

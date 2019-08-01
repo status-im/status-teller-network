@@ -38,7 +38,7 @@ class SelectArbitrator extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.paymentMethods.length) {
+    if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
     this.setState({ready: true});

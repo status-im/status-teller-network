@@ -18,12 +18,17 @@ class Limits extends Component {
     this.state = {
       limitL: props.seller.limitL,
       limitU: props.seller.limitU,
-      useCustomLimits: props.seller.useCustomLimits
+      useCustomLimits: props.seller.useCustomLimits,
+      ready: false
     };
     this.validate(props.seller.useCustomLimits, props.seller.limitL, props.seller.limitU);
   }
 
-  componentDidMount(){
+  componentDidMount() {
+    if (isNaN(this.props.seller.margin)) {
+      return this.props.wizard.previous();
+    }
+    this.setState({ready: true});
     this.offerCreated = false;
     this.props.footer.onNext(this.postOffer);
   }
@@ -51,25 +56,25 @@ class Limits extends Component {
     this.props.resetAddOfferStatus();
     this.props.footer.onNext(this.postOffer);
     this.props.footer.show();
-  }
+  };
 
   validate(useCustomLimits, limitL, limitU) {
-    this.props.footer.enableNext(); 
-
     limitL = limitL || 0;
     limitU = limitU || 0;
 
-    if(useCustomLimits){
-      if((limitL > limitU) || (limitL === 0 && limitU === 0)){
+    if (useCustomLimits) {
+      if ((limitL > limitU) || (limitL === 0 && limitU === 0)) {
         return this.props.footer.disableNext();
       }
     }
+    this.props.footer.enableNext();
   }
 
   customLimitsChange = (useCustomLimits) => {
-    this.validate(useCustomLimits, this.state.limitL, this.state.limitU);
-    this.setState({useCustomLimits});
-  }
+    this.setState({useCustomLimits}, () => {
+      this.validate(useCustomLimits, this.state.limitL, this.state.limitU);
+    });
+  };
 
   limitChange = (limitL, limitU) => {
     limitL = parseInt(limitL, 10);
@@ -85,6 +90,9 @@ class Limits extends Component {
   };
 
   render() {
+    if (!this.state.ready) {
+      return <Loading page/>;
+    }
     switch(this.props.addOfferStatus){
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;

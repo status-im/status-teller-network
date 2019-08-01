@@ -71,7 +71,7 @@ class Contact extends Component {
     } else {
       this.setState({ statusContactCode: this.props.statusContactCode });
     }
-  }
+  };
 
   render() {
     if (!this.state.ready) {

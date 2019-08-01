@@ -168,12 +168,12 @@ class App extends Component {
 
                 {this.props.isLicenseOwner &&
                 <Wizard path="/sell/" steps={[
-                  {path: '/sell/location', component: SellLocation},
-                  {path: '/sell/contact', component: SellContact},
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
-                  {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/currency', component: SellCurrency},
+                  {path: '/sell/location', component: SellLocation},
+                  {path: '/sell/contact', component: SellContact},
+                  {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
                 ]}/>
