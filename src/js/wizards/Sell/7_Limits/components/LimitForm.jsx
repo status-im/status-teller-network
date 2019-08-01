@@ -10,12 +10,12 @@ import CheckButton from '../../../../ui/CheckButton';
 import {conditionalRequire, isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
 
 class LimitForm extends Component {
-  setCustomLimits = (useCustomLimits) => {    
+  setCustomLimits = (useCustomLimits) => {
     this.props.customLimitsChange(useCustomLimits);
     if(!useCustomLimits){
       this.props.limitChange('', '');
     }
-  } 
+  };
 
   onLimitChange = (value, limit) => {
     let limitL = this.props.limitL;
@@ -31,7 +31,7 @@ class LimitForm extends Component {
   };
 
   render() {
-    let {t, limitL, limitU, currency} = this.props;
+    let {/*t, */limitL, limitU, currency} = this.props;
 
     return (
       <Form ref={c => {

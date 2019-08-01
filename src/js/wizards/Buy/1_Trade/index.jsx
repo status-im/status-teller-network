@@ -12,7 +12,6 @@ import Loading from '../../../components/Loading';
 import OfferTrade from './components/OfferTrade';
 
 const MIN = 0;
-const MAX = 999999;
 
 class Trade extends Component {
   constructor(props) {
@@ -64,14 +63,14 @@ class Trade extends Component {
         return;
       }
     } else {
-      if((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) || 
+      if((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) ||
          (currencyQuantity < (parseFloat(this.props.offer.limitL) / 100))){
           this.props.footer.disableNext();
           this.setState({disabled: true});
           return;
          }
     }
-    
+
     this.props.footer.enableNext();
     this.setState({disabled: false});
   }
