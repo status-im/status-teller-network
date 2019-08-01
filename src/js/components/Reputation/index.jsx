@@ -40,7 +40,7 @@ class Reputation extends Component {
     }
 
     return <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
-      <span className={classnames("left-rating", {
+      <span className={classnames("left-rating rounded-circle p-2", {
         "bg-primary": tradeWasRated && rating === 5,
         clickable: this.clickable
       })}>
