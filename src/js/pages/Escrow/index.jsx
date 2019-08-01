@@ -106,7 +106,7 @@ class Escrow extends Component {
   render() {
     // TODO re-add rating transaction. Missing in design
     let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, payEscrow, /*rateTransaction, */approvalTxHash, lastActivity,
+      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent} = this.props;
 
     const {showApproveFundsScreen} = this.state;
@@ -193,7 +193,8 @@ class Escrow extends Component {
           isDone={escrow.status === escrowF.helpers.tradeStates.released} isBuyer={isBuyer}
           isPaid={escrow.status === escrowF.helpers.tradeStates.paid} action={() => releaseEscrow(escrow.escrowId)}/>
 
-        <Done isDone={escrow.status === escrowF.helpers.tradeStates.released}/>
+        <Done isDone={escrow.status === escrowF.helpers.tradeStates.released} isActive={escrow.status === escrowF.helpers.tradeStates.released}
+              rateTransaction={rateTransaction} trade={escrow} isBuyer={isBuyer} rateStatus={escrow.rateStatus}/>
 
         <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice}/>
         <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode}
