@@ -1,6 +1,19 @@
 @import "../../../css/variable-overrides";
 
 .escrow {
+  position: relative;
+  background: url(../../../images/dotted-line.svg) no-repeat 8px 30px;
+
+  .arrow {
+    position: absolute;
+    left: 12px;
+    margin-top: 18px;
+  }
+
+  .mt-4 .rounded-icon {
+    outline: 6px solid #fff;
+  }
+
   p.balanceAlert {
     color: #FF2D55;
   }

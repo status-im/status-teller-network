@@ -4,12 +4,14 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
 import {faHandHoldingUsd, faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
+import ArrowDown from "../../../../images/down-arrow.svg";
 
 const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" icon={faHandHoldingUsd} bgColor={isActive ? "primary" : "grey"}/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {!isDone && isActive && <img src={ArrowDown} alt="" className="arrow" />}
     </Col>
 
     <Col xs={isActive ? '7' : '9'} sm={isActive ? '8' : '9'} md={isActive ? '9' : '9'}>
