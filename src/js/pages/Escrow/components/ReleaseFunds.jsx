@@ -4,6 +4,7 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
 import {faUserCheck, faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
+import ArrowDown from "../../../../images/down-arrow.svg";
 
 // eslint-disable-next-line complexity
 const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
@@ -11,6 +12,7 @@ const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" icon={faUserCheck} bgColor={isActive ? "primary" : "grey"}/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {!isDone && isActive && <img src={ArrowDown} alt="" className="arrow" />}
     </Col>
 
     <Col xs={isActive ? '7' : '9'} sm={isActive ? '8' : '9'} md={isActive ? '9' : '9'}>

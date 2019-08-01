@@ -6,6 +6,7 @@ import FundIcon from "../../../../images/fund.png";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import {States} from "../../../utils/transaction";
+import ArrowDown from "../../../../images/down-arrow.svg";
 
 // eslint-disable-next-line complexity
 const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance}) => (
@@ -13,6 +14,7 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={FundIcon} bgColor="primary"/>}
       {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {!isDone && <img src={ArrowDown} alt="" className="arrow" />}
     </Col>
 
     <Col xs={isActive ? '7' : '9'} sm={isActive ? '8' : '9'} md={isActive ? '9' : '9'}>
