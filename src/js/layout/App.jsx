@@ -130,7 +130,7 @@ class App extends Component {
     return (
       <Fragment>
         <HashRouter>
-          <Container className="p-0">
+          <Container className="p-0" id="app-container">
             <NotificationManager/>
             <Header profile={this.props.profile}/>
             <div className="body-content">
