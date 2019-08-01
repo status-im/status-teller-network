@@ -17,7 +17,7 @@ class SellerPaymentMethod extends Component {
         <ButtonGroup vertical className="w-100 mt-3">
           {this.props.methods.map((asset, idx) => (
             <CheckButton active={this.props.selectedMethods.indexOf(idx) > -1}
-                         key={'asset-' + idx}
+                         key={'asset-' + idx} isCheckBox
                          onClick={(_e) => this.togglePaymentMethod(idx)}>
               {asset}
             </CheckButton>
