@@ -16,7 +16,7 @@ const OfferTrade = ({
 }) => {
   const minFiat = (parseFloat(limitL) / 100).toFixed(2);
   const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
-  const amountGreaterThanBalance = currencyQuantity > parseFloat(sellerBalance) * price;
+  const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
 
   return <Row>
     <Col xs="12" className="mt-5 text-center">

@@ -58,7 +58,7 @@ class Trade extends Component {
   validate(currencyQuantity, assetQuantity) {
     const limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
     if(limitless){
-      if (currencyQuantity < 0 || assetQuantity < 0 || assetQuantity > (this.props.sellerBalance || MAX)) {
+      if (currencyQuantity < 0 || assetQuantity < 0) {
         this.props.footer.disableNext();
         this.setState({disabled: true});
         return;
