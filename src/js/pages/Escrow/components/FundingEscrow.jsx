@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import FundIcon from "../../../../images/fund.png";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
+import {States} from "../../../utils/transaction";
 
 // eslint-disable-next-line complexity
 const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance}) => (
@@ -36,12 +37,14 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
 
-      {isActive && isBuyer && <div className="bg-dark rounded p-2">
+      {isActive && isBuyer && <div className="bg-dark rounded p-2 position-relative">
+        <span className="bubble-triangle bg-dark"/>
         <p className="text-white text-small font-weight-bold m-0">Seller&apos;s turn</p>
         <p className="text-white text-mini m-0">No action needed</p>
       </div>}
 
-      {isActive && !isBuyer && <div className="bg-primary rounded p-2">
+      {isActive && !isBuyer && <div className="bg-primary rounded p-2 position-relative">
+        <span className="bubble-triangle bg-primary"/>
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
           <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded"

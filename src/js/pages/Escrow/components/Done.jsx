@@ -26,8 +26,10 @@ const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) =
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
     {isBuyer && isActive && <Col xs="5" sm="3">
-      <div className={classnames("rounded p-2", {'bg-primary': (rateStatus !== States.pending && rateStatus !== States.success),
+      <div className={classnames("rounded p-2 position-relative", {'bg-primary': (rateStatus !== States.pending && rateStatus !== States.success),
         'bg-dark': !(rateStatus !== States.pending && rateStatus !== States.success)})}>
+        <span className={classnames("bubble-triangle", {'bg-primary': (rateStatus !== States.pending && rateStatus !== States.success),
+          'bg-dark': !(rateStatus !== States.pending && rateStatus !== States.success)})}/>
         <p className="text-white mb-1 text-small">How did the trade go?</p>
         <p className="m-0 text-center">
           <Reputation trade={trade} rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null} size="l"/>
