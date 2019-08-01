@@ -18,8 +18,8 @@ import Loading from '../../components/Loading';
 import ApproveTokenFunds from './components/ApproveTokenFunds';
 
 import {zeroAddress, addressCompare} from '../../utils/address';
-import { States, checkNotEnoughETH } from '../../utils/transaction';
-import { toTokenDecimals, fromTokenDecimals } from '../../utils/numbers';
+import {States, checkNotEnoughETH} from '../../utils/transaction';
+import {toTokenDecimals, fromTokenDecimals} from '../../utils/numbers';
 
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
@@ -206,6 +206,13 @@ class Escrow extends Component {
         {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) &&
         <CancelDispute trade={escrow} cancelDispute={cancelDispute}/>}
         {(!arbitrationDetails || !arbitrationDetails.open) && <OpenDispute trade={escrow}/>}
+
+        {/*Only show "See all options" button if there is a scroll bar*/}
+        {window.innerHeight < document.getElementById('app-container').offsetHeight && <div className="see-all-options" onClick={() => window.scrollTo({
+          top: document.body.scrollHeight,
+          left: 0,
+          behavior: 'smooth'
+        })}>See all options ↓</div>}
       </div>
     );
   }

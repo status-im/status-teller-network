@@ -2,10 +2,20 @@
 
 .escrow {
   p.balanceAlert {
-    color: #FF2D55;
+    color: $red;
   }
 
   .disabled {
     opacity: .4;
   }
+}
+
+.see-all-options {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: $light-blue;
+  color: $primary;
+  padding: 7px 10px;
+  border-radius: 25px;
 }
