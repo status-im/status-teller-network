@@ -35,8 +35,8 @@ import MyTrades from '../pages/MyTrades';
 import MyDisputes from '../pages/MyDisputes';
 
 // Buy
-import BuyContact from '../wizards/Buy/0_Contact';
-import BuyTrade from '../wizards/Buy/1_Trade';
+import BuyContact from '../wizards/Buy/1_Contact';
+import BuyTrade from '../wizards/Buy/0_Trade';
 
 // Sell
 import SellLocation from '../wizards/Sell/3_Location';
