@@ -15,7 +15,7 @@ class Disputes extends Component {
   renderEmpty(enabled) {
     const {t} = this.props;
     return (
-      <Card body className={classnames("text-center", {'card-transparent': !enabled})}>
+      <Card body className={classnames("text-center", "no-border", "shadow-sm", {'card-transparent': !enabled})}>
         {t("disputes.noRecords")}
       </Card>
     );

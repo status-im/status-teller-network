@@ -55,8 +55,7 @@ const getTradeStyle = (trade, isBuyer) => {
 class Trades extends Component {
   state = {
     filteredState: '',
-    showFilters: false,
-    hideCompletedTrades: false
+    showFilters: false
   };
 
   filterState(stateName) {
@@ -80,39 +79,27 @@ class Trades extends Component {
               <Input type="select" name="select" id="trade-state-filter"
                      onChange={(e) => this.filterState(e.target.value)}>
                 <option/>
-                {Object.values(tradeStatesFormatted).map((tradeState, index) => <option
-                  key={`tradeState-${index}`}>{tradeState}</option>)}
+                { Object.keys(tradeStatesFormatted)
+                        .filter(x => { return this.props.active ?  !completedStates.includes(x) : completedStates.includes(x); })
+                        .map((tradeState, index) => <option
+                  key={`tradeState-${index}`}>{tradeStatesFormatted[tradeState]}</option>)}
               </Input>
-            </Col>
-          </FormGroup>
-          <FormGroup row>
-            <Col sm={{size: 12}}>
-              <FormGroup check>
-                <Label check>
-                  <Input type="checkbox" id="hide-done-trades"
-                         onChange={() => this.setState({hideCompletedTrades: !this.state.hideCompletedTrades})}/>
-                         Hide completed trades
-                </Label>
-              </FormGroup>
             </Col>
           </FormGroup>
         </Form>}
 
         {!this.state.showFilters && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
 
-        <Card body className="profile-trades-list py-2 px-3 shadow-sm">
+        <Card body className="profile-trades-list no-border pt-0">
           {(() => {
-            const trades = this.props.trades.map((trade, index) => {
+            const trades = this.props.trades.filter(x => { return this.props.active ? !completedStates.includes(x.status) : completedStates.includes(x.status); }).map((trade, index) => {
               if (this.state.filteredState && trade.status !== this.state.filteredState) {
-                return null;
-              }
-              if (this.state.hideCompletedTrades && completedStates.includes(trade.status)) {
                 return null;
               }
               const isBuyer = addressCompare(trade.buyer, address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
               return <Link key={index} to={"/escrow/" + trade.escrowId}>
-                <Row className="my-1 border-bottom">
+                <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
                   <Col className="align-self-center pr-0" xs="2">
                     <Identicon seed={isBuyer ? trade.seller.statusContactCode : trade.buyerInfo.statusContactCode}
                                scale={5} className="align-middle rounded-circle topCircle border"/>
@@ -131,7 +118,11 @@ class Trades extends Component {
               </Link>;
             });
             if (trades.every(trade => trade === null)) {
-              return this.props.t('trades.noFilteredTrades');
+              return (
+                <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
+                  <Col className="align-self-center pt-3 pb-3 text-center text-muted">{this.props.t('trades.noFilteredTrades')}</Col>
+                </Row>
+              )
             }
             return trades;
           })()}
@@ -141,10 +132,10 @@ class Trades extends Component {
   }
 
   renderEmpty() {
-    const {t} = this.props;
+    const {t, active} = this.props;
     return (
-      <Card body className="text-center">
-        {t('trades.noOpen')}
+      <Card body className="text-center no-border text-muted shadow-sm">
+        {active ? t('trades.noActiveTrades') : t('trades.noPastTrades')}
       </Card>
     );
   }
@@ -152,20 +143,22 @@ class Trades extends Component {
   render() {
     const {t, trades} = this.props;
     return (
-      <div className="mt-3">
-        <div>
-          <h3 className="d-inline-block">{t('trades.title')}</h3>
-        </div>
+      <div className="mb-5">
         {trades.length === 0 ? this.renderEmpty(t) : this.renderTrades()}
       </div>
     );
   }
 }
 
+Trades.defaultProps = {
+  active: false
+};
+
 Trades.propTypes = {
   t: PropTypes.func,
   trades: PropTypes.array,
-  address: PropTypes.string
+  address: PropTypes.string,
+  active: PropTypes.bool
 };
 
 export default withNamespaces()(Trades);

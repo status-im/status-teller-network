@@ -132,7 +132,8 @@
   "trades": {
     "title": "My trades",
     "find": "Find offer",
-    "noOpen": "No open trades",
+    "noActiveTrades": "No active trades at the moment",
+    "noPastTrades": "No past trades",
     "noFilteredTrades": "No trades with that filter"
   },
   "offers": {
