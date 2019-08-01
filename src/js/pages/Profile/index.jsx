@@ -40,7 +40,7 @@ class Profile extends Component {
     if(!profile || !prices) return <Loading page={true} />;
 
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
-    const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
+    const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress) && !x.deleted);
 
     return (
       <div className="seller-profile-container">
