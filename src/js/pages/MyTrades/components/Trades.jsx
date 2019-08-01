@@ -90,7 +90,7 @@ class Trades extends Component {
 
         {!this.state.showFilters && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
 
-        <Card body className="profile-trades-list no-border pt-0">
+        <Card body className="profile-trades-list border-0 pt-0">
           {(() => {
             const trades = this.props.trades.filter(x => { return this.props.active ? !completedStates.includes(x.status) : completedStates.includes(x.status); }).map((trade, index) => {
               if (this.state.filteredState && trade.status !== this.state.filteredState) {
@@ -98,7 +98,7 @@ class Trades extends Component {
               }
               const isBuyer = addressCompare(trade.buyer, address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
-              return <Link key={index} to={"/escrow/" + trade.escrowId}>
+              return <Link key={index} to={"/escrow/" + trade.escrowId} className="text-black">
                 <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
                   <Col className="align-self-center pr-0" xs="2">
                     <Identicon seed={isBuyer ? trade.seller.statusContactCode : trade.buyerInfo.statusContactCode}
@@ -134,7 +134,7 @@ class Trades extends Component {
   renderEmpty() {
     const {t, active} = this.props;
     return (
-      <Card body className="text-center no-border text-muted shadow-sm">
+      <Card body className="text-center border-0 text-muted shadow-sm">
         {active ? t('trades.noActiveTrades') : t('trades.noPastTrades')}
       </Card>
     );

@@ -26,7 +26,7 @@ class Dispute extends Component {
       return <Loading />;
     }
 
-    return (<Card body className={classnames("py-2", "px-3", "mb-3", "shadow-sm", "no-border", {'card-transparent': !enabled})}>
+    return (<Card body className={classnames("py-2", "px-3", "mb-3", "shadow-sm", "border-0", {'card-transparent': !enabled})}>
         <div className="d-flex my-1">
             <span className="flex-fill align-self-center">
               <Link to={"/arbitration/" + dispute.escrowId}>
