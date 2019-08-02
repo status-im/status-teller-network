@@ -6,7 +6,7 @@ import {faHandHoldingUsd, faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
 
-const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol}) => (
+const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" icon={faHandHoldingUsd} bgColor={isActive ? "primary" : "grey"}/>}
@@ -44,7 +44,7 @@ const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol}) 
         <span className="bubble-triangle bg-primary"/>
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
-          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded">
+          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
             Mark as paid →
           </Button>
         </p>
@@ -63,6 +63,7 @@ SendMoney.propTypes = {
   isBuyer: PropTypes.bool,
   isActive: PropTypes.bool,
   isDone: PropTypes.bool,
+  disabled: PropTypes.bool,
   action: PropTypes.func,
   fiatAmount: PropTypes.string,
   fiatSymbol: PropTypes.string
