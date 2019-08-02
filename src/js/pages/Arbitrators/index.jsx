@@ -47,7 +47,7 @@ class Arbitrators extends Component {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
-    if(loading) return <Loading mining={true} txHash={txHash} />;
+    if(loading) return <Loading mining={!!txHash} txHash={txHash} />;
 
     if(!profile.isSeller){
       return <NoLicense />;

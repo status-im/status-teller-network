@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {withRouter} from "react-router-dom";
@@ -70,7 +70,12 @@ class MyTrades extends Component {
       return x;
     });
 
-    return <Trades trades={trades} address={this.props.address}/>;
+    return <Fragment>
+        <h3 className="d-inline-block">Active trades</h3>
+        <Trades trades={trades} active address={this.props.address} />
+        <h3 className="d-inline-block">Past trades</h3>
+        <Trades trades={trades} address={this.props.address} />
+      </Fragment>;
   }
 }
 
