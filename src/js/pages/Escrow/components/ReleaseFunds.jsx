@@ -44,7 +44,7 @@ const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid, disabled}) => 
         <span className="bubble-triangle bg-primary"/>
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
-          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
+          <Button onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
             Release funds →
           </Button>
         </p>

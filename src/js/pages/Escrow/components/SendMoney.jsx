@@ -37,14 +37,18 @@ const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol, d
       {isActive && !isBuyer && <div className="bg-dark rounded p-2 position-relative">
         <span className="bubble-triangle bg-dark"/>
         <p className="text-white text-small font-weight-bold m-0">Buyer&apos;s turn</p>
-        <p className="text-white text-mini m-0">No action needed</p>
+        <p className="m-0 text-center">
+          <Button onClick={action} className="p-2 text-dark text-small rounded mt-1">
+            Mark as received
+          </Button>
+        </p>
       </div>}
 
       {isActive && isBuyer && <div className="bg-primary rounded p-2 position-relative">
         <span className="bubble-triangle bg-primary"/>
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
-          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
+          <Button onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
             Mark as paid →
           </Button>
         </p>
