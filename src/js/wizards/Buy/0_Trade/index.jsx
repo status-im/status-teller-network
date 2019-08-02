@@ -32,6 +32,7 @@ class Trade extends Component {
     if (isNaN(this.props.offerId)) {
       return this.props.history.push('/offers/list');
     }
+    this.validate(this.props.currencyQuantity, this.props.assetQuantity);
 
     this.props.updateBalances();
     this.props.getLastActivity(this.props.address);
@@ -56,19 +57,19 @@ class Trade extends Component {
 
   validate(currencyQuantity, assetQuantity) {
     const limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
-    if(limitless){
-      if (currencyQuantity < 0 || assetQuantity < 0) {
+    if (limitless) {
+      if (currencyQuantity <= 0 || assetQuantity <= 0) {
         this.props.footer.disableNext();
         this.setState({disabled: true});
         return;
       }
     } else {
-      if((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) ||
-         (currencyQuantity < (parseFloat(this.props.offer.limitL) / 100))){
-          this.props.footer.disableNext();
-          this.setState({disabled: true});
-          return;
-         }
+      if ((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) ||
+        (currencyQuantity < (parseFloat(this.props.offer.limitL) / 100))) {
+        this.props.footer.disableNext();
+        this.setState({disabled: true});
+        return;
+      }
     }
 
     this.props.footer.enableNext();

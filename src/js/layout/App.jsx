@@ -35,8 +35,9 @@ import MyTrades from '../pages/MyTrades';
 import MyDisputes from '../pages/MyDisputes';
 
 // Buy
-import BuyContact from '../wizards/Buy/1_Contact';
 import BuyTrade from '../wizards/Buy/0_Trade';
+import BuyContact from '../wizards/Buy/1_Contact';
+import BuyConfirmTrade from '../wizards/Buy/2_ConfirmTrade';
 
 // Sell
 import SellLocation from '../wizards/Sell/3_Location';
@@ -163,7 +164,8 @@ class App extends Component {
 
                 <Wizard path="/buy/" steps={[
                   {path: '/buy/trade', component: BuyTrade},
-                  {path: '/buy/contact', component: BuyContact, nextLabel: 'Confirm the trade'}
+                  {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
+                  {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 
                 {this.props.isLicenseOwner &&
