@@ -27,13 +27,11 @@ class Margin extends Component {
   }
 
   componentDidMount() {
-    this.validate(this.props.seller.margin);
-
-    if (!this.props.seller.currency) {
-      this.props.wizard.previous();
-    } else {
-      this.setState({ready: true});
+    if (!this.props.seller.arbitrator) {
+      return this.props.wizard.previous();
     }
+    this.validate(this.props.seller.margin);
+    this.setState({ready: true});
   }
 
   validate(margin) {
@@ -63,7 +61,7 @@ class Margin extends Component {
                                margin={this.state.margin}
                                marginChange={this.marginChange}
                                feeMilliPercent={this.props.feeMilliPercent} />;
-        
+
   }
 }
 

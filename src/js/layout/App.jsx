@@ -35,16 +35,16 @@ import MyTrades from '../pages/MyTrades';
 import MyDisputes from '../pages/MyDisputes';
 
 // Buy
-import BuyContact from '../wizards/Buy/0_Contact';
-import BuyTrade from '../wizards/Buy/1_Trade';
+import BuyContact from '../wizards/Buy/1_Contact';
+import BuyTrade from '../wizards/Buy/0_Trade';
 
 // Sell
-import SellLocation from '../wizards/Sell/0_Location';
-import SellContact from '../wizards/Sell/1_Contact';
-import SellAsset from '../wizards/Sell/2_Asset';
-import SellPaymentMethods from '../wizards/Sell/3_PaymentMethods';
-import SellArbitrator from '../wizards/Sell/4_SelectArbitrator';
-import SellCurrency from '../wizards/Sell/5_Currency';
+import SellLocation from '../wizards/Sell/3_Location';
+import SellContact from '../wizards/Sell/4_Contact';
+import SellAsset from '../wizards/Sell/0_Asset';
+import SellPaymentMethods from '../wizards/Sell/1_PaymentMethods';
+import SellArbitrator from '../wizards/Sell/5_SelectArbitrator';
+import SellCurrency from '../wizards/Sell/2_Currency';
 import SellMargin from '../wizards/Sell/6_Margin';
 import SellLimits from '../wizards/Sell/7_Limits';
 
@@ -168,12 +168,12 @@ class App extends Component {
 
                 {this.props.isLicenseOwner &&
                 <Wizard path="/sell/" steps={[
-                  {path: '/sell/location', component: SellLocation},
-                  {path: '/sell/contact', component: SellContact},
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
-                  {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/currency', component: SellCurrency},
+                  {path: '/sell/location', component: SellLocation},
+                  {path: '/sell/contact', component: SellContact},
+                  {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
                 ]}/>

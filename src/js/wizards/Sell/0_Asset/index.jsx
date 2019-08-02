@@ -20,9 +20,6 @@ class Asset extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.username) {
-      return this.props.wizard.previous();
-    }
     this.props.updateBalances();
   }
 

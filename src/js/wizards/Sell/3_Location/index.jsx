@@ -20,6 +20,12 @@ class Location extends Component {
     });
   }
 
+  componentDidMount() {
+    if (!this.props.seller.currency) {
+      return this.props.wizard.previous();
+    }
+  }
+
   validate(location) {
     if (location) {
       this.props.footer.enableNext();
