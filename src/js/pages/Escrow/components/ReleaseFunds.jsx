@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
 
 // eslint-disable-next-line complexity
-const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
+const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" icon={faUserCheck} bgColor={isActive ? "primary" : "grey"}/>}
@@ -44,7 +44,7 @@ const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid}) => (
         <span className="bubble-triangle bg-primary"/>
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
-          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded">
+          <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
             Release funds →
           </Button>
         </p>
@@ -63,6 +63,7 @@ ReleaseFunds.defaultProps = {
 ReleaseFunds.propTypes = {
   isBuyer: PropTypes.bool,
   isActive: PropTypes.bool,
+  disabled: PropTypes.bool,
   isDone: PropTypes.bool,
   isPaid: PropTypes.bool,
   action: PropTypes.func

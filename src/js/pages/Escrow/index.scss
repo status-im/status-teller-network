@@ -4,6 +4,10 @@
   position: relative;
   background: url(../../../images/dotted-line.svg) no-repeat 8px 30px;
 
+  &.escrow-disabled {
+    opacity: 0.4;
+  }
+
   .arrow {
     position: absolute;
     left: 12px;

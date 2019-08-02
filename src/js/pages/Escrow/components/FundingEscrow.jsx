@@ -5,11 +5,10 @@ import PropTypes from 'prop-types';
 import FundIcon from "../../../../images/fund.png";
 import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
-import {States} from "../../../utils/transaction";
 import ArrowDown from "../../../../images/down-arrow.svg";
 
 // eslint-disable-next-line complexity
-const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance}) => (
+const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={FundIcon} bgColor="primary"/>}
@@ -50,7 +49,7 @@ const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenA
         <p className="text-white mb-1 text-small">It&apos;s your turn</p>
         <p className="m-0 text-center">
           <Button id="fund-escrow-btn" onClick={action} className="p-2 text-primary text-small rounded"
-                  disabled={!enoughBalance}>
+                  disabled={!enoughBalance || disabled}>
             {needsApproval ? 'Approve transfer' : 'Fund escrow →'}
           </Button>
           {needsApproval && <UncontrolledTooltip placement="left" target="fund-escrow-btn">
@@ -78,6 +77,7 @@ FundingEscrow.propTypes = {
   needsApproval: PropTypes.bool,
   isDone: PropTypes.bool,
   enoughBalance: PropTypes.bool,
+  disabled: PropTypes.bool,
   action: PropTypes.func,
   tokenAmount: PropTypes.string,
   tokenSymbol: PropTypes.string,
