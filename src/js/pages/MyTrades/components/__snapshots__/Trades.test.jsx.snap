@@ -2,13 +2,8 @@
 
 exports[`Trades should render correctly 1`] = `
 <div
-  className="mt-3"
+  className="mb-5"
 >
-  <div>
-    <h3
-      className="d-inline-block"
-    />
-  </div>
   <p
     className="text-small text-muted mb-1 clickable"
     onClick={[Function]}
@@ -47,113 +42,38 @@ exports[`Trades should render correctly 1`] = `
   </p>
   <Card
     body={true}
-    className="profile-trades-list py-2 px-3 shadow-sm"
+    className="profile-trades-list border-0 pt-0"
     tag="div"
   >
-    <Link
-      key="0"
-      replace={false}
-      to="/escrow/0"
+    <Row
+      className="my-1 border-bottom shadow-sm p-2 mb-3"
+      tag="div"
     >
-      <Row
-        className="my-1 border-bottom"
+      <Col
+        className="align-self-center pt-3 pb-3 text-center text-muted"
         tag="div"
-      >
-        <Col
-          className="align-self-center pr-0"
-          tag="div"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-          xs="2"
-        >
-          <Identicon
-            className="align-middle rounded-circle topCircle border"
-            scale={5}
-          />
-        </Col>
-        <Col
-          className="align-self-center"
-          tag="div"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-          xs="3"
-        >
-          <span>
-            Name
-          </span>
-        </Col>
-        <Col
-          className="align-self-center"
-          md={4}
-          tag="div"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-          xs="3"
-        >
-          Sell
-           
-          0
-           
-          SNT
-        </Col>
-        <Col
-          className="align-self-center text-center text-success"
-          md={3}
-          tag="div"
-          widths={
-            Array [
-              "xs",
-              "sm",
-              "md",
-              "lg",
-              "xl",
-            ]
-          }
-          xs="4"
-        >
-          <span
-            className="p-1 text-uppercase d-inline text-white rounded-sm text-small nowrap bg-secondary text-black"
-          />
-        </Col>
-      </Row>
-    </Link>
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      />
+    </Row>
   </Card>
 </div>
 `;
 
 exports[`Trades should render when empty 1`] = `
 <div
-  className="mt-3"
+  className="mb-5"
 >
-  <div>
-    <h3
-      className="d-inline-block"
-    />
-  </div>
   <Card
     body={true}
-    className="text-center"
+    className="text-center border-0 text-muted shadow-sm"
     tag="div"
   />
 </div>

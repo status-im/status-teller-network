@@ -5,7 +5,7 @@ exports[`Reputation should render correctly 1`] = `
   className="reputation-container"
 >
   <span
-    className="left-rating"
+    className="left-rating rounded-circle p-2"
   >
     1
      

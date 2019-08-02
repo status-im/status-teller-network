@@ -45,7 +45,8 @@ class Escrow extends Component {
   }
 
   state = {
-    showApproveFundsScreen: false
+    showApproveFundsScreen: false,
+    releaseAnyway: false
   };
 
   loadData() {
@@ -195,12 +196,17 @@ class Escrow extends Component {
 
         <SendMoney
           isDone={escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
-          isActive={escrow.status === escrowF.helpers.tradeStates.funded} isBuyer={isBuyer}
-          fiatAmount={escrowFiatAmount.toString()} fiatSymbol={escrow.offer.currency}
-          action={() => payEscrow(escrow.escrowId)} disabled={arbitrationDetails.open}/>
+          isActive={escrow.status === escrowF.helpers.tradeStates.funded && !this.state.releaseAnyway} isBuyer={isBuyer}
+          fiatAmount={escrowFiatAmount.toString()} fiatSymbol={escrow.offer.currency} disabled={arbitrationDetails.open}
+          action={() => {
+            if (isBuyer) {
+              return payEscrow(escrow.escrowId);
+            }
+            this.setState({releaseAnyway: true});
+          }}/>
 
         <ReleaseFunds
-          isActive={(!isBuyer && escrow.status === escrowF.helpers.tradeStates.funded) || escrow.status === escrowF.helpers.tradeStates.paid}
+          isActive={(this.state.releaseAnyway && escrow.status !== escrowF.helpers.tradeStates.released) || escrow.status === escrowF.helpers.tradeStates.paid}
           isDone={escrow.status === escrowF.helpers.tradeStates.released} isBuyer={isBuyer}
           disabled={arbitrationDetails.open}
           isPaid={escrow.status === escrowF.helpers.tradeStates.paid} action={() => releaseEscrow(escrow.escrowId)}/>
