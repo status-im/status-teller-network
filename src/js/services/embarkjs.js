@@ -11,9 +11,7 @@ export function onReady() {
         return reject(err);
       }
 
-      // A relay gets compensated whenever it relays a transaction: whatever the gas usage it pays,
-      // it gets back the same plus the "txFee" precent - that is, it gets back ( (txFee+100)*gasUsed ) / 100
-      const relayProvider = new tabookey.RelayProvider(web3.currentProvider, { txfee: 12 });
+      const relayProvider = new tabookey.RelayProvider(web3.currentProvider);
       const customProvider = new TellerProvider(relayProvider);
       customProvider.startProvider(web3);
 

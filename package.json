@@ -90,7 +90,7 @@
     "redux-saga": "^0.16.2",
     "sass-loader": "^7.1.0",
     "staking-pool": "^0.0.1",
-    "tabookey-gasless": "^0.3.3-a",
+    "tabookey-gasless": "^0.4.0-beta2",
     "web3": "1.0.0-beta.37"
   },
   "jest": {

@@ -1,0 +1,82 @@
+{
+  "0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177": {
+    "contracts": {
+      "0x3043b04ad856d169c8f0b0509c0bc63192dc7edd92d6933c58708298a0e381be": {
+        "name": "ENSRegistry",
+        "address": "0xe7410170f87102DF0055eB195163A03B7F2Bff4A"
+      },
+      "0x1b577600819d19882762a47860e0d23dad953ca145edee5e9d2e3d59a50ef0a5": {
+        "name": "KyberNetworkProxy",
+        "address": "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
+      },
+      "0xab973d34eccbfa264b59d1aff6bc7f8bc0f75d2a89d7e1bbad63d8a2cf73e765": {
+        "name": "RelayHub",
+        "address": "0xd216153c06e857cd7f72665e0af1d7d82172f494"
+      },
+      "0xc7736f10a733af68ff770bcb372acd39c464e9ac528c9bfdc053cdb33d289246": {
+        "name": "RLPReader",
+        "address": "0xae3940E52b649a1314f7d3025Ef94d6f337cCE92"
+      },
+      "0x6d4b2f1548974e845feb3ccce8937c463340f5d84922ab1720814fe9bb2862c3": {
+        "name": "StandardToken",
+        "address": "0x851F554A9Aa205182ca143F2A4c547785C5b9C37"
+      },
+      "0xe63becc7e5231b3f667f849428112631ddfddf638a1428bce5367ca054ad8286": {
+        "name": "DAI",
+        "address": "0x49BF147F3403879B829322cDE32919CA01960658"
+      },
+      "0x0a0933bde1f838ba180c1501539168600f549319d5ce32cbb9c7d0dc73ff0758": {
+        "name": "SellerLicenseProxy",
+        "address": "0xf714F5f462E0e68ad901F8C13e298569F6Fd661f"
+      },
+      "0x2593ad087110ec0f4c738870abc12933973759dd2b0aab743574cb2a92367107": {
+        "name": "ArbitrationLicenseProxy",
+        "address": "0xAbBC6D3990DB702ed00A51889248086327aF1A5A"
+      },
+      "0x66bc64129f6447bfd0b73a3909a7c3e7c598cf01e1d0c79b08f19d559fe34fd4": {
+        "name": "MiniMeTokenFactory",
+        "address": "0xbDe5EC593CBD896f4f7f01A8578792d96fae0486"
+      },
+      "0xc6fafd3c65e7e1c7b0addf0e6ba081862d057db14cea992db689d98e85dcdc9f": {
+        "name": "MKR",
+        "address": "0xf454112E88B6d7Fa2fE7538F4b84CfC5fD86CE54"
+      },
+      "0x2c3b03b9c312c790c5bd7fc46d6fc7ac647e42bf8ace12b8d64394abdad8fb21": {
+        "name": "MetadataStoreProxy",
+        "address": "0xF5b4F9d637c6b55152C5aaf1D5B58ae21c54a875"
+      },
+      "0x5c2c412b3c9f50bd52d751cd8b2622f0765e2a2a97d8f3bbb3e90e56b83a519e": {
+        "name": "EscrowProxy",
+        "address": "0x7d6394104f5175CB14bfAC56e807348F20Dc29f9"
+      },
+      "0x74573ee56f292d0d5e59f699e0225f72c68858d0677f62d52f4bea8e8651accc": {
+        "name": "SNT",
+        "address": "0x3C36db79598e7902b5D726af7C7d406d5Da8aF14"
+      },
+      "0x29e50f90a18564fa4e93664f08c1a5ea3508443297423be37673a9cd6dd875ed": {
+        "name": "SellerLicense",
+        "address": "0x1bcA5BCbf2aA8aafF2429e15a9A9C8B6a0681325"
+      },
+      "0xedf3e9504fbcdfca9661216a25c48edb4a02640bd9244bef4f74fb7c82dd64e5": {
+        "name": "EscrowRelay",
+        "address": "0x22CDf9a803d791638782fC152E0E4F472EA660f9"
+      },
+      "0x4e5c08aa149c247d984571083361f972365ec846ad1e1d5c6bcf58474d5fa536": {
+        "name": "KyberFeeBurner",
+        "address": "0x1e9420E2Ab23cC5f1fb4f7e2077A586A09Bb69aF"
+      },
+      "0xf396e0f6562aa338281d33b54e17230616bcaf844b80b15d5834786868372045": {
+        "name": "ArbitrationLicense",
+        "address": "0x53202def8E6e04a7Fb743532e5e1646f32BB120d"
+      },
+      "0x5518671e17ebae7843ec9b113429b8b8379d7cffc827d2259c9c0174dcf8e238": {
+        "name": "MetadataStore",
+        "address": "0x3b5b0820328Aa60B17c2192e94a8bba4F5020CCA"
+      },
+      "0x01d5f876801e3d01e55439fa123643fc75c09bb1d5779ed5869841c99b8b3a7a": {
+        "name": "Escrow",
+        "address": "0x5b8608DF47d4d5c16ED1ac9acc4EFC57C6E3453b"
+      }
+    }
+  }
+}
