@@ -5,7 +5,7 @@ import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
-import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS} from '../../../features/metadata/constants';
+import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
 import CheckButton from '../../../ui/CheckButton';
 
 import './SorterFilter.scss';
@@ -64,9 +64,9 @@ class FilterMenu extends Component {
             <h5 className="mt-4">Payment method</h5>
             <span className="text-muted text-small">Popular</span>
             <ButtonGroup vertical className="w-100">
-              {POPULAR_PAYMENT_METHODS.map((index) => (
+              {POPULAR_PAYMENT_METHODS_INDEXES.map((index) => (
                 <CheckButton active={index === props.paymentMethodFilter}
-                            key={'paymentMethod-' + index} isCheckBox
+                            key={'paymentMethod-' + index}
                             onClick={(_e) => props.setPaymentMethodFilter(index)}>
                   {PAYMENT_METHODS[index]}
                 </CheckButton>
@@ -75,9 +75,9 @@ class FilterMenu extends Component {
 
             <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
             <ButtonGroup vertical className="w-100">
-              {Object.keys(PAYMENT_METHODS).map(x => parseInt(x, 10)).filter(x => POPULAR_PAYMENT_METHODS.indexOf(x) === -1).map((index) => (
+              {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
                 <CheckButton active={index === props.paymentMethodFilter}
-                    key={'paymentMethod-' + index} isCheckBox
+                    key={'paymentMethod-' + index}
                     onClick={(_e) => props.setPaymentMethodFilter(index)}>
                 {PAYMENT_METHODS[index]}
                 </CheckButton>

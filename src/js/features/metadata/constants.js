@@ -35,7 +35,7 @@ export const DELETE_OFFER_SUCCEEDED = 'METADATA/DELETE_OFFER_SUCCEEDED';
 export const DELETE_OFFER_FAILED = 'METADATA/DELETE_OFFER_FAILED';
 
 // Mapping
-export const POPULAR_PAYMENT_METHODS = [1, 2, 3];
+export const POPULAR_PAYMENT_METHODS_INDEXES = [1, 2, 3];
 
 export const PAYMENT_METHODS = {
     1:  'Bank transfer',
