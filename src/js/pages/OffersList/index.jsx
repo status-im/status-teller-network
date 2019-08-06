@@ -6,7 +6,7 @@ import network from '../../features/network';
 import metadata from '../../features/metadata';
 import prices from '../../features/prices';
 import {getLocation} from '../../services/googleMap';
-import {PAYMENT_METHODS, SORT_TYPES} from '../../features/metadata/constants';
+import {SORT_TYPES} from '../../features/metadata/constants';
 import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
@@ -122,8 +122,7 @@ class OffersList extends Component {
       <Fragment>
         <div>
           <h2 className="d-inline-block pt-2">{this.props.t('offers.listTitle')}</h2>
-          <SorterFilter paymentMethods={PAYMENT_METHODS}
-                        sortTypes={SORT_TYPES}
+          <SorterFilter sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
                         tokens={this.props.tokens}
                         clear={this.clearFilters}

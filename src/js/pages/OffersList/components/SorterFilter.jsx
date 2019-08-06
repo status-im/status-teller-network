@@ -5,7 +5,7 @@ import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
-
+import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS} from '../../../features/metadata/constants';
 import CheckButton from '../../../ui/CheckButton';
 
 import './SorterFilter.scss';
@@ -62,18 +62,28 @@ class FilterMenu extends Component {
             </ButtonGroup>
 
             <h5 className="mt-4">Payment method</h5>
+            <span className="text-muted text-small">Popular</span>
             <ButtonGroup vertical className="w-100">
-              {props.paymentMethods.map((paymentMethod, index) => (
-                <CheckButton key={'paymentMethod' + index}
-                             onClick={() => {
-                               props.setPaymentMethodFilter(index);
-                             }}
-                             active={index === props.paymentMethodFilter}>
-                  {paymentMethod}
+              {POPULAR_PAYMENT_METHODS.map((index) => (
+                <CheckButton active={index === props.paymentMethodFilter}
+                            key={'paymentMethod-' + index} isCheckBox
+                            onClick={(_e) => props.setPaymentMethodFilter(index)}>
+                  {PAYMENT_METHODS[index]}
                 </CheckButton>
               ))}
             </ButtonGroup>
 
+            <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
+            <ButtonGroup vertical className="w-100">
+              {Object.keys(PAYMENT_METHODS).map(x => parseInt(x, 10)).filter(x => POPULAR_PAYMENT_METHODS.indexOf(x) === -1).map((index) => (
+                <CheckButton active={index === props.paymentMethodFilter}
+                    key={'paymentMethod-' + index} isCheckBox
+                    onClick={(_e) => props.setPaymentMethodFilter(index)}>
+                {PAYMENT_METHODS[index]}
+                </CheckButton>
+              ))}
+            </ButtonGroup>
+            
             <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
           </div>
         </div>

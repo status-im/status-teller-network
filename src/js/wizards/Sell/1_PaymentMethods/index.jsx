@@ -5,7 +5,6 @@ import {connect} from "react-redux";
 import SellerPaymentMethod from './components/SellerPaymentMethod';
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
-import { PAYMENT_METHODS } from '../../../features/metadata/constants';
 
 class PaymentMethods extends Component {
   constructor(props) {
@@ -52,7 +51,7 @@ class PaymentMethods extends Component {
     }
 
     return (
-      <SellerPaymentMethod methods={PAYMENT_METHODS} togglePaymentMethod={this.togglePaymentMethod}
+      <SellerPaymentMethod togglePaymentMethod={this.togglePaymentMethod}
                            selectedMethods={this.state.selectedMethods}/>
     );
   }
