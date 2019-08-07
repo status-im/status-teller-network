@@ -17,6 +17,15 @@ body {
       margin-left: auto;
       margin-right: auto;
     }
+
+    .wizard-container .footer {
+      position: fixed;
+      background: #fff;
+      bottom: 0;
+      z-index: 9999;
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
   }
 
   .v-align-center {
