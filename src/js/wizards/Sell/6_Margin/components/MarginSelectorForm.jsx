@@ -72,7 +72,7 @@ class MarginSelectorForm extends Component {
 
         {(feeMilliPercent || '0') !== '0' && <div className="clearfix mt-5">
           <span className="float-left mr-3">
-          < RoundedIcon image={infoIcon} bgColor="blue" />
+            <RoundedIcon image={infoIcon} bgColor="blue" />
           </span>
           {t('marginSelectorForm.ourFee', {percentage: feeMilliPercent / 1000})}
         </div>}
