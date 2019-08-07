@@ -30,6 +30,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
   uint32 constant ERROR_INVALID_ASSET = 12;
   uint32 constant ERROR_TRX_TOO_SOON = 13;
   uint32 constant ERROR_INVALID_BUYER = 14;
+  uint32 constant ERROR = 99;
 
   /**
    * @param _metadataStore Metadata Store Address
@@ -202,6 +203,8 @@ contract EscrowRelay is RelayRecipient, Ownable {
       if(functionSignature == CANCEL_SIGNATURE){ // Allow activity after 15min have passed
         if((lastActivity[from] + 15 minutes) > block.timestamp) return ERROR_TRX_TOO_SOON;
       }
+
+      return OK;
     } else if(functionSignature == CREATE_SIGNATURE) {
       token = metadataStore.getAsset(dataValue);
 
@@ -209,8 +212,11 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
       // Allow activity after 15 min have passed
       if((lastActivity[from] + 15 minutes) > block.timestamp) return ERROR_TRX_TOO_SOON;
+
+      return OK;
     }
-    return OK;
+
+    return ERROR;
   }
 
   /**
