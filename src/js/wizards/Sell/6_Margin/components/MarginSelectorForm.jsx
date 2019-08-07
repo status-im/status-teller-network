@@ -8,6 +8,8 @@ import {isNumber, required, lowerEqThan, higherThan} from '../../../../validator
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
+import infoIcon from '../../../../../images/info.svg';
+import RoundedIcon from "../../../../ui/RoundedIcon";
 
 class MarginSelectorForm extends Component {
   onMarginChange = (value) => {
@@ -68,14 +70,14 @@ class MarginSelectorForm extends Component {
         </Fragment>}
         {calcPrice === null && <p>{t('marginSelectorForm.noPrice')}</p>}
 
-        {(feeMilliPercent || '0') !== '0' && <Fragment>
-          <h3 className="mt-4">{t('marginSelectorForm.ourFee')}</h3>
-          <div className="border rounded p-3">
-            {feeMilliPercent / 1000} %
-          </div>
-        </Fragment>}
+        {(feeMilliPercent || '0') !== '0' && <div className="clearfix mt-5">
+          <span className="float-left mr-3">
+          < RoundedIcon image={infoIcon} bgColor="blue" />
+          </span>
+          {t('marginSelectorForm.ourFee', {percentage: feeMilliPercent / 1000})}
+        </div>}
 
-        {!margin && margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
+        {!margin && margin !== 0 && <p className="text-muted mt-4">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
     );
   }

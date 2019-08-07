@@ -42,7 +42,7 @@
     "enterMargin": "Enter a margin to move to the next page",
     "priceOrigin": "Prices come from www.cryptocompare.com",
     "sellPrice": "Your sell price",
-    "ourFee": "Our fee",
+    "ourFee": "Teller network charges {{percentage}}% of each transaction",
     "back": "Back",
     "continue": "Confirm price",
     "noPrice": "Unable to calculate your price since token prices are unavailable for now"
