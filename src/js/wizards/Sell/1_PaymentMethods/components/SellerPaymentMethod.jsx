@@ -27,7 +27,7 @@ class SellerPaymentMethod extends Component {
 
         <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
         <ButtonGroup vertical className="w-100">
-          {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(x) === -1).map((idx) => (
+          {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((idx) => (
             <CheckButton active={this.props.selectedMethods.indexOf(parseInt(idx, 10)) > -1}
                          key={'method-' + idx} isCheckBox
                          onClick={(_e) => this.togglePaymentMethod(idx)}>
