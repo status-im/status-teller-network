@@ -9,23 +9,21 @@ $footer-height: 58px;
 
   .wizard-container {
     .footer {
-      position: absolute;
       right: 0;
       bottom: 0;
       left: 0;
       height: $footer-height;
       max-width: $content-width;
       margin: 0 auto;
+      position: fixed;
+      background: #fff;
+      z-index: 9999;
+      padding-top: 10px;
+      padding-bottom: 10px;
 
       .footer-arrow {
         position: relative;
         bottom: 1px;
-      }
-    }
-
-    @media screen and (min-width: 640px) {
-      .footer {
-        position: relative;
       }
     }
   }
