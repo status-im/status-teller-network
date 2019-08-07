@@ -186,7 +186,7 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
-    tracking: 'shared.chains.json',
+    tracking: 'shared.rinkeby.json',
     deployment: {
       accounts: [
         {
@@ -210,6 +210,9 @@ module.exports = {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
       },
+      RelayHub: {
+        address: '0xd216153c06e857cd7f72665e0af1d7d82172f494'
+      },
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
@@ -223,7 +226,7 @@ module.exports = {
 
   ropsten: {
     gasPrice: "10000000000",
-    tracking: 'shared.ropsten.chains.json',
+    tracking: 'shared.ropsten.json',
     contracts: {
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],

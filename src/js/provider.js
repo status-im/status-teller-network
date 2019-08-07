@@ -38,17 +38,9 @@ class Provider {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
         if (checkNotEnoughETH(gasPrice, balance)) {
-          // Increase 120%.
-          // Normally we would use gaspriceFactorPercent on tabookey.RelayProvider
-          // but this version of web3 does a getPrice before send() if the gas price is null
-          // to set this gas price as a parameter. Tabookey will then use this value directly
-          // without applying the factor percent
-          const useGasPrice = web3.utils.toBN(gasPrice).mul(web3.utils.toBN("120")).div(web3.utils.toBN("100"));
-          
           payload.params[0].to = EscrowRelay.options.address;
           payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
-          payload.params[0].gasPrice = web3.utils.toHex(useGasPrice);
-
+          
           this.relayProviderSend(payload, (error, result) => {
             callback(error, result);
           });
