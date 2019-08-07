@@ -91,6 +91,7 @@ class LimitForm extends Component {
               <CheckButton align="left" active={!this.props.useCustomLimits} onClick={() => { this.setCustomLimits(false); }}>
               No limits
               </CheckButton>
+              <span className="text-small text-muted">The maximum limit will be set according to the amount you have in your wallet.</span>
             </Col>
           </Row>
         </FormGroup>
