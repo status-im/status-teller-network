@@ -2,7 +2,9 @@
 
 .escrow {
   position: relative;
-  background: url(../../../images/dotted-line.svg) no-repeat 8px 30px;
+  background-image: url(../../../images/dotted-line.svg);
+  background-repeat: no-repeat;
+  background-position-y: 30px;
 
   &.escrow-disabled {
     opacity: 0.4;
@@ -10,7 +12,6 @@
 
   .arrow {
     position: absolute;
-    left: 12px;
     margin-top: 18px;
   }
 
@@ -25,6 +26,10 @@
   .disabled {
     opacity: .4;
   }
+
+  .mt-4:nth-child(4) {
+    background: #fff;
+  }
 }
 
 .see-all-options {
@@ -36,3 +41,35 @@
   padding: 7px 10px;
   border-radius: 25px;
 }
+
+@media (min-width: 0px) { 
+  .escrow {
+    background-position-x: 6px;
+  }
+
+  .arrow {
+    left: 10px;
+  }
+ }
+
+
+@media (min-width: 576px) { 
+  .escrow {
+    background-position-x: 11px;
+  }
+
+  .arrow {
+    left: 15px;
+  }
+ } 
+
+@media (min-width: 730px) {
+  .escrow {
+    background-position-x: 14px;
+  }
+
+  .arrow {
+    left: 18px;
+  }
+ }
+
