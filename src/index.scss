@@ -31,7 +31,12 @@ body {
 
   .clickable {
     cursor: pointer;
+    
+    .disabled {
+      opacity: .4;
+    }
   }
+  
 
   .not-clickable {
     cursor: default;
