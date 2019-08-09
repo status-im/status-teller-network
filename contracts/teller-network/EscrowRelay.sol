@@ -25,12 +25,13 @@ contract EscrowRelay is RelayRecipient, Ownable {
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
 
-  uint32 constant OK = 0;
-  uint32 constant ERROR_ENOUGH_BALANCE = 11;
-  uint32 constant ERROR_INVALID_ASSET = 12;
-  uint32 constant ERROR_TRX_TOO_SOON = 13;
-  uint32 constant ERROR_INVALID_BUYER = 14;
-  uint32 constant ERROR = 99;
+  uint256 constant OK = 0;
+  uint256 constant ERROR_ENOUGH_BALANCE = 11;
+  uint256 constant ERROR_INVALID_ASSET = 12;
+  uint256 constant ERROR_TRX_TOO_SOON = 13;
+  uint256 constant ERROR_INVALID_BUYER = 14;
+  uint256 constant ERROR_GAS_PRICE = 15;
+  uint256 constant ERROR = 99;
 
   /**
    * @param _metadataStore Metadata Store Address
@@ -191,6 +192,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
     if(from.balance > 600000 * gasPrice) return ERROR_ENOUGH_BALANCE;
 
+    if(gasPrice > 20000000000) return ERROR_GAS_PRICE; // 20Gwei
 
     if(functionSignature == PAY_SIGNATURE || functionSignature == CANCEL_SIGNATURE || functionSignature == OPEN_CASE_SIGNATURE){
       address payable buyer;
