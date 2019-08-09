@@ -49,7 +49,7 @@ class Arbitrators extends Component {
 
     if(loading) return <Loading mining={!!txHash} txHash={txHash} />;
 
-    if(!profile.isSeller){
+    if(!profile || !profile.isSeller){
       return <NoLicense />;
     }
 

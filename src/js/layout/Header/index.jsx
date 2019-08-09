@@ -9,14 +9,14 @@ import iconProfile from "../../../images/profile.svg";
 import iconCloseProfile from "../../../images/close_profile.svg";
 
 
-const Header = ({profile, location}) => (
+const Header = ({location}) => (
   <header className="border-bottom">
     <Navbar expand="md" className="px-0">
       <NavbarBrand tag={Link} to="/"><img src={logo} alt="Logo" width="32" height="32" /><span className="text-body text-logo">TN</span></NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {profile && location.pathname !== '/profile' && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="32" height="32" /></NavLink>}
-          {profile && location.pathname === '/profile' && <NavLink tag={Link} to="/"><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
+          {location.pathname !== '/profile' && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="32" height="32" /></NavLink>}
+          {location.pathname === '/profile' && <NavLink tag={Link} to="/"><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
         </NavItem>
       </Nav>
     </Navbar>
@@ -25,7 +25,6 @@ const Header = ({profile, location}) => (
 
 Header.propTypes = {
   history: PropTypes.object,
-  profile: PropTypes.object,
   location: PropTypes.object
 };
 
