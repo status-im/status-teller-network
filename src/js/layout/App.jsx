@@ -133,7 +133,7 @@ class App extends Component {
         <HashRouter>
           <Container className="p-0" id="app-container">
             <NotificationManager/>
-            <Header profile={this.props.profile}/>
+            <Header />
             <div className="body-content">
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
