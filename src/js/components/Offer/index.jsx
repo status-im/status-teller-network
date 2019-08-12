@@ -30,9 +30,9 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
     currencySymbol = currencySymbol.symbol;
   }
 
-  return (<Card className="mb-3 shadow border-0 offer-card">
+  return (<Card className="mb-3 shadow border-0 offer-card" onClick={() => offerClick(offer.id)}>
     <CardBody>
-      <CardTitle tag={Link} to={`/profile/${offer.owner}`} className={classnames('seller-name', 'font-weight-bold', {
+      <CardTitle className={classnames('seller-name', 'font-weight-bold', {
         'text-black': !isOwner,
         'text-success': isOwner
       })}>
@@ -62,8 +62,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
     </CardBody>
 
     {withDetail && prices && !prices.error &&
-    <CardFooter onClick={() => offerClick(offer.id)}
-                className={classnames('bg-white text-right border-0 pt-0 clickable', {
+    <CardFooter className={classnames('bg-white text-right border-0 pt-0 clickable', {
                   'text-warning': isArbitrator,
                   'text-dark': !isArbitrator && !noArbitrator,
                   'text-danger': noArbitrator

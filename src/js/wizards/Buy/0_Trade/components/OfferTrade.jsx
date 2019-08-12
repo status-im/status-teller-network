@@ -5,12 +5,12 @@ import {Row, Col, FormGroup, UncontrolledTooltip, Label, FormFeedback} from 'rea
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
-import Identicon from "../../../../components/UserInformation/Identicon";
 import moment from "moment";
 import escrow from "../../../../features/escrow";
+import UserInformation from "../../../../components/UserInformation";
 
 const OfferTrade = ({
-  statusContactCode, name, minToken, maxToken, price, currency, asset, lastActivity, limitless,
+  seller, minToken, maxToken, currency, asset, lastActivity, limitless,
   assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
   limitH, limitL, sellerBalance
 }) => {
@@ -20,8 +20,10 @@ const OfferTrade = ({
 
   return <Row>
     <Col xs="12" className="mt-5 text-center">
-      <h2>Trade amount with <br/><span><Identicon seed={statusContactCode}
-                                                  className="rounded-circle border"/> {name}</span></h2>
+
+      <UserInformation username={seller.username} reputation={{downCount: seller.downCount, upCount: seller.upCount}}
+                       identiconSeed={seller.statusContactCode} nbCreatedTrades={seller.nbCreatedTrades}
+                       nbReleasedTrades={seller.nbReleasedTrades}/>
     </Col>
     <Col xs="12" className="mt-4">
       <Form className="text-center">
@@ -75,13 +77,12 @@ const OfferTrade = ({
       </Form>
     </Col>
   </Row>;
-}
+};
 
 
 OfferTrade.propTypes = {
   t: PropTypes.func,
-  statusContactCode: PropTypes.string,
-  name: PropTypes.string,
+  seller: PropTypes.object,
   currency: PropTypes.object,
   minToken: PropTypes.oneOfType([
     PropTypes.string,
