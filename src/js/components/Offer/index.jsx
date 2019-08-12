@@ -10,18 +10,27 @@ import {addressCompare, zeroAddress} from '../../utils/address';
 import NoArbitratorWarning from "../../components/NoArbitratorWarning";
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import {withNamespaces} from "react-i18next";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faUniversity, faGlobeAmericas, faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
+import {faGlobeAmericas} from "@fortawesome/free-solid-svg-icons";
+import limitIcon from '../../../images/limits.svg';
+import bankIcon from '../../../images/bank.svg';
+import {CURRENCY_DATA} from "../../constants/currencies";
 
 import './index.scss';
 import {getTokenImage} from "../../utils/images";
+import RoundedIcon from "../../ui/RoundedIcon";
 
 const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
+  let currencySymbol = CURRENCY_DATA.find(curr => curr.id === offer.currency);
+  if (!currencySymbol) {
+    currencySymbol = offer.currency;
+  } else {
+    currencySymbol = currencySymbol.symbol;
+  }
 
-  return (<Card className="mb-3 shadow p- border-0">
+  return (<Card className="mb-3 shadow border-0 offer-card">
     <CardBody>
       <CardTitle tag={Link} to={`/profile/${offer.owner}`} className={classnames('seller-name', 'font-weight-bold', {
         'text-black': !isOwner,
@@ -30,27 +39,35 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
         {offer.user.username}
       </CardTitle>
       <div>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faGlobeAmericas}
-                                                       className="text-primary"/> {offer.user.location}</p>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faUniversity}
-                                                       className="text-primary"/> {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
+        <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon icon={faGlobeAmericas} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {offer.user.location}
         </p>
-        <p className="text-black m-0"><FontAwesomeIcon icon={faExchangeAlt}
-                                                       className="text-primary"/> {offer.user.nbReleasedTrades} trade{offer.user.nbReleasedTrades !== 1 && 's'}
+        <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
         </p>
-        <span className="offer-reputation"><Reputation reputation={{averageCount: offer.user.averageCount}} size="s"/></span>
+        <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {offer.limitL}{currencySymbol} to {offer.limitH}{currencySymbol}
+        </p>
 
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
+
+        <span className="offer-reputation">
+          <Reputation reputation={{averageCount: offer.user.averageCountBase10}} size="s"/>
+        </span>
       </div>
     </CardBody>
 
     {withDetail && prices && !prices.error &&
-    <CardFooter onClick={() => offerClick(offer.id)} className={classnames('bg-white text-right border-0 pt-0 clickable', {
-      'text-warning': isArbitrator,
-      'text-dark': !isArbitrator && !noArbitrator,
-      'text-danger': noArbitrator
-    })}>
+    <CardFooter onClick={() => offerClick(offer.id)}
+                className={classnames('bg-white text-right border-0 pt-0 clickable', {
+                  'text-warning': isArbitrator,
+                  'text-dark': !isArbitrator && !noArbitrator,
+                  'text-danger': noArbitrator
+                })}>
       <p className="m-0 border-top pt-2">
         Buy <span className="text-black"><img
         src={getTokenImage(offer.token.symbol)}

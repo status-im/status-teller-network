@@ -274,7 +274,7 @@ export function *checkUserRating({address}) {
     const voteCount = ratings.length;
     average /= voteCount;
 
-    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address, averageCount: average});
+    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address, averageCount: average, averageCountBase10: ((average * 10) / 5)});
   } catch (error) {
     console.error(error);
     yield put({type: USER_RATING_FAILED, error: error.message});

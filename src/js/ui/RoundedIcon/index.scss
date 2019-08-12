@@ -6,6 +6,10 @@
   display: flex;
   margin: auto;
 
+  &.sm {
+    width: 24px;
+    height: 24px;
+  }
   &.xs {
     width: 20px;
     height: 20px;

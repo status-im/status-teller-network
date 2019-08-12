@@ -26,11 +26,11 @@ class Reputation extends Component {
       let classes = 'average-rating py-1 px-3 rounded ';
       if (!Number.isInteger(reputation.averageCount)) {
         classes += 'bg-dark text-dark';
-      } else  if (reputation.averageCount >= 4) {
+      } else  if (reputation.averageCount >= 8) {
         classes += 'bg-success text-success';
-      } else  if (reputation.averageCount < 4 && reputation.averageCount > 2) {
+      } else  if (reputation.averageCount < 8 && reputation.averageCount > 4) {
         classes += 'bg-warning text-warning';
-      } else  if (reputation.averageCount < 2) {
+      } else  if (reputation.averageCount < 4) {
         classes += 'bg-danger text-danger';
       }
 

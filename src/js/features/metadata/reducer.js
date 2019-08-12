@@ -148,7 +148,8 @@ function reducer(state = DEFAULT_STATE, action) {
             downCount: action.downCount,
             upCount: action.upCount,
             voteCount: action.voteCount,
-            averageCount: action.averageCount
+            averageCount: action.averageCount,
+            averageCountBase10: action.averageCountBase10
           }
         }
       };
