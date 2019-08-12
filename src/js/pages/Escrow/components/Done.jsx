@@ -2,16 +2,16 @@ import React from 'react';
 import {Row, Col} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import Reputation from "../../../components/Reputation";
 import { States } from '../../../utils/transaction';
 import classnames from 'classnames';
+import CheckIcon from "../../../../images/check.svg";
 
 const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) => (
   <Row className="mt-4">
     <Col xs="1">
-      {!isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="grey"/>}
-      {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {!isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="grey"/>}
+      {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
     </Col>
 
     <Col xs={isActive && isBuyer ? '6' : '11'} sm={isActive && isBuyer ? '8' : '11'}>
