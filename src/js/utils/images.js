@@ -1,9 +1,7 @@
-function importAll(r) {
-  let images = {};
-  r.keys().forEach((item) => {
-    images[item.replace('./', '')] = r(item);
-  });
-  return images;
+export function getTokenImage(token) {
+  const image = require(`./../../../node_modules/cryptocurrency-icons/svg/color/${token.toLowerCase()}.svg`);
+  if (!image) {
+    return require(`./../../../node_modules/cryptocurrency-icons/svg/color/generic.svg`);
+  }
+  return image;
 }
-
-export const TokenImages = importAll(require.context('../../images/tokens', false, /\.(png)$/));

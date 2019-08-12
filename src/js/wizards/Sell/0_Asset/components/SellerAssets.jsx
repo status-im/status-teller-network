@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {ButtonGroup} from 'reactstrap';
 import PropTypes from 'prop-types';
 import CheckButton from '../../../../ui/CheckButton';
-import {TokenImages} from '../../../../utils/images';
+import {getTokenImage} from '../../../../utils/images';
 import {formatBalance} from '../../../../utils/numbers';
 import {addressCompare} from '../../../../utils/address';
 
@@ -20,7 +20,7 @@ class SellerAssets extends Component {
             <CheckButton active={addressCompare(this.props.selectedAsset, asset.address)}
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
-              <img src={TokenImages[`${asset.symbol}.png`] || TokenImages[`generic.png`]} alt={asset.name + ' icon'} className="mr-3"/>
+              <img src={getTokenImage(asset.symbol)} alt={asset.name + ' icon'} className="mr-3"/>
               {formatBalance(asset.balance)} {asset.symbol}
             </CheckButton>
           ))}

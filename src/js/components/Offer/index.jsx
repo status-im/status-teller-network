@@ -14,7 +14,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faUniversity, faGlobeAmericas, faExchangeAlt} from "@fortawesome/free-solid-svg-icons";
 
 import './index.scss';
-import {TokenImages} from "../../utils/images";
+import {getTokenImage} from "../../utils/images";
 
 const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
@@ -53,7 +53,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
     })}>
       <p className="m-0 border-top pt-2">
         Buy <span className="text-black"><img
-        src={TokenImages[`${offer.token.symbol}.png`] || TokenImages[`generic.png`]}
+        src={getTokenImage(offer.token.symbol)}
         alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
         className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
       </p>
