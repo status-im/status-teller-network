@@ -28,8 +28,6 @@ class SellerAssets extends Component {
 
         <p className="text-muted">Add assets to your wallet to get the ability to sell it. For each asset, you need to
           create a separate offer.</p>
-        {!this.props.selectedAsset && this.props.selectedAsset !== 0 &&
-        <p className="text-muted">Select an asset to move to the next page</p>}
       </React.Fragment>
     );
   }

@@ -20,7 +20,7 @@
   },
   "fiatSelectorForm": {
     "selectValid": "Select a valid currency to move to the next page",
-    "placeholder": "Enter currency",
+    "placeholder": "Search local currencies",
     "continue": "Next",
     "emptyLabel": "No matches found."
   },
