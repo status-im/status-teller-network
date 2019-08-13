@@ -4,7 +4,8 @@ import {withNamespaces} from "react-i18next";
 import {Row, Col, FormGroup, UncontrolledTooltip, Label, FormFeedback} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import {isNumber, lowerEqThan, higherEqThan} from "../../../../validators";
+import {isNumber, lowerEqThan, higherEqThan, higherThan} from "../../../../validators";
+import {limitDecimals} from '../../../../utils/numbers';
 import moment from "moment";
 import escrow from "../../../../features/escrow";
 import UserInformation from "../../../../components/UserInformation";
@@ -51,8 +52,8 @@ const OfferTrade = ({
             <Col xs={10} sm={11}>
               <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
                      data-maxvalue={limitless ? '' : maxFiat}
-                     data-minvalue={limitless ? 0 : minFiat}
-                     validations={[isNumber, lowerEqThan, higherEqThan]}
+                     data-minvalue={0}
+                     validations={[isNumber, lowerEqThan, higherThan]}
                      id="fiat-quantity-input"
                      placeholder="Fiat quantity" onChange={(e) => onCurrencyChange(e.target.value)} step="any"/>
               <span className="input-icon mr-3">{currency.id}</span>
@@ -60,14 +61,14 @@ const OfferTrade = ({
           </Row>
         </FormGroup>
         { limitless && <p className="mt-3">
-        Limits: {minToken} {asset} to <span id="max-token">{maxToken} {asset}</span>
+        Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
         <UncontrolledTooltip placement="right" target="max-token">
           This is the current balance of the seller. This is why it is the maximum
         </UncontrolledTooltip>
         </p> }
         { !limitless && <Fragment>
             { amountGreaterThanBalance && <FormFeedback className="d-block">Amount is greater than the seller&apos;s balance</FormFeedback> }
-            <p className="mt-3">Limits: {minFiat} {currency.id} to <span id="max-token">{maxFiat} {currency.id}</span></p>
+            <p className="mt-3">Limits: {limitDecimals(minFiat)} {currency.id} to <span id="max-token">{limitDecimals(maxFiat)} {currency.id}</span></p>
           </Fragment>
         }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}

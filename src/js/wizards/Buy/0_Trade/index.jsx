@@ -10,6 +10,7 @@ import metadata from '../../../features/metadata';
 import network from '../../../features/network';
 import Loading from '../../../components/Loading';
 import OfferTrade from './components/OfferTrade';
+import {limitDecimals} from '../../../utils/numbers';
 
 const MIN = 0;
 
@@ -85,7 +86,7 @@ class Trade extends Component {
     let currencyQuantity = 0;
     if(assetQuantity !== ""){
       const _assetQuantity = parseFloat(assetQuantity);
-      currencyQuantity = _assetQuantity * this._calcPrice();
+      currencyQuantity = limitDecimals(_assetQuantity * this._calcPrice());
       this.validate(currencyQuantity, _assetQuantity);
       if (isNaN(currencyQuantity)) {
         return;
@@ -98,13 +99,13 @@ class Trade extends Component {
     let assetQuantity = 0;
     if(currencyQuantity !== ""){
       const _currencyQuantity = parseFloat(currencyQuantity);
-      assetQuantity = _currencyQuantity / this._calcPrice();
+      assetQuantity = limitDecimals(_currencyQuantity * this._calcPrice()).toFixed(6);
       this.validate(_currencyQuantity, assetQuantity);
       if (isNaN(assetQuantity)) {
         return;
       }
     }
-    this.setState({currencyQuantity, assetQuantity});
+    this.setState({currencyQuantity, assetQuantity: parseFloat(assetQuantity.toFixed(6))});
   };
 
   render() {
