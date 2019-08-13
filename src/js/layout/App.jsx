@@ -25,7 +25,6 @@ import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
 import Settings from '../pages/Settings';
-import BackButton from '../ui/BackButton';
 import NotificationManager from '../components/NotificationManager';
 
 // Profile
@@ -138,7 +137,6 @@ class App extends Component {
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
               </Alert>}
-              <BackButton/>
               <Switch>
                 <Route exact path="/" component={Home}/>
 
@@ -149,13 +147,13 @@ class App extends Component {
                 <Route exact path="/profile/offers" component={MyOffers} />
                 <Route exact path="/profile/trades" component={MyTrades} />
                 <Route exact path="/profile/disputes" component={MyDisputes} />
+                <Route exact path="/profile/arbitrators" component={Arbitrators} />
                 <Route exact path="/profile/:address" component={Profile}/>
 
                 <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>
                 <Route exact path="/license" component={License}/>
                 <Route exact path="/escrow/:id" component={Escrow}/>
                 <Route exact path="/arbitration/:id" component={Arbitration}/>
-                <Route exact path="/arbitrators" component={Arbitrators} />
                 <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 

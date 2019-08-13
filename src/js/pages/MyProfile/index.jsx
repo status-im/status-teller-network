@@ -87,7 +87,7 @@ class MyProfile extends Component {
         <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} active`} />
         <Separator />
         {!profile.isArbitrator && <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title="Become an arbitrator" subtitle="Make tokens by judging disputes" /> }
-        <ProfileButton linkTo="/arbitrators" image={iconDisputes} title="Manage arbitrators" subtitle="Some explanation text here" />
+        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title="Manage arbitrators" subtitle="Some explanation text here" />
         { profile.isArbitrator && <ProfileButton linkTo="/sellers" image={iconDisputes} title="Manage sellers" subtitle={`${pendingRequests} pending requests`} /> }
         {profile.username && <StatusContactCode value={profile.statusContactCode} />}
       </Fragment>
