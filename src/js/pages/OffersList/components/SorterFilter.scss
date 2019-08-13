@@ -52,8 +52,9 @@ $menu-width: 85%;
     position: fixed;
     max-width: 350px;
     height: 100%;
-    padding-bottom: 50px;
+    padding-bottom: 100px;
     overflow-y: auto;
+    padding-top: 10px;
   }
 
   .check-button {
@@ -69,5 +70,14 @@ $menu-width: 85%;
     position: absolute;
     top: 10px;
     right: 10px;
+  }
+
+  .filter-button {
+    position: fixed;
+    bottom: 0;
+    max-width: 350px;
+    width: $menu-width - ($filter-menu-padding-x * 4);
+    background: #fff;
+    padding-bottom: 20px;
   }
 }

@@ -35,7 +35,7 @@ class FilterMenu extends Component {
               <Typeahead
                 id="tokenFilter"
                 options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-                placeholder={'Select'}
+                placeholder={'Search cryptocurrencies'}
                 value={props.tokenFilter}
                 onChange={props.setTokenFilter}
               />
@@ -43,7 +43,7 @@ class FilterMenu extends Component {
 
             <h5 className="mt-4">Location</h5>
             <FormGroup>
-              <Input type="text" placeholder="Enter an address, postal code, city, etc."
+              <Input type="text" placeholder="Enter a city, state, etc."
                      onBlur={this.setLocation}
                      onKeyUp={this.onKeyUp}/>
             </FormGroup>
@@ -83,8 +83,10 @@ class FilterMenu extends Component {
                 </CheckButton>
               ))}
             </ButtonGroup>
-
-            <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
+            
+            <div className="filter-button">
+              <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
+            </div>
           </div>
         </div>
       </Fragment>
