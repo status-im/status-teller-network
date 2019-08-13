@@ -1,6 +1,6 @@
 import React from 'react';
 import {Row, Col} from 'reactstrap';
-import ChatIcon from "../../../../images/read-chat.png";
+import ChatIcon from "../../../../images/read-chat.svg";
 
 const ReadChatLogs = () => (
   <Row className="mt-4">

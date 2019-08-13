@@ -4,7 +4,7 @@ import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import CancelIcon from "../../../../images/close.png";
+import CancelIcon from "../../../../images/close.svg";
 import classnames from 'classnames';
 
 class CancelDispute extends Component {
@@ -32,7 +32,7 @@ class CancelDispute extends Component {
             <RoundedIcon image={CancelIcon} bgColor="red"/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <h6 className="m-0 font-weight-normal">Cancel Dispute</h6>
+            <h6 className="m-0 font-weight-normal text-danger">Cancel Dispute</h6>
           </Col>
         </Row>
 
