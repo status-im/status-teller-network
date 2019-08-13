@@ -13,8 +13,8 @@ class SellerPosition extends Component {
         <h2>What location do you want to display</h2>
         <Form>
           <FormGroup>
-            <Label className="text-small mt-3 mb-0">City</Label>
-            <Input type="text" name="location" id="location" placeholder="Enter City"
+            <Label className="text-small mt-3 mb-0">Location</Label>
+            <Input type="text" name="location" id="location" placeholder="Enter location"
                    value={this.props.location || ''} onChange={(e) => this.changeLocation(e)}/>
           </FormGroup>
         </Form>
