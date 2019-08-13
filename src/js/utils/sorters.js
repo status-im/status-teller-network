@@ -11,6 +11,17 @@ export function sortByDate(a, b) {
   return 0;
 }
 
+export function sortByMargin(a, b) {
+  // Using the id as there is no date in the contract
+  const marginA = parseInt(a.margin, 10);
+  const marginB = parseInt(b.margin, 10);
+
+  if (marginA > marginB) return 1;
+  if (marginA < marginB) return -1;
+  
+  return 0;
+}
+
 export function sortByRating(a, b) {
   const scoreA = weightedScore(a.user);
   const scoreB = weightedScore(b.user);

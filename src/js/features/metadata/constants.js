@@ -72,4 +72,4 @@ export const PAYMENT_METHODS = {
     99999: 'Other'
 };
 
-export const SORT_TYPES = ['Top rated', 'Most recent'];
+export const SORT_TYPES = ['Top rated', 'Best price'];
