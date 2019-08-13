@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import classnames from 'classnames';
 
-import SNTIcon from '../../../../images/tokens/SNT.png';
+import SNTIcon from '../../../../../node_modules/cryptocurrency-icons/svg/color/snt.svg';
 
 class YourSNTBalance extends Component {
   render() {

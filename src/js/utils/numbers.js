@@ -8,6 +8,16 @@ export const truncateTwo = (num) => {
   return Number(Math.round(num + "e+2")  + "e-2");
 };
 
+export function limitDecimals(input, numDecimals = 6) {
+  if (!input) {
+    return 0;
+  }
+  if (typeof input === "string") {
+    input = parseFloat(input);
+  }
+  return parseFloat(input.toFixed(numDecimals));
+}
+
 const padLeft = (number, length) => {
   let str = String(number);
   while (str.length < length) {

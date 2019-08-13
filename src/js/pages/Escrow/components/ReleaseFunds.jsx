@@ -2,16 +2,17 @@ import React, {Fragment} from 'react';
 import {Row, Col, Button} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
-import {faUserCheck, faCheck} from "@fortawesome/free-solid-svg-icons";
+import {faUserCheck} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
+import CheckIcon from "../../../../images/check.svg";
 
 // eslint-disable-next-line complexity
 const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" icon={faUserCheck} bgColor={isActive ? "primary" : "grey"}/>}
-      {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
       {!isDone && isActive && <img src={ArrowDown} alt="" className="arrow" />}
     </Col>
 

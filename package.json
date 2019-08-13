@@ -49,6 +49,7 @@
     "clone-deep": "^4.0.1",
     "connected-react-router": "^6.0.0",
     "cryptocompare": "^0.7.0",
+    "cryptocurrency-icons": "^0.16.0",
     "css-loader": "^2.1.0",
     "dompurify": "^1.0.10",
     "elliptic": "^6.5.0",

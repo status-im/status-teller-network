@@ -2,17 +2,17 @@ import React, {Fragment} from 'react';
 import {Row, Col, Button, UncontrolledTooltip} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
-import FundIcon from "../../../../images/fund.png";
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
+import FundIcon from "../../../../images/download.svg";
 import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
+import CheckIcon from "../../../../images/check.svg";
 
 // eslint-disable-next-line complexity
 const FundingEscrow = ({isBuyer, isActive, isDone, needsApproval, action, tokenAmount, tokenSymbol, feePercent, feeAmount, enoughBalance, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={FundIcon} bgColor="primary"/>}
-      {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
       {!isDone && <img src={ArrowDown} alt="" className="arrow" />}
     </Col>
 

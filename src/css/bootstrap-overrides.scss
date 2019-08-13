@@ -90,7 +90,7 @@ $input-icon-height: 20px;
   position: absolute;
   right: 15px;
   height: $input-icon-height;
-  bottom: ($input-height / 2) - ($input-icon-height / 2);
+  top: ($input-height / 2) - ($input-icon-height / 2);
 }
 
 .border {

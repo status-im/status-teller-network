@@ -5517,6 +5517,11 @@ cryptocompare@^0.7.0:
   resolved "https://registry.yarnpkg.com/cryptocompare/-/cryptocompare-0.7.2.tgz#9935ad57049e0fa8d6aa4a978e1ca43012bd9a94"
   integrity sha512-h9Y3YY0b5eafGHT2eESkhz/dC5PaQS42/vR8tQDOxq/6J7YtQbJDO1bU3/AqVNY5EzNwe/sv0C2CO7h2zks8uw==
 
+cryptocurrency-icons@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/cryptocurrency-icons/-/cryptocurrency-icons-0.16.0.tgz#61372a5bce72c24e730641e636b483290bf11e87"
+  integrity sha512-yniva3KmKxys+W157vR29N94xICDN2Gt1EXj0WZhB4EIJk8fO5/rHOoE+pGzp9hhCJ5kKEPa1uUgROBg5v+hgw==
+
 csextends@^1.0.3:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/csextends/-/csextends-1.2.0.tgz#6374b210984b54d4495f29c99d3dd069b80543e5"

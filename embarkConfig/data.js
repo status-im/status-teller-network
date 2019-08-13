@@ -133,7 +133,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
     console.log('Generating Offers...');
     const tokens = [deps.contracts.SNT._address, '0x0000000000000000000000000000000000000000'];
-    const paymentMethods = [0, 1, 2];
+    const paymentMethods = [1, 2, 3];
     const usernames = ['Jonathan', 'Iuri', 'Anthony', 'Barry', 'Richard', 'Ricardo'];
     const locations = ['London', 'Montreal', 'Paris', 'Berlin'];
     const currencies = ['USD', 'EUR'];

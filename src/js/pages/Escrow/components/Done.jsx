@@ -2,16 +2,16 @@ import React from 'react';
 import {Row, Col} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
-import {faCheck} from "@fortawesome/free-solid-svg-icons";
 import Reputation from "../../../components/Reputation";
-import { States } from '../../../utils/transaction';
+import {States} from '../../../utils/transaction';
 import classnames from 'classnames';
+import CheckIcon from "../../../../images/check.svg";
 
 const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) => (
   <Row className="mt-4">
     <Col xs="1">
-      {!isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="grey"/>}
-      {isDone && <RoundedIcon size="xs" icon={faCheck} bgColor="green"/>}
+      {!isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="grey"/>}
+      {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
     </Col>
 
     <Col xs={isActive && isBuyer ? '6' : '11'} sm={isActive && isBuyer ? '8' : '11'}>
@@ -26,13 +26,18 @@ const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) =
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
     {isBuyer && isActive && <Col xs="5" sm="3">
-      <div className={classnames("rounded p-2 position-relative", {'bg-primary': (rateStatus !== States.pending && rateStatus !== States.success),
-        'bg-dark': !(rateStatus !== States.pending && rateStatus !== States.success)})}>
-        <span className={classnames("bubble-triangle", {'bg-primary': (rateStatus !== States.pending && rateStatus !== States.success),
-          'bg-dark': !(rateStatus !== States.pending && rateStatus !== States.success)})}/>
-        <p className="text-white mb-1 text-small">How did the trade go?</p>
+      <div className={classnames("rounded p-2 position-relative shadow-sm", {
+        'bg-primary': rateStatus === States.success,
+        'bg-white': rateStatus !== States.success
+      })}>
+        <p className={classnames("mb-1 text-small", {
+          'text-white': rateStatus === States.success,
+          'text-black': rateStatus !== States.success
+        })}>How did the trade go?</p>
         <p className="m-0 text-center">
-          <Reputation trade={trade} rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null} size="l"/>
+          <Reputation trade={trade}
+                      rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null}
+                      size="l"/>
         </p>
       </div>
     </Col>}

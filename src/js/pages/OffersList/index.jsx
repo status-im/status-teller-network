@@ -96,24 +96,29 @@ class OffersList extends Component {
   };
 
   render() {
+    let hasFilter = false;
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     if (this.state.locationCoords) {
+      hasFilter = true;
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
     }
 
     if (this.state.tokenFilter !== '') {
+      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
     if (this.state.paymentMethodFilter !== -1) {
+      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
 
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByDate; break;
+      case 1: sortFunction = sortByDate;
+        hasFilter = true; break;
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
@@ -131,7 +136,8 @@ class OffersList extends Component {
                         setLocation={this.setLocation}
                         setPaymentMethodFilter={this.setPaymentMethodFilter}
                         tokenFilter={this.state.tokenFilter}
-                        paymentMethodFilter={this.state.paymentMethodFilter}/>
+                        paymentMethodFilter={this.state.paymentMethodFilter}
+                        hasFilter={hasFilter}/>
         </div>
 
         {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}

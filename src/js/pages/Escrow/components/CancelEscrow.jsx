@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import CancelIcon from "../../../../images/close.png";
+import CancelIcon from "../../../../images/close.svg";
 import classnames from 'classnames';
 import moment from 'moment';
 
@@ -32,13 +32,13 @@ class CancelEscrow extends Component {
     this.props.cancelEscrow(this.props.trade.escrowId);
     this.displayDialog(false)();
   };
- 
+
   render(){
     const {trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETHorSNT} = this.props;
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
     const relayFutureDate = escrow.helpers.nextRelayDate(lastActivity);
-    
-    let disabled; 
+
+    let disabled;
     if(isBuyer){
       if(notEnoughETH){
         disabled = !canRelay || !isETHorSNT;
@@ -54,7 +54,7 @@ class CancelEscrow extends Component {
             <RoundedIcon image={CancelIcon} bgColor="red"/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <h6 className="m-0 font-weight-normal">Cancel trade</h6>
+            <h6 className="m-0 font-weight-normal text-danger">Cancel trade</h6>
           </Col>
         </Row>
         {

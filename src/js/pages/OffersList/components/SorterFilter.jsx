@@ -83,7 +83,7 @@ class FilterMenu extends Component {
                 </CheckButton>
               ))}
             </ButtonGroup>
-            
+
             <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
           </div>
         </div>
@@ -128,7 +128,10 @@ class SorterFilter extends Component {
   render() {
     return (<Fragment>
       <FilterMenu open={this.state.open} close={this.closeMenu} {...this.props}/>
-      <span className="filter-icon bg-secondary text-primary rounded d-inline-block text-center float-right py-3 clickable" onClick={this.openMenu}>
+      <span className={classnames("filter-icon rounded d-inline-block text-center float-right py-3 clickable", {
+        'bg-secondary text-primary': !this.props.hasFilter,
+        'bg-primary text-secondary': this.props.hasFilter
+      })} onClick={this.openMenu}>
         <FontAwesomeIcon icon={faFilter}/>
       </span>
     </Fragment>);
@@ -145,7 +148,8 @@ SorterFilter.propTypes = {
   clear: PropTypes.func,
   tokenFilter: PropTypes.string,
   paymentMethodFilter: PropTypes.number,
-  sortType: PropTypes.number
+  sortType: PropTypes.number,
+  hasFilter: PropTypes.bool
 };
 
 export default SorterFilter;
