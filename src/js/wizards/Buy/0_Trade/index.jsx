@@ -99,13 +99,13 @@ class Trade extends Component {
     let assetQuantity = 0;
     if(currencyQuantity !== ""){
       const _currencyQuantity = parseFloat(currencyQuantity);
-      assetQuantity = limitDecimals(_currencyQuantity * this._calcPrice()).toFixed(6);
+      assetQuantity = limitDecimals(_currencyQuantity / this._calcPrice());
       this.validate(_currencyQuantity, assetQuantity);
       if (isNaN(assetQuantity)) {
         return;
       }
     }
-    this.setState({currencyQuantity, assetQuantity: parseFloat(assetQuantity.toFixed(6))});
+    this.setState({currencyQuantity, assetQuantity});
   };
 
   render() {

@@ -40,19 +40,13 @@ class Reputation extends Component {
     }
 
     return <span className={classnames("reputation-container", {small: size === 's', large: size === 'l'})}>
-      <span className={classnames("left-rating rounded-circle p-2", {
-        "bg-primary": tradeWasRated && rating === 5,
-        clickable: this.clickable
-      })}>
+      <span className={classnames("left-rating rounded-circle p-2", {clickable: this.clickable})}>
       {(tradeWasRated && reputation.upCount) || (!trade && reputation.upCount)}
-        &nbsp;<RatingIcon isPositiveRating={true} onClick={() => this.rateTrade('5')}/>
+        &nbsp;<RatingIcon isPositiveRating={true} isRated={tradeWasRated && rating === 5} onClick={() => this.rateTrade('5')}/>
       </span>
-      <span className={classnames("right-rating", {
-        "bg-primary": tradeWasRated && rating === 1,
-        clickable: this.clickable
-      })}>
+      <span className={classnames("right-rating", {clickable: this.clickable})}>
       {(tradeWasRated && reputation.downCount) || (!trade && reputation.downCount)}
-        &nbsp;<RatingIcon isPositiveRating={false} onClick={() => this.rateTrade('1')}/>
+        &nbsp;<RatingIcon isPositiveRating={false} isRated={tradeWasRated && rating === 1} onClick={() => this.rateTrade('1')}/>
       </span>
     </span>;
   }
