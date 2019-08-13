@@ -49,7 +49,7 @@ class ArbitratorSelectorForm extends Component {
         {(!arbitratorStrings || arbitratorStrings.length === 0) &&
         <p className="text-warning">
           <Trans i18nKey="arbitratorSelectorForm.noApprovals">
-            No arbitrator has approved you yet. To request approval from an arbitrator, go to <Link to="/arbitrators">Manage
+            No arbitrator has approved you yet. To request approval from an arbitrator, go to <Link to="/profile/arbitrators">Manage
             arbitrators</Link> in your Profile
           </Trans>
         </p>
