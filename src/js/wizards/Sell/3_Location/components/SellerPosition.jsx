@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, FormGroup, Input} from 'reactstrap';
+import {Form, FormGroup, Input, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class SellerPosition extends Component {
@@ -10,13 +10,13 @@ class SellerPosition extends Component {
   render() {
     return (
       <React.Fragment>
-        <h2 className="mb-4">What location do you want to display</h2>
+        <h2>What location do you want to display</h2>
         <Form>
           <FormGroup>
-            <Input type="text" name="location" id="location" placeholder="City, Country"
+            <Label className="text-small mt-3 mb-0">Location</Label>
+            <Input type="text" name="location" id="location" placeholder="Enter location"
                    value={this.props.location || ''} onChange={(e) => this.changeLocation(e)}/>
           </FormGroup>
-          {!this.props.location && <p className="text-muted">Enter a location to move to the next page</p>}
         </Form>
       </React.Fragment>
     );

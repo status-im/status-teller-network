@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import PropTypes from 'prop-types';
 import {withRouter} from "react-router-dom";
 import {Button} from "reactstrap";
-import arrow from "../../../images/arrow.png";
+import arrow from "../../../images/arrow.svg";
 
 const BLACK_LIST = ['/', '/offers/list', '/sell/*'];
 

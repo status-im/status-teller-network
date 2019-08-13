@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {FormGroup} from 'reactstrap';
+import {FormGroup, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
 import {withNamespaces} from 'react-i18next';
 
@@ -32,7 +32,8 @@ class FiatSelectorForm extends Component {
       <Fragment>
         <h2>{t('sellerFiatContainer.title')}</h2>
         <FormGroup>
-          <Typeahead className="my-3"
+          <Label className="text-small mt-3 mb-0">Local currency</Label>
+          <Typeahead className="mb-3"
             id="fiatSelector"
             onChange={this.onChange}
             options={this.props.currencies}
@@ -42,7 +43,6 @@ class FiatSelectorForm extends Component {
             emptyLabel={t("fiatSelectorForm.emptyLabel")}
             defaultSelected={defaultSelectedValue}
           />
-          {!this.props.value && <p className="text-muted">{t("fiatSelectorForm.selectValid")}</p>}
         </FormGroup>
       </Fragment>
     );
