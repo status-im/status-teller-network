@@ -27,6 +27,13 @@
   }
 }
 
+.rounded-icon__secondary {
+  background-color: $secondary;
+  .rounded-icon--icon {
+    color: $dark;
+  }
+}
+
 .rounded-icon__blue {
   background-color: $light-blue;
   .rounded-icon--icon {
