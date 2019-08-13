@@ -4,7 +4,6 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
 import Reputation from "../../../components/Reputation";
 import {States} from '../../../utils/transaction';
-import classnames from 'classnames';
 import CheckIcon from "../../../../images/check.svg";
 
 const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) => (
