@@ -117,7 +117,7 @@ class OffersList extends Component {
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByMargin;
+      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address);
         hasFilter = true; break;
       default: sortFunction = sortByRating;
     }
