@@ -21,6 +21,12 @@ header {
 }
 
 .btn-primary {
+  background-color: $primary;
+  border-color: $primary;
+  color: $white;
+}
+
+.btn-secondary {
   background-color: $btn-bg-color;
   border-color: $btn-bg-color;
   color: $primary;

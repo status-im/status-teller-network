@@ -16,8 +16,6 @@ import { version } from '../../../../package.json';
 
 import "./index.scss";
 
-import logo from "../../../images/logo.svg";
-
 class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
@@ -34,28 +32,24 @@ class Home extends Component {
 
     return (
       <div className="home">
-        <Row>
-          <Col xs={12} className="home-logo">
-            <img alt="Logo" src={logo} width="200" height="200" />
-          </Col>
-        </Row>
-
         <Row className="home-headline">
           <Col xs={12}>
-            <h1 className="text-center">{t('home.welcome')}</h1>
+            <h1 className="text-center font-weight-bold">{t('home.welcome')}</h1>
+            <h3 className="text-center home-details font-weight-normal">{t('home.details')}</h3>
           </Col>
         </Row>
 
-        <React.Fragment>
-          <Row className="home--footer">
-            <Col xs={12} className="text-center">
-              <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" block to="/offers/list" className="px-5">
-                {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
-              </Button>
-              <p className="mt-3"><Link to={this.sellUrl()}>{t('home.createOffer')}</Link></p>
-            </Col>
-          </Row>
-        </React.Fragment>
+        <Row className="home--footer">
+          <Col xs={12} className="text-center">
+            <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" to="/offers/list">
+              {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
+            </Button>
+
+            <Button tag={Link} color="secondary" to={this.sellUrl()} className="mt-2">
+              {t('home.createOffer')}
+            </Button>
+          </Col>
+        </Row>
         <p className="teller-version text-muted"><Link to="/settings">Settings</Link> | Version: {version}</p>
       </div>
     );

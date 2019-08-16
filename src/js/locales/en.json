@@ -2,7 +2,8 @@
   "home": {
     "buy": "Buy crypto",
     "createOffer": "Create an offer",
-    "welcome": "The best and most convenient way to buy and sell crypto",
+    "welcome": "Exchange cryptocurrency between peers",
+    "details": "Teller is a decentralized, peer to peer global network that provides a fiat to crypto exchange.",
     "loadingData": "Loading data"
   },
   "createEscrowFrom": {
