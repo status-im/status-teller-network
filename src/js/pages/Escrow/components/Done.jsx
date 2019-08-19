@@ -4,7 +4,6 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
 import Reputation from "../../../components/Reputation";
 import {States} from '../../../utils/transaction';
-import classnames from 'classnames';
 import CheckIcon from "../../../../images/check.svg";
 
 const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) => (
@@ -26,14 +25,8 @@ const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) =
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
     {isBuyer && isActive && <Col xs="5" sm="3">
-      <div className={classnames("rounded p-2 position-relative shadow-sm", {
-        'bg-primary': rateStatus === States.success,
-        'bg-white': rateStatus !== States.success
-      })}>
-        <p className={classnames("mb-1 text-small", {
-          'text-white': rateStatus === States.success,
-          'text-black': rateStatus !== States.success
-        })}>How did the trade go?</p>
+      <div className="rounded p-2 position-relative shadow-sm bg-white">
+        <p className="mb-1 text-small text-black">How did the trade go?</p>
         <p className="m-0 text-center">
           <Reputation trade={trade}
                       rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null}
