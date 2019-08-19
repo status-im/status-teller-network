@@ -10,7 +10,7 @@ import {SORT_TYPES} from '../../features/metadata/constants';
 import Offer from '../../components/Offer';
 import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
-import {sortByDate, sortByRating} from '../../utils/sorters';
+import {sortByRating, sortByMargin} from '../../utils/sorters';
 import './index.scss';
 import {withNamespaces} from "react-i18next";
 import {addressCompare, zeroAddress} from "../../utils/address";
@@ -117,12 +117,12 @@ class OffersList extends Component {
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByDate;
+      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address);
         hasFilter = true; break;
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
-
+    
     return (
       <Fragment>
         <div>
