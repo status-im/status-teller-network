@@ -9,6 +9,12 @@ import {States} from "../../../utils/transaction";
 import Loading from "../../../components/Loading";
 import ErrorInformation from "../../../components/ErrorInformation";
 import escrow from "../../../features/escrow";
+import Identicon from "../../../components/UserInformation/Identicon";
+import Address from "../../../components/UserInformation/Address";
+import {limitDecimals} from '../../../utils/numbers';
+import RoundedIcon from "../../../ui/RoundedIcon";
+import infoIcon from "../../../../images/small-info.svg";
+import {Col, Row} from "reactstrap";
 
 class ConfirmTrade extends Component {
   constructor(props) {
@@ -61,12 +67,35 @@ class ConfirmTrade extends Component {
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
         return <ErrorInformation transaction retry={this.postEscrow} cancel={this.cancelTrade}/>;
-      case States.none:
+      case States.none: {
+        const fiatAmount = this.props.assetQuantity * this.props.price;
         return (<Fragment>
-          <h2>Confirm trade</h2>
-          <p>Token quantity: {this.props.assetQuantity}</p>
-          <p>Price: {this.props.price}</p>
+          <h2>Summary</h2>
+          <h3 className="mt-4 font-weight-normal">Seller</h3>
+          <p className="mt-2 font-weight-medium mb-1">
+            <Identicon seed={this.props.offer.user.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
+            {this.props.offer.user.username}
+          </p>
+          <p className="text-muted text-small"><Address address={this.props.offer.user.statusContactCode} length={6}/>
+          </p>
+
+          <h3 className="font-weight-normal">Price</h3>
+          <p className="mt-2 font-weight-medium mb-1">
+            1 {this.props.offer.token.symbol} = {this.props.price} {this.props.offer.currency}
+          </p>
+          <p className="text-muted text-small">
+            <Row tag="span">
+              <Col tag="span" xs={1}><RoundedIcon image={infoIcon} bgColor="secondary" className="float-left" size="sm"/></Col>
+              <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
+            </Row>
+          </p>
+
+          <h3 className="font-weight-normal">Trade amount</h3>
+          <p className="mt-2 font-weight-medium mb-1">
+            {limitDecimals(fiatAmount, 2)} {this.props.offer.currency} ~ {limitDecimals(this.props.assetQuantity)}
+          </p>
         </Fragment>);
+      }
       default:
         return <Fragment/>;
     }
@@ -87,7 +116,10 @@ ConfirmTrade.propTypes = {
   price: PropTypes.number,
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
-  assetQuantity: PropTypes.string,
+  assetQuantity: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   offer: PropTypes.object,
   nonce: PropTypes.oneOfType([
     PropTypes.string,

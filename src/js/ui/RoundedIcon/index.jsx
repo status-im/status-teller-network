@@ -11,6 +11,7 @@ const RoundedIcon = ({icon, image, bgColor, size, className}) => (
     'rounded-icon__grey': bgColor === 'grey',
     'rounded-icon__blue': bgColor === 'blue',
     'rounded-icon__primary': bgColor === 'primary',
+    'rounded-icon__secondary': bgColor === 'secondary',
     'rounded-icon__red': bgColor === 'red',
     'rounded-icon__green': bgColor === 'green',
     [size]: !!size,

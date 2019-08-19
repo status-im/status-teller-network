@@ -23,7 +23,7 @@ class Address extends Component {
 
   handleClick = () => {
     this.setState({fixed: !this.state.fixed});
-  }
+  };
 
   render() {
     if (!this.props.address) {

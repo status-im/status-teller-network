@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
-import {Link} from "react-router-dom";
 import Reputation from '../Reputation';
 import {truncateTwo} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
