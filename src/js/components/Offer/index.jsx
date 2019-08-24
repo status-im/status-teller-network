@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
 import Reputation from '../Reputation';
-import {truncateTwo} from '../../utils/numbers';
+import {truncateTwo, limitDecimals} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
 import {addressCompare, zeroAddress} from '../../utils/address';
@@ -13,7 +13,6 @@ import {faGlobeAmericas} from "@fortawesome/free-solid-svg-icons";
 import limitIcon from '../../../images/limits.svg';
 import bankIcon from '../../../images/bank.svg';
 import {CURRENCY_DATA} from "../../constants/currencies";
-
 import './index.scss';
 import {getTokenImage} from "../../utils/images";
 import RoundedIcon from "../../ui/RoundedIcon";
@@ -22,6 +21,8 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
+  const limitless = offer.limitL === '0' && offer.limitH === '0';
+
   let currencySymbol = CURRENCY_DATA.find(curr => curr.id === offer.currency);
   if (!currencySymbol) {
     currencySymbol = offer.currency;
@@ -46,10 +47,11 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
         </p>
-        <p className="text-black m-0 mt-2 clearfix">
+        
+        {!limitless && <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
-          {offer.limitL}{currencySymbol} to {offer.limitH}{currencySymbol}
-        </p>
+          {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}
+        </p>}
 
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
