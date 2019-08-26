@@ -112,7 +112,7 @@ class Trade extends Component {
     if (isNaN(this.props.offerId)) {
       return null;
     }
-    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance || this.props.isSigning) {
+    if (!this.state.ready || !this.props.offer || !this.props.sellerBalance) {
       return <Loading page/>;
     }
 
@@ -184,8 +184,7 @@ Trade.propTypes = {
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
   gasPrice: PropTypes.string,
-  updateBalances: PropTypes.func,
-  isSigning: PropTypes.bool
+  updateBalances: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -207,7 +206,6 @@ const mapStateToProps = (state) => {
     lastActivity: escrow.selectors.getLastActivity(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH'),
-    isSigning: metadata.selectors.isSigning(state),
     offer,
     offerId,
     price
