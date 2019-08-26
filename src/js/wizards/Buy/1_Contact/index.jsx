@@ -19,7 +19,7 @@ class Contact extends Component {
       statusContactCode: props.statusContactCode
     };
     this.validate(props.username, props.statusContactCode);
-    props.footer.onPageChange(() => {
+    props.footer.onNext(() => {
       props.signMessage(this.state.username, this.state.statusContactCode);
       props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
@@ -112,7 +112,10 @@ Contact.propTypes = {
   price: PropTypes.number,
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
-  assetQuantity: PropTypes.string,
+  assetQuantity: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   offer: PropTypes.object,
   nonce: PropTypes.oneOfType([
     PropTypes.string,

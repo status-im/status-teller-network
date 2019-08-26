@@ -22,8 +22,8 @@ class ConfirmTrade extends Component {
     this.state = {
       ready: false
     };
-    props.footer.enableNext();
-    props.footer.onPageChange(() => {
+    props.footer.disableNext();
+    props.footer.onNext(() => {
       this.postEscrow();
       props.footer.hide();
     });
@@ -44,7 +44,11 @@ class ConfirmTrade extends Component {
     return this.props.history.push('/buy');
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    if (prevProps.signing && !this.props.signing) {
+      this.props.footer.enableNext();
+    }
+
     if (this.props.createEscrowStatus === States.success && !isNaN(this.props.escrowId)) {
       this.props.resetCreateStatus();
       this.props.resetNewBuy();
@@ -59,7 +63,7 @@ class ConfirmTrade extends Component {
   }
 
   render() {
-    if (!this.state.ready) {
+    if (!this.state.ready || this.props.signing) {
       return <Loading page/>;
     }
     switch (this.props.createEscrowStatus) {
@@ -116,6 +120,7 @@ ConfirmTrade.propTypes = {
   price: PropTypes.number,
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
+  signing: PropTypes.bool,
   assetQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -142,6 +147,7 @@ const mapStateToProps = state => {
     offer: metadata.selectors.getOfferById(state, offerId),
     nonce: metadata.selectors.getNonce(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
+    signing: metadata.selectors.isSigning(state),
     offerId
   };
 };
