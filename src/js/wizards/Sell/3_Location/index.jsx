@@ -27,7 +27,7 @@ class Location extends Component {
   }
 
   validate(location) {
-    if (location) {
+    if (location && location.trim() !== "") {
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();

@@ -175,7 +175,7 @@
   },
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",
-    "fee": "1 SNT fee",
+    "fee": "1% fee",
     "fee2": "for every transaction",
     "stake": "Stake {{price}} SNT",
     "stake2": "to obtain the selling license"
