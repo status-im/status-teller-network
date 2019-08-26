@@ -53,7 +53,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
           {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}
         </p>}
 
-        {!limitless && <p className="text-black m-0 mt-2 clearfix">
+        {limitless && <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           No limits
         </p>}
