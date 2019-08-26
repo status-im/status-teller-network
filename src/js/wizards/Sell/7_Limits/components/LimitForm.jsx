@@ -89,7 +89,7 @@ class LimitForm extends Component {
           <Row className="mt-3">
             <Col>
               <CheckButton align="left" active={!this.props.useCustomLimits} onClick={() => { this.setCustomLimits(false); }}>
-              No limits
+              <span className="float-left">No limits</span>
               <span className="text-small text-muted float-left">The maximum limit will be set according to the amount you have in your wallet.</span>
 
               </CheckButton>
