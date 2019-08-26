@@ -22,7 +22,7 @@ class ConfirmTrade extends Component {
     this.state = {
       ready: false
     };
-    props.footer.disableNext();
+    props.footer.disableNext(); 
     props.footer.onNext(() => {
       this.postEscrow();
       props.footer.hide();
@@ -41,7 +41,7 @@ class ConfirmTrade extends Component {
   };
 
   cancelTrade = () => {
-    return this.props.history.push('/buy');
+    return this.props.history.push('/');
   };
 
   componentDidUpdate(prevProps) {
