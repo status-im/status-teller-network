@@ -30,7 +30,7 @@ class ConfirmTrade extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.price || !this.props.assetQuantity || !this.props.signature) {
+    if (!this.props.price || !this.props.assetQuantity) {
       return this.props.wizard.previous();
     }
     this.setState({ready: true});
