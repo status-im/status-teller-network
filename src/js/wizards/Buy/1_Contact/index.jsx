@@ -19,9 +19,12 @@ class Contact extends Component {
       statusContactCode: props.statusContactCode
     };
     this.validate(props.username, props.statusContactCode);
+    props.footer.onPageChange(() => {
+      props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
+    });
+
     props.footer.onNext(() => {
       props.signMessage(this.state.username, this.state.statusContactCode);
-      props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
   }
 
@@ -45,7 +48,7 @@ class Contact extends Component {
       this.changeStatusContactCode(this.props.apiContactCode);
     }
 
-    if (prevProps.statusContactCode !== this.props.statusContactCode && prevProps.username !== this.props.username) {
+    if (prevProps.statusContactCode === "" && this.props.statusContactCode && prevProps.username === "" && this.props.username) {
       this.change(this.props.statusContactCode, this.props.username);
     }
   }
