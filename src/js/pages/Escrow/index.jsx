@@ -168,8 +168,7 @@ class Escrow extends Component {
     const feeAmount =  tokenAmount.div(toBN(divider));
     const totalAmount = tokenAmount.add(feeAmount);
 
-    const escrowAssetPrice = escrow.assetPrice / 100 * ((escrow.offer.margin / 100) + 1);
-    const escrowFiatAmount = (escrow.tokenAmount * escrowAssetPrice).toFixed(2);
+    const escrowFiatAmount = (escrow.fiatAmount / 100).toFixed(2);
 
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
 
