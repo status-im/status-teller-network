@@ -10,7 +10,7 @@ contract IEscrow {
       uint256 tokenAmount;
       uint256 expirationTime;
       uint256 rating;
-      uint256 assetPrice;
+      uint256 fiatAmount;
       address payable buyer;
       address payable seller;
       address payable arbitrator;
@@ -20,7 +20,7 @@ contract IEscrow {
   function createEscrow(
         uint _offerId,
         uint _tokenAmount,
-        uint _assetPrice,
+        uint _fiatAmount,
         bytes32 _pubkeyA,
         bytes32 _pubkeyB,
         string memory _location,

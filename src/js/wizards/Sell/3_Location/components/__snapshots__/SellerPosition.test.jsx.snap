@@ -2,9 +2,7 @@
 
 exports[`SellerPosition should render correctly 1`] = `
 <Fragment>
-  <h2
-    className="mb-4"
-  >
+  <h2>
     What location do you want to display
   </h2>
   <Form
@@ -13,20 +11,30 @@ exports[`SellerPosition should render correctly 1`] = `
     <FormGroup
       tag="div"
     >
+      <Label
+        className="text-small mt-3 mb-0"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Location
+      </Label>
       <Input
         id="location"
         name="location"
         onChange={[Function]}
-        placeholder="City, Country"
+        placeholder="Enter location"
         type="text"
         value=""
       />
     </FormGroup>
-    <p
-      className="text-muted"
-    >
-      Enter a location to move to the next page
-    </p>
   </Form>
 </Fragment>
 `;

@@ -121,14 +121,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _buyer Buyer Address
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
-     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+     * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
      * @return Id of the Escrow
      */
     function _createTransaction(
         address payable _buyer,
         uint _offerId,
         uint _tokenAmount,
-        uint _assetPrice
+        uint _fiatAmount
     ) internal whenNotPaused returns(uint escrowId)
     {
         address payable seller;
@@ -142,7 +142,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer && arbitrator != address(0), "Cannot buy offers where buyer is arbitrator");
-        require(_tokenAmount != 0 && _assetPrice != 0, "Trade amounts cannot be 0");
+        require(_tokenAmount != 0 && _fiatAmount != 0, "Trade amounts cannot be 0");
 
         escrowId = transactions.length++;
 
@@ -154,7 +154,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         trx.seller = seller;
         trx.arbitrator = arbitrator;
         trx.tokenAmount = _tokenAmount;
-        trx.assetPrice = _assetPrice;
+        trx.fiatAmount = _fiatAmount;
 
         emit Created(
             _offerId,
@@ -168,7 +168,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @notice Create a new escrow
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
-     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+     * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
      * @param _pubkeyA First coordinate of Status Whisper Public Key
      * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location The location on earth
@@ -182,7 +182,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     function createEscrow(
         uint _offerId,
         uint _tokenAmount,
-        uint _assetPrice,
+        uint _fiatAmount,
         bytes32 _pubkeyA,
         bytes32 _pubkeyB,
         string memory _location,
@@ -191,7 +191,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         bytes memory _signature
     ) public returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_signature, _pubkeyA, _pubkeyB, _location, _username, _nonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
+        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
     }
 
     /**
@@ -237,7 +237,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @notice Create and fund a new escrow, as a seller, once you get a buyer signature
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
-     * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+     * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
      * @param _bPubkeyA First coordinate of Status Whisper Public Key
      * @param _bPubkeyB Second coordinate of Status Whisper Public Key
      * @param _bLocation The location on earth
@@ -251,7 +251,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     function createAndFund (
         uint _offerId,
         uint _tokenAmount,
-        uint _assetPrice,
+        uint _fiatAmount,
         bytes32 _bPubkeyA,
         bytes32 _bPubkeyB,
         string memory _bLocation,
@@ -260,7 +260,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         bytes memory _bSignature
     ) public payable returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bPubkeyA, _bPubkeyB, _bLocation, _bUsername, _bNonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _assetPrice);
+        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
         _fund(msg.sender, escrowId);
     }
 

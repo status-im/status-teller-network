@@ -36,11 +36,10 @@ const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
   const coords = generateXY(user.statusContactCode);
-
   const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
-    escrow.assetPrice,
+    escrow.currencyQuantity,
     coords.x,
     coords.y,
     '',

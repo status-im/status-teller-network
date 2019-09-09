@@ -84,7 +84,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @notice Create a new escrow
    * @param _offerId Offer
    * @param _tokenAmount Amount buyer is willing to trade
-   * @param _assetPrice Indicates the price of the asset in the FIAT of choice
+   * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
    * @param _pubkeyA First coordinate of Status Whisper Public Key
    * @param _pubkeyB Second coordinate of Status Whisper Public Key
    * @param _location The location on earth
@@ -95,7 +95,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
   function createEscrow(
     uint _offerId,
     uint _tokenAmount,
-    uint _assetPrice,
+    uint _fiatAmount,
     bytes32 _pubkeyA,
     bytes32 _pubkeyB,
     string memory _location,
@@ -107,7 +107,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     escrowId = escrow.createEscrow(
          _offerId,
          _tokenAmount,
-         _assetPrice,
+         _fiatAmount,
          _pubkeyA,
          _pubkeyB,
          _location,

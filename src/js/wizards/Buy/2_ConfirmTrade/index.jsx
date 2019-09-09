@@ -30,14 +30,14 @@ class ConfirmTrade extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.price || !this.props.assetQuantity) {
+    if (!this.props.price || !this.props.currencyQuantity || !this.props.assetQuantity) {
       return this.props.wizard.previous();
     }
     this.setState({ready: true});
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.signature, this.props.username, this.props.assetQuantity, this.props.price, this.props.statusContactCode, this.props.offer, this.props.nonce);
+    this.props.createEscrow(this.props.signature, this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.statusContactCode, this.props.offer, this.props.nonce);
   };
 
   cancelTrade = () => {
@@ -66,6 +66,7 @@ class ConfirmTrade extends Component {
     if (!this.state.ready || this.props.signing) {
       return <Loading page/>;
     }
+
     switch (this.props.createEscrowStatus) {
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
@@ -121,6 +122,10 @@ ConfirmTrade.propTypes = {
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
   signing: PropTypes.bool,
+  currencyQuantity: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   assetQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -147,6 +152,7 @@ const mapStateToProps = state => {
     offer: metadata.selectors.getOfferById(state, offerId),
     nonce: metadata.selectors.getNonce(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
+    currencyQuantity: newBuy.selectors.currencyQuantity(state),
     signing: metadata.selectors.isSigning(state),
     offerId
   };
