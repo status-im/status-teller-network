@@ -53,7 +53,7 @@
     "css-loader": "^2.1.0",
     "dompurify": "^1.0.10",
     "elliptic": "^6.5.0",
-    "embark": "^4.0.2",
+    "embark": "^8.0.0",
     "embark-solc": "^4.0.3",
     "embark-solium": "0.1.0",
     "embarkjs-connector-web3": "^4.0.0",
