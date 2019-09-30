@@ -37,8 +37,13 @@ class OffersList extends Component {
   }
 
   offerClick = (offerId) => {
-    this.props.setOfferId(offerId);
-    this.props.history.push('/buy');
+    const offer = this.props.offers.find(x => x.id === offerId);
+    if(addressCompare(offer.owner, this.props.address)){
+      this.props.history.push('/profile/offers');
+    } else {
+      this.props.setOfferId(offerId);
+      this.props.history.push('/buy');
+    }
   };
 
   clearFilters = () => {
@@ -122,7 +127,7 @@ class OffersList extends Component {
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
-    
+
     return (
       <Fragment>
         <div>

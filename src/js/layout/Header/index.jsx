@@ -20,9 +20,9 @@ const Header = ({location, history}) => (
       </NavbarBrand>
       <Nav className="ml-auto" navbar>
         <NavItem>
-          {location.pathname.indexOf('/profile') === -1 && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="32" height="32" /></NavLink>}
-          {location.pathname === '/profile' && <NavLink onClick={() => history.go(-1)}><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
-          {location.pathname.indexOf('/profile/') > -1 && <NavLink onClick={() => history.go(-2)}><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
+          {(location.pathname.indexOf('/profile') === -1 && location.pathname !== '/sellers') && <NavLink tag={Link} to="/profile"><img src={iconProfile} alt="Profile" width="32" height="32" /></NavLink>}
+          {(location.pathname === '/profile') && <NavLink onClick={() => history.go(-1)}><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
+          {(location.pathname.indexOf('/profile/') > -1 || location.pathname === '/sellers') && <NavLink onClick={() => history.go(-2)}><img src={iconCloseProfile} alt="Home" width="32" height="32" /></NavLink>}
         </NavItem>
       </Nav>
     </Navbar>
