@@ -127,7 +127,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
             ...state.users[toChecksumAddress(action.address)],
-            coords: action.coords
+            coords: action.coords,
+            countryCode: action.countryCode
           }
         }
       };

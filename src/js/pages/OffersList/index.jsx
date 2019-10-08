@@ -76,7 +76,7 @@ class OffersList extends Component {
     }
 
     this.setState({calculatingLocation: true});
-    getLocation(location).then(coords => {
+    getLocation(location).then(({location: coords}) => {
       this.setState({
         calculatingLocation: false,
         locationCoords: coords,
@@ -122,7 +122,7 @@ class OffersList extends Component {
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
-    
+
     return (
       <Fragment>
         <div>

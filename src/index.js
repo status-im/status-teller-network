@@ -11,6 +11,7 @@ import setupLogRocketReact from 'logrocket-react';
 
 import './css/fonts/Inter/inter.css';
 import './css/bootstrap-overrides.scss';
+import 'flag-icon-css/css/flag-icon.min.css';
 import './index.scss';
 import './css/Form.scss';
 
