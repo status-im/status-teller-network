@@ -143,6 +143,9 @@ class Escrow extends Component {
     const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredBalance).lt(toBN(tokenAllowance));
 
     let showFundButton = isTokenApproved;
+    if(isETH){
+      showFundButton = true;
+    }
 
     // Show token approval UI
     if(showApproveFundsScreen && escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting) {
@@ -161,7 +164,7 @@ class Escrow extends Component {
         showFundButton = true;
       }
     }
-
+    
     const feePercent = feeMilliPercent / 1000;
     const tokenAmount = toBN(toTokenDecimals(escrow.tokenAmount, escrow.token.decimals));
     const divider = 100 * (feeMilliPercent / 1000);
