@@ -165,8 +165,7 @@ class App extends Component {
                   {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
                   {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
-
-                {this.props.isLicenseOwner &&
+                
                 <Wizard path="/sell/" steps={[
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
@@ -177,8 +176,7 @@ class App extends Component {
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
                 ]}/>
-                }
-
+                
                 <Route path="/tmp/signature" component={SignatureContainer}/>
 
                 <Route component={fourOFour}/>

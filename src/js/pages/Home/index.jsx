@@ -26,7 +26,8 @@ class Home extends Component {
   }
 
   sellUrl(){
-    return this.props.isLicenseOwner ? '/sell' : '/license';
+    return '/sell';
+    // return this.props.isLicenseOwner ? '/sell' : '/license';
   }
 
   render() {

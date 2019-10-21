@@ -49,10 +49,6 @@ class Arbitrators extends Component {
 
     if(loading) return <Loading mining={!!txHash} txHash={txHash} />;
 
-    if(!profile || !profile.isSeller){
-      return <NoLicense />;
-    }
-
     return (
     <Fragment>
         <h2 className="mb-4">Arbitrators</h2>
