@@ -1,7 +1,6 @@
 /*global contract, config, it, embark, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
-const SellerLicense = embark.require('Embark/contracts/SellerLicense');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const Escrow = embark.require('Embark/contracts/Escrow');
@@ -63,7 +62,7 @@ config({
     */
 
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
     },
     StandardToken: {
     }
@@ -89,9 +88,7 @@ contract("Escrow Funding", function() {
   before(async () => {
     await StandardToken.methods.mint(accounts[0], 100000000).send();
     await SNT.methods.generateTokens(accounts[0], 100000000).send();
-    const encodedCall = SellerLicense.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
-
+    
     // Register arbitrators
     arbitrator = accounts[9];
     await SNT.methods.generateTokens(arbitrator, 1000).send();

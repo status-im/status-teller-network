@@ -23,7 +23,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     EscrowTransaction[] public transactions;
 
     address public relayer;
-    License public sellerLicenses;
     MetadataStore public metadataStore;
 
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
@@ -37,7 +36,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     /**
      * @param _relayer EscrowRelay contract address
-     * @param _sellerLicenses License contract instance address for sellers
      * @param _arbitratorLicenses License contract instance address for arbitrators
      * @param _metadataStore MetadataStore contract address
      * @param _feeDestination Address where the fees are going to be sent
@@ -45,7 +43,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     constructor(
         address _relayer,
-        address _sellerLicenses,
         address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
@@ -55,14 +52,12 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         public {
         _initialized = true;
         relayer = _relayer;
-        sellerLicenses = License(_sellerLicenses);
         metadataStore = MetadataStore(_metadataStore);
     }
 
     /**
      * @dev Initialize contract (used with proxy). Can only be called once
      * @param _relayer EscrowRelay contract address
-     * @param _sellerLicenses License contract instance address for sellers
      * @param _arbitratorLicenses License contract instance address for arbitrators
      * @param _metadataStore MetadataStore contract address
      * @param _feeDestination Address where the fees are going to be sent
@@ -70,7 +65,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function init(
         address _relayer,
-        address _sellerLicenses,
         address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
@@ -80,7 +74,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         _initialized = true;
 
-        sellerLicenses = License(_sellerLicenses);
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
         metadataStore = MetadataStore(_metadataStore);
         relayer = _relayer;
@@ -100,11 +93,9 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     /**
      * @dev Update license contract addresses
-     * @param _sellerLicenses License contract instance address for sellers
      * @param _arbitratorLicenses License contract instance address for arbitrators
      */
-    function setLicenses(address _sellerLicenses, address _arbitratorLicenses) external onlyOwner {
-        sellerLicenses = License(_sellerLicenses);
+    function setArbitratorLicense(address _arbitratorLicenses) external onlyOwner {
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
     }
 
@@ -139,7 +130,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         (token, , , , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
 
         require(!deleted, "Offer is not valid");
-        require(sellerLicenses.isLicenseOwner(seller), "Must be a valid seller to create escrow transactions");
         require(seller != _buyer, "Seller and Buyer must be different");
         require(arbitrator != _buyer && arbitrator != address(0), "Cannot buy offers where buyer is arbitrator");
         require(_tokenAmount != 0 && _fiatAmount != 0, "Trade amounts cannot be 0");
@@ -218,8 +208,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     function _fund(address _from, uint _escrowId) internal whenNotPaused {
         require(transactions[_escrowId].seller == _from, "Only the seller can invoke this function");
         require(transactions[_escrowId].status == EscrowStatus.CREATED, "Invalid escrow status");
-
-        require(sellerLicenses.isLicenseOwner(_from), "Must be a valid seller to fund escrow transactions");
 
         transactions[_escrowId].expirationTime = block.timestamp + 5 days;
         transactions[_escrowId].status = EscrowStatus.FUNDED;

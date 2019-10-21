@@ -12,13 +12,12 @@ contract TestEscrowUpgrade is Escrow {
 
     constructor (
         address _relayer,
-        address _license,
         address _arbitrationLicense,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent
       )
-      Escrow(_relayer, _license, _arbitrationLicense, _metadataStore, _feeDestination, _feeMilliPercent)
+      Escrow(_relayer, _arbitrationLicense, _metadataStore, _feeDestination, _feeMilliPercent)
       public {
     }
 
