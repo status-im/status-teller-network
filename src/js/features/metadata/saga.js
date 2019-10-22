@@ -30,16 +30,17 @@ SellerLicense.options.address = SellerLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
+  const defaultAccount = web3.eth.defaultAccount || zeroAddress;
   try {
-    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
-    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call();
+    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
+    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
 
     let userLicenses = {
       isArbitrator,
       isSeller
     };
 
-    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call());
+    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
     user.statusContactCode = keyFromXY(user.pubkeyA, user.pubkeyB);
 
     if(user.pubkeyA === zeroBytes && user.pubkeyB === zeroBytes){
@@ -83,6 +84,7 @@ export function *onLoadLocation() {
 export function *enabledEthereum() {
   try {
     const accounts = yield enableEthereum();
+    web3.eth.defaultAccount = accounts[0];
     yield put({type: LOAD_USER, address: accounts[0]});
     yield put({type: ENABLE_ETHEREUM_SUCCEEDED, accounts});
   } catch (error) {
@@ -98,10 +100,11 @@ export function *loadOffers({address}) {
   try {
     let offerIds = [];
 
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     if (address) {
-      offerIds = yield MetadataStore.methods.getOfferIds(address).call();
+      offerIds = yield MetadataStore.methods.getOfferIds(address).call({from: defaultAccount});
     } else {
-      const size = yield MetadataStore.methods.offersSize().call();
+      const size = yield MetadataStore.methods.offersSize().call({from: defaultAccount});
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
     const loadedUsers = [];
@@ -114,10 +117,10 @@ export function *loadOffers({address}) {
     }
 
     const offers = yield all(offerIds.map(function *(id) {
-      const offer = yield MetadataStore.methods.offer(id).call();
+      const offer = yield MetadataStore.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call();
+        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call({from: defaultAccount});
         offer.arbitratorData.statusContactCode = keyFromXY(offer.arbitratorData.pubkeyA, offer.arbitratorData.pubkeyB);
       }
 

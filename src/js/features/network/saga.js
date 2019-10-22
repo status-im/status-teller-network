@@ -37,6 +37,9 @@ export function *updateBalance({symbol, address}) {
   if (!address) {
     address = yield select((state) => state.network.address);
   }
+  if (!address) {
+    return;
+  }
   const token = yield select((state) => state.network.tokens[symbol]);
   let value;
   try {

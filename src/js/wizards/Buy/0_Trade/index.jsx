@@ -36,7 +36,9 @@ class Trade extends Component {
     this.validate(this.props.currencyQuantity, this.props.assetQuantity);
 
     this.props.updateBalances();
-    this.props.getLastActivity(this.props.address);
+    if (this.props.address) {
+      this.props.getLastActivity(this.props.address);
+    }
     this.props.loadOffers(this.props.offer.owner); // TODO Change this to only load the right offer
 
     this.getSellerBalance();

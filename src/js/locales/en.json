@@ -8,7 +8,7 @@
   },
   "ethereumEnable": {
     "createOffer": "Please give access to your address before you can create an offer",
-    "offerList": "Please give access to your address before you can access the offer list",
+    "buyContact": "Please give access to your address before you can  sign",
     "profile": "Please give access to your address before you can view your profile"
   },
   "createEscrowFrom": {

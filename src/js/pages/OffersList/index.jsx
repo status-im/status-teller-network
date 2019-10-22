@@ -32,16 +32,7 @@ class OffersList extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.isEip1102Enabled) {
-      return this.props.enableEthereum();
-    }
     this.load();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
-      this.load();
-    }
   }
 
   load() {
@@ -141,10 +132,6 @@ class OffersList extends Component {
     }
     filteredOffers.sort(sortFunction);
 
-    if (!this.props.isEip1102Enabled) {
-      return <p>{this.props.t('ethereumEnable.offerList')}</p>;
-    }
-
     return (
       <Fragment>
         <div>
@@ -185,13 +172,11 @@ OffersList.propTypes = {
   offers: PropTypes.array,
   tokens: PropTypes.array,
   loadOffers: PropTypes.func,
-  isEip1102Enabled: PropTypes.bool,
   prices: PropTypes.object,
   address: PropTypes.string,
   gasPrice: PropTypes.string,
   updateBalance: PropTypes.func,
   setOfferId: PropTypes.func,
-  enableEthereum: PropTypes.func,
   ethBalance: PropTypes.string,
   history: PropTypes.object
 };
@@ -203,8 +188,7 @@ const mapStateToProps = state => {
     tokens: Object.values(network.selectors.getTokens(state)),
     prices: prices.selectors.getPrices(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
-    ethBalance: network.selectors.getBalance(state, 'ETH'),
-    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
+    ethBalance: network.selectors.getBalance(state, 'ETH')
   };
 };
 
@@ -213,6 +197,5 @@ export default connect(
   {
     loadOffers: metadata.actions.loadOffers,
     updateBalance: network.actions.updateBalance,
-    setOfferId: newBuy.actions.setOfferId,
-    enableEthereum: metadata.actions.enableEthereum
+    setOfferId: newBuy.actions.setOfferId
   })(withNamespaces()(withRouter(OffersList)));

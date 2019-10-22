@@ -39,10 +39,10 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
         {offer.user.username}
       </CardTitle>
       <div>
-        <p className="text-black m-0 mt-2 clearfix">
+        {offer.user.countryCode && offer.user.location && <p className="text-black m-0 mt-2 clearfix">
           <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>
           {offer.user.location}
-        </p>
+        </p>}
         <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}

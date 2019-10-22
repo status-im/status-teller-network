@@ -41,7 +41,6 @@ class License extends Component {
   }
 
   getUserInfos() {
-    console.log('ALLO');
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
     }

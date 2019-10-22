@@ -1,5 +1,5 @@
 /*global web3*/
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import EditContact from '../../../components/EditContact';
@@ -10,6 +10,8 @@ import metadata from "../../../features/metadata";
 import {contactCodeRegExp} from '../../../utils/address';
 import DOMPurify from 'dompurify';
 import escrow from "../../../features/escrow";
+import {withNamespaces} from "react-i18next";
+import {Alert} from "reactstrap";
 
 class Contact extends Component {
   constructor(props) {
@@ -37,6 +39,10 @@ class Contact extends Component {
     } else {
       this.validate(this.props.username, this.props.statusContactCode);
     }
+    if (!this.props.isEip1102Enabled) {
+      this.props.footer.disableNext();
+      this.props.enableEthereum();
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -51,10 +57,14 @@ class Contact extends Component {
     if (prevProps.statusContactCode === "" && this.props.statusContactCode && prevProps.username === "" && this.props.username) {
       this.change(this.props.statusContactCode, this.props.username);
     }
+
+    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
+      this.validate(this.state.username, this.state.statusContactCode);
+    }
   }
 
   validate(username, statusContactCode) {
-    if (username && statusContactCode) {
+    if (this.props.isEip1102Enabled && username && statusContactCode) {
       if(!contactCodeRegExp.test(statusContactCode)){
         return this.props.footer.disableNext();
       }
@@ -85,18 +95,23 @@ class Contact extends Component {
   };
 
   render() {
-    return (<EditContact isStatus={this.props.isStatus}
-                         statusContactCode={this.state.statusContactCode}
-                         username={this.state.username}
-                         changeStatusContactCode={this.changeStatusContactCode}
-                         changeUsername={this.changeUsername}
-                         getContactCode={this.getContactCode}
-                         resolveENSName={this.props.resolveENSName}
-                         ensError={this.props.ensError}/>);
+    return (<Fragment>
+      {!this.props.isEip1102Enabled &&  <Alert color="warning">{this.props.t('ethereumEnable.buyContact')}</Alert>}
+
+      <EditContact isStatus={this.props.isStatus}
+        statusContactCode={this.state.statusContactCode}
+        username={this.state.username}
+        changeStatusContactCode={this.changeStatusContactCode}
+        changeUsername={this.changeUsername}
+        getContactCode={this.getContactCode}
+        resolveENSName={this.props.resolveENSName}
+        ensError={this.props.ensError}/>
+    </Fragment>);
   }
 }
 
 Contact.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   footer: PropTypes.object,
   wizard: PropTypes.object,
@@ -124,7 +139,9 @@ Contact.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  signing: PropTypes.bool
+  signing: PropTypes.bool,
+  isEip1102Enabled: PropTypes.bool,
+  enableEthereum: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -145,6 +162,7 @@ const mapStateToProps = state => {
     nonce: metadata.selectors.getNonce(state),
     signing: metadata.selectors.isSigning(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     offerId
   };
 };
@@ -156,6 +174,7 @@ export default connect(
     setContactInfo: newBuy.actions.setContactInfo,
     getContactCode: network.actions.getContactCode,
     resolveENSName: network.actions.resolveENSName,
-    signMessage: metadata.actions.signMessage
+    signMessage: metadata.actions.signMessage,
+    enableEthereum: metadata.actions.enableEthereum
   }
-  )(withRouter(Contact));
+  )(withRouter(withNamespaces()(Contact)));
