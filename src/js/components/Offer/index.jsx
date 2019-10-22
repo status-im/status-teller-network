@@ -9,13 +9,13 @@ import {addressCompare, zeroAddress} from '../../utils/address';
 import NoArbitratorWarning from "../../components/NoArbitratorWarning";
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import {withNamespaces} from "react-i18next";
-import {faGlobeAmericas} from "@fortawesome/free-solid-svg-icons";
 import limitIcon from '../../../images/limits.svg';
 import bankIcon from '../../../images/bank.svg';
 import {CURRENCY_DATA} from "../../constants/currencies";
-import './index.scss';
 import {getTokenImage} from "../../utils/images";
 import RoundedIcon from "../../ui/RoundedIcon";
+
+import './index.scss';
 
 const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
@@ -40,14 +40,14 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
       </CardTitle>
       <div>
         <p className="text-black m-0 mt-2 clearfix">
-          <RoundedIcon icon={faGlobeAmericas} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>
           {offer.user.location}
         </p>
         <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
         </p>
-        
+
         {!limitless && <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}

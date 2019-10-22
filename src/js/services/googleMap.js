@@ -15,7 +15,7 @@ export function getLocation(place) {
       if (!res.length) {
         return reject(new Error(`No result for location ${place}`));
       }
-      resolve(res[0].location);
+      resolve({location: res[0].location, countryCode: res[0].country.short_name});
     });
   });
 }

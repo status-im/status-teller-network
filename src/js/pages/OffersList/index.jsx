@@ -81,7 +81,7 @@ class OffersList extends Component {
     }
 
     this.setState({calculatingLocation: true});
-    getLocation(location).then(coords => {
+    getLocation(location).then(({location: coords}) => {
       this.setState({
         calculatingLocation: false,
         locationCoords: coords,

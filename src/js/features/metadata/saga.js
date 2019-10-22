@@ -65,8 +65,8 @@ export function *onLoadUser() {
 
 export function *loadLocation({user, address}) {
   try {
-    const coords = yield getLocation(user.location);
-    yield put({type: LOAD_USER_LOCATION_SUCCEEDED, user, address, coords});
+    const {location: coords, countryCode} = yield getLocation(user.location);
+    yield put({type: LOAD_USER_LOCATION_SUCCEEDED, user, address, coords, countryCode});
   } catch (error) {
     console.error(error);
     yield put({type: LOAD_USER_FAILED, error: error.message});
@@ -157,7 +157,7 @@ export function *onLoad() {
 
 export function *addOffer({user, offer}) {
   const coords = generateXY(user.statusContactCode);
-  
+
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
     coords.x,
