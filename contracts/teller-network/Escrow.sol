@@ -423,18 +423,36 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @dev Can only be executed by the buyer
      *      Transaction must released
      */
-    function rateTransaction(uint _escrowId, uint _rate) external {
+    function _rateTransaction(address _sender, uint _escrowId, uint _rate) internal {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(trx.rating == 0, "Transaction already rated");
         require(trx.status == EscrowStatus.RELEASED || hadDispute(_escrowId), "Transaction not completed yet");
-        require(trx.buyer == msg.sender, "Only the buyer can invoke this function");
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
 
         trx.rating = _rate;
 
         emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
+    }
+
+    /**
+     * @notice Rates a transaction
+     * @param _escrowId Id of the escrow
+     * @param _rate rating of the transaction from 1 to 5
+     * @dev Can only be executed by the buyer
+     *      Transaction must released
+     */
+    function rateTransaction(uint _escrowId, uint _rate) external {
+        _rateTransaction(msg.sender, _escrowId, _rate);
+    }
+
+    // Same as rateTransaction, but relayed by a contract so we get the sender as param
+    function rateTransaction_relayed(address _sender, uint _escrowId, uint _rate) external {
+        assert(msg.sender == relayer);
+        _rateTransaction(_sender, _escrowId, _rate);
+
     }
 
     /**

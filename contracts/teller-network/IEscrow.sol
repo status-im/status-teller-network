@@ -41,6 +41,10 @@ contract IEscrow {
 
   function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external;
 
+  function rateTransaction(uint _escrowId, uint _rate) external;
+
+  function rateTransaction_relayed(address _sender, uint _escrowId, uint _rate) external;
+
   function getBasicTradeData(uint _escrowId) external view returns(address payable buyer, address payable seller, address token, uint tokenAmount);
 
 }

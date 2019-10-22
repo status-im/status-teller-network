@@ -24,6 +24,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
+  bytes4 constant RATE_SIGNATURE  = bytes4(keccak256("rateTransaction(uint256,uint256)"));
 
   uint256 constant OK = 0;
   uint256 constant ERROR_ENOUGH_BALANCE = 11;
@@ -127,6 +128,16 @@ contract EscrowRelay is RelayRecipient, Ownable {
   }
 
   /**
+   * @notice Rate a transaction
+   * @param _escrowId Id of the escrow
+   * @param _rate rating of the transaction from 1 to 5
+   */
+  function rateTransaction(uint _escrowId, uint _rate) external {
+    address sender = getSender();
+    escrow.rateTransaction_relayed(sender, _escrowId, _rate);
+  }
+
+  /**
    * @notice Cancel an escrow
    * @param _escrowId Escrow to cancel
    */
@@ -189,6 +200,10 @@ contract EscrowRelay is RelayRecipient, Ownable {
    */
   function _evaluateConditionsToRelay(address from, uint gasPrice, bytes4 functionSignature, uint dataValue) internal view returns (uint256) {
     address token;
+
+    if(functionSignature == RATE_SIGNATURE && gasPrice < 20000000000){
+      return OK;
+    }
 
     if(from.balance > 600000 * gasPrice) return ERROR_ENOUGH_BALANCE;
 
