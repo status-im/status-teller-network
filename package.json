@@ -14,9 +14,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "snyk-protect": "snyk protect",
-    "prepublish": "npm run snyk-protect"
+    "eject": "react-scripts eject"
   },
   "author": "",
   "license": "ISC",
@@ -95,8 +93,7 @@
     "sass-loader": "^7.1.0",
     "staking-pool": "^0.0.1",
     "tabookey-gasless": "^0.4.1",
-    "web3": "1.0.0-beta.37",
-    "snyk": "^1.192.3"
+    "web3": "1.0.0-beta.37"
   },
   "jest": {
     "moduleNameMapper": {
@@ -118,6 +115,5 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ],
-  "snyk": true
+  ]
 }
