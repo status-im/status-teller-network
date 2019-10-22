@@ -55,7 +55,6 @@ import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
 import escrow from '../features/escrow';
-import license from "../features/license";
 
 const PRICE_FETCH_INTERVAL = 60000;
 
@@ -82,7 +81,6 @@ class App extends Component {
         this.props.resetState();
       }
       this.props.loadProfile(this.props.address);
-      this.props.checkLicenseOwner();
       this.props.setCurrentUser(web3.eth.defaultAccount);
     }
     if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
@@ -105,7 +103,6 @@ class App extends Component {
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
-      nextProps.isLicenseOwner !== this.props.isLicenseOwner ||
       nextState.hidePriceError !== this.state.hidePriceError;
   }
 
@@ -201,10 +198,8 @@ App.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
   loadProfile: PropTypes.func,
-  checkLicenseOwner: PropTypes.func,
   setCurrentUser: PropTypes.func,
   resetState: PropTypes.func,
-  isLicenseOwner: PropTypes.bool,
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func
 };
@@ -214,7 +209,6 @@ const mapStateToProps = (state) => {
   return {
     address,
     currentUser: metadata.selectors.currentUser(state),
-    isLicenseOwner: license.selectors.isLicenseOwner(state),
     isReady: network.selectors.isReady(state),
     hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
     error: network.selectors.getError(state),
@@ -233,7 +227,6 @@ export default connect(
     init: network.actions.init,
     resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
-    checkLicenseOwner: license.actions.checkLicenseOwner,
     setCurrentUser: metadata.actions.setCurrentUser,
     watchEscrowCreations: escrow.actions.watchEscrowCreations
   }
