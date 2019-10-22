@@ -3,7 +3,6 @@ const TestUtils = require("../utils/testUtils");
 const Escrow = embark.require('Embark/contracts/Escrow');
 const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
 const OwnedUpgradeabilityProxy = embark.require('Embark/contracts/OwnedUpgradeabilityProxy');
-const SellerLicense = embark.require('Embark/contracts/SellerLicense');
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const SNT = embark.require('Embark/contracts/SNT');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
@@ -63,10 +62,10 @@ config({
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     TestEscrowUpgrade: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     StandardToken: { }
   }
@@ -83,8 +82,6 @@ contract("Escrow Relay", function() {
 
   before(async () => {
     await SNT.methods.generateTokens(accounts[0], 1000).send();
-    const encodedCall = SellerLicense.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
@@ -94,7 +91,6 @@ contract("Escrow Relay", function() {
 
     const abiEncode = Escrow.methods.init(
       EscrowRelay.options.address,
-      SellerLicense.options.address,
       ArbitrationLicense.options.address,
       MetadataStore.options.address,
       BURN_ADDRESS, // TODO: replace by StakingPool address

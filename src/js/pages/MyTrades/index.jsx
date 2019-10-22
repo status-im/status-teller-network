@@ -36,7 +36,7 @@ class MyTrades extends Component {
   }
 
   componentDidUpdate(oldProps){
-    if(this.props.profile && (this.props.profile.isArbitrator || this.props.profile.isSeller) && !this.props.profile.statusContactCode){
+    if(this.props.profile && !this.props.profile.statusContactCode){
       return this.props.history.push("/profile/contact/edit");
     }
 

@@ -1,6 +1,5 @@
 /*global contract, config, it, assert, before, web3*/
 
-const SellerLicense = require('Embark/contracts/SellerLicense');
 const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
 
 const SNT = require('Embark/contracts/SNT');
@@ -74,19 +73,8 @@ contract("MetadataStore", function () {
     signature = await web3.eth.sign(hash, accounts[0]);
   });
 
-  it("should not allow to add new user when not license owner", async function () {
-    try {
-      await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send();
-      assert.fail('should have reverted before');
-    } catch (error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Not a license owner");
-    }
-  });
-
-  it("should allow to add new user and offer when license owner", async function () {
-    const encodedCall = SellerLicense.methods.buy().encodeABI();
-    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send();
-    const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send();
+  it("should allow to add new user and offer", async function () {
+    await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send();
     
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');

@@ -114,7 +114,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "OwnedUpgradeabilityProxy"
@@ -237,7 +237,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$SellerLicenseProxy", "$ArbitrationLicenseProxy", "$MetadataStoreProxy", BURN_ADDRESS, FEE_MILLI_PERCENT]
+        args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicenseProxy", "$MetadataStoreProxy", BURN_ADDRESS, FEE_MILLI_PERCENT]
       },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
