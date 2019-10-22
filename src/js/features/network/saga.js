@@ -71,14 +71,13 @@ export function *onUpdateBalances() {
   yield takeEvery(UPDATE_BALANCES, updateBalances);
 }
 
-export function *getGasPrice() { 
+export function *getGasPrice() {
   try {
     const gasPrice = yield web3.eth.getGasPrice();
     yield put({type: GET_GAS_PRICE_SUCCEEDED, gasPrice});
   } catch(error){
     console.error(error);
     yield put({type: GET_GAS_PRICE_FAILED});
- 
   }
 }
 

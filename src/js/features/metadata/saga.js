@@ -10,7 +10,9 @@ import {
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED, DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED
+  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED,
+  DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED,
+  ENABLE_ETHEREUM, ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -20,6 +22,7 @@ import { zeroAddress, addressCompare, zeroBytes, keyFromXY, generateXY } from '.
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+import {enableEthereum} from '../../services/embarkjs';
 
 MetadataStore.options.address = MetadataStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
@@ -75,6 +78,20 @@ export function *loadLocation({user, address}) {
 
 export function *onLoadLocation() {
   yield takeEvery(LOAD_USER_LOCATION, loadLocation);
+}
+
+export function *enabledEthereum() {
+  try {
+    const accounts = yield enableEthereum();
+    yield put({type: LOAD_USER, address: accounts[0]});
+    yield put({type: ENABLE_ETHEREUM_SUCCEEDED, accounts});
+  } catch (error) {
+    yield put({type: ENABLE_ETHEREUM_FAILED, error: error.message});
+  }
+}
+
+export function *onEnabledEthereum() {
+  yield takeEvery(ENABLE_ETHEREUM, enabledEthereum);
 }
 
 export function *loadOffers({address}) {
@@ -223,5 +240,6 @@ export default [
   fork(onAddOffer),
   fork(onUpdateUser),
   fork(onSignMessage),
-  fork(onDeleteOffer)
+  fork(onDeleteOffer),
+  fork(onEnabledEthereum)
 ];

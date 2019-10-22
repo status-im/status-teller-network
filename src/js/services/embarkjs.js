@@ -38,3 +38,14 @@ export function getEnsAddress(name) {
     }
   });
 }
+
+export function enableEthereum() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const accounts = await EmbarkJS.enableEthereum();
+      resolve(accounts);
+    } catch(e) {
+      reject(e);
+    }
+  });
+}

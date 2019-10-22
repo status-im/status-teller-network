@@ -1,5 +1,6 @@
 /*global web3*/
 import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED, RESOLVE_ENS_NAME_SUCCEEDED, RESOLVE_ENS_NAME_FAILED, GET_GAS_PRICE_SUCCEEDED } from './constants';
+import { ENABLE_ETHEREUM_SUCCEEDED } from '../metadata/constants';
 import { Networks, Tokens } from '../../utils/networks';
 import { fromTokenDecimals } from '../../utils/numbers';
 import { addressCompare } from '../../utils/address';
@@ -81,6 +82,12 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         gasPrice: action.gasPrice
+      };
+    }
+    case ENABLE_ETHEREUM_SUCCEEDED: {
+      return {
+        ...state,
+        address: action.accounts[0]
       };
     }
     case GET_CONTACT_CODE_SUCCEEDED: {

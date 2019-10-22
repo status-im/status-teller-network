@@ -19,6 +19,9 @@ import "./index.scss";
 
 class Home extends Component {
   componentDidMount() {
+    if (!this.props.isEip1102Enabled) {
+      return;
+    }
     this.props.checkIsArbitrator();
     this.props.resetNewOfferData();
     this.props.resetNewBuy();
@@ -43,11 +46,11 @@ class Home extends Component {
 
         <Row className="home--footer">
           <Col xs={12} className="text-center">
-            <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" to="/offers/list">
+            <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" to="/offers/list" className="d-block mx-auto">
               {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
             </Button>
 
-            <Button tag={Link} color="secondary" to={this.sellUrl()} className="mt-2">
+            <Button tag={Link} color="secondary" to={this.sellUrl()} className="d-block mx-auto mt-2">
               {t('home.createOffer')}
             </Button>
           </Col>
@@ -62,6 +65,7 @@ Home.propTypes = {
   t: PropTypes.func,
   checkIsArbitrator: PropTypes.func,
   isArbitrator: PropTypes.bool,
+  isEip1102Enabled: PropTypes.bool,
   profile: PropTypes.object,
   hasPrices: PropTypes.bool,
   priceError: PropTypes.bool,
@@ -77,7 +81,8 @@ const mapStateToProps = (state) => {
     isArbitrator: arbitrator.selectors.isLicenseOwner(state),
     profile: metadata.selectors.getProfile(state, address),
     hasPrices: prices.selectors.hasPrices(state),
-    priceError: prices.selectors.error(state)
+    priceError: prices.selectors.error(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
   };
 };
 

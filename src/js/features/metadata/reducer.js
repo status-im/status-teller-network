@@ -5,9 +5,8 @@ import {
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
   RESET_NEW_OFFER,
-  DELETE_OFFER,
-  DELETE_OFFER_PRE_SUCCESS,
-  DELETE_OFFER_FAILED
+  DELETE_OFFER, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_FAILED,
+  ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
@@ -17,6 +16,7 @@ import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
+  eip1102Enabled: false,
   addOfferStatus: States.none,
   addOfferTx: '',
   updateUserStatus: States.none,
@@ -46,6 +46,16 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         addOfferStatus: States.none,
         addOfferTx: ''
+      };
+    case ENABLE_ETHEREUM_SUCCEEDED:
+      return {
+        ...state,
+        eip1102Enabled: true
+      };
+    case ENABLE_ETHEREUM_FAILED:
+      return {
+        ...state,
+        eip1102Enabled: false
       };
     case ADD_OFFER:
       return {

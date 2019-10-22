@@ -11,11 +11,36 @@ import BuyButton from './components/BuyButton';
 import Balance from './components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
+import metadata from "../../features/metadata";
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
 class License extends Component {
   componentDidMount() {
+    if (!this.props.isEip1102Enabled) {
+      return this.props.enableEthereum();
+    }
+    this.getUserInfos();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.isLicenseOwner) {
+      return this.props.history.push('/sell');
+    }
+    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
+      this.getUserInfos();
+    }
+    this.checkBalance();
+  }
+
+  componentWillUnmount() {
+    if (this.pollBalanceInterval) {
+      clearInterval(this.pollBalanceInterval);
+    }
+  }
+
+  getUserInfos() {
+    console.log('ALLO');
     if (this.props.isLicenseOwner) {
       return this.props.history.push('/sell');
     }
@@ -27,31 +52,19 @@ class License extends Component {
   }
 
   checkBalance() {
-    if (this.props.sntToken && this.props.sntToken.balance) {
-      if (this.enoughBalance()) {
-        if (this.pollBalanceInterval) {
-          clearInterval(this.pollBalanceInterval);
-        }
-      } else {
-        if (!this.pollBalanceInterval) {
-          this.pollBalanceInterval = setInterval(() => {
-            this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
-          }, 2000);
-        }
+    if (!this.props.sntToken || (!this.props.sntToken.balance && this.props.sntToken.balance !== 0) || !this.props.isEip1102Enabled) {
+      return;
+    }
+    if (this.enoughBalance()) {
+      if (this.pollBalanceInterval) {
+        clearInterval(this.pollBalanceInterval);
       }
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.props.isLicenseOwner) {
-      return this.props.history.push('/sell');
-    }
-    this.checkBalance();
-  }
-
-  componentWillUnmount() {
-    if (this.pollBalanceInterval) {
-      clearInterval(this.pollBalanceInterval);
+    } else {
+      if (!this.pollBalanceInterval) {
+        this.pollBalanceInterval = setInterval(() => {
+          this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
+        }, 2000);
+      }
     }
   }
 
@@ -65,6 +78,9 @@ class License extends Component {
   }
 
   render() {
+    if (!this.props.isEip1102Enabled) {
+      return <p>Please give access to your account before you can create an offer</p>;
+    }
     if (!this.props.sntToken) {
       return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
     }
@@ -93,6 +109,7 @@ License.propTypes = {
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
   buyLicense: PropTypes.func,
+  isEip1102Enabled: PropTypes.bool,
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
   txHash: PropTypes.string,
@@ -104,6 +121,7 @@ License.propTypes = {
   ]),
   loadLicensePrice: PropTypes.func,
   updateBalance: PropTypes.func,
+  enableEthereum: PropTypes.func,
   cancelBuyLicense: PropTypes.func
 };
 
@@ -114,7 +132,8 @@ const mapStateToProps = state => {
     txHash: license.selectors.txHash(state),
     error: license.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
-    licensePrice: license.selectors.getLicensePrice(state)
+    licensePrice: license.selectors.getLicensePrice(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
   };
 };
 
@@ -125,6 +144,7 @@ export default connect(
     cancelBuyLicense: license.actions.cancelBuyLicense,
     checkLicenseOwner: license.actions.checkLicenseOwner,
     loadLicensePrice: license.actions.loadPrice,
-    updateBalance: network.actions.updateBalance
+    updateBalance: network.actions.updateBalance,
+    enableEthereum: metadata.actions.enableEthereum
   }
 )(withRouter(License));
