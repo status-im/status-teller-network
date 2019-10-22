@@ -13,6 +13,8 @@ import {
 } from './constants';
 import {promiseEventEmitter} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
+import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
+SellerLicense.options.address = SellerLicenseProxy.options.address;
 
 window.SNT = SNT;
 
@@ -76,7 +78,6 @@ export function *onCheckLicenseOwner() {
 
 export function *doGetLicenseOwners() {
   try {
-    // TODO get more information like position and rate
     const events = yield SellerLicense.getPastEvents('Bought', {fromBlock: 1});
     const licenseOwners = events.map(event => {
       return {address: event.returnValues.buyer};

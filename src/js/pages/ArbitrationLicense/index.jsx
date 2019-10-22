@@ -27,10 +27,33 @@ class ArbitrationLicense extends Component {
     this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
   }
 
+  checkBalance() {
+    if (this.props.sntToken && this.props.sntToken.balance) {
+      if (this.enoughBalance()) {
+        if (this.pollBalanceInterval) {
+          clearInterval(this.pollBalanceInterval);
+        }
+      } else {
+        if (!this.pollBalanceInterval) {
+          this.pollBalanceInterval = setInterval(() => {
+            this.props.updateBalance(LICENSE_TOKEN_SYMBOL);
+          }, 2000);
+        }
+      }
+    }
+  }
+
   componentDidUpdate() {
     if (this.props.isLicenseOwner) {
       this.props.loadProfile(this.props.address);
       return this.props.history.push('/profile/contact/edit');
+    }
+    this.checkBalance();
+  }
+
+  componentWillUnmount() {
+    if (this.pollBalanceInterval) {
+      clearInterval(this.pollBalanceInterval);
     }
   }
 
@@ -53,7 +76,7 @@ class ArbitrationLicense extends Component {
     }
 
     if (this.props.isLoading) {
-      return <Loading mining/>;
+      return <Loading mining txHash={this.props.txHash}/>;
     }
 
     return (
@@ -77,6 +100,7 @@ ArbitrationLicense.propTypes = {
   isLicenseOwner: PropTypes.bool,
   isLoading: PropTypes.bool,
   error: PropTypes.string,
+  txHash: PropTypes.string,
   sntToken: PropTypes.object,
   licensePrice: PropTypes.number,
   loadLicensePrice: PropTypes.func,
@@ -90,6 +114,7 @@ const mapStateToProps = state => {
     address: network.selectors.getAddress(state) || '',
     isLicenseOwner: arbitration.selectors.isLicenseOwner(state),
     isLoading: arbitration.selectors.isLoading(state),
+    txHash: arbitration.selectors.txHash(state),
     error: arbitration.selectors.error(state),
     sntToken: network.selectors.getTokenBySymbol(state, LICENSE_TOKEN_SYMBOL),
     licensePrice: arbitration.selectors.getLicensePrice(state)

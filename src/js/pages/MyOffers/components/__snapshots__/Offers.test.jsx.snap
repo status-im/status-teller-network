@@ -1,0 +1,199 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Offers should render correctly 1`] = `
+<div
+  className="mt-3"
+>
+  <div>
+    <h3
+      className="d-inline-block"
+    />
+    <span
+      className="float-right"
+    >
+      <Link
+        className="float-right text-small"
+        replace={false}
+        to="/license"
+      />
+    </span>
+  </div>
+  <Card
+    className="mb-2 shadow-sm"
+    key="0"
+    tag="div"
+  >
+    <CardHeader
+      tag="div"
+    >
+      ETH
+      <FontAwesomeIcon
+        border={false}
+        className="mx-4"
+        fixedWidth={false}
+        flip={null}
+        icon={
+          Object {
+            "icon": Array [
+              448,
+              512,
+              Array [],
+              "f061",
+              "M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z",
+            ],
+            "iconName": "arrow-right",
+            "prefix": "fas",
+          }
+        }
+        inverse={false}
+        listItem={false}
+        mask={null}
+        pull={null}
+        pulse={false}
+        rotation={null}
+        size={null}
+        spin={false}
+        symbol={false}
+        title=""
+        transform={null}
+      />
+      <span
+        className="text-small font-italic mr-2"
+      >
+        €
+      </span>
+      EUR
+      <Button
+        className="p-0 pl-3 pr-3 m-0 float-right btn-primary-outline"
+        color="secondary"
+        onClick={[Function]}
+        tag="button"
+      >
+        <img
+          alt="Delete icon"
+          src="test-file-stub"
+        />
+      </Button>
+    </CardHeader>
+    <CardBody
+      tag="div"
+    >
+      <Row
+        tag="div"
+      >
+        <dl
+          className="col-6"
+        >
+          <dt />
+          <dd />
+        </dl>
+        <dl
+          className="col-6"
+        >
+          <dt />
+          <dd />
+        </dl>
+      </Row>
+      <Row
+        tag="div"
+      >
+        <dl
+          className="col-6"
+        >
+          <dt />
+          <dd>
+            London
+          </dd>
+        </dl>
+        <dl
+          className="col-6"
+        >
+          <dt />
+          <dd />
+        </dl>
+      </Row>
+      <Row
+        tag="div"
+      >
+        <dl
+          className="col-12"
+        >
+          <dt>
+            Arbitrator
+          </dt>
+          <dd>
+             (
+            )
+          </dd>
+        </dl>
+      </Row>
+    </CardBody>
+  </Card>
+  <div
+    className="mt-5"
+  >
+    <h3
+      className="d-inline-block"
+    />
+  </div>
+  <Card
+    body={true}
+    className="text-center"
+    tag="div"
+  />
+  <ConfirmDialog
+    cancelText="No"
+    content="Are you sure?"
+    display={false}
+    onCancel={[Function]}
+    onConfirm={[Function]}
+    title="Delete offer"
+  />
+</div>
+`;
+
+exports[`Offers should render when empty 1`] = `
+<div
+  className="mt-3"
+>
+  <div>
+    <h3
+      className="d-inline-block"
+    />
+    <span
+      className="float-right"
+    >
+      <Link
+        className="float-right text-small"
+        replace={false}
+        to="/license"
+      />
+    </span>
+  </div>
+  <Card
+    body={true}
+    className="text-center"
+    tag="div"
+  />
+  <div
+    className="mt-5"
+  >
+    <h3
+      className="d-inline-block"
+    />
+  </div>
+  <Card
+    body={true}
+    className="text-center"
+    tag="div"
+  />
+  <ConfirmDialog
+    cancelText="No"
+    content="Are you sure?"
+    display={false}
+    onCancel={[Function]}
+    onConfirm={[Function]}
+    title="Delete offer"
+  />
+</div>
+`;

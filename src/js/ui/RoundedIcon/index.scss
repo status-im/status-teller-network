@@ -5,6 +5,15 @@
   height: 40px;
   display: flex;
   margin: auto;
+
+  &.sm {
+    width: 24px;
+    height: 24px;
+  }
+  &.xs {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .rounded-icon--icon {
@@ -18,10 +27,24 @@
   }
 }
 
+.rounded-icon__secondary {
+  background-color: $secondary;
+  .rounded-icon--icon {
+    color: $dark;
+  }
+}
+
 .rounded-icon__blue {
   background-color: $light-blue;
   .rounded-icon--icon {
     color: $blue;
+  }
+}
+
+.rounded-icon__primary {
+  background-color: $primary;
+  .rounded-icon--icon {
+    color: $white;
   }
 }
 

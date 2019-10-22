@@ -1,3 +1,4 @@
+/* solium-disable security/no-block-members */
 pragma solidity ^0.5.8;
 
 import "./License.sol";
@@ -24,6 +25,7 @@ contract ArbitrationLicense is License {
 
     mapping(address => ArbitratorLicenseDetails) public arbitratorlicenseDetails;
     mapping(address => mapping(address => bool)) public permissions;
+    mapping(address => mapping(address => bool)) public blacklist;
     mapping(bytes32 => Request) public requests;
 
     event ArbitratorRequested(bytes32 id, address indexed seller, address indexed arbitrator);
@@ -31,7 +33,14 @@ contract ArbitrationLicense is License {
     event RequestAccepted(bytes32 id, address indexed arbitrator, address indexed seller);
     event RequestRejected(bytes32 id, address indexed arbitrator, address indexed seller);
     event RequestCanceled(bytes32 id, address indexed arbitrator, address indexed seller);
+    event BlacklistSeller(address indexed arbitrator, address indexed seller);
+    event UnBlacklistSeller(address indexed arbitrator, address indexed seller);
 
+    /**
+     * @param _tokenAddress Address of token used to pay for licenses (SNT)
+     * @param _price Amount of token needed to buy a license
+     * @param _burnAddress Burn address where the price of the license is sent
+     */
     constructor(address _tokenAddress, uint256 _price, address _burnAddress)
       License(_tokenAddress, _price, _burnAddress)
       public {}
@@ -43,10 +52,19 @@ contract ArbitrationLicense is License {
         return _buy(msg.sender, false);
     }
 
+    /**
+     * @notice Buy an arbitrator license and set if the arbitrator accepts any seller
+     * @param _acceptAny When set to true, all sellers are accepted by the arbitrator
+     */
     function buy(bool _acceptAny) external returns(uint) {
         return _buy(msg.sender, _acceptAny);
     }
 
+    /**
+     * @notice Buy an arbitrator license and set if the arbitrator accepts any seller. Sets the arbitrator as the address in params instead of the sender
+     * @param _sender Address of the arbitrator
+     * @param _acceptAny When set to true, all sellers are accepted by the arbitrator
+     */
     function _buy(address _sender, bool _acceptAny) internal returns (uint id) {
         id = _buyFrom(_sender);
         arbitratorlicenseDetails[_sender].id = id;
@@ -98,7 +116,7 @@ contract ArbitrationLicense is License {
      * @param _account Seller account
      * @return Request Id
      */
-    function getId(address _arbitrator, address _account) external view returns(bytes32){
+    function getId(address _arbitrator, address _account) external pure returns(bytes32){
         return keccak256(abi.encodePacked(_arbitrator,_account));
     }
 
@@ -110,6 +128,7 @@ contract ArbitrationLicense is License {
         require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
         require(requests[_id].status == RequestStatus.AWAIT, "This request is not pending");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator already accepts all cases");
+        require(requests[_id].arbitrator == msg.sender, "Invalid arbitrator");
 
         requests[_id].status = RequestStatus.ACCEPTED;
 
@@ -128,6 +147,7 @@ contract ArbitrationLicense is License {
         require(requests[_id].status == RequestStatus.AWAIT || requests[_id].status == RequestStatus.ACCEPTED,
             "Invalid request status");
         require(!arbitratorlicenseDetails[msg.sender].acceptAny, "Arbitrator accepts all cases");
+        require(requests[_id].arbitrator == msg.sender, "Invalid arbitrator");
 
         requests[_id].status = RequestStatus.REJECTED;
         requests[_id].date = block.timestamp;
@@ -155,7 +175,30 @@ contract ArbitrationLicense is License {
         permissions[_arbitrator][msg.sender] = false;
 
         emit RequestCanceled(_id, arbitrator, requests[_id].seller);
+    }
 
+    /**
+     * @notice Allows arbitrator to blacklist a seller
+     * @param _seller Seller address
+     */
+    function blacklistSeller(address _seller) public {
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
+
+        blacklist[msg.sender][_seller] = true;
+
+        emit BlacklistSeller(msg.sender, _seller);
+    }
+
+    /**
+     * @notice Allows arbitrator to remove a seller from the blacklist
+     * @param _seller Seller address
+     */
+    function unBlacklistSeller(address _seller) public {
+        require(isLicenseOwner(msg.sender), "Arbitrator should have a valid license");
+
+        blacklist[msg.sender][_seller] = false;
+
+        emit UnBlacklistSeller(msg.sender, _seller);
     }
 
     /**
@@ -164,7 +207,7 @@ contract ArbitrationLicense is License {
      * @param _arbitrator arbitrator's address
      */
     function isAllowed(address _seller, address _arbitrator) public view returns(bool) {
-        return arbitratorlicenseDetails[_arbitrator].acceptAny || permissions[_arbitrator][_seller];
+        return (arbitratorlicenseDetails[_arbitrator].acceptAny && !blacklist[_arbitrator][_seller]) || permissions[_arbitrator][_seller];
     }
 
     /**

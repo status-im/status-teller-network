@@ -1,25 +1,75 @@
-module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, deps) => {
+module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
 
+    {
+      console.log('Setting the initial SellerLicense "template", and calling the init() function');
 
-    const abiEncode = deps.contracts.Escrow.methods.init(
-      deps.contracts.EscrowRelay.options.address,
-      deps.contracts.SellerLicense.options.address,
-      deps.contracts.ArbitrationLicense.options.address,
-      deps.contracts.MetadataStore.options.address,
-      "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
-      1000
-    ).encodeABI();
+      const abiEncode = deps.contracts.SellerLicense.methods.init(
+        deps.contracts.SNT.options.address,
+        licensePrice,
+        burnAddress
+      ).encodeABI();
 
-    // Here we are setting the initial "template", and calling the init() function
-    const receipt = await deps.contracts.OwnedUpgradeabilityProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
-    
-    deps.contracts.Escrow.options.address = deps.contracts.OwnedUpgradeabilityProxy.options.address;
+      const receipt = await deps.contracts.SellerLicenseProxy.methods.upgradeToAndCall(deps.contracts.SellerLicense.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+
+    {
+      console.log('Setting the initial ArbitrationLicense "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.ArbitrationLicense.methods.init(
+        deps.contracts.SNT.options.address,
+        arbitrationLicensePrice,
+        burnAddress
+      ).encodeABI();
+
+      const receipt = await deps.contracts.ArbitrationLicenseProxy.methods.upgradeToAndCall(deps.contracts.ArbitrationLicense.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    {
+      console.log('Setting the initial MetadataStore "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.MetadataStore.methods.init(
+        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseProxy.options.address
+      ).encodeABI();
+
+      const receipt = await deps.contracts.MetadataStoreProxy.methods.upgradeToAndCall(deps.contracts.MetadataStore.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    {
+      console.log('Setting the initial Escrow "template", and calling the init() function');
+
+      const abiEncode = deps.contracts.Escrow.methods.init(
+        deps.contracts.EscrowRelay.options.address,
+        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseProxy.options.address,
+        deps.contracts.MetadataStoreProxy.options.address,
+        burnAddress, // TODO: replace with StakingPool address
+        feeMilliPercent
+      ).encodeABI();
+
+      // Here we are setting the initial "template", and calling the init() function
+      const receipt = await deps.contracts.EscrowProxy.methods.upgradeToAndCall(deps.contracts.Escrow.options.address, abiEncode).send({from: main, gas: 1000000});
+
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
+    deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
+    deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
+    deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
     const arbitrator = addresses[9];
-  
+
     const sntToken = 10000000;
     const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
     if (balance !== '0') {
@@ -83,22 +133,25 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
     console.log('Generating Offers...');
     const tokens = [deps.contracts.SNT._address, '0x0000000000000000000000000000000000000000'];
-    const paymentMethods = [0, 1, 2];
+    const paymentMethods = [1, 2, 3];
     const usernames = ['Jonathan', 'Iuri', 'Anthony', 'Barry', 'Richard', 'Ricardo'];
     const locations = ['London', 'Montreal', 'Paris', 'Berlin'];
     const currencies = ['USD', 'EUR'];
     const offerStartIndex = 1;
 
-    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, 5).map(async (address) => {
+    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, offerStartIndex + 5).map(async (address) => {
       const addOffer = deps.contracts.MetadataStore.methods.addOffer(
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
         address,
+        address,
         locations[Math.floor(Math.random() * locations.length)],
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
         [paymentMethods[Math.floor(Math.random() * paymentMethods.length)]],
+        0,
+        0,
         Math.floor(Math.random() * 100),
         arbitrator
       );
@@ -108,35 +161,54 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     }));
 
     console.log('Creating escrows and rating them...');
-    const expirationTime = parseInt((new Date()).getTime() / 1000, 10) + 10000;
-    const FIAT = 0;
     const val = 1000;
     const feeAmount = Math.round(val * (feeMilliPercent / (100 * 1000)));
 
     const buyerAddress = addresses[offerStartIndex];
     const escrowStartIndex = offerStartIndex + 1;
-    await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
+    let receipt, hash, signature, nonce, created, escrowId;
+    const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
+    console.log('START', escrowStartIndex);
+    console.log('RECiptys', offerReceipts.length);
+    await Promise.all(addresses.slice(escrowStartIndex, escrowStartIndex + 1).map(async (creatorAddress, idx) => {
+      console.log('Index = ', idx - offerStartIndex + escrowStartIndex);
+      console.log('Address used:; ', creatorAddress);
+      console.log('OWNER', offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.owner);
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       // TODO when we re-enable creating tokens too, use this to know
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
 
       let gas;
 
-      /*
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
-      gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
-      const receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
-      const created = receipt.events.Created;
-      const escrowId = created.returnValues.escrowId;
+      // Create
+      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], PUBKEY_A, PUBKEY_B).call({from: buyerAddress});
+      signature = await deps.web3.eth.sign(hash, buyerAddress);
+      nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, PUBKEY_A, PUBKEY_B, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      gas = await creation.estimateGas({from: creatorAddress});
+      receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
+
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+
+      // Fund
+      const fund = deps.contracts.Escrow.methods.fund(escrowId);
+      gas = await fund.estimateGas({from: creatorAddress, value: val + feeAmount});
+      receipt = await fund.send({from: creatorAddress, gas: gas + 1000, value: val + feeAmount});
+
+      // Release
       const release = deps.contracts.Escrow.methods.release(escrowId);
       gas = await release.estimateGas({from: creatorAddress});
-      await release.send({from: creatorAddress, gas: gas + 1000});
+      receipt = await release.send({from: creatorAddress, gas: gas + 1000});
 
+      // Rate
       const rating = Math.floor(Math.random() * 5) + 1;
       const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
       gas = await rate.estimateGas({from: buyerAddress});
-      await rate.send({from: buyerAddress, gas: gas + 1000});*/
+      await rate.send({from: buyerAddress, gas: gas + 1000});
     }));
 
     /*
@@ -168,10 +240,9 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
       let user = {};
       let offers = [];
-      const isUser = await deps.contracts.MetadataStore.methods.userWhitelist(address).call();
+      const isUser = await deps.contracts.MetadataStore.methods.users(address).call();
       if (isUser) {
-        const userId = await deps.contracts.MetadataStore.methods.addressToUser(address).call();
-        user = await deps.contracts.MetadataStore.methods.users(userId).call();
+        user = await deps.contracts.MetadataStore.methods.users(address).call();
         const offerIds = await deps.contracts.MetadataStore.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (
           deps.contracts.MetadataStore.methods.offer(offerId).call()

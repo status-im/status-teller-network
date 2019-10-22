@@ -45,7 +45,8 @@ function reducer(state = DEFAULT_STATE, action) {
       escrowsClone[escrowId].fundStatus = States.pending;
       return {
         ...state,
-        escrows: escrowsClone
+        escrows: escrowsClone,
+        txHash: '-'
       };
     case FUND_ESCROW_FAILED:
       escrowsClone[escrowId].fundStatus = States.failed;

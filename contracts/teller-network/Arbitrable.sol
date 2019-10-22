@@ -47,7 +47,7 @@ contract Arbitrable {
      * @notice Get arbitrator of an escrow
      * @return address Arbitrator address
      */
-    function getArbitrator(uint _escrowId) public view returns(address);
+    function _getArbitrator(uint _escrowId) internal view returns(address);
 
     /**
      * @notice Determine if a dispute exists/existed for an escrow
@@ -55,7 +55,20 @@ contract Arbitrable {
      * @return bool result
      */
     function isDisputed(uint _escrowId) public view returns (bool) {
+        return _isDisputed(_escrowId);
+    }
+
+    function _isDisputed(uint _escrowId) internal view returns (bool) {
         return arbitrationCases[_escrowId].open || arbitrationCases[_escrowId].result != ArbitrationResult.UNSOLVED;
+    }
+
+    /**
+     * @notice Determine if a dispute existed for an escrow
+     * @param _escrowId Escrow to verify
+     * @return bool result
+     */
+    function hadDispute(uint _escrowId) public view returns (bool) {
+        return arbitrationCases[_escrowId].result != ArbitrationResult.UNSOLVED;
     }
 
     /**
@@ -72,12 +85,18 @@ contract Arbitrable {
         emit ArbitrationCanceled(_escrowId);
     }
 
+    /**
+     * @notice Opens a dispute between a seller and a buyer
+     * @param _escrowId Id of the Escrow that is being disputed
+     * @param _openBy Address of the person opening the dispute (buyer or seller)
+     * @param motive Description of the problem
+     */
     function _openDispute(uint _escrowId, address _openBy, string memory motive) internal {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
-        address arbitratorAddress = getArbitrator(_escrowId);
-        
+        address arbitratorAddress = _getArbitrator(_escrowId);
+
         require(arbitratorAddress != address(0), "Arbitrator is required");
 
         arbitrationCases[_escrowId] = ArbitrationCase({

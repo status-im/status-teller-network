@@ -70,11 +70,13 @@ exports[`MarginSelectorForm should render correctly 1`] = `
         }
       >
         <InputGroup
-          className="full-width-input"
+          className="full-width-input margin-input"
           tag="div"
         >
           <Control(s)
             className="form-control prepend"
+            data-maxvalue={100}
+            data-minvalue={-100}
             id="margin"
             name="margin"
             onChange={[Function]}

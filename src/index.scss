@@ -31,7 +31,12 @@ body {
 
   .clickable {
     cursor: pointer;
+    
+    .disabled {
+      opacity: .4;
+    }
   }
+  
 
   .not-clickable {
     cursor: default;
@@ -55,4 +60,13 @@ body {
 
 body > div {
   flex: 1;
+}
+
+.card-transparent {
+  opacity: .5;
+}
+
+.rbt-input-main.form-control.rbt-input {
+  background: $secondary url(images/arrow-down.svg) no-repeat;
+  background-position: right 15px center;
 }

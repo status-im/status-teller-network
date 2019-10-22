@@ -10,3 +10,5 @@ export const getAssetPrice = (state, assetSymbol) => {
 export const hasPrices = state => {
   return state.prices.ETH !== undefined;
 };
+
+export const error = state => state.prices.error;

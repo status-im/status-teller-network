@@ -4,11 +4,14 @@ import {
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
+  RESET_NEW_OFFER,
   DELETE_OFFER,
   DELETE_OFFER_PRE_SUCCESS,
   DELETE_OFFER_FAILED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
+import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
+import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
@@ -37,6 +40,7 @@ function formatOffer(offer) {
 /*eslint-disable-next-line complexity */
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
+    case RESET_NEW_OFFER:
     case RESET_ADD_OFFER_STATUS:
       return {
         ...state,
@@ -98,6 +102,16 @@ function reducer(state = DEFAULT_STATE, action) {
           ...action.user
         }}
       };
+    case BUY_LICENSE_SUCCEEDED:
+      return {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(state.currentUser)]: {
+            ...state.users[toChecksumAddress(state.currentUser)],
+            isSeller: true
+          }
+        }
+      };
     case LOAD_USER_TRADE_NUMBER_SUCCEEDED:
       return {
         ...state, users: {
@@ -113,7 +127,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
             ...state.users[toChecksumAddress(action.address)],
-            coords: action.coords
+            coords: action.coords,
+            countryCode: action.countryCode
           }
         }
       };
@@ -133,7 +148,9 @@ function reducer(state = DEFAULT_STATE, action) {
             ...state.users[toChecksumAddress(action.address)],
             downCount: action.downCount,
             upCount: action.upCount,
-            voteCount: action.voteCount
+            voteCount: action.voteCount,
+            averageCount: action.averageCount,
+            averageCountBase10: action.averageCountBase10
           }
         }
       };
@@ -163,14 +180,21 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         signing: true
       };
-    case SIGN_MESSAGE_SUCCEEDED: 
+    case SIGN_MESSAGE_SUCCEEDED:
       return {
         ...state,
         signing: false,
         signature: action.signature,
         nonce: action.nonce
       };
-    case SIGN_MESSAGE_FAILED: 
+    case SIGN_MESSAGE_FAILED:
+      return {
+        ...state,
+        signing: false,
+        signature: "",
+        nonce: 0
+      };
+    case RESET_NEW_BUY:
       return {
         ...state,
         signing: false,

@@ -4,9 +4,9 @@ import {storiesOf} from '@storybook/react';
 import {withInfo} from "@storybook/addon-info";
 import {action} from "@storybook/addon-actions";
 
-import SellerPosition from '../../../src/js/wizards/Sell/0_Location/components/SellerPosition';
+import SellerPosition from '../../../src/js/wizards/Sell/3_Location/components/SellerPosition';
 
-storiesOf('Wizards/Sell/0_Location', module)
+storiesOf('Wizards/Sell/3_Location', module)
   .add(
     "Without default location",
     withInfo({inline: true})(() => (

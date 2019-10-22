@@ -11,7 +11,7 @@ export function *doFetchPrices(action) {
     const data = yield call(cc.priceMulti, from, to);
     yield put({type: FETCH_PRICES_SUCCEEDED, data});
   } catch (error) {
-    yield put({type: FETCH_PRICES_FAILED, error});
+    yield put({type: FETCH_PRICES_FAILED, error: error.message});
   }
 }
 
@@ -38,7 +38,7 @@ function *fetchAllTokenPrices() {
       }
       yield put({type: FETCH_PRICES_SUCCEEDED, data});
     } catch (error) {
-      yield put({type: FETCH_PRICES_FAILED, error});
+      yield put({type: FETCH_PRICES_FAILED, error: error.message});
     }
   }
 }

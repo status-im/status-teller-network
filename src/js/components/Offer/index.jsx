@@ -1,68 +1,86 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Row, Col} from 'reactstrap';
-import {Link} from "react-router-dom";
+import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
 import Reputation from '../Reputation';
-import Identicon from "../UserInformation/Identicon";
-import {truncateTwo} from '../../utils/numbers';
+import {truncateTwo, limitDecimals} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
-import {addressCompare} from '../../utils/address';
-import NoArbitratorWarning from '../NoArbitratorWarning';
+import {addressCompare, zeroAddress} from '../../utils/address';
+import NoArbitratorWarning from "../../components/NoArbitratorWarning";
+import {PAYMENT_METHODS} from '../../features/metadata/constants';
+import {withNamespaces} from "react-i18next";
+import limitIcon from '../../../images/limits.svg';
+import bankIcon from '../../../images/bank.svg';
+import {CURRENCY_DATA} from "../../constants/currencies";
+import {getTokenImage} from "../../utils/images";
+import RoundedIcon from "../../ui/RoundedIcon";
 
-const Offer = ({offer, offers, withDetail, prices, userAddress}) => {
-  let user;
-  let owner;
+import './index.scss';
 
-  if (!offer) {
-    if (!offers) {
-      throw new Error('Component needs either offer or offers');
-    }
-    user = offers[0].user;
-    owner = offers[0].owner;
+const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
+  const isOwner = addressCompare(userAddress, offer.owner);
+  const isArbitrator = addressCompare(userAddress, offer.arbitrator);
+  const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
+  const limitless = offer.limitL === '0' && offer.limitH === '0';
+
+  let currencySymbol = CURRENCY_DATA.find(curr => curr.id === offer.currency);
+  if (!currencySymbol) {
+    currencySymbol = offer.currency;
   } else {
-    user = offer.user;
-    owner = offer.owner;
-    offers = [offer];
+    currencySymbol = currencySymbol.symbol;
   }
-  const isOwner = addressCompare(userAddress, owner);
-  let nbOffersArbitrator = 0;
 
-  return (<Row className="border bg-white rounded p-3 mr-0 ml-0 mb-2" tag={Link} to={`/profile/${owner}`}>
-    <Col className="p-0">
-      <Row className="mb-2">
-        <Col xs={2}><Identicon seed={user.statusContactCode || owner} className="rounded-circle border" scale={5}/></Col>
-        <Col xs={5}>
-          <p className={classnames('seller-name', 'm-0', 'font-weight-bold', {
-            'text-black': !isOwner,
-            'text-success': isOwner
-          })}>{user.username}</p>
-          <p className="text-dark m-0">{user.location}</p>
-        </Col>
-        <Col xs={5} className="text-right rating-col">
-          <p className="text-dark m-0 text-right mb-1">{user.nbReleasedTrades} trade{user.nbReleasedTrades !== 1 && 's'}</p>
-          <Reputation reputation={{upCount: user.upCount, downCount: user.downCount}} size="s"/>
-        </Col>
-      </Row>
-      {withDetail && <Row>
-        <Col>
-          <p className="m-0">
-            {offers.map((offer, index) => {
-              const isArbitrator = addressCompare(userAddress, offer.arbitrator);
-              if (isArbitrator) {
-                nbOffersArbitrator++;
-              }
-              return <span key={`offer-${index}`}
-                           className={classnames("border d-inline-block rounded mr-2 p-1 font-weight-medium text-small", {'text-warning': isArbitrator, 'text-black': !isArbitrator})}>
-              {offer.token.symbol} &rarr; {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
-            </span>;
-            })}
-          </p>
-        </Col>
-      </Row>}
-      {nbOffersArbitrator > 0 && <span className="text-warning text-small">You are an arbitrator on {nbOffersArbitrator} offer{nbOffersArbitrator > 1 && 's'}</span>}
-    </Col>
-  </Row>);
+  return (<Card className="mb-3 shadow border-0 offer-card" onClick={() => offerClick(offer.id)}>
+    <CardBody>
+      <CardTitle className={classnames('seller-name', 'font-weight-bold', {
+        'text-black': !isOwner,
+        'text-success': isOwner
+      })}>
+        {offer.user.username}
+      </CardTitle>
+      <div>
+        <p className="text-black m-0 mt-2 clearfix">
+          <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>
+          {offer.user.location}
+        </p>
+        <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
+        </p>
+
+        {!limitless && <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}
+        </p>}
+
+        {limitless && <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          No limits
+        </p>}
+
+        {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
+        {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
+
+        <span className="offer-reputation">
+          <Reputation reputation={{averageCount: offer.user.averageCountBase10}} size="s"/>
+        </span>
+      </div>
+    </CardBody>
+
+    {withDetail && prices && !prices.error &&
+    <CardFooter className={classnames('bg-white text-right border-0 pt-0 clickable', {
+                  'text-warning': isArbitrator,
+                  'text-dark': !isArbitrator && !noArbitrator,
+                  'text-danger': noArbitrator
+                })}>
+      <p className="m-0 border-top pt-2">
+        Buy <span className="text-black"><img
+        src={getTokenImage(offer.token.symbol)}
+        alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
+        className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+      </p>
+    </CardFooter>}
+  </Card>);
 };
 
 Offer.defaultProps = {
@@ -70,12 +88,12 @@ Offer.defaultProps = {
 };
 
 Offer.propTypes = {
+  t: PropTypes.func,
   offer: PropTypes.object,
   withDetail: PropTypes.bool,
   prices: PropTypes.object,
-  offers: PropTypes.array,
-  userAddress: PropTypes.string
+  userAddress: PropTypes.string,
+  offerClick: PropTypes.func
 };
 
-
-export default Offer;
+export default withNamespaces()(Offer);

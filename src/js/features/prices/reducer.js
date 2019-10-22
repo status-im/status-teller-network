@@ -6,7 +6,8 @@ function reducer(state = {}, action) {
     case FETCH_PRICES_SUCCEEDED:
       return {
         ...state,
-        ...action.data
+        ...action.data,
+        error: null
       };
     case FETCH_PRICES_FAILED:
       return {

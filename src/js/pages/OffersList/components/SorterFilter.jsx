@@ -1,11 +1,11 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleDown, faSortAmountDown} from "@fortawesome/free-solid-svg-icons";
+import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
-import {ButtonGroup, FormGroup, Input} from "reactstrap";
+import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
-
+import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
 import CheckButton from '../../../ui/CheckButton';
 
 import './SorterFilter.scss';
@@ -13,7 +13,6 @@ import './SorterFilter.scss';
 class FilterMenu extends Component {
   setLocation = (e) => {
     this.props.setLocation(e.target.value);
-    this.props.close();
   };
 
   onKeyUp = (e) => {
@@ -28,8 +27,26 @@ class FilterMenu extends Component {
       <Fragment>
         <div className={classnames({"filter-menu-backdrop": true, "open": props.open})} onClick={props.close}/>
         <div className={classnames("filter-menu", {"open": props.open})}>
-          <div className="filter-menu-content">
-            <h4>Sort and filter</h4>
+          <Button color="link" className="clear-all-btn p-0" onClick={props.clear}>Clear all</Button>
+
+          <div className="filter-menu-content mt-4 pr-3">
+            <h5>Cryptocurrency</h5>
+            <FormGroup>
+              <Typeahead
+                id="tokenFilter"
+                options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+                placeholder={'Search cryptocurrencies'}
+                value={props.tokenFilter}
+                onChange={props.setTokenFilter}
+              />
+            </FormGroup>
+
+            <h5 className="mt-4">Location</h5>
+            <FormGroup>
+              <Input type="text" placeholder="Enter a city, state, etc."
+                     onBlur={this.setLocation}
+                     onKeyUp={this.onKeyUp}/>
+            </FormGroup>
 
             <h5 className="mt-4">Sort</h5>
             <ButtonGroup vertical className="w-100">
@@ -37,7 +54,6 @@ class FilterMenu extends Component {
                 <CheckButton key={'sort-' + index}
                              onClick={() => {
                                props.setSortType(index);
-                               props.close();
                              }}
                              active={index === props.sortType}>
                   {sortType}
@@ -46,39 +62,31 @@ class FilterMenu extends Component {
             </ButtonGroup>
 
             <h5 className="mt-4">Payment method</h5>
+            <span className="text-muted text-small">Popular</span>
             <ButtonGroup vertical className="w-100">
-              {props.paymentMethods.map((paymentMethod, index) => (
-                <CheckButton key={'paymentMethod' + index}
-                             onClick={() => {
-                               props.setPaymentMethodFilter(index);
-                               props.close();
-                             }}
-                             active={index === props.paymentMethodFilter}>
-                  {paymentMethod}
+              {POPULAR_PAYMENT_METHODS_INDEXES.map((index) => (
+                <CheckButton active={index === props.paymentMethodFilter}
+                            key={'paymentMethod-' + index}
+                            onClick={(_e) => props.setPaymentMethodFilter(index)}>
+                  {PAYMENT_METHODS[index]}
                 </CheckButton>
               ))}
             </ButtonGroup>
 
-            <h5 className="mt-4">Location</h5>
-            <FormGroup>
-              <Input type="text" placeholder="Enter an address, postal code, city, etc."
-                     onBlur={this.setLocation}
-                     onKeyUp={this.onKeyUp}/>
-            </FormGroup>
+            <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
+            <ButtonGroup vertical className="w-100 pb-3">
+              {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
+                <CheckButton active={index === props.paymentMethodFilter}
+                    key={'paymentMethod-' + index}
+                    onClick={(_e) => props.setPaymentMethodFilter(index)}>
+                {PAYMENT_METHODS[index]}
+                </CheckButton>
+              ))}
+            </ButtonGroup>
 
-            <h5 className="mt-4">Asset</h5>
-            <FormGroup>
-              <Typeahead
-                id="tokenFilter"
-                options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-                placeholder={'Select'}
-                value={props.tokenFilter}
-                onChange={props.setTokenFilter}
-                onMenuToggle={(isOpen) => {
-                  if (!isOpen) props.close();
-                }}
-              />
-            </FormGroup>
+            <div className="filter-button">
+              <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
+            </div>
           </div>
         </div>
       </Fragment>
@@ -96,6 +104,7 @@ FilterMenu.propTypes = {
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,
   setLocation: PropTypes.func,
+  clear: PropTypes.func,
   tokenFilter: PropTypes.string,
   paymentMethodFilter: PropTypes.number,
   sortType: PropTypes.number
@@ -121,13 +130,12 @@ class SorterFilter extends Component {
   render() {
     return (<Fragment>
       <FilterMenu open={this.state.open} close={this.closeMenu} {...this.props}/>
-      <div className="sorter-select font-weight-bold px-3 py-2 bg-secondary rounded v-align-center my-3"
-           onClick={this.openMenu}>
-        <span className="sort-icon text-white rounded-circle d-inline-block text-center p-2 mr-2">
-          <FontAwesomeIcon icon={faSortAmountDown}/>
-        </span> Sort and filter <span className="float-right pt-1"><FontAwesomeIcon size="2x"
-                                                                                    icon={faAngleDown}/></span>
-      </div>
+      <span className={classnames("filter-icon rounded d-inline-block text-center float-right py-3 clickable", {
+        'bg-secondary text-primary': !this.props.hasFilter,
+        'bg-primary text-secondary': this.props.hasFilter
+      })} onClick={this.openMenu}>
+        <FontAwesomeIcon icon={faFilter}/>
+      </span>
     </Fragment>);
   }
 }
@@ -139,9 +147,11 @@ SorterFilter.propTypes = {
   setTokenFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,
+  clear: PropTypes.func,
   tokenFilter: PropTypes.string,
   paymentMethodFilter: PropTypes.number,
-  sortType: PropTypes.number
+  sortType: PropTypes.number,
+  hasFilter: PropTypes.bool
 };
 
 export default SorterFilter;

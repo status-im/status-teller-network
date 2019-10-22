@@ -2,7 +2,7 @@
 
 exports[`StatusContactCode should render correctly 1`] = `
 <FormGroup
-  className="mt-3"
+  className="mt-5"
   tag="div"
 >
   <div>

@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SellerPosition should render correctly 1`] = `
+<Fragment>
+  <h2>
+    What location do you want to display
+  </h2>
+  <Form
+    tag="form"
+  >
+    <FormGroup
+      tag="div"
+    >
+      <Label
+        className="text-small mt-3 mb-0"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        Location
+      </Label>
+      <Input
+        id="location"
+        name="location"
+        onChange={[Function]}
+        placeholder="Enter location"
+        type="text"
+        value=""
+      />
+    </FormGroup>
+  </Form>
+</Fragment>
+`;

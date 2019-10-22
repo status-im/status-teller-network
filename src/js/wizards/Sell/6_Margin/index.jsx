@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
@@ -8,9 +8,6 @@ import newSeller from "../../../features/newSeller";
 import network from '../../../features/network';
 import escrow from '../../../features/escrow';
 import prices from '../../../features/prices';
-import metadata from "../../../features/metadata";
-import {States} from "../../../utils/transaction";
-import ErrorInformation from '../../../components/ErrorInformation';
 import {withRouter} from "react-router-dom";
 
 import "./index.scss";
@@ -22,33 +19,19 @@ class Margin extends Component {
       margin: props.seller.margin,
       ready: false
     };
-    this.validate(props.seller.margin);
     props.getFeeMilliPercent();
 
     props.footer.onPageChange(() => {
       props.setMargin(this.state.margin);
     });
-    props.footer.onNext(this.postOffer);
   }
-
-  postOffer = () => {
-    this.props.footer.hide();
-    this.props.addOffer({...this.props.seller, margin: this.state.margin});
-  };
 
   componentDidMount() {
-    if (!this.props.seller.currency && this.props.addOfferStatus !== States.success) {
-      this.props.wizard.previous();
-    } else {
-      this.setState({ready: true});
+    if (!this.props.seller.arbitrator) {
+      return this.props.wizard.previous();
     }
-  }
-
-  componentDidUpdate() {
-    if (this.props.addOfferStatus === States.success) {
-      this.props.history.push('/profile');
-      this.props.resetAddOfferStatus();
-    }
+    this.validate(this.props.seller.margin);
+    this.setState({ready: true});
   }
 
   validate(margin) {
@@ -72,58 +55,40 @@ class Margin extends Component {
       return <Loading page/>;
     }
 
-    switch(this.props.addOfferStatus){
-      case States.pending:
-        return <Loading mining txHash={this.props.txHash}/>;
-      case States.failed:
-        return <ErrorInformation transaction retry={this.postOffer} cancel={this.props.resetAddOfferStatus}/>;
-      case States.none:
-        return (
-          <MarginSelectorForm token={this.props.token}
-                              prices={this.props.prices}
-                              currency={this.props.seller.currency}
-                              margin={this.state.margin}
-                              marginChange={this.marginChange}
-                              feeMilliPercent={this.props.feeMilliPercent} />
-        );
-      default:
-        return <Fragment/>;
-    }
+    return <MarginSelectorForm token={this.props.token}
+                               prices={this.props.prices}
+                               currency={this.props.seller.currency}
+                               margin={this.state.margin}
+                               marginChange={this.marginChange}
+                               feeMilliPercent={this.props.feeMilliPercent} />;
+
   }
 }
 
 Margin.propTypes = {
   t: PropTypes.func,
   history: PropTypes.object,
-  addOffer: PropTypes.func,
   prices: PropTypes.object,
   setMargin: PropTypes.func,
   seller: PropTypes.object,
   token: PropTypes.object,
-  addOfferStatus: PropTypes.string,
-  resetAddOfferStatus: PropTypes.func,
   wizard: PropTypes.object,
   footer: PropTypes.object,
   getFeeMilliPercent: PropTypes.func,
-  feeMilliPercent: PropTypes.string,
-  txHash: PropTypes.string
+  feeMilliPercent: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
-  addOfferStatus: metadata.selectors.getAddOfferStatus(state),
   token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
   prices: prices.selectors.getPrices(state),
-  feeMilliPercent: escrow.selectors.feeMilliPercent(state),
-  txHash: metadata.selectors.getAddOfferTx(state)
+  feeMilliPercent: escrow.selectors.feeMilliPercent(state)
 });
 
 export default connect(
   mapStateToProps,
   {
     setMargin: newSeller.actions.setMargin,
-    addOffer: metadata.actions.addOffer,
-    resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
     getFeeMilliPercent: escrow.actions.getFeeMilliPercent
 
   }

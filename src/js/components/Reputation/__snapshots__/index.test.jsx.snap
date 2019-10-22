@@ -5,23 +5,25 @@ exports[`Reputation should render correctly 1`] = `
   className="reputation-container"
 >
   <span
-    className="left-rating bg-secondary"
+    className="left-rating"
   >
     1
      
     <RatingIcon
       isPositiveRating={true}
-      onClick={[Function]}
+      onClick={null}
+      size="sm"
     />
   </span>
   <span
-    className="right-rating bg-secondary"
+    className="right-rating"
   >
     2
      
     <RatingIcon
       isPositiveRating={false}
-      onClick={[Function]}
+      onClick={null}
+      size="sm"
     />
   </span>
 </span>

@@ -6,17 +6,34 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
-import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
+import {fork, takeEvery, call, put, take, all} from 'redux-saga/effects';
+import {addressCompare} from '../../utils/address';
 import {
+  CLOSED, NONE,
   GET_DISPUTED_ESCROWS, GET_DISPUTED_ESCROWS_FAILED, GET_DISPUTED_ESCROWS_SUCCEEDED,
   RESOLVE_DISPUTE, RESOLVE_DISPUTE_FAILED, RESOLVE_DISPUTE_SUCCEEDED,
   RESOLVE_DISPUTE_PRE_SUCCESS, LOAD_ARBITRATION, LOAD_ARBITRATION_FAILED, LOAD_ARBITRATION_SUCCEEDED, GET_ARBITRATORS,
   GET_ARBITRATORS_SUCCEEDED, GET_ARBITRATORS_FAILED, BUY_LICENSE, BUY_LICENSE_FAILED, BUY_LICENSE_PRE_SUCCESS, BUY_LICENSE_SUCCEEDED,
   LOAD_PRICE, LOAD_PRICE_FAILED, LOAD_PRICE_SUCCEEDED, CHECK_LICENSE_OWNER, CHECK_LICENSE_OWNER_FAILED, CHECK_LICENSE_OWNER_SUCCEEDED,
-  OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED, REQUEST_ARBITRATOR, REQUEST_ARBITRATOR_PRE_SUCCESS, REQUEST_ARBITRATOR_SUCCEEDED, REQUEST_ARBITRATOR_FAILED, CANCEL_ARBITRATOR_REQUEST, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS, CHANGE_ACCEPT_EVERYONE, CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS, CHANGE_ACCEPT_EVERYONE_FAILED, CHANGE_ACCEPT_EVERYONE_SUCCEEDED
+  OPEN_DISPUTE, OPEN_DISPUTE_SUCCEEDED, OPEN_DISPUTE_FAILED, OPEN_DISPUTE_PRE_SUCCESS,
+  CANCEL_DISPUTE, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED,
+  REQUEST_ARBITRATOR, REQUEST_ARBITRATOR_PRE_SUCCESS, REQUEST_ARBITRATOR_SUCCEEDED, REQUEST_ARBITRATOR_FAILED,
+  CANCEL_ARBITRATOR_REQUEST, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS,
+  CHANGE_ACCEPT_EVERYONE, CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS, CHANGE_ACCEPT_EVERYONE_FAILED, CHANGE_ACCEPT_EVERYONE_SUCCEEDED,
+  GET_ARBITRATION_REQUESTS, GET_ARBITRATION_REQUESTS_FAILED, GET_ARBITRATION_REQUESTS_SUCCEEDED,
+  ACCEPT_ARBITRATOR_REQUEST, ACCEPT_ARBITRATOR_REQUEST_PRE_SUCCESS, ACCEPT_ARBITRATOR_REQUEST_SUCCEEDED, ACCEPT_ARBITRATOR_REQUEST_FAILED,
+  REJECT_ARBITRATOR_REQUEST, REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS, REJECT_ARBITRATOR_REQUEST_SUCCEEDED, REJECT_ARBITRATOR_REQUEST_FAILED,
+  BLACKLIST_SELLER, BLACKLIST_SELLER_PRE_SUCCESS, BLACKLIST_SELLER_FAILED, BLACKLIST_SELLER_SUCCEEDED,
+  UNBLACKLIST_SELLER, UNBLACKLIST_SELLER_FAILED, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED,
+  GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED
 } from './constants';
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
+ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
@@ -37,7 +54,9 @@ export function *doGetArbitrators({address, includeAll}) {
     for(let i = 0; i < cnt; i++){
       const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
       const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
-      if(isAllowed || includeAll) {
+      const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(arbitrator).call);
+
+      if(isLicenseOwner && (isAllowed || includeAll)) {
         const id = web3.utils.soliditySha3(arbitrator, address);
         arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
         arbitrators[arbitrator].isAllowed = isAllowed;
@@ -116,6 +135,54 @@ export function *onLoadArbitration() {
   yield takeEvery(LOAD_ARBITRATION, doLoadArbitration);
 }
 
+export function *onGetArbitratorApprovalRequests() {
+  yield takeEvery(GET_ARBITRATION_REQUESTS, doGetArbitratorApprovalRequests);
+}
+
+export function *doGetArbitratorApprovalRequests() {
+  try {
+    const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const requests = yield all(events.map(function *(event) {
+      const request = event.returnValues;
+      const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
+
+      if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator, web3.eth.defaultAccount)) return null;
+
+      request.status = requestDetail.status;
+      return request;
+    }));
+
+    yield put({type: GET_ARBITRATION_REQUESTS_SUCCEEDED, requests: requests.filter(x => x !== null)});
+
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_ARBITRATION_REQUESTS_FAILED, error: error.message});
+  }
+}
+
+export function *onGetArbitratorBlacklist() {
+  yield takeEvery(GET_BLACKLISTED_SELLERS, doGetArbitratorBlacklist);
+}
+
+export function *doGetArbitratorBlacklist() {
+  try {
+    const events = yield ArbitrationLicense.getPastEvents('BlacklistSeller', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const sellers = yield all(events.map(function *(event) {
+      const isBlacklisted = yield ArbitrationLicense.methods.blacklist(event.returnValues.seller).call();
+
+      if (!isBlacklisted) {
+        return null;
+      }
+      return event.returnValues.seller;
+    }));
+
+    yield put({type: GET_BLACKLISTED_SELLERS_SUCCEEDED, sellers: sellers.filter(x => x !== null)});
+
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_BLACKLISTED_SELLERS_FAILED, error: error.message});
+  }
+}
 
 export function *doBuyLicense() {
   try {
@@ -197,6 +264,22 @@ export function *onChangeAcceptAll() {
   yield takeEvery(CHANGE_ACCEPT_EVERYONE, doTransaction.bind(null, CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS, CHANGE_ACCEPT_EVERYONE_SUCCEEDED, CHANGE_ACCEPT_EVERYONE_FAILED));
 }
 
+export function *onAcceptRequest() {
+  yield takeEvery(ACCEPT_ARBITRATOR_REQUEST, doTransaction.bind(null, ACCEPT_ARBITRATOR_REQUEST_PRE_SUCCESS, ACCEPT_ARBITRATOR_REQUEST_SUCCEEDED, ACCEPT_ARBITRATOR_REQUEST_FAILED));
+}
+
+export function *onRejectRequest() {
+  yield takeEvery(REJECT_ARBITRATOR_REQUEST, doTransaction.bind(null, REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS, REJECT_ARBITRATOR_REQUEST_SUCCEEDED, REJECT_ARBITRATOR_REQUEST_FAILED));
+}
+
+export function *onBlacklistSeller() {
+  yield takeEvery(BLACKLIST_SELLER, doTransaction.bind(null, BLACKLIST_SELLER_PRE_SUCCESS, BLACKLIST_SELLER_SUCCEEDED, BLACKLIST_SELLER_FAILED));
+}
+
+export function *onUnBlacklistSeller() {
+  yield takeEvery(UNBLACKLIST_SELLER, doTransaction.bind(null, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_FAILED));
+}
+
 export default [
   fork(onGetEscrows),
   fork(onResolveDispute),
@@ -209,5 +292,10 @@ export default [
   fork(onCancelDispute),
   fork(onRequestArbitrator),
   fork(onCancelArbitratorRequest),
-  fork(onChangeAcceptAll)
+  fork(onChangeAcceptAll),
+  fork(onGetArbitratorApprovalRequests),
+  fork(onAcceptRequest),
+  fork(onBlacklistSeller),
+  fork(onUnBlacklistSeller),
+  fork(onRejectRequest)
 ];

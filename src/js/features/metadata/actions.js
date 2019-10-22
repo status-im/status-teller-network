@@ -4,6 +4,9 @@ import {
   SIGN_MESSAGE, DELETE_OFFER
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
 
 export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
@@ -21,7 +24,9 @@ export const addOffer = (seller) => ({
     currency: seller.currency,
     paymentMethods: seller.paymentMethods,
     margin: seller.margin,
-    arbitrator: seller.arbitrator
+    arbitrator: seller.arbitrator,
+    limitL: seller.useCustomLimits ? seller.limitL.toFixed(2).toString().replace('.', '') : 0,
+    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0
   }
 });
 

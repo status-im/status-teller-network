@@ -5,7 +5,7 @@ import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
-import {addressCompare, zeroAddress} from '../../utils/address';
+import {addressCompare, zeroAddress, generateXY, keyFromXY} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,
@@ -26,17 +26,22 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+
+MetadataStore.options.address = MetadataStoreProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
-  const toSend = Escrow.methods.create(
+  const coords = generateXY(user.statusContactCode);
+  const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
-    escrow.assetPrice,
-    user.statusContactCode,
+    escrow.currencyQuantity,
+    coords.x,
+    coords.y,
     '',
     user.username,
     user.nonce,
@@ -169,10 +174,10 @@ export function *doLoadEscrows({address}) {
       const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call();
       escrow.escrowId = ev.returnValues.escrowId;
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-      const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
-      escrow.seller = yield MetadataStore.methods.users(sellerId).call();
-      const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-      escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+      escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
+      escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
+      escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
+      escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
       return escrow;
     }));
 
@@ -192,10 +197,12 @@ export function *doGetEscrow({escrowId}) {
     const escrow = yield Escrow.methods.transactions(escrowId).call();
     escrow.escrowId = escrowId;
     escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-    const sellerId = yield MetadataStore.methods.addressToUser(escrow.offer.owner).call();
-    escrow.seller = yield MetadataStore.methods.users(sellerId).call();
-    const buyerId = yield MetadataStore.methods.addressToUser(escrow.buyer).call();
-    escrow.buyerInfo = yield MetadataStore.methods.users(buyerId).call();
+    escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
+    escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
+    escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call();
+    escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
+    escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
+    escrow.arbitratorInfo.statusContactCode = keyFromXY(escrow.arbitratorInfo.pubkeyA, escrow.arbitratorInfo.pubkeyB);
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);
@@ -252,11 +259,21 @@ export function *checkUserRating({address}) {
         ratings.push(parseInt(e.returnValues.rating, 10));
       });
     });
-    const downCount = ratings.filter(rating => rating < 3).length;
-    const upCount = ratings.filter(rating => rating > 3).length;
+    let downCount = 0;
+    let upCount = 0;
+    let average = 0;
+    ratings.forEach(rating => {
+      average += rating;
+      if (rating < 3) {
+        downCount++;
+      } else if (rating > 3) {
+        upCount++;
+      }
+    });
     const voteCount = ratings.length;
+    average /= voteCount;
 
-    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address});
+    yield put({type: USER_RATING_SUCCEEDED, downCount, upCount, voteCount, address, averageCount: average, averageCountBase10: ((average * 10) / 5)});
   } catch (error) {
     console.error(error);
     yield put({type: USER_RATING_FAILED, error: error.message});

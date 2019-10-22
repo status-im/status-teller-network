@@ -11,6 +11,8 @@ import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+import { formatArbitratorName } from '../../utils/strings';
+import NoLicense from '../../components/NoLicense';
 
 class Arbitrators extends Component {
   constructor(props) {
@@ -21,7 +23,7 @@ class Arbitrators extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if ((!prevProps.arbitrators && this.props.arbitrators) || prevProps.arbitrators.length !== this.props.arbitrators.length || Object.keys(this.props.users).length < this.props.arbitrators.length) {
+    if ((!prevProps.arbitrators && this.props.arbitrators) || Object.keys(prevProps.arbitrators).length !== Object.keys(this.props.arbitrators).length || Object.keys(this.props.users).length === Object.keys(this.props.arbitrators).length) {
       Object.keys(this.props.arbitrators).forEach(arbitratorAddr => {
         if (!this.props.users[arbitratorAddr] && !this.loadedUsers.includes(arbitratorAddr)) {
           this.props.getUser(arbitratorAddr);
@@ -40,12 +42,16 @@ class Arbitrators extends Component {
   }
 
   render(){
-    const {arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions} = this.props;
+    const {arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions, profile} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
-    if(loading) return <Loading mining={true} txHash={txHash} />;
+    if(loading) return <Loading mining={!!txHash} txHash={txHash} />;
+
+    if(!profile || !profile.isSeller){
+      return <NoLicense />;
+    }
 
     return (
     <Fragment>
@@ -56,12 +62,15 @@ class Arbitrators extends Component {
           const isUser = addressCompare(address, arb);
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
+
+          const text = formatArbitratorName(users[arb], arb) + (isUser ? " (You)" : "");
+
           return <ListGroupItem key={i}>
             <Row>
               <Col  xs="12" sm="9" className="pb-3">
                 <span className="text-small">{arb}</span>
                 <br />
-                <span className={classnames("font-weight-bold", {'text-success': isUser})}>{(users[arb] && users[arb].username ?  users[arb].username : "Arbitrator has no username") + (isUser ? " (You)" : "") }</span>
+                <span className={classnames("font-weight-bold", {'text-success': isUser})}>{text}</span>
               </Col>
               <Col xs="12" sm="3" className="text-center">
                 { !isUser && !arbitrators[arb].isAllowed && [arbitration.constants.NONE, arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>Request</Button> }
@@ -89,7 +98,8 @@ Arbitrators.propTypes = {
   getUser: PropTypes.func,
   requestArbitrator: PropTypes.func,
   cancelArbitratorsActions: PropTypes.func,
-  cancelArbitratorRequest: PropTypes.func
+  cancelArbitratorRequest: PropTypes.func,
+  profile: PropTypes.object
 };
 
 
@@ -98,6 +108,7 @@ const mapStateToProps = state => {
   return {
     address,
     arbitrators: arbitration.selectors.arbitrators(state),
+    profile: metadata.selectors.getProfile(state, address),
     users: metadata.selectors.getAllUsers(state),
     loading: arbitration.selectors.isLoading(state),
     error: arbitration.selectors.errorGet(state),

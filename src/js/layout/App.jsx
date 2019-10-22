@@ -2,7 +2,7 @@
 import React, {Component, Fragment} from 'react';
 import {HashRouter, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
-import {Container} from 'reactstrap';
+import {Container, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -19,28 +19,34 @@ import OpenDispute from '../pages/OpenDispute';
 import Arbitration from '../pages/Arbitration';
 import Arbitrators from '../pages/Arbitrators';
 import SellerApproval from '../pages/SellerApproval';
-import MyProfile from '../pages/MyProfile';
 import EditMyContact from '../pages/EditMyContact';
 import License from '../pages/License';
 import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
 import Settings from '../pages/Settings';
-import BackButton from '../ui/BackButton';
 import NotificationManager from '../components/NotificationManager';
 
+// Profile
+import MyProfile from '../pages/MyProfile';
+import MyOffers from '../pages/MyOffers';
+import MyTrades from '../pages/MyTrades';
+import MyDisputes from '../pages/MyDisputes';
+
 // Buy
-import BuyContact from '../wizards/Buy/0_Contact';
-import BuyTrade from '../wizards/Buy/1_Trade';
+import BuyTrade from '../wizards/Buy/0_Trade';
+import BuyContact from '../wizards/Buy/1_Contact';
+import BuyConfirmTrade from '../wizards/Buy/2_ConfirmTrade';
 
 // Sell
-import SellLocation from '../wizards/Sell/0_Location';
-import SellContact from '../wizards/Sell/1_Contact';
-import SellAsset from '../wizards/Sell/2_Asset';
-import SellPaymentMethods from '../wizards/Sell/3_PaymentMethods';
-import SellArbitrator from '../wizards/Sell/4_SelectArbitrator';
-import SellCurrency from '../wizards/Sell/5_Currency';
+import SellLocation from '../wizards/Sell/3_Location';
+import SellContact from '../wizards/Sell/4_Contact';
+import SellAsset from '../wizards/Sell/0_Asset';
+import SellPaymentMethods from '../wizards/Sell/1_PaymentMethods';
+import SellArbitrator from '../wizards/Sell/5_SelectArbitrator';
+import SellCurrency from '../wizards/Sell/2_Currency';
 import SellMargin from '../wizards/Sell/6_Margin';
+import SellLimits from '../wizards/Sell/7_Limits';
 
 // Tmp
 import SignatureContainer from '../pages/tmp/SignatureContainer';
@@ -58,6 +64,9 @@ class App extends Component {
     super(props);
     this.props.init();
     this.watchingTrades = false;
+    this.state = {
+      hidePriceError: false
+    };
     setInterval(() => {
       this.props.getGasPrice();
       this.props.fetchExchangeRates();
@@ -66,7 +75,7 @@ class App extends Component {
       this.watchTradesForOffers();
     }
   }
-  
+
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
@@ -79,6 +88,9 @@ class App extends Component {
     if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
       this.watchTradesForOffers();
     }
+    if (prevProps.priceError !== this.props.priceError) {
+      this.setState({hidePriceError: false});
+    }
   }
 
   watchTradesForOffers() {
@@ -88,13 +100,18 @@ class App extends Component {
     this.props.watchEscrowCreations(this.props.profile.offers);
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps, nextState) {
     return nextProps.isReady !== this.props.isReady ||
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
-      nextProps.isLicenseOwner !== this.props.isLicenseOwner;
+      nextProps.isLicenseOwner !== this.props.isLicenseOwner ||
+      nextState.hidePriceError !== this.state.hidePriceError;
   }
+
+  hidePriceError = () => {
+    this.setState({hidePriceError: true});
+  };
 
   render() {
     if (this.props.error) {
@@ -113,11 +130,13 @@ class App extends Component {
     return (
       <Fragment>
         <HashRouter>
-          <Container className="p-0">
+          <Container className="p-0" id="app-container">
             <NotificationManager/>
-            <Header profile={this.props.profile}/>
+            <Header />
             <div className="body-content">
-              <BackButton/>
+              {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
+                Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
+              </Alert>}
               <Switch>
                 <Route exact path="/" component={Home}/>
 
@@ -125,13 +144,16 @@ class App extends Component {
 
                 <Route exact path="/profile" component={MyProfile}/>
                 <Route exact path="/profile/contact/edit" component={EditMyContact}/>
+                <Route exact path="/profile/offers" component={MyOffers} />
+                <Route exact path="/profile/trades" component={MyTrades} />
+                <Route exact path="/profile/disputes" component={MyDisputes} />
+                <Route exact path="/profile/arbitrators" component={Arbitrators} />
                 <Route exact path="/profile/:address" component={Profile}/>
 
                 <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>
                 <Route exact path="/license" component={License}/>
                 <Route exact path="/escrow/:id" component={Escrow}/>
                 <Route exact path="/arbitration/:id" component={Arbitration}/>
-                <Route exact path="/arbitrators" component={Arbitrators} />
                 <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
@@ -139,19 +161,21 @@ class App extends Component {
                 <Route exact path="/offers/map" component={OffersMap}/>
 
                 <Wizard path="/buy/" steps={[
-                  {path: '/buy/contact', component: BuyContact},
-                  {path: '/buy/trade', component: BuyTrade}
+                  {path: '/buy/trade', component: BuyTrade},
+                  {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
+                  {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 
                 {this.props.isLicenseOwner &&
                 <Wizard path="/sell/" steps={[
-                  {path: '/sell/location', component: SellLocation},
-                  {path: '/sell/contact', component: SellContact},
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
-                  {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/currency', component: SellCurrency},
-                  {path: '/sell/margin', component: SellMargin, nextLabel: 'Post the offer'}
+                  {path: '/sell/location', component: SellLocation},
+                  {path: '/sell/contact', component: SellContact},
+                  {path: '/sell/arbitrator', component: SellArbitrator},
+                  {path: '/sell/margin', component: SellMargin},
+                  {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
                 ]}/>
                 }
 
@@ -167,23 +191,10 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const address = network.selectors.getAddress(state) || '';
-  return {
-    address,
-    currentUser: metadata.selectors.currentUser(state),
-    isLicenseOwner: license.selectors.isLicenseOwner(state),
-    isReady: network.selectors.isReady(state),
-    hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
-    error: network.selectors.getError(state),
-    profile: metadata.selectors.getProfile(state, address),
-    newEscrow: escrow.selectors.newEscrow(state)
-  };
-};
-
 App.propTypes = {
   init: PropTypes.func,
   error: PropTypes.string,
+  priceError: PropTypes.string,
   fetchPrices: PropTypes.func,
   fetchExchangeRates: PropTypes.func,
   getGasPrice: PropTypes.func,
@@ -198,6 +209,21 @@ App.propTypes = {
   isLicenseOwner: PropTypes.bool,
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func
+};
+
+const mapStateToProps = (state) => {
+  const address = network.selectors.getAddress(state) || '';
+  return {
+    address,
+    currentUser: metadata.selectors.currentUser(state),
+    isLicenseOwner: license.selectors.isLicenseOwner(state),
+    isReady: network.selectors.isReady(state),
+    hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
+    error: network.selectors.getError(state),
+    profile: metadata.selectors.getProfile(state, address),
+    newEscrow: escrow.selectors.newEscrow(state),
+    priceError: prices.selectors.error(state)
+  };
 };
 
 export default connect(

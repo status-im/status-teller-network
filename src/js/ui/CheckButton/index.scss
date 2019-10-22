@@ -1,3 +1,5 @@
+@import "../../../css/variable-overrides";
+
 .check-button {
   text-decoration: none !important;
   font-size: 15px;
@@ -8,4 +10,25 @@
   .small {
     font-size: 13px;
   }
+
+  .fa-circle {
+    position: relative;
+    top: 2px;
+  }
+
+  .float-left {
+    margin-right: 10px;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
+  }
+
+  &.active .fa-circle path {
+    stroke: $blue !important;
+    stroke-width: 50px;
+  }
+
 }

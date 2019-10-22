@@ -8,6 +8,8 @@ import {isNumber, required, lowerEqThan, higherThan} from '../../../../validator
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
+import infoIcon from '../../../../../images/info.svg';
+import RoundedIcon from "../../../../ui/RoundedIcon";
 
 class MarginSelectorForm extends Component {
   onMarginChange = (value) => {
@@ -15,11 +17,19 @@ class MarginSelectorForm extends Component {
   };
 
   render() {
-    const {t, currency, margin, token, prices, feeMilliPercent} = this.props;
+    let {t, currency, margin, token, prices, feeMilliPercent} = this.props;
 
-    const basePrice = prices[token.symbol][currency];
-    const marginPrice = (margin || 0) / 100 * basePrice;
-    const calcPrice = basePrice + marginPrice;
+    margin = parseInt(margin, 10);
+    if(isNaN(margin)){
+      margin = 0;
+    }
+    
+    let calcPrice = null;
+    if (prices && !prices.error) {
+      const basePrice = prices[token.symbol][currency];
+      const marginPrice = (margin || 0) / 100 * basePrice;
+      calcPrice = basePrice + marginPrice;
+    }
 
     return (
       <Form ref={c => {
@@ -33,15 +43,17 @@ class MarginSelectorForm extends Component {
                       onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
             <Col>
-              <InputGroup className="full-width-input">
+              <InputGroup className="full-width-input margin-input">
                 <Input type="number"
                        name="margin"
                        id="margin"
                        placeholder="0"
                        className="form-control prepend"
                        value={margin}
+                       data-maxvalue={100}
+                       data-minvalue={-100}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isNumber, lowerEqThan.bind(null, 100), higherThan.bind(null, -100)]}/>
+                       validations={[required, isNumber, lowerEqThan, higherThan]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>
@@ -50,19 +62,22 @@ class MarginSelectorForm extends Component {
         </FormGroup>
 
         <h3>{t('marginSelectorForm.sellPrice')}</h3>
-        <div className="border rounded p-3">
-          1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
-        </div>
-        <small>{t('marginSelectorForm.priceOrigin')}</small>
-
-        {(feeMilliPercent || '0') !== '0' && <Fragment>
-          <h3 className="mt-4">{t('marginSelectorForm.ourFee')}</h3>
+        {calcPrice !== null && <Fragment>
           <div className="border rounded p-3">
-            {feeMilliPercent / 1000} %
+            1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
           </div>
+          <small>{t('marginSelectorForm.priceOrigin')}</small>
         </Fragment>}
+        {calcPrice === null && <p>{t('marginSelectorForm.noPrice')}</p>}
 
-        {!margin && margin !== 0 && <p className="text-muted mt-3">{t('marginSelectorForm.enterMargin')}</p>}
+        {(feeMilliPercent || '0') !== '0' && <div className="clearfix mt-5">
+          <span className="float-left mr-3">
+            <RoundedIcon image={infoIcon} bgColor="blue" />
+          </span>
+          {t('marginSelectorForm.ourFee', {percentage: feeMilliPercent / 1000})}
+        </div>}
+
+        {!margin && margin !== 0 && <p className="text-muted mt-4">{t('marginSelectorForm.enterMargin')}</p>}
       </Form>
     );
   }

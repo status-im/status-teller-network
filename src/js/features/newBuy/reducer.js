@@ -1,4 +1,4 @@
-import {SET_CONTACT_INFO, SET_TRADE, SET_OFFER_ID} from './constants';
+import {SET_CONTACT_INFO, SET_TRADE, SET_OFFER_ID, RESET_NEW_BUY} from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 
 const DEFAULT_STATE = {
@@ -22,8 +22,10 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         currencyQuantity: action.currencyQuantity,
-        assetQuantity: action.assetQuantity
+        assetQuantity: action.assetQuantity,
+        price: action.price
       };
+    case RESET_NEW_BUY:
     case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;

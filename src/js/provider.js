@@ -1,15 +1,15 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
-import OwnedUpgradeabilityProxy from '../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
+import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
 
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare} from './utils/address';
 
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+Escrow.options.address = EscrowProxy.options.address;
 
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
-  "create(uint256,uint256,uint8,uint256,bytes,string,string,uint256,bytes)": "b22bd55a",
+  "createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string,uint256,bytes)": "69186778",
   "openCase(uint256,string)": "58b67904",
   "pay(uint256)": "c290d691"
 };
@@ -38,17 +38,9 @@ class Provider {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
         if (checkNotEnoughETH(gasPrice, balance)) {
-          // Increase 120%.
-          // Normally we would use gaspriceFactorPercent on tabookey.RelayProvider
-          // but this version of web3 does a getPrice before send() if the gas price is null
-          // to set this gas price as a parameter. Tabookey will then use this value directly
-          // without applying the factor percent
-          const useGasPrice = web3.utils.toBN(gasPrice).mul(web3.utils.toBN("120")).div(web3.utils.toBN("100"));
-          
           payload.params[0].to = EscrowRelay.options.address;
           payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
-          payload.params[0].gasPrice = web3.utils.toHex(useGasPrice);
-
+          
           this.relayProviderSend(payload, (error, result) => {
             callback(error, result);
           });

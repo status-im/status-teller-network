@@ -66,7 +66,6 @@ contract Fees is Ownable {
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            // Arbitrator transfer
             require(tokenToPay.transfer(_arbitrator, arbitratorValue), "Unsuccessful token transfer - arbitrator");
             if (destinationValue > 0) {
                 require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer - destination");

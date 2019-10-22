@@ -9,10 +9,10 @@ import {
 
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import { toTokenDecimals } from '../../utils/numbers';
-import OwnedUpgradeabilityProxy from '../../../embarkArtifacts/contracts/OwnedUpgradeabilityProxy';
-Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
+import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+Escrow.options.address = EscrowProxy.options.address;
 
-export const createEscrow = (signature, username, tokenAmount, assetPrice, statusContactCode, offer, nonce) => {
+export const createEscrow = (signature, username, tokenAmount, currencyQuantity, statusContactCode, offer, nonce) => {
   tokenAmount = toTokenDecimals(tokenAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
@@ -25,13 +25,13 @@ export const createEscrow = (signature, username, tokenAmount, assetPrice, statu
     escrow: {
       tokenAmount,
       offerId: offer.id,
-      assetPrice: assetPrice.toFixed(2).toString().replace('.', '')
+      currencyQuantity: parseFloat(currencyQuantity).toFixed(2).toString().replace('.', '')
     }
   };
 };
 
 export const fundEscrow = (escrow) => {
-  const value =toTokenDecimals(escrow.tokenAmount, escrow.token.decimals);
+  const value = toTokenDecimals(escrow.tokenAmount, escrow.token.decimals);
   return {
     type: FUND_ESCROW,
     value,

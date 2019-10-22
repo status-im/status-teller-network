@@ -12,6 +12,11 @@ let accounts, arbitrator;
 let receipt;
 let ethOfferId;
 
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+
+const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 config({
   deployment: {
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
@@ -36,28 +41,32 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     ArbitrationLicense: {
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
+
+    /*
     StakingPool: {
       file: 'staking-pool/contracts/StakingPool.sol',
       args: ["$SNT"]
     },
+    */
+
     EscrowRelay: {
       args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
-    }, 
+    },
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     TestEscrowUpgrade: {
-      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     StandardToken: { }
   }
@@ -80,7 +89,7 @@ contract("Escrow Relay", function() {
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
     const abiEncode = Escrow.methods.init(
@@ -88,7 +97,7 @@ contract("Escrow Relay", function() {
       SellerLicense.options.address,
       ArbitrationLicense.options.address,
       MetadataStore.options.address,
-      "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
+      BURN_ADDRESS, // TODO: replace by StakingPool address
       1000
     ).encodeABI();
 
@@ -100,11 +109,11 @@ contract("Escrow Relay", function() {
   });
 
   it("Can create an escrow", async () => {
-    const hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+    const hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
     const signature = await web3.eth.sign(hash, accounts[1]);
     const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-    receipt = await EscrowRelay.methods.create(ethOfferId, 123, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
     escrowId = receipt.events.Created.returnValues.escrowId;
   });
 

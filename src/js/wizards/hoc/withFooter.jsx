@@ -2,7 +2,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
 
-import arrow from '../../../images/arrow.png';
+import arrow from '../../../images/arrow.svg';
+import arrowDisabled from '../../../images/arrow-disabled.svg';
+
 import './withFooter.scss';
 
 const Footer = (props) => {
@@ -14,7 +16,7 @@ const Footer = (props) => {
     <Button onClick={props.previous} className="m-2 p-1" color="link"><img className="fa-rotate-180 footer-arrow mr-2" src={arrow} alt="previous arrow"/> Previous</Button>}
     {props.wizard.canNext() &&
     <Button onClick={props.next} className="float-right m-2 p-1" color="link"
-            disabled={!props.nextEnabled}>{props.nextLabel} <img  className="footer-arrow ml-2" src={arrow} alt="next arrow"/></Button>}
+            disabled={!props.nextEnabled}>{props.nextLabel} <img  className="footer-arrow ml-2" src={props.nextEnabled ? arrow : arrowDisabled} alt="next arrow"/></Button>}
   </footer>);
 };
 
@@ -89,7 +91,7 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
 
     onNext = (cb) => {
       this.nextSubs.push(cb);
-    }
+    };
 
     render() {
       const controller = {

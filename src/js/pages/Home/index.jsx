@@ -10,17 +10,19 @@ import network from "../../features/network";
 import metadata from "../../features/metadata";
 import prices from "../../features/prices";
 import arbitrator from "../../features/arbitration";
+import newSeller from "../../features/newSeller";
+import newBuy from "../../features/newBuy";
 
 import { version } from '../../../../package.json';
 
 import "./index.scss";
 
-import logo from "../../../images/logo.svg";
-
 class Home extends Component {
   componentDidMount() {
     this.props.checkLicenseOwner();
     this.props.checkIsArbitrator();
+    this.props.resetNewOfferData();
+    this.props.resetNewBuy();
   }
 
   sellUrl(){
@@ -28,43 +30,28 @@ class Home extends Component {
   }
 
   render() {
-    const t = this.props.t;
-    const hasPrices = this.props.hasPrices;
-    const isArbitrator = this.props.isArbitrator;
+    const {hasPrices, t, priceError} = this.props;
 
     return (
       <div className="home">
-        <Row>
-          <Col xs={12} className="home-logo">
-            <img alt="Logo" src={logo} width="200" height="200" />
-          </Col>
-        </Row>
-
         <Row className="home-headline">
           <Col xs={12}>
-            <h1 className="text-center">{t('home.welcome')}</h1>
+            <h1 className="text-center font-weight-bold">{t('home.welcome')}</h1>
+            <h3 className="text-center home-details font-weight-normal">{t('home.details')}</h3>
           </Col>
         </Row>
 
-        <React.Fragment>
-          <Row className="home--footer">
-            <Col xs={6}>
-              <Button tag={Link} disabled={!hasPrices} color="primary" block to="/offers/list">
-                {hasPrices ? t('home.buy') : t('home.loadingData')}
-              </Button>
-            </Col>
-            <Col xs={6}>
-              <Button tag={Link} color="primary" block to={this.sellUrl()}>{t('home.sell')}</Button>
-            </Col>
-          </Row>
-          { !isArbitrator && (
-            <Row>
-              <Col xs={12} className="text-right text-small">
-                <Link to="/arbitrator/license">Be an arbitrator?</Link>
-              </Col>
-          </Row>
-          )}
-        </React.Fragment>
+        <Row className="home--footer">
+          <Col xs={12} className="text-center">
+            <Button tag={Link} disabled={!hasPrices && !priceError} color="primary" to="/offers/list">
+              {hasPrices || priceError ? t('home.buy') : t('home.loadingData')}
+            </Button>
+
+            <Button tag={Link} color="secondary" to={this.sellUrl()} className="mt-2">
+              {t('home.createOffer')}
+            </Button>
+          </Col>
+        </Row>
         <p className="teller-version text-muted"><Link to="/settings">Settings</Link> | Version: {version}</p>
       </div>
     );
@@ -78,7 +65,10 @@ Home.propTypes = {
   isArbitrator: PropTypes.bool,
   isLicenseOwner: PropTypes.bool,
   profile: PropTypes.object,
-  hasPrices: PropTypes.bool
+  hasPrices: PropTypes.bool,
+  priceError: PropTypes.bool,
+  resetNewOfferData: PropTypes.func,
+  resetNewBuy: PropTypes.func
 };
 
 
@@ -89,7 +79,8 @@ const mapStateToProps = (state) => {
     isLicenseOwner: license.selectors.isLicenseOwner(state),
     isArbitrator: arbitrator.selectors.isLicenseOwner(state),
     profile: metadata.selectors.getProfile(state, address),
-    hasPrices: prices.selectors.hasPrices(state)
+    hasPrices: prices.selectors.hasPrices(state),
+    priceError: prices.selectors.error(state)
   };
 };
 
@@ -97,6 +88,8 @@ export default connect(
   mapStateToProps,
   {
     checkLicenseOwner: license.actions.checkLicenseOwner,
-    checkIsArbitrator: arbitrator.actions.checkLicenseOwner
+    checkIsArbitrator: arbitrator.actions.checkLicenseOwner,
+    resetNewOfferData: newSeller.actions.resetNewOfferData,
+    resetNewBuy: newBuy.actions.resetNewBuy
   }
 )(withNamespaces()(Home));

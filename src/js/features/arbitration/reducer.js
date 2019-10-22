@@ -41,7 +41,21 @@ import {
   CHANGE_ACCEPT_EVERYONE,
   CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS,
   CHANGE_ACCEPT_EVERYONE_FAILED,
-  CHANGE_ACCEPT_EVERYONE_SUCCEEDED
+  CHANGE_ACCEPT_EVERYONE_SUCCEEDED,
+  GET_ARBITRATION_REQUESTS_SUCCEEDED,
+  GET_ARBITRATION_REQUESTS_FAILED,
+  ACCEPT_ARBITRATOR_REQUEST,
+  ACCEPT_ARBITRATOR_REQUEST_PRE_SUCCESS,
+  ACCEPT_ARBITRATOR_REQUEST_FAILED,
+  ACCEPT_ARBITRATOR_REQUEST_SUCCEEDED,
+  REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS,
+  REJECT_ARBITRATOR_REQUEST_FAILED,
+  REJECT_ARBITRATOR_REQUEST,
+  REJECT_ARBITRATOR_REQUEST_SUCCEEDED,
+  REJECTED,
+  ACCEPTED,
+  GET_BLACKLISTED_SELLERS_SUCCEEDED, GET_BLACKLISTED_SELLERS_FAILED,
+  BLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
@@ -52,7 +66,9 @@ const DEFAULT_STATE = {
   receipt: null,
   price: Number.MAX_SAFE_INTEGER,
   loading: false,
-  error: ''
+  error: '',
+  arbitratorRequests: [],
+  blacklistedSellers: []
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -70,6 +86,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case REQUEST_ARBITRATOR_PRE_SUCCESS:
     case CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS:
     case CHANGE_ACCEPT_EVERYONE_PRE_SUCCESS:
+    case ACCEPT_ARBITRATOR_REQUEST_PRE_SUCCESS:
+    case REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS:
       return {
         ...state, ...{
           txHash: action.txHash
@@ -112,6 +130,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case REQUEST_ARBITRATOR_FAILED:
     case CANCEL_ARBITRATOR_REQUEST_FAILED:
     case CHANGE_ACCEPT_EVERYONE_FAILED:
+    case GET_ARBITRATION_REQUESTS_FAILED:
+    case ACCEPT_ARBITRATOR_REQUEST_FAILED:
+    case REJECT_ARBITRATOR_REQUEST_FAILED:
+    case GET_BLACKLISTED_SELLERS_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
@@ -123,6 +145,8 @@ function reducer(state = DEFAULT_STATE, action) {
     case OPEN_DISPUTE:
     case RESOLVE_DISPUTE:
     case CHANGE_ACCEPT_EVERYONE:
+    case ACCEPT_ARBITRATOR_REQUEST:
+    case REJECT_ARBITRATOR_REQUEST:
       return {
         ...state, ...{
           loading: true
@@ -183,7 +207,7 @@ function reducer(state = DEFAULT_STATE, action) {
         errorGet: '',
         acceptAny: action.acceptAny
       };
-    case REQUEST_ARBITRATOR_SUCCEEDED: 
+    case REQUEST_ARBITRATOR_SUCCEEDED:
       {
         const arbitrators = {...state.arbitrators};
         arbitrators[action.arbitrator].request.status = AWAIT;
@@ -194,7 +218,7 @@ function reducer(state = DEFAULT_STATE, action) {
           error: ''
         };
       }
-    case CANCEL_ARBITRATOR_REQUEST_SUCCEEDED: 
+    case CANCEL_ARBITRATOR_REQUEST_SUCCEEDED:
       {
         const arbitrators = {...state.arbitrators};
         arbitrators[action.arbitrator].request.status = CLOSED;
@@ -220,7 +244,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case CHECK_LICENSE_OWNER_SUCCEEDED:
       return {
-        ...state, 
+        ...state,
         licenseOwner: action.isLicenseOwner,
         acceptAny: action.acceptAny
       };
@@ -231,6 +255,58 @@ function reducer(state = DEFAULT_STATE, action) {
         error: action.error,
         loading: false
       };
+    case GET_ARBITRATION_REQUESTS_SUCCEEDED:
+      return {
+        ...state,
+        arbitratorRequests: action.requests
+      };
+    case GET_BLACKLISTED_SELLERS_SUCCEEDED:
+      return {
+        ...state,
+        blacklistedSellers: action.sellers
+      };
+    case BLACKLIST_SELLER_SUCCEEDED:
+      return {
+        ...state,
+        blacklistedSellers: [
+          ...state.blacklistedSellers,
+          action.sellerAddress
+        ]
+      };
+    case UNBLACKLIST_SELLER_SUCCEEDED: {
+      const blacklistedSellers = [...state.blacklistedSellers];
+      const index = blacklistedSellers.indexOf(action.sellerAddress);
+      if (index === -1) {
+        return state;
+      }
+      blacklistedSellers.splice(index, 1);
+      return {
+        ...state,
+        blacklistedSellers: blacklistedSellers
+      };
+    }
+    case REJECT_ARBITRATOR_REQUEST_SUCCEEDED:
+      {
+        const arbitratorRequests = [...state.arbitratorRequests];
+        arbitratorRequests.find(x => x.id === action.id).status = REJECTED;
+        return {
+          ...state,
+          arbitratorRequests,
+          loading: false
+        };
+
+      }
+    case ACCEPT_ARBITRATOR_REQUEST_SUCCEEDED:
+      {
+        const arbitratorRequests = [...state.arbitratorRequests];
+        arbitratorRequests.find(x => x.id === action.id).status = ACCEPTED;
+        return {
+          ...state,
+          arbitratorRequests,
+          loading: false
+        };
+
+      }
     case RESET_STATE: {
       return Object.assign({}, state, {
         arbitration: null,

@@ -6,6 +6,7 @@ const StakingPool = require('Embark/contracts/StakingPool');
 
 let accounts;
 
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 config({
   contracts: {
@@ -26,12 +27,17 @@ config({
       ]
     },
     License: {
-      args: ["$SNT", 10, "$StakingPool"]
-    },
+      args: ["$SNT", 10, BURN_ADDRESS]
+    }
+    
+    /*
+    ,
     StakingPool: {
       file: 'staking-pool/contracts/StakingPool.sol',
       args: ["$SNT"]
     }
+    */
+   
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;

@@ -8,9 +8,14 @@ const Escrow = embark.require('Embark/contracts/Escrow');
 const SNT = embark.require('Embark/contracts/SNT');
 
 let accounts;
-let arbitrator, arbitrator2;
+let arbitrator, arbitrator2, blacklistedAccount;
 
 const feePercent = 1;
+const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+
+const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 
 config({
   deployment: {
@@ -45,20 +50,23 @@ config({
     },
     SellerLicense: {
       instanceOf: "License",
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
     ArbitrationLicense: {
-      args: ["$SNT", 10, "$StakingPool"]
+      args: ["$SNT", 10, BURN_ADDRESS]
     },
+
+    /*
     StakingPool: {
       file: 'staking-pool/contracts/StakingPool.sol',
       args: ["$SNT"]
     },
+    */
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense"]
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", "0x0000000000000000000000000000000000000002", feePercent * 1000]
+      args: ["0x0000000000000000000000000000000000000000", "$SellerLicense", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
     },
     StandardToken: {
     }
@@ -67,6 +75,7 @@ config({
   accounts = web3_accounts;
   arbitrator = accounts[8];
   arbitrator2 = accounts[9];
+  blacklistedAccount = accounts[5];
 });
 
 contract("Escrow", function() {
@@ -84,6 +93,9 @@ contract("Escrow", function() {
     const encodedCall = SellerLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: accounts[0]});
 
+    await SNT.methods.generateTokens(blacklistedAccount, 1000).send();
+    await SNT.methods.approveAndCall(SellerLicense.options.address, 10, encodedCall).send({from: blacklistedAccount});
+
     // Register arbitrators
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     await SNT.methods.generateTokens(arbitrator2, 1000).send();
@@ -93,18 +105,19 @@ contract("Escrow", function() {
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator2});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
+    await ArbitrationLicense.methods.blacklistSeller(blacklistedAccount).send({from: arbitrator});
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, "0x00", "London", "USD", "Iuri", [0], 1, arbitrator).send({from: accounts[0]});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Arbitrations", async() => {
     beforeEach(async() => {
       // Create
-      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -135,10 +148,10 @@ contract("Escrow", function() {
       let messageToSign, signature;
 
       // Create
-      hash = await MetadataStore.methods.getDataHash("U", "0x00").call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.create(ethOfferId, tradeAmount, 140, "0x00", "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -249,6 +262,31 @@ contract("Escrow", function() {
 
       const nonArbitrator = await ArbitrationLicense.methods.isLicenseOwner(accounts[5]).call();
       assert.equal(nonArbitrator, false, "Account should not be an arbitrator");
+    });
+
+    it("should not be able to rate an open dispute", async() => {
+      await Escrow.methods.pay(escrowId).send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+
+      try {
+        await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction not completed yet");
+      }
+
+      receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
+
+      await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
+    });
+
+    it('should not allow a blacklisted seller to open an offer', async () => {
+      try {
+        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount});
+        assert.fail('should have reverted before');
+      } catch (error) {
+        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");
+      }
     });
   });
 

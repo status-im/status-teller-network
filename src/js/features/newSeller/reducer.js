@@ -5,10 +5,12 @@ import {
   SET_LOCATION,
   SET_PAYMENT_METHODS,
   SET_CONTACT_INFO,
-  SET_ARBITRATOR
+  SET_ARBITRATOR,
+  SET_LIMITS
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
-import {ADD_OFFER_SUCCEEDED} from '../metadata/constants';
+import {ADD_OFFER_SUCCEEDED,RESET_NEW_OFFER} from '../metadata/constants';
+
 
 const DEFAULT_STATE = {
   asset: '',
@@ -18,6 +20,9 @@ const DEFAULT_STATE = {
   username: '',
   arbitrator: '',
   paymentMethods: [],
+  useCustomLimits: true,
+  limitL: '',
+  limitU: '',
   margin: 0
 };
 
@@ -59,7 +64,15 @@ function reducer(state = DEFAULT_STATE, action) {
         username: action.username,
         statusContactCode: action.statusContactCode
       };
+    case SET_LIMITS: 
+      return {
+        ...state,
+        useCustomLimits: action.useCustomLimits,
+        limitL: action.limitL,
+        limitU: action.limitU
+      };
     case ADD_OFFER_SUCCEEDED:
+    case RESET_NEW_OFFER:
     case PURGE_STATE:
     case RESET_STATE: {
       return DEFAULT_STATE;
