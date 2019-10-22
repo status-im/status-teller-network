@@ -29,8 +29,8 @@ class FilterMenu extends Component {
         <div className={classnames("filter-menu", {"open": props.open})}>
           <Button color="link" className="clear-all-btn p-0" onClick={props.clear}>Clear all</Button>
 
-          <div className="filter-menu-content">
-            <h5 className="mt-4">Cryptocurrency</h5>
+          <div className="filter-menu-content mt-4 pr-3">
+            <h5>Cryptocurrency</h5>
             <FormGroup>
               <Typeahead
                 id="tokenFilter"
@@ -74,7 +74,7 @@ class FilterMenu extends Component {
             </ButtonGroup>
 
             <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
-            <ButtonGroup vertical className="w-100">
+            <ButtonGroup vertical className="w-100 pb-3">
               {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
                 <CheckButton active={index === props.paymentMethodFilter}
                     key={'paymentMethod-' + index}
@@ -83,7 +83,7 @@ class FilterMenu extends Component {
                 </CheckButton>
               ))}
             </ButtonGroup>
-            
+
             <div className="filter-button">
               <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
             </div>
