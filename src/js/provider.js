@@ -11,7 +11,8 @@ const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
   "createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string,uint256,bytes)": "69186778",
   "openCase(uint256,string)": "58b67904",
-  "pay(uint256)": "c290d691"
+  "pay(uint256)": "c290d691",
+  "rateTransaction(uint256,uint256)":"79347b06"
 };
 
 class Provider {
@@ -26,10 +27,11 @@ class Provider {
     
     const fSend = (payload, callback) => {
       const params = payload.params[0];
+      const operation = params && params.data ? params.data.substring(2, 10) : "0x";
 
       if (!(params && params.to && addressCompare(params.to, Escrow.options.address) &&
         payload.method === "eth_sendTransaction" &&
-        Object.values(VALID_OPERATIONS).includes(params.data.substring(2, 10)))) {
+        Object.values(VALID_OPERATIONS).includes(operation))) {
         this.origProviderSend(payload, callback);
         return;
       }
@@ -37,7 +39,7 @@ class Provider {
       (async () => {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
-        if (checkNotEnoughETH(gasPrice, balance)) {
+        if (checkNotEnoughETH(gasPrice, balance) || operation === VALID_OPERATIONS["rateTransaction(uint256,uint256)"]) {
           payload.params[0].to = EscrowRelay.options.address;
           payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
           
