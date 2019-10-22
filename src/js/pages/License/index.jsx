@@ -12,6 +12,7 @@ import Balance from './components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import metadata from "../../features/metadata";
+import {withNamespaces} from "react-i18next";
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
@@ -79,7 +80,7 @@ class License extends Component {
 
   render() {
     if (!this.props.isEip1102Enabled) {
-      return <p>Please give access to your account before you can create an offer</p>;
+      return <p>{this.props.t('ethereumEnable.createOffer')}</p>;
     }
     if (!this.props.sntToken) {
       return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
@@ -105,6 +106,7 @@ class License extends Component {
 }
 
 License.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
@@ -147,4 +149,4 @@ export default connect(
     updateBalance: network.actions.updateBalance,
     enableEthereum: metadata.actions.enableEthereum
   }
-)(withRouter(License));
+)(withRouter(withNamespaces()(License)));

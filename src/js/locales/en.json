@@ -6,6 +6,10 @@
     "details": "Teller is a decentralized, peer to peer global network that provides a fiat to crypto exchange.",
     "loadingData": "Loading data"
   },
+  "ethereumEnable": {
+    "createOffer": "Please give access to your address before you can create an offer",
+    "offerList": "Please give access to your address before you can access the offer list"
+  },
   "createEscrowFrom": {
     "title": "Create an Escrow",
     "error": "Error while creating an escrow",
