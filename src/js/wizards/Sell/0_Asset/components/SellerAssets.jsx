@@ -16,6 +16,8 @@ class SellerAssets extends Component {
       <React.Fragment>
         <h2>What assets are you going to sell</h2>
         <ButtonGroup vertical className="w-100">
+          {!this.props.availableAssets.length &&
+            <p className="text-warning">You have no assets in your wallet</p>}
           {this.props.availableAssets.map((asset) => (
             <CheckButton active={addressCompare(this.props.selectedAsset, asset.address)}
                          key={`asset-${asset.name}`} size="l"
