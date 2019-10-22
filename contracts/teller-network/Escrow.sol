@@ -30,7 +30,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     event Paid(uint indexed escrowId);
     event Released(uint indexed escrowId);
     event Canceled(uint indexed escrowId);
-    event Rating(uint indexed offerId, address indexed buyer, uint indexed escrowId, uint rating);
+    
+    event Rating(uint indexed offerId, address indexed participant, uint indexed escrowId, uint rating, bool ratingSeller);
 
     bool internal _initialized;
 
@@ -427,14 +428,19 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         require(_rate >= 1, "Rating needs to be at least 1");
         require(_rate <= 5, "Rating needs to be at less than or equal to 5");
         EscrowTransaction storage trx = transactions[_escrowId];
-
-        require(trx.rating == 0, "Transaction already rated");
         require(trx.status == EscrowStatus.RELEASED || hadDispute(_escrowId), "Transaction not completed yet");
-        require(trx.buyer == _sender, "Only the buyer can invoke this function");
 
-        trx.rating = _rate;
-
-        emit Rating(trx.offerId, trx.buyer, _escrowId, _rate);
+        if (trx.buyer == _sender) {
+            require(trx.sellerRating == 0, "Transaction already rated");
+            emit Rating(trx.offerId, trx.seller, _escrowId, _rate, true);
+            trx.sellerRating = _rate;
+        } else if (trx.seller == _sender) {
+            require(trx.buyerRating == 0, "Transaction already rated");
+            emit Rating(trx.offerId, trx.buyer, _escrowId, _rate, false);
+            trx.buyerRating = _rate;
+        } else {
+            revert("Only participants can invoke this function");
+        }
     }
 
     /**
