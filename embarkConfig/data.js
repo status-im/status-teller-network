@@ -50,7 +50,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
       const abiEncode = deps.contracts.Escrow.methods.init(
         deps.contracts.EscrowRelay.options.address,
-        deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.MetadataStoreProxy.options.address,
         burnAddress, // TODO: replace with StakingPool address

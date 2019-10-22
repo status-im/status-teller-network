@@ -19,14 +19,14 @@ import "./index.scss";
 
 class Home extends Component {
   componentDidMount() {
-    this.props.checkLicenseOwner();
     this.props.checkIsArbitrator();
     this.props.resetNewOfferData();
     this.props.resetNewBuy();
   }
 
   sellUrl(){
-    return this.props.isLicenseOwner ? '/sell' : '/license';
+    return '/sell';
+    // return this.props.isLicenseOwner ? '/sell' : '/license';
   }
 
   render() {
@@ -60,10 +60,8 @@ class Home extends Component {
 
 Home.propTypes = {
   t: PropTypes.func,
-  checkLicenseOwner: PropTypes.func,
   checkIsArbitrator: PropTypes.func,
   isArbitrator: PropTypes.bool,
-  isLicenseOwner: PropTypes.bool,
   profile: PropTypes.object,
   hasPrices: PropTypes.bool,
   priceError: PropTypes.bool,
@@ -76,7 +74,6 @@ const mapStateToProps = (state) => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
-    isLicenseOwner: license.selectors.isLicenseOwner(state),
     isArbitrator: arbitrator.selectors.isLicenseOwner(state),
     profile: metadata.selectors.getProfile(state, address),
     hasPrices: prices.selectors.hasPrices(state),
@@ -87,7 +84,6 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    checkLicenseOwner: license.actions.checkLicenseOwner,
     checkIsArbitrator: arbitrator.actions.checkLicenseOwner,
     resetNewOfferData: newSeller.actions.resetNewOfferData,
     resetNewBuy: newBuy.actions.resetNewBuy

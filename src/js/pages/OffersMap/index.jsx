@@ -6,7 +6,6 @@ import {withNamespaces} from "react-i18next";
 import {Alert} from "reactstrap";
 
 import Map from '../../components/Map';
-import license from "../../features/license";
 import metadata from "../../features/metadata";
 import network from "../../features/network";
 import {addressCompare} from '../../utils/address';
@@ -21,7 +20,6 @@ class OffersMap extends Component {
   }
 
   componentDidMount() {
-    this.props.getLicenseOwners();
     navigator.geolocation.getCurrentPosition(pos => {
       this.setState({coords: pos.coords});
     }, err => {
@@ -69,24 +67,16 @@ class OffersMap extends Component {
 
 OffersMap.propTypes = {
   t: PropTypes.func,
-  getLicenseOwners: PropTypes.func,
-  licenseOwners: PropTypes.array,
   usersWithOffers: PropTypes.array,
-  licenseOwnersError: PropTypes.string,
   history: PropTypes.object,
   tokens: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  licenseOwners: license.selectors.licenseOwners(state),
-  licenseOwnersError: license.selectors.licenseOwnersError(state),
   usersWithOffers: metadata.selectors.getUsersWithOffers(state),
   tokens: network.selectors.getTokens(state)
 });
 
 export default connect(
-  mapStateToProps,
-  {
-    getLicenseOwners: license.actions.getLicenseOwners
-  }
+  mapStateToProps, {}
 )(withRouter(withNamespaces()(OffersMap)));
