@@ -53,7 +53,7 @@
     "cryptocompare": "^0.7.0",
     "cryptocurrency-icons": "^0.16.0",
     "css-loader": "^2.1.0",
-    "dompurify": "^1.0.10",
+    "dompurify": "^2.0.1",
     "elliptic": "^6.5.0",
     "embark": "^4.0.2",
     "embark-solc": "^4.0.3",
