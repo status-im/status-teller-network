@@ -32,6 +32,12 @@ header {
   color: $primary;
 }
 
+.btn-link {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 p {
   margin-bottom: 24px;
   font-size: 15px;

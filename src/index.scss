@@ -9,6 +9,12 @@ body {
   display: flex;
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
+  a {
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
   .container {
     max-width: none;
 
@@ -31,12 +37,12 @@ body {
 
   .clickable {
     cursor: pointer;
-    
+
     .disabled {
       opacity: .4;
     }
   }
-  
+
 
   .not-clickable {
     cursor: default;
