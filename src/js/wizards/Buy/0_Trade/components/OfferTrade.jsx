@@ -19,7 +19,7 @@ const OfferTrade = ({
   const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
   const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
 
-  return <Row>
+  return <Row noGutters>
     <Col xs="12" className="mt-5 text-center">
 
       <UserInformation username={seller.username} reputation={{downCount: seller.downCount, upCount: seller.upCount}}
