@@ -24,6 +24,7 @@ import iconDisputes from '../../../images/info.svg';
 import iconBecomeArbitrator from '../../../images/arbitrator.svg';
 
 import "./index.scss";
+import {withNamespaces} from "react-i18next";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -42,12 +43,18 @@ class MyProfile extends Component {
   }
 
   componentDidMount() {
-    this.props.loadProfile(this.props.address);
-    this.props.getDisputedEscrows();
-    this.props.getArbitratorRequests();
+    if (!this.props.isEip1102Enabled) {
+      return this.props.enableEthereum();
+    }
+    this.load();
+
   }
 
-  componentDidUpdate(oldProps){
+  componentDidUpdate(oldProps) {
+    if (!oldProps.isEip1102Enabled && this.props.isEip1102Enabled) {
+      this.load();
+    }
+
     if(this.props.profile && !this.props.profile.statusContactCode){
       return this.props.history.push("/profile/contact/edit");
     }
@@ -55,6 +62,12 @@ class MyProfile extends Component {
     if ((!oldProps.trades && this.props.trades) || oldProps.trades.length !== this.props.trades.length) {
       this.watchEscrows();
     }
+  }
+
+  load() {
+    this.props.loadProfile(this.props.address);
+    this.props.getDisputedEscrows();
+    this.props.getArbitratorRequests();
   }
 
   watchEscrows() {
@@ -70,7 +83,11 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {profile, address, requests, trades} = this.props;
+    const {t, profile, address, requests, trades} = this.props;
+
+    if (!this.props.isEip1102Enabled) {
+      return <p>{t('ethereumEnable.profile')}</p>;
+    }
 
     if(!profile) return <Loading page={true} />;
 
@@ -96,6 +113,7 @@ class MyProfile extends Component {
 }
 
 MyProfile.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   address: PropTypes.string,
   profile: PropTypes.object,
@@ -106,7 +124,9 @@ MyProfile.propTypes = {
   escrowEvents: PropTypes.object,
   watchEscrow: PropTypes.func,
   deleteOffer: PropTypes.func,
+  isEip1102Enabled: PropTypes.bool,
   requests: PropTypes.array,
+  enableEthereum: PropTypes.func,
   getArbitratorRequests: PropTypes.func
 };
 
@@ -120,7 +140,8 @@ const mapStateToProps = state => {
     disputes: arbitration.selectors.escrows(state),
     escrowEvents: events.selectors.getEscrowEvents(state),
     txHash: metadata.selectors.txHash(state),
-    requests: arbitration.selectors.getArbitratorRequests(state)
+    requests: arbitration.selectors.getArbitratorRequests(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
   };
 };
 
@@ -130,5 +151,6 @@ export default connect(
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     watchEscrow: escrow.actions.watchEscrow,
-    getArbitratorRequests: arbitration.actions.getArbitratorRequests
-  })(withRouter(MyProfile));
+    getArbitratorRequests: arbitration.actions.getArbitratorRequests,
+    enableEthereum: metadata.actions.enableEthereum
+  })(withRouter(withNamespaces()(MyProfile)));

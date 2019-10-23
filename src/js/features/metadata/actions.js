@@ -1,7 +1,7 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
-  SIGN_MESSAGE, DELETE_OFFER
+  SIGN_MESSAGE, DELETE_OFFER, ENABLE_ETHEREUM
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -43,6 +43,10 @@ export const setCurrentUser = (currentUser) => ({
 
 export const resetAddOfferStatus = () => ({
   type: RESET_ADD_OFFER_STATUS
+});
+
+export const enableEthereum = () => ({
+  type: ENABLE_ETHEREUM
 });
 
 export const updateUser = (user) => ({

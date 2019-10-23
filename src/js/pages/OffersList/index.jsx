@@ -32,6 +32,10 @@ class OffersList extends Component {
   }
 
   componentDidMount() {
+    this.load();
+  }
+
+  load() {
     this.props.loadOffers();
     this.props.updateBalance('ETH');
   }

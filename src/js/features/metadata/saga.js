@@ -10,7 +10,9 @@ import {
   ADD_OFFER_FAILED, ADD_OFFER_SUCCEEDED, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_PRE_SUCCESS, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED,
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED, DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED
+  SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED,
+  DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED,
+  ENABLE_ETHEREUM, ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -20,6 +22,7 @@ import { zeroAddress, addressCompare, zeroBytes, keyFromXY, generateXY } from '.
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+import {enableEthereum} from '../../services/embarkjs';
 
 MetadataStore.options.address = MetadataStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
@@ -27,16 +30,17 @@ SellerLicense.options.address = SellerLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
+  const defaultAccount = web3.eth.defaultAccount || zeroAddress;
   try {
-    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call();
-    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call();
+    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
+    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
 
     let userLicenses = {
       isArbitrator,
       isSeller
     };
 
-    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call());
+    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
     user.statusContactCode = keyFromXY(user.pubkeyA, user.pubkeyB);
 
     if(user.pubkeyA === zeroBytes && user.pubkeyB === zeroBytes){
@@ -77,14 +81,30 @@ export function *onLoadLocation() {
   yield takeEvery(LOAD_USER_LOCATION, loadLocation);
 }
 
+export function *enabledEthereum() {
+  try {
+    const accounts = yield enableEthereum();
+    web3.eth.defaultAccount = accounts[0];
+    yield put({type: LOAD_USER, address: accounts[0]});
+    yield put({type: ENABLE_ETHEREUM_SUCCEEDED, accounts});
+  } catch (error) {
+    yield put({type: ENABLE_ETHEREUM_FAILED, error: error.message});
+  }
+}
+
+export function *onEnabledEthereum() {
+  yield takeEvery(ENABLE_ETHEREUM, enabledEthereum);
+}
+
 export function *loadOffers({address}) {
   try {
     let offerIds = [];
 
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     if (address) {
-      offerIds = yield MetadataStore.methods.getOfferIds(address).call();
+      offerIds = yield MetadataStore.methods.getOfferIds(address).call({from: defaultAccount});
     } else {
-      const size = yield MetadataStore.methods.offersSize().call();
+      const size = yield MetadataStore.methods.offersSize().call({from: defaultAccount});
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
     const loadedUsers = [];
@@ -97,10 +117,10 @@ export function *loadOffers({address}) {
     }
 
     const offers = yield all(offerIds.map(function *(id) {
-      const offer = yield MetadataStore.methods.offer(id).call();
+      const offer = yield MetadataStore.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call();
+        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call({from: defaultAccount});
         offer.arbitratorData.statusContactCode = keyFromXY(offer.arbitratorData.pubkeyA, offer.arbitratorData.pubkeyB);
       }
 
@@ -223,5 +243,6 @@ export default [
   fork(onAddOffer),
   fork(onUpdateUser),
   fork(onSignMessage),
-  fork(onDeleteOffer)
+  fork(onDeleteOffer),
+  fork(onEnabledEthereum)
 ];

@@ -37,6 +37,9 @@ export function *updateBalance({symbol, address}) {
   if (!address) {
     address = yield select((state) => state.network.address);
   }
+  if (!address) {
+    return;
+  }
   const token = yield select((state) => state.network.tokens[symbol]);
   let value;
   try {
@@ -71,14 +74,13 @@ export function *onUpdateBalances() {
   yield takeEvery(UPDATE_BALANCES, updateBalances);
 }
 
-export function *getGasPrice() { 
+export function *getGasPrice() {
   try {
     const gasPrice = yield web3.eth.getGasPrice();
     yield put({type: GET_GAS_PRICE_SUCCEEDED, gasPrice});
   } catch(error){
     console.error(error);
     yield put({type: GET_GAS_PRICE_FAILED});
- 
   }
 }
 

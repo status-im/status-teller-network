@@ -157,7 +157,11 @@ function *formatEscrows(escrowIds) {
 
 export function *doLoadEscrows({address}) {
   try {
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     address = address || web3.eth.defaultAccount;
+    if (!address) {
+      throw new Error('No address yet. Wallet is not accessible yet');
+    }
 
     const eventsAsBuyer = yield Escrow.getPastEvents('Created', {filter: {buyer: address}, fromBlock: 1});
     const eventsAsSeller = yield Escrow.getPastEvents('Created', {filter: {seller: address}, fromBlock: 1});
@@ -171,11 +175,11 @@ export function *doLoadEscrows({address}) {
     }));
 
     const escrows = yield all(events.map(function *(ev) {
-      const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call();
+      const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
-      escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-      escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
-      escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
+      escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+      escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+      escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
       escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
       escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
       return escrow;
@@ -194,12 +198,13 @@ export function *onLoadEscrows() {
 
 export function *doGetEscrow({escrowId}) {
   try {
-    const escrow = yield Escrow.methods.transactions(escrowId).call();
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
+    const escrow = yield Escrow.methods.transactions(escrowId).call({from: defaultAccount});
     escrow.escrowId = escrowId;
-    escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call();
-    escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call();
-    escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call();
-    escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call();
+    escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+    escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+    escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
+    escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
     escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
     escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
     escrow.arbitratorInfo.statusContactCode = keyFromXY(escrow.arbitratorInfo.pubkeyA, escrow.arbitratorInfo.pubkeyB);
@@ -215,7 +220,8 @@ export function *onGetEscrow() {
 }
 export function *doGetFeeMilliPercent() {
   try {
-    const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
+    const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call({from: defaultAccount});
     yield put({type: GET_FEE_MILLI_PERCENT_SUCCEEDED, feeMilliPercent});
   } catch (error) {
     console.error(error);
@@ -300,7 +306,11 @@ export function *onAddUserRating() {
 
 export function *doGetLastActivity({address}){
   try {
-    const lastActivity = yield EscrowRelay.methods.lastActivity(address).call();
+    if (!address) {
+      throw new Error('No address given');
+    }
+    const defaultAccount = web3.eth.defaultAccount || zeroAddress;
+    const lastActivity = yield EscrowRelay.methods.lastActivity(address).call({from: defaultAccount});
     return yield put({type: GET_LAST_ACTIVITY_SUCCEEDED, lastActivity});
   } catch (error) {
     console.error(error);

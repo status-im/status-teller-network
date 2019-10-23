@@ -14,7 +14,8 @@ class YourSNTBalance extends Component {
         <p className="border rounded p-3">
           <span className={classnames("h3", "font-weight-normal", {'text-danger': this.props.disabled})}>
             <img src={SNTIcon} alt="SNT icon" className="mr-2"/>
-            {this.props.value} SNT
+            {(this.props.value || this.props.value === 0) && <Fragment>{this.props.value} SNT</Fragment>}
+            {!this.props.value && this.props.value !== 0 && 'Loading...'}
           </span>
         </p>
       </Fragment>

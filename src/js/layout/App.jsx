@@ -76,7 +76,7 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.isReady && this.props.isReady) {
+    if ((!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) || (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.isReady)) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
         this.props.resetState();
       }
@@ -201,7 +201,8 @@ App.propTypes = {
   setCurrentUser: PropTypes.func,
   resetState: PropTypes.func,
   currentUser: PropTypes.string,
-  watchEscrowCreations: PropTypes.func
+  watchEscrowCreations: PropTypes.func,
+  isEip1102Enabled: PropTypes.bool
 };
 
 const mapStateToProps = (state) => {
@@ -209,6 +210,7 @@ const mapStateToProps = (state) => {
   return {
     address,
     currentUser: metadata.selectors.currentUser(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     isReady: network.selectors.isReady(state),
     hasToken: Object.keys(network.selectors.getTokens(state)).length > 0,
     error: network.selectors.getError(state),

@@ -35,17 +35,13 @@ export const getProfile = (state, address) => {
   };
 };
 
-export const getAddOfferStatus = (state) => {
-  return state.metadata.addOfferStatus;
-};
+export const getAddOfferStatus = (state) => state.metadata.addOfferStatus;
 
-export const getUpdateUserStatus = (state) => {
-  return state.metadata.updateUserStatus;
-};
+export const getUpdateUserStatus = (state) => state.metadata.updateUserStatus;
 
-export const currentUser = (state) => {
-  return state.metadata.currentUser;
-};
+export const currentUser = (state) => state.metadata.currentUser;
+
+export const isEip1102Enabled = (state) => state.metadata.eip1102Enabled;
 
 export const getOfferById = (state, id) => {
   if (isNaN(id)) {
