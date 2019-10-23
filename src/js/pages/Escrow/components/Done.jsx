@@ -6,14 +6,14 @@ import Reputation from "../../../components/Reputation";
 import {States} from '../../../utils/transaction';
 import CheckIcon from "../../../../images/check.svg";
 
-const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) => (
+const Done = ({isDone, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="grey"/>}
       {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
     </Col>
 
-    <Col xs={isActive && isBuyer ? '6' : '11'} sm={isActive && isBuyer ? '8' : '11'}>
+    <Col xs={isActive ? '6' : '11'} sm={isActive ? '8' : '11'}>
       <p className="m-0 font-weight-bold">
         Done
       </p>
@@ -24,13 +24,20 @@ const Done = ({isDone, isBuyer, isActive, trade, rateStatus, rateTransaction}) =
 
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
-    {isBuyer && isActive && <Col xs="5" sm="3">
+    {isActive && <Col xs="5" sm="3">
       <div className="rounded p-2 position-relative shadow-sm bg-white">
         <p className="mb-1 text-small text-black">How did the trade go?</p>
         <p className="m-0 text-center">
-          <Reputation trade={trade}
-                      rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null}
-                      size="l"/>
+          {isBuyer && <Reputation trade={trade}
+                      rateTransaction={(rateSellerStatus !== States.pending && rateSellerStatus !== States.success) ? rateTransaction : null}
+                      size="l"
+                      isBuyer={isBuyer}
+                      />}
+          {!isBuyer && <Reputation trade={trade}
+                      rateTransaction={(rateBuyerStatus !== States.pending && rateBuyerStatus !== States.success) ? rateTransaction : null}
+                      size="l"
+                      isBuyer={isBuyer}
+                      />}
         </p>
       </div>
     </Col>}
@@ -49,7 +56,8 @@ Done.propTypes = {
   isBuyer: PropTypes.bool,
   trade: PropTypes.object,
   rateTransaction: PropTypes.func,
-  rateStatus: PropTypes.string
+  rateSellerStatus: PropTypes.string,
+  rateBuyerStatus: PropTypes.string
 };
 
 export default Done;

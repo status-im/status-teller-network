@@ -62,7 +62,7 @@ export const error = state => state.escrow.error;
 export const isLoading = state => state.escrow.loading;
 export const txHashList = state => state.escrow.txHashList;
 export const escrows = state => Object.values(state.escrow.escrows).map(escrow => {
-  escrow.rating = (typeof escrow.rating === 'string') ? parseInt(escrow.rating, 10) : escrow.rating;
+  escrow.sellerRating = (typeof escrow.sellerRating === 'string') ? parseInt(escrow.sellerRating, 10) : escrow.sellerRating;
   if (!escrow.expirationTime.unix) {
     escrow.expirationTime = moment(escrow.expirationTime * 1000);
   }

@@ -723,7 +723,7 @@ contract("Escrow", function() {
       const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
       const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}});
 
-      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
+      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.sellerRating, 10));
       assert.equal(arrAvg(ratings), 3, "The seller rating is not correct");
     });
   });

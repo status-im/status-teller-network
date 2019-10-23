@@ -188,20 +188,34 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case RATE_TRANSACTION:
       escrowsClone[action.escrowId] = {
-        ...escrowsClone[action.escrowId],
-        rating: action.rating,
-        rateStatus: States.pending
+        ...escrowsClone[action.escrowId]
       };
+
+      if(action.ratingSeller){
+        escrowsClone[action.escrowId].rateSellerStatus = States.pending;
+        escrowsClone[action.escrowId].sellerRating = action.rating; 
+      } else {
+        escrowsClone[action.escrowId].rateBuyerStatus = States.pending;
+        escrowsClone[action.escrowId].buyerRating = action.rating; 
+      }
+
       return {
         ...state,
         escrows: escrowsClone
       };
     case RATE_TRANSACTION_SUCCEEDED: {
       escrowsClone[action.escrowId] = {
-        ...escrowsClone[action.escrowId],
-        rating: action.rating,
-        rateStatus: States.success
+        ...escrowsClone[action.escrowId]
       };
+
+      if(action.ratingSeller){
+        escrowsClone[action.escrowId].rateSellerStatus = States.success;
+        escrowsClone[action.escrowId].sellerRating = action.rating;         
+      } else {
+        escrowsClone[action.escrowId].rateBuyerStatus = States.success;
+        escrowsClone[action.escrowId].buyerRating = action.rating; 
+      }
+
       return {
         ...state,
         escrows: escrowsClone
@@ -209,10 +223,17 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case RATE_TRANSACTION_FAILED:
       escrowsClone[action.escrowId] = {
-        ...escrowsClone[action.escrowId],
-        rating: 0,
-        rateStatus: States.failed
+        ...escrowsClone[action.escrowId]
       };
+
+      if(action.ratingSeller){
+        escrowsClone[action.escrowId].rateSellerStatus = States.failed;
+        escrowsClone[action.escrowId].sellerRating = 0;
+      } else {
+        escrowsClone[action.escrowId].rateBuyerStatus = States.failed;
+        escrowsClone[action.escrowId].buyerRating = 0;
+      }
+
       return {
         ...state,
         escrows: escrowsClone

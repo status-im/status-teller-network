@@ -11,7 +11,7 @@ const ResolvedDispute = ({winner, trade, isBuyer, rateTransaction, rateStatus}) 
     <h2 className="mt-4">Dispute Resolved</h2>
     <p className="m-0">The dispute was resolved {winner ? 'in your favor' : `in favor of the ${isBuyer ? 'seller' : 'buyer'}`}</p>
     { isBuyer && <Fragment>
-      {trade && trade.rating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
+      {trade && trade.sellerRating === '0' && <h2 className="mt-4">Rate your trading experience with this user.</h2>}
       <Reputation trade={trade} rateTransaction={(rateStatus !== States.pending && rateStatus !== States.success) ? rateTransaction : null} size="l"/>
     </Fragment> }
   </Fragment>

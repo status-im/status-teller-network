@@ -104,7 +104,7 @@ class Offers extends Component {
         <div>
           <h3 className="d-inline-block">{t('offers.active')}</h3>
           <span className="float-right">
-            <Link to="/license" className="float-right text-small">{t('offers.create')}</Link>
+            <Link to="/sell" className="float-right text-small">{t('offers.create')}</Link>
           </span>
         </div>
         {activeOffers.length === 0 ? this.renderEmpty() : this.renderOffers(activeOffers, true)}
