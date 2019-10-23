@@ -84,8 +84,10 @@ export function *onLoadLocation() {
 export function *enabledEthereum() {
   try {
     const accounts = yield enableEthereum();
-    web3.eth.defaultAccount = accounts[0];
-    yield put({type: LOAD_USER, address: accounts[0]});
+    if (accounts) {
+      web3.eth.defaultAccount = accounts[0];
+      yield put({type: LOAD_USER, address: accounts[0]});
+    }
     yield put({type: ENABLE_ETHEREUM_SUCCEEDED, accounts});
   } catch (error) {
     yield put({type: ENABLE_ETHEREUM_FAILED, error: error.message});
