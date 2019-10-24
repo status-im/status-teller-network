@@ -149,7 +149,7 @@ module.exports = {
       KyberNetworkProxy: {
       },
       KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
-        args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000"]
+        args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000", "300"]
       }
     }
   },

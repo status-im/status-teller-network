@@ -16,6 +16,7 @@ contract KyberFeeBurner is Ownable {
     address public burnAddress;
     address public walletId;
     KyberNetworkProxy public kyberNetworkProxy;
+    uint public maxSlippageRate;
 
     // In Kyber's contracts, this is the address for ETH
     address constant internal ETH_TOKEN_ADDRESS = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
@@ -25,12 +26,15 @@ contract KyberFeeBurner is Ownable {
      * @param _burnAddress Address where to burn the assets
      * @param _kyberNetworkProxy License contract instance address for arbitrators
      * @param _walletId Wallet address to send part of the fees to (used for the fee sharing program)
+     * @param _maxSlippageRate Max slippage rate to accept a trade
      */
-    constructor(address _snt, address _burnAddress, address _kyberNetworkProxy, address _walletId) public {
+    constructor(address _snt, address _burnAddress, address _kyberNetworkProxy, address _walletId, uint _maxSlippageRate) public {
         SNT = _snt;
         burnAddress = _burnAddress;
         kyberNetworkProxy = KyberNetworkProxy(_kyberNetworkProxy);
         walletId = _walletId;
+
+        setMaxSlippageRate(_maxSlippageRate);
     }
 
     event SNTAddressChanged(address sender, address prevSNTAddress, address newSNTAddress);
@@ -77,40 +81,79 @@ contract KyberFeeBurner is Ownable {
         walletId = _walletId;
     }
 
+    /**
+     * @dev Changes the current max slippage rate
+     * @param _newSlippageRate New slippage rate
+     */
+    function setMaxSlippageRate(uint _newSlippageRate) external onlyOwner {
+        require(_newSlippageRate <= 10000, "Invalid slippage rate");
+        emit SlippageRateChanged(msg.sender, maxSlippageRate, _newSlippageRate);
+        maxSlippageRate = _newSlippageRate;
+    }
+
+    event SlippageRateChanged(address sender, uint oldRate, uint newRate);
+
     event Swap(address sender, address srcToken, address destToken, uint srcAmount, uint destAmount);
+
+
+    /**
+     * @dev Swaps the total balance of the selected asset to SNT and transfers it to the burn address
+     * @param _token Address of the asset to trade
+     */
+    function swap(address _token) public {
+        if (_token == address(0)) {
+            swap(_token, address(this).balance);
+        } else {
+            ERC20Token t = ERC20Token(_token);
+            swap(_token, t.balanceOf(address(this)));
+        }
+    }
 
     /**
      * @dev Swaps the selected asset to SNT and transfers it to the burn address
      * @param _token Address of the asset to trade
+     * @param _amount Amount to swap
      */
-    function swap(address _token) external {
-        uint balance = 0;
-        uint minConversionRate = 0;
-        uint destAmount = 0;
+    function swap(address _token, uint _amount) public {
+        uint tokensToTradeRate;
+        uint ratePer1Token;
+        uint minAcceptedRate;
+
+        uint destAmount;
 
         if (_token == address(0)) {
-            balance = address(this).balance;
-            (minConversionRate,) = kyberNetworkProxy.getExpectedRate(ETH_TOKEN_ADDRESS, SNT, balance);
-            destAmount = kyberNetworkProxy.trade.value(balance)(ETH_TOKEN_ADDRESS, balance, SNT, burnAddress, 0 - uint256(1), minConversionRate, walletId);
-            emit Swap(msg.sender, ETH_TOKEN_ADDRESS, SNT, balance, destAmount);
+            require(_amount <= address(this).balance, "Invalid amount");
+
+            (ratePer1Token,) = kyberNetworkProxy.getExpectedRate(ETH_TOKEN_ADDRESS, SNT, 1 ether);
+            (tokensToTradeRate,) = kyberNetworkProxy.getExpectedRate(ETH_TOKEN_ADDRESS, SNT, _amount);
+            minAcceptedRate = (ratePer1Token * (10000 - maxSlippageRate)) / 10000;
+            require(tokensToTradeRate >= minAcceptedRate, "Rate is not acceptable");
+
+            destAmount = kyberNetworkProxy.trade.value(_amount)(ETH_TOKEN_ADDRESS, _amount, SNT, burnAddress, 0 - uint256(1), tokensToTradeRate, walletId);
+            emit Swap(msg.sender, ETH_TOKEN_ADDRESS, SNT, _amount, destAmount);
         } else {
             ERC20Token t = ERC20Token(_token);
-            balance = t.balanceOf(address(this));
+            require(_amount <= t.balanceOf(address(this)), "Invalid amount");
+
             if (_token == SNT) {
-                require(t.transfer(burnAddress, balance), "SNT transfer failure");
-                emit Swap(msg.sender, SNT, SNT, balance, balance);
+                require(t.transfer(burnAddress, _amount), "SNT transfer failure");
+                emit Swap(msg.sender, SNT, SNT, _amount, _amount);
                 return;
             } else {
                 // Mitigate ERC20 Approve front-running attack, by initially setting allowance to 0
                 require(ERC20Token(_token).approve(address(kyberNetworkProxy), 0), "Failed to reset approval");
 
                 // Set the spender's token allowance to tokenQty
-                require(ERC20Token(_token).approve(address(kyberNetworkProxy), balance), "Failed to approve trade amount");
+                require(ERC20Token(_token).approve(address(kyberNetworkProxy), _amount), "Failed to approve trade amount");
 
-                (minConversionRate,) = kyberNetworkProxy.getExpectedRate(_token, SNT, balance);
-                destAmount = kyberNetworkProxy.trade(_token, balance, SNT, burnAddress, 0 - uint256(1), minConversionRate, walletId);
+                (ratePer1Token,) = kyberNetworkProxy.getExpectedRate(_token, SNT, 1 ether);
+                (tokensToTradeRate,) = kyberNetworkProxy.getExpectedRate(_token, SNT, _amount);
+                minAcceptedRate = (ratePer1Token * (10000 - maxSlippageRate)) / 10000;
+                require(tokensToTradeRate >= minAcceptedRate, "Rate is not acceptable");
 
-                emit Swap(msg.sender, _token, SNT, balance, destAmount);
+                destAmount = kyberNetworkProxy.trade(_token, _amount, SNT, burnAddress, 0 - uint256(1), tokensToTradeRate, walletId);
+
+                emit Swap(msg.sender, _token, SNT, _amount, destAmount);
             }
         }
     }
