@@ -629,14 +629,14 @@ contract("Escrow", function() {
       it("should allow a score of " + i, async() => {
         await Escrow.methods.rateTransaction(escrowId, i).send({from: accounts[1]});
         const transaction = await Escrow.methods.transactions(escrowId).call();
-        assert.equal(transaction.rating, i.toString());
+        assert.equal(transaction.sellerRating, i.toString());
       });
     }
 
     it("should only allow rating once", async() => {
       await Escrow.methods.rateTransaction(escrowId, 3).send({from: accounts[1]});
       let transaction = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(transaction.rating, "3");
+      assert.equal(transaction.sellerRating, "3");
 
       try {
         await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
@@ -646,17 +646,24 @@ contract("Escrow", function() {
       }
     });
 
-    it("should only allow the buyer to rate the transaction", async() => {
+    it("should allow the buyer to rate the transaction", async() => {
+      receipt = await Escrow.methods.rateTransaction(escrowId, 4).send({from: accounts[0]});
+    });
+
+    it("should allow the seller to rate the transaction", async() => {
+      receipt = await Escrow.methods.rateTransaction(escrowId, 4).send({from: accounts[1]});
+    });
+
+    it("should not allow a random account to rate the transaction", async() => {
       try {
-        receipt = await Escrow.methods.rateTransaction(escrowId, 4).send({from: accounts[0]});
+        receipt = await Escrow.methods.rateTransaction(escrowId, 4).send({from: accounts[5]});
         assert.fail('should have reverted: should only allow the buyer to rate the transaction');
       } catch(error) {
         TestUtils.assertJump(error);
-        assert.ok(error.message.indexOf('Only the buyer can invoke this function') >= 0);
+        assert.ok(error.message.indexOf('Only participants can invoke this function') >= 0);
       }
     });
   });
-
 
   describe("Rating an unreleased Transaction", async() => {
     let receipt, created, escrowId;
@@ -716,7 +723,7 @@ contract("Escrow", function() {
       const arrAvg = arr => arr.reduce((a,b) => a + b, 0) / arr.length;
       const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}});
 
-      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
+      let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.sellerRating, 10));
       assert.equal(arrAvg(ratings), 3, "The seller rating is not correct");
     });
   });

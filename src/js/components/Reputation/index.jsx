@@ -13,13 +13,13 @@ class Reputation extends Component {
     if (!this.clickable) {
       return;
     }
-    this.props.rateTransaction(this.props.trade.escrowId, rating);
+    this.props.rateTransaction(this.props.trade.escrowId, rating, this.props.isBuyer);
   }
 
   /*eslint-disable-next-line complexity */
   render() {
-    const {size, rateTransaction, trade, reputation = {}} = this.props;
-    const rating = trade ? parseInt(trade.rating, 10) : 0;
+    const {size, rateTransaction, trade, isBuyer, reputation = {}} = this.props;
+    const rating = trade ? parseInt(isBuyer ? trade.sellerRating : trade.buyerRating, 10) : 0;
     const tradeWasRated = trade && rating !== 0;
     this.clickable = !tradeWasRated && rateTransaction && trade;
 
@@ -56,6 +56,7 @@ class Reputation extends Component {
 Reputation.propTypes = {
   t: PropTypes.func,
   size: PropTypes.string,
+  isBuyer: PropTypes.bool,
   trade: PropTypes.object,
   rateTransaction: PropTypes.func,
   reputation: PropTypes.object

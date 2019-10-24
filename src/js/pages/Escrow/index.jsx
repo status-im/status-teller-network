@@ -112,7 +112,7 @@ class Escrow extends Component {
     let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash} = this.props;
-
+      
     const {showApproveFundsScreen} = this.state;
 
     const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
@@ -215,7 +215,10 @@ class Escrow extends Component {
 
         <Done isDone={escrow.status === escrowF.helpers.tradeStates.released}
               isActive={escrow.status === escrowF.helpers.tradeStates.released}
-              rateTransaction={rateTransaction} trade={escrow} isBuyer={isBuyer} rateStatus={escrow.rateStatus}/>
+              rateTransaction={rateTransaction} trade={escrow} isBuyer={isBuyer}
+              rateBuyerStatus={escrow.rateBuyerStatus}
+              rateSellerStatus={escrow.rateSellerStatus}
+              />
       </div>
 
       <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice}/>

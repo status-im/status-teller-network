@@ -9,7 +9,8 @@ contract IEscrow {
       address token;
       uint256 tokenAmount;
       uint256 expirationTime;
-      uint256 rating;
+      uint256 sellerRating;
+      uint256 buyerRating;
       uint256 fiatAmount;
       address payable buyer;
       address payable seller;

@@ -66,7 +66,7 @@ export const cancelEscrow = (escrowId) => {
   return { type: CANCEL_ESCROW, escrowId, toSend: Escrow.methods.cancel(escrowId) };
 };
 
-export const rateTransaction = (escrowId, rating) => ({ type: RATE_TRANSACTION, escrowId, rating, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
+export const rateTransaction = (escrowId, rating, ratingSeller) => ({ type: RATE_TRANSACTION, escrowId, rating, ratingSeller, toSend: Escrow.methods.rateTransaction(escrowId, rating) });
 
 export const resetCreateStatus = () => ({type: RESET_CREATE_STATUS});
 export const resetStatus = (escrowId) => ({type: RESET_STATUS, escrowId});

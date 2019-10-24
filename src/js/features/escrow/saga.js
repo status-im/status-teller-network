@@ -262,7 +262,9 @@ export function *checkUserRating({address}) {
     const ratings = [];
     allEvents.forEach(events => {
       events.forEach((e) => {
-        ratings.push(parseInt(e.returnValues.rating, 10));
+        if(e.returnValues.ratingSeller){
+          ratings.push(parseInt(e.returnValues.rating, 10));
+        }
       });
     });
     let downCount = 0;
