@@ -100,6 +100,7 @@ class App extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.isReady !== this.props.isReady ||
+      nextProps.isEip1102Enabled !== this.props.isEip1102Enabled ||
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
