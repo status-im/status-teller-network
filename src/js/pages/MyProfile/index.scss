@@ -9,10 +9,18 @@
   left: -10px;
 }
 
-.profile-button span, 
-.profile-button h6 {
-  font-size: 15px;
+.profile-button {
+  &:hover {
+    text-decoration: none;
+  }
+
+  .profile-button-icon,
+  .profile-button-title {
+    font-size: 15px;
+  }
 }
+
+
 
 .separator {
   width: 300px;
