@@ -229,5 +229,8 @@
     "title": "Become an arbitrator",
     "stake1": "Stake {{price}} SNT",
     "stake2": "for arbitrator license"
+  },
+  "cancelEscrow": {
+    "expire": "Once funded, an escrow can only be canceled by you after it expires (in <1>{{amountTime}}</1>)"
   }
 }
