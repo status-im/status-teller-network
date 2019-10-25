@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Row, Col, Button } from 'reactstrap';
+import {Row, Col, Button, ModalHeader, ModalBody, Modal} from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
+
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
 
 import network from "../../features/network";
 import metadata from "../../features/metadata";
@@ -17,6 +20,10 @@ import { version } from '../../../../package.json';
 import "./index.scss";
 
 class Home extends Component {
+  state = {
+    warningModalOpened: true
+  };
+
   componentDidMount() {
     if (!this.props.isEip1102Enabled) {
       return;
@@ -26,13 +33,17 @@ class Home extends Component {
     this.props.resetNewBuy();
   }
 
-  sellUrl(){
+  sellUrl() {
     return '/sell';
-    // return this.props.isLicenseOwner ? '/sell' : '/license';
   }
 
+  toggleWarningModal = () => {
+    this.setState({warningModalOpened: !this.state.warningModalOpened});
+    this.props.setMainnetWarningShowed();
+  };
+
   render() {
-    const {hasPrices, t, priceError} = this.props;
+    const {hasPrices, t, priceError, networkId, mainnetWarningShowed} = this.props;
 
     return (
       <div className="home">
@@ -55,6 +66,18 @@ class Home extends Component {
           </Col>
         </Row>
         <p className="teller-version text-muted"><Link to="/settings">Settings</Link> | Version: {version}</p>
+
+        {<Modal isOpen={networkId === 1 &&  !mainnetWarningShowed && this.state.warningModalOpened} toggle={this.toggleWarningModal}>
+          <ModalHeader toggle={this.toggleWarningModal}>
+            <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2"/>
+          Warning: You are on Ethereum&apos;s mainnet
+          </ModalHeader>
+          <ModalBody>
+            <p>This is a short disclaimer to warn you that the contracts used in this Dapp are not audited yet.</p>
+            <p>Make sure to keep that in mind before transacting meaningful amounts of money.</p>
+            <p>Thank you for using Teller</p>
+          </ModalBody>
+        </Modal>}
       </div>
     );
   }
@@ -69,7 +92,10 @@ Home.propTypes = {
   hasPrices: PropTypes.bool,
   priceError: PropTypes.bool,
   resetNewOfferData: PropTypes.func,
-  resetNewBuy: PropTypes.func
+  resetNewBuy: PropTypes.func,
+  setMainnetWarningShowed: PropTypes.func,
+  mainnetWarningShowed: PropTypes.bool,
+  networkId: PropTypes.number
 };
 
 
@@ -81,7 +107,9 @@ const mapStateToProps = (state) => {
     profile: metadata.selectors.getProfile(state, address),
     hasPrices: prices.selectors.hasPrices(state),
     priceError: prices.selectors.error(state),
-    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
+    networkId: network.selectors.getNetwork(state).id,
+    mainnetWarningShowed: metadata.selectors.mainnetWarningShowed(state)
   };
 };
 
@@ -90,6 +118,7 @@ export default connect(
   {
     checkIsArbitrator: arbitrator.actions.checkLicenseOwner,
     resetNewOfferData: newSeller.actions.resetNewOfferData,
-    resetNewBuy: newBuy.actions.resetNewBuy
+    resetNewBuy: newBuy.actions.resetNewBuy,
+    setMainnetWarningShowed: metadata.actions.setMainnetWarningShowed
   }
 )(withNamespaces()(Home));
