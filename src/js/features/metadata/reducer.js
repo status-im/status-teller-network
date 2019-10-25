@@ -6,7 +6,8 @@ import {
   SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
   RESET_NEW_OFFER,
   DELETE_OFFER, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_FAILED,
-  ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED
+  ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED,
+  SET_MAINNET_WARNING_SHOWED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
@@ -17,6 +18,7 @@ import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   eip1102Enabled: false,
+  mainnetWarningShowed: false,
   addOfferStatus: States.none,
   addOfferTx: '',
   updateUserStatus: States.none,
@@ -56,6 +58,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         eip1102Enabled: false
+      };
+    case SET_MAINNET_WARNING_SHOWED:
+      return {
+        ...state,
+        mainnetWarningShowed: true
       };
     case ADD_OFFER:
       return {

@@ -43,6 +43,8 @@ export const currentUser = (state) => state.metadata.currentUser;
 
 export const isEip1102Enabled = (state) => state.metadata.eip1102Enabled;
 
+export const mainnetWarningShowed = (state) => state.metadata.mainnetWarningShowed;
+
 export const getOfferById = (state, id) => {
   if (isNaN(id)) {
     return null;
