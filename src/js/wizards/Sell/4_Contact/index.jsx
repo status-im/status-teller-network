@@ -16,12 +16,14 @@ import {contactCodeRegExp} from '../../../utils/address';
 class Contact extends Component {
   constructor(props) {
     super(props);
+    const username = props.seller.username || (props.profile && props.profile.username);
+    const statusContactCode = props.seller.statusContactCode || (props.profile && props.profile.statusContactCode);
     this.state = {
-      username: props.seller.username,
-      statusContactCode: props.seller.statusContactCode,
+      username,
+      statusContactCode,
       ready: false
     };
-    this.validate(props.seller.username, props.seller.statusContactCode);
+    this.validate(username, statusContactCode);
     props.footer.onPageChange(() => {
       props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
