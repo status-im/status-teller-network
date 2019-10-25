@@ -85,10 +85,13 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case ENABLE_ETHEREUM_SUCCEEDED: {
-      return {
-        ...state,
-        address: action.accounts[0]
+      const result = {
+        ...state
       };
+      if (action.accounts && action.accounts[0]) {
+        result.addresss = action.accounts[0];
+      }
+      return result;
     }
     case GET_CONTACT_CODE_SUCCEEDED: {
       return {

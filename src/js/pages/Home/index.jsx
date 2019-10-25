@@ -5,7 +5,6 @@ import { Row, Col, Button } from 'reactstrap';
 import { Link } from "react-router-dom";
 import { withNamespaces } from 'react-i18next';
 
-import license from "../../features/license";
 import network from "../../features/network";
 import metadata from "../../features/metadata";
 import prices from "../../features/prices";

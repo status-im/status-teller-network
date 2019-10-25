@@ -11,7 +11,6 @@ import { zeroAddress } from '../../utils/address';
 
 import Loading from "../../components/Loading";
 import { States } from '../../utils/transaction';
-import NoLicense from '../../components/NoLicense';
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -60,7 +59,7 @@ const mapStateToProps = state => {
     address,
     profile,
     deleteOfferStatus: metadata.selectors.getDeleteOfferStatus(state),
-    txHash: metadata.selectors.txHash(state),
+    txHash: metadata.selectors.txHash(state)
   };
 };
 
