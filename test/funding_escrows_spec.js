@@ -48,7 +48,7 @@ config({
       args: ["$SNT", 10, BURN_ADDRESS]
     },
     MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense"]
+      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
     },
     ArbitrationLicense: {
       args: ["$SNT", 10, BURN_ADDRESS]
@@ -97,14 +97,16 @@ contract("Escrow Funding", function() {
 
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
 
-
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
+    let amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-
-    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
+    
+    amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+    receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
-
-    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0]});
+    
+    amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+    receipt  = await MetadataStore.methods.addOffer(SNT.options.address, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 

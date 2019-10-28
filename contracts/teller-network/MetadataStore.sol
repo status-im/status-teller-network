@@ -4,12 +4,14 @@ import "./License.sol";
 import "./ArbitrationLicense.sol";
 import "../common/MessageSigned.sol";
 import "../common/Ownable.sol";
+import "../common/Stakable.sol";
+
 
 /**
 * @title MetadataStore
 * @dev User and offers registry
 */
-contract MetadataStore is MessageSigned {
+contract MetadataStore is Stakable, MessageSigned {
 
     struct User {
         bytes32 pubkeyA;
@@ -40,6 +42,8 @@ contract MetadataStore is MessageSigned {
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
 
+    address public escrowContract;
+
     bool internal _initialized;
 
     event OfferAdded(
@@ -60,8 +64,11 @@ contract MetadataStore is MessageSigned {
     /**
      * @param _sellingLicenses Sellers licenses contract address
      * @param _arbitrationLicenses Arbitrators licenses contract address
+     * @param _burnAddress Address to send slashed offer funds
      */
-    constructor(address _sellingLicenses, address _arbitrationLicenses) public {
+    constructor(address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public 
+        Stakable(_burnAddress)
+    {
         init(_sellingLicenses, _arbitrationLicenses);
     }
 
@@ -80,6 +87,36 @@ contract MetadataStore is MessageSigned {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+    }
+
+    event LicensesChanged(address sender, address oldSellingLicenses, address newSellingLicenses, address oldArbitrationLicenses, address newArbitrationLicenses);
+
+    /**
+     * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _sellingLicenses Sellers licenses contract address
+     * @param _arbitrationLicenses Arbitrators licenses contract address
+     */
+    function setLicenses(
+        address _sellingLicenses,
+        address _arbitrationLicenses
+    ) public onlyOwner {
+        emit LicensesChanged(msg.sender, address(sellingLicenses), address(_sellingLicenses), address(arbitrationLicenses), (_arbitrationLicenses));
+
+        sellingLicenses = License(_sellingLicenses);
+        arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+    }
+
+    event EscrowContractChanged(address sender, address oldEscrowContract, address newEscrowContract);
+
+    /**
+     * @dev Sets the escrow contract address. Only the escrow contract can trigger the stake slash
+     * @param _escrowContract New Escrow Contract Address
+     */
+    function setEscrowContract(
+        address _escrowContract
+    ) public onlyOwner {
+        emit EscrowContractChanged(msg.sender, escrowContract, _escrowContract);
+        escrowContract = _escrowContract;
     }
 
     /**
@@ -236,7 +273,7 @@ contract MetadataStore is MessageSigned {
         uint _limitU,
         int8 _margin,
         address payable _arbitrator
-    ) public {
+    ) public payable {
         //require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
         // @TODO: limit number of offers if the sender is unlicensed?
 
@@ -282,6 +319,8 @@ contract MetadataStore is MessageSigned {
             _limitL,
             _limitU,
             _margin);
+
+        _stake(offerId, msg.sender, _asset);
     }
 
     /**
@@ -295,6 +334,8 @@ contract MetadataStore is MessageSigned {
         offers[_offerId].deleted = true;
         offerWhitelist[msg.sender][_offerId] = false;
         emit OfferRemoved(msg.sender, _offerId);
+
+        _unstake(_offerId);
     }
 
     /**
@@ -381,4 +422,23 @@ contract MetadataStore is MessageSigned {
     function getOfferIds(address _address) external view returns (uint256[] memory) {
         return addressToOffers[_address];
     }
+
+    /**
+     * @dev Slash offer stake. If the sender is not the escrow contract, nothing will happen
+     * @param _offerId Offer Id to slash
+     */
+    function slashStake(uint _offerId) external {
+        if (msg.sender != escrowContract) return;
+        _slash(_offerId);
+    }
+
+    /**
+     * @dev Refunds a stake. Can be called automatically after an escrow is released
+     * @param _offerId Offer Id to slash
+     */
+    function refundStake(uint _offerId) external {
+        if (msg.sender != escrowContract) return;
+        _refundStake(_offerId);
+    }
+
 }

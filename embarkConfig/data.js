@@ -67,6 +67,13 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
     deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
+    {
+      console.log('Setting the escrow address in MetadataStore');
+      const receipt = await deps.contracts.MetadataStore.methods.setEscrowContract(deps.contracts.Escrow.options.address).send({from: main, gas: 1000000});
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+
     const arbitrator = addresses[9];
 
     const sntToken = 10000000;
