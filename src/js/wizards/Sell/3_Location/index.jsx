@@ -11,10 +11,11 @@ import metadata from "../../../features/metadata";
 class Location extends Component {
   constructor(props) {
     super(props);
+    const location = props.seller.location || (props.profile && props.profile.location);
     this.state = {
-      location: props.seller.location
+      location
     };
-    this.validate(props.seller.location);
+    this.validate(location);
     this.props.footer.onPageChange(() => {
       this.props.setLocation(DOMPurify.sanitize(this.state.location));
     });

@@ -1,15 +1,11 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 import LimitForm from './components/LimitForm';
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
-import metadata from "../../../features/metadata";
-import {States} from "../../../utils/transaction";
-import ErrorInformation from '../../../components/ErrorInformation';
 import {withRouter} from "react-router-dom";
-import Success from './components/Success';
 import "./index.scss";
 
 class Limits extends Component {
@@ -29,34 +25,10 @@ class Limits extends Component {
       return this.props.wizard.previous();
     }
     this.setState({ready: true});
-    this.offerCreated = false;
-    this.props.footer.onNext(this.postOffer);
+    this.props.footer.onPageChange(() => {
+      this.props.setLimits(this.state.useCustomLimits, this.state.limitL || 0, this.state.limitU || 0);
+    });
   }
-
-  postOffer = () => {
-    this.props.footer.hide();
-    this.props.addOffer({...this.props.seller, useCustomLimits: this.state.useCustomLimits, limitL: this.state.limitL || 0, limitU: this.state.limitU || 0});
-  };
-
-  componentDidUpdate() {
-    if (this.props.addOfferStatus === States.success && !this.offerCreated) {
-      this.offerCreated = true;
-      this.props.footer.hide();
-    } else {
-      this.offerCreated = false;
-    }
-  }
-
-  continue = () => {
-    this.props.resetAddOfferStatus();
-    this.props.history.push('/offers/list');
-  };
-
-  cancel = () => {
-    this.props.resetAddOfferStatus();
-    this.props.footer.onNext(this.postOffer);
-    this.props.footer.show();
-  };
 
   validate(useCustomLimits, limitL, limitU) {
     limitL = limitL || 0;
@@ -93,51 +65,34 @@ class Limits extends Component {
     if (!this.state.ready) {
       return <Loading page/>;
     }
-    switch(this.props.addOfferStatus){
-      case States.pending:
-        return <Loading mining txHash={this.props.txHash}/>;
-      case States.failed:
-        return <ErrorInformation transaction retry={this.postOffer} cancel={this.cancel}/>;
-      case States.none:
-        return <LimitForm limitL={this.state.limitL}
-                          limitU={this.state.limitU}
-                          currency={this.props.seller.currency}
-                          useCustomLimits={this.state.useCustomLimits}
-                          customLimitsChange={this.customLimitsChange}
-                          limitChange={this.limitChange} />;
-      case States.success:
-        return <Success onClick={this.continue} />;
-      default:
-        return <Fragment/>;
-    }
+
+    return <LimitForm limitL={this.state.limitL}
+                      limitU={this.state.limitU}
+                      currency={this.props.seller.currency}
+                      useCustomLimits={this.state.useCustomLimits}
+                      customLimitsChange={this.customLimitsChange}
+                      limitChange={this.limitChange}/>;
+
   }
 }
 
 Limits.propTypes = {
   t: PropTypes.func,
   history: PropTypes.object,
-  addOffer: PropTypes.func,
   setLimits: PropTypes.func,
   seller: PropTypes.object,
   token: PropTypes.object,
-  addOfferStatus: PropTypes.string,
-  resetAddOfferStatus: PropTypes.func,
   wizard: PropTypes.object,
-  footer: PropTypes.object,
-  txHash: PropTypes.string
+  footer: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state),
-  addOfferStatus: metadata.selectors.getAddOfferStatus(state),
-  txHash: metadata.selectors.getAddOfferTx(state)
+  seller: newSeller.selectors.getNewSeller(state)
 });
 
 export default connect(
   mapStateToProps,
   {
-    setLimits: newSeller.actions.setLimits,
-    addOffer: metadata.actions.addOffer,
-    resetAddOfferStatus: metadata.actions.resetAddOfferStatus
+    setLimits: newSeller.actions.setLimits
   }
 )(withRouter(Limits));

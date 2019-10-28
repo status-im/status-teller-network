@@ -47,6 +47,7 @@ import SellArbitrator from '../wizards/Sell/5_SelectArbitrator';
 import SellCurrency from '../wizards/Sell/2_Currency';
 import SellMargin from '../wizards/Sell/6_Margin';
 import SellLimits from '../wizards/Sell/7_Limits';
+import SellSummary from '../wizards/Sell/8_Summary';
 
 // Tmp
 import SignatureContainer from '../pages/tmp/SignatureContainer';
@@ -100,6 +101,7 @@ class App extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.isReady !== this.props.isReady ||
+      nextProps.isEip1102Enabled !== this.props.isEip1102Enabled ||
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
@@ -162,7 +164,7 @@ class App extends Component {
                   {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
                   {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
-                
+
                 <Wizard path="/sell/" steps={[
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
@@ -171,9 +173,10 @@ class App extends Component {
                   {path: '/sell/contact', component: SellContact},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
-                  {path: '/sell/limits', component: SellLimits, nextLabel: 'Post the offer'}
+                  {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},
+                  {path: '/sell/summary', component: SellSummary, nextLabel: 'Post the offer'}
                 ]}/>
-                
+
                 <Route path="/tmp/signature" component={SignatureContainer}/>
 
                 <Route component={fourOFour}/>
