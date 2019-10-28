@@ -2,6 +2,7 @@
 import React, {Fragment, Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
+import {withNamespaces, Trans} from "react-i18next";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -62,7 +63,13 @@ class CancelEscrow extends Component {
             <Col xs="2">
             </Col>
             <Col xs="10" className="text-small">
-              Escrow can be canceled after it expires
+              {(function () {
+                // This a weird and impromptu function, but it's a simple way to only generate a variable in the jsx render
+                const amountTime = moment(new Date(trade.expirationTime * 1000)).toNow(true);
+                return <Trans i18nKey="cancelEscrow.expire" amountTime={amountTime}>
+                  Once funded, an escrow can only be canceled by you after it expires (in <b>{{amountTime}}</b>)
+                </Trans>;
+              }())}
             </Col>
           </Row>
         }
@@ -92,6 +99,7 @@ CancelEscrow.defaultProps = {
 };
 
 CancelEscrow.propTypes = {
+  t: PropTypes.func,
   cancelEscrow: PropTypes.func,
   trade: PropTypes.object,
   isBuyer: PropTypes.bool,
@@ -101,5 +109,5 @@ CancelEscrow.propTypes = {
   isETHorSNT: PropTypes.bool
 };
 
-export default CancelEscrow;
+export default withNamespaces()(CancelEscrow);
 
