@@ -15,8 +15,8 @@ contract Stakable is Ownable {
         address token;
     }
 
-    mapping(uint => Stake) stakes;
-    mapping(address => uint) stakeCounter;
+    mapping(uint => Stake) public stakes;
+    mapping(address => uint) public stakeCounter;
 
     event BurnAddressChanged(address sender, address prevBurnAddress, address newBurnAddress);
     event BasePriceChanged(address sender, uint prevPrice, uint newPrice);
@@ -48,7 +48,7 @@ contract Stakable is Ownable {
     }
 
     function _stake(uint _itemId, address payable _owner, address _tokenAddress) internal {
-        require(stakes[_itemId].amount == 0, "Already has an stake");
+        require(stakes[_itemId].owner == address(0), "Already has/had a stake");
 
         stakeCounter[_owner]++;
 
@@ -121,11 +121,17 @@ contract Stakable is Ownable {
     function _refundStake(uint _itemId) internal {
         Stake storage s = stakes[_itemId];
 
-        if (s.token == address(0)) {
-            s.owner.transfer(s.amount);
-        } else {
-            require(ERC20Token(s.token).transfer(s.owner, s.amount), "Couldn't transfer funds");
+        if (s.amount == 0) return;
+
+        if (s.amount != 0) {
+            if (s.token == address(0)) {
+                s.owner.transfer(s.amount);
+            } else {
+                require(ERC20Token(s.token).transfer(s.owner, s.amount), "Couldn't transfer funds");
+            }
         }
+
+        s.amount = 0;
 
         stakeCounter[s.owner]--;
     }

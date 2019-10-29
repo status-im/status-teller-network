@@ -87,6 +87,8 @@ contract MetadataStore is Stakable, MessageSigned {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+
+        _setOwner(msg.sender);
     }
 
     event LicensesChanged(address sender, address oldSellingLicenses, address newSellingLicenses, address oldArbitrationLicenses, address newArbitrationLicenses);
@@ -440,5 +442,4 @@ contract MetadataStore is Stakable, MessageSigned {
         if (msg.sender != escrowContract) return;
         _refundStake(_offerId);
     }
-
 }

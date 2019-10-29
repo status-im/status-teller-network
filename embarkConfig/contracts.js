@@ -94,7 +94,7 @@ module.exports = {
         instanceOf: "OwnedUpgradeabilityProxy"
       },
       "MetadataStore": {
-        args: ["$SellerLicense", "$ArbitrationLicense"]
+        args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
       },
       MetadataStoreProxy: {
         instanceOf: "OwnedUpgradeabilityProxy"
