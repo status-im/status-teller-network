@@ -5,44 +5,9 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const dataMigration = require('./data.js');
 
-let secret = {};
-try {
-  secret = require('../.secret.json');
-} catch(err) {
-  console.dir("warning: .secret.json file not found; this is only needed to deploy to testnet or livenet etc..");
-}
-
 module.exports = {
   // default applies to all environments
   default: {
-    // Blockchain node to deploy the contracts
-    deployment: {
-      host: "localhost", // Host of the blockchain node
-      port: 8546, // Port of the blockchain node
-      type: "ws" // Type of connection (ws or rpc),
-      // Accounts to use instead of the default account to populate your wallet
-      // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-      /*,accounts: [
-        {
-          privateKey: "your_private_key",
-          balance: "5 ether"  // You can set the balance of the account in the dev environment
-                              // Balances are in Wei, but you can specify the unit with its name
-        },
-        {
-          privateKeyFile: "path/to/file", // Either a keystore or a list of keys, separated by , or ;
-          password: "passwordForTheKeystore" // Needed to decrypt the keystore file
-        },
-        {
-          mnemonic: "12 word mnemonic",
-          addressIndex: "0", // Optionnal. The index to start getting the address
-          numAddresses: "1", // Optionnal. The number of addresses to get
-          hdpath: "m/44'/60'/0'/0/" // Optionnal. HD derivation path
-        },
-        {
-          "nodeAccounts": true // Uses the Ethereum node's accounts
-        }
-      ]*/
-    },
     // order of connections the dapp should connect to
     dappConnection: [
       "$WEB3",  // uses pre existing web3 object if available (e.g in Mist)
@@ -65,7 +30,7 @@ module.exports = {
     //            contracts section.
     strategy: 'explicit',
 
-    contracts: {
+    deploy: {
       OwnedUpgradeabilityProxy: {
         deploy: false
       },
@@ -157,23 +122,10 @@ module.exports = {
   // default environment, merges with the settings in default
   // assumed to be the intended environment by `embark run`
   development: {
-    contracts: {
+    deploy: {
       StandardToken: { },
       DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
       MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] }
-    },
-    deployment: {
-      // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-      accounts: [
-        {
-          nodeAccounts: true
-        },
-        {
-          mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
-          balance: "5 ether",
-          numAddresses: "10"
-        }
-      ]
     },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS)
   },
@@ -187,22 +139,9 @@ module.exports = {
   // used with "embark run testnet"
   testnet: {
     tracking: 'shared.rinkeby.json',
-    deployment: {
-      accounts: [
-        {
-          mnemonic: secret.mnemonic,
-          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
-          numAddresses: "10"
-        }
-      ],
-      host: `rinkeby.infura.io/v3/${secret.infuraKey}`,
-      port: false,
-      protocol: 'https',
-      type: "rpc"
-    },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
     dappConnection: ["$WEB3"],
-    contracts: {
+    deploy: {
       StandardToken: { },
       DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
       MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
@@ -227,7 +166,7 @@ module.exports = {
   ropsten: {
     gasPrice: "10000000000",
     tracking: 'shared.ropsten.json',
-    contracts: {
+    deploy: {
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
@@ -256,19 +195,6 @@ module.exports = {
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
       }
     },
-    deployment: {
-      accounts: [
-        {
-          mnemonic: secret.mnemonic,
-          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
-          numAddresses: "10"
-        }
-      ],
-      host: `ropsten.infura.io/${secret.infuraKey}`,
-      port: false,
-      protocol: 'https',
-      type: "rpc"
-    },
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
     dappConnection: ["$WEB3"]
   },
@@ -276,7 +202,7 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
-    contracts: {
+    deploy: {
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Mainnet/
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
