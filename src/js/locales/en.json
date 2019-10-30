@@ -1,9 +1,11 @@
 {
   "home": {
     "buy": "Buy crypto",
+    "openDapp": "Open DApp",
+    "viewOffers": "View all offers",
     "createOffer": "Create an offer",
-    "welcome": "Exchange cryptocurrency between peers",
-    "details": "Teller is a decentralized, peer to peer global network that provides a fiat to crypto exchange.",
+    "welcome": "Buy and sell cryptocurrencies near you",
+    "details": "Teller is a secure and simple marketplace to buy and sell cryptocurrencies with people near you.",
     "loadingData": "Loading data"
   },
   "ethereumEnable": {

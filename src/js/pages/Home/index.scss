@@ -1,6 +1,19 @@
 @import "../../../css/variable-overrides";
 
+$landing-text: #5C667D;
+
+.home-body-content {
+  overflow: hidden;
+  max-width: none !important;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .home {
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+
   .home-logo {
     text-align: center;
     padding-top: 20px;
@@ -8,18 +21,16 @@
 
   .home-headline {
     margin-top: 1.5rem;
-
-    .home-details {
-      color: #5C667D;
-    }
   }
 
-  .home--footer {
-    margin-top: 1.5rem;
+  .home-details {
+    color: $landing-text;
+  }
 
-    .btn {
-      width: 197px;
-    }
+  .btn {
+    min-width: 124px;
+    height: 44px;
+    padding: 11px 17px;
   }
 
   .teller-version {
@@ -27,5 +38,55 @@
     bottom: 15px;
     right: 15px;
     margin: 0;
+  }
+
+  .icon-group {
+    .icon-group-title {
+      font-size: 29px;
+      font-weight: bold;
+    }
+
+    .home-details, .home-details p {
+      font-size: 18px;
+    }
+  }
+
+  .popular-offers {
+    width: 1600px;
+    margin: 0;
+    text-align: left;
+
+
+    @media screen and (min-width: 768px) {
+      position: relative;
+      left: -382px;
+    }
+
+    .offer-card {
+      display: inline-block;
+      text-align: left;
+      margin-right: 25px;
+    }
+  }
+
+  .landing-footer {
+    h5 {
+      font-size: 17px;
+      font-weight: bold;
+      color: #172348;
+    }
+
+    ul {
+      padding-left: 0;
+
+      li {
+        list-style-type: none;
+
+        a {
+          color: $landing-text;
+          font-size: 17px;
+        }
+      }
+    }
   }
 }

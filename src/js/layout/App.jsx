@@ -1,6 +1,6 @@
 /*global web3*/
 import React, {Component, Fragment} from 'react';
-import {HashRouter, Route, Switch} from "react-router-dom";
+import {HashRouter, Route, Switch, withRouter} from "react-router-dom";
 import {connect} from 'react-redux';
 import {Container, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -74,6 +74,7 @@ class App extends Component {
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
+    this.props.loadOffers();
   }
 
   componentDidUpdate(prevProps) {
@@ -132,7 +133,7 @@ class App extends Component {
           <Container className="p-0" id="app-container">
             <NotificationManager/>
             <Header />
-            <div className="body-content">
+            <div className={(this.props.location.pathname === '/' ? 'home-body-content ' : '') + "body-content"}>
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
               </Alert>}
@@ -190,6 +191,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  location: PropTypes.object,
   init: PropTypes.func,
   error: PropTypes.string,
   priceError: PropTypes.string,
@@ -205,6 +207,7 @@ App.propTypes = {
   resetState: PropTypes.func,
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func,
+  loadOffers: PropTypes.func,
   isEip1102Enabled: PropTypes.bool
 };
 
@@ -233,6 +236,7 @@ export default connect(
     resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
     setCurrentUser: metadata.actions.setCurrentUser,
-    watchEscrowCreations: escrow.actions.watchEscrowCreations
+    watchEscrowCreations: escrow.actions.watchEscrowCreations,
+    loadOffers: metadata.actions.loadOffers
   }
-)(App);
+)(withRouter(App));

@@ -38,10 +38,10 @@ export const sortByMargin = (SNT) => {
 
       if (marginA > marginB) return 1;
       if (marginA < marginB) return -1;
-    
+
       return 0;
   }
-  
+
   return a.asset > b.asset ? 1 : -1;
   };
 };
