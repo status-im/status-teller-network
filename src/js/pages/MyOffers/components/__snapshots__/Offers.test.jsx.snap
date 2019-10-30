@@ -14,7 +14,7 @@ exports[`Offers should render correctly 1`] = `
       <Link
         className="float-right text-small"
         replace={false}
-        to="/license"
+        to="/sell"
       />
     </span>
   </div>
@@ -166,7 +166,7 @@ exports[`Offers should render when empty 1`] = `
       <Link
         className="float-right text-small"
         replace={false}
-        to="/license"
+        to="/sell"
       />
     </span>
   </div>
