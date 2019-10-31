@@ -1,6 +1,6 @@
 /*global web3*/
 import React, {Component, Fragment} from 'react';
-import {HashRouter, Route, Switch, withRouter} from "react-router-dom";
+import {HashRouter, Route, Switch} from "react-router-dom";
 import {connect} from 'react-redux';
 import {Container, Alert} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -65,7 +65,8 @@ class App extends Component {
     this.props.init();
     this.watchingTrades = false;
     this.state = {
-      hidePriceError: false
+      hidePriceError: false,
+      isHome: this.isHome()
     };
     setInterval(() => {
       this.props.getGasPrice();
@@ -75,6 +76,16 @@ class App extends Component {
       this.watchTradesForOffers();
     }
     this.props.loadOffers();
+
+    window.addEventListener('hashchange', () => {
+      if (this.state.isHome !== this.isHome()) {
+        this.setState({isHome: this.isHome()});
+      }
+    });
+  }
+
+  isHome() {
+    return window.location.hash === '#/';
   }
 
   componentDidUpdate(prevProps) {
@@ -106,7 +117,8 @@ class App extends Component {
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
-      nextState.hidePriceError !== this.state.hidePriceError;
+      nextState.hidePriceError !== this.state.hidePriceError ||
+      nextState.isHome !== this.state.isHome;
   }
 
   hidePriceError = () => {
@@ -133,7 +145,7 @@ class App extends Component {
           <Container className="p-0" id="app-container">
             <NotificationManager/>
             <Header />
-            <div className={(this.props.location.pathname === '/' ? 'home-body-content ' : '') + "body-content"}>
+            <div className={(this.state.isHome ? 'home-body-content ' : 'app-body-content ') + "body-content"}>
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
               </Alert>}
@@ -191,7 +203,6 @@ class App extends Component {
 }
 
 App.propTypes = {
-  location: PropTypes.object,
   init: PropTypes.func,
   error: PropTypes.string,
   priceError: PropTypes.string,
@@ -239,4 +250,4 @@ export default connect(
     watchEscrowCreations: escrow.actions.watchEscrowCreations,
     loadOffers: metadata.actions.loadOffers
   }
-)(withRouter(App));
+)(App);

@@ -1,3 +1,57 @@
-header .navbar {
-  margin-bottom: 32px;
+@import "../../../css/variable-overrides.scss";
+
+.app-header {
+  background-color: $blue;
+  height: 78px;
+  width: 100%;
+
+  .navbar {
+    display: block;
+    padding: 12px 20px 0;
+    margin: 0 auto;
+    height: 100%;
+    background-image: url("../../../images/transparentLogo.png");
+    background-repeat: no-repeat;
+    background-position: top 76% left -13px;
+
+    @media screen and (min-width: 768px) {
+      background-position: top 76% left 4px;
+      max-width: 790px;
+      padding: 12px 40px 0;
+    }
+
+    .navbar-brand {
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .header-nav-btns {
+      width: 168px;
+      margin: 0 auto;
+
+      .btn {
+        width: 76px;
+        background: none;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 15px;
+
+        &.active {
+          background-color: #46c5ff;
+          border: 1px solid white;
+          color: white;
+        }
+      }
+    }
+
+    .hamburger-nav {
+      margin-top: -8px;
+
+      @media screen and (min-width: 768px) {
+        margin-left: 17px;
+      }
+    }
+  }
 }

@@ -7,17 +7,18 @@
   position: absolute;
 }
 
-header {
-  padding-left: 15px;
-  padding-right: 15px;
-  margin-bottom: 20px;
-  height: 65px;
-  width: 100%;
-}
-
 .body-content {
   padding-right: 15px;
   padding-left: 15px;
+}
+
+.app-body-content {
+  padding-top: 17px;
+  background-color: white;
+  position: relative;
+  top: -22px;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
 }
 
 .btn-primary {
@@ -120,11 +121,6 @@ $input-icon-height: 20px;
 .btn-sm {
   padding: 0.25rem 0.5rem;
   border-radius: 6px;
-}
-
-.navbar-brand {
-  cursor: pointer;
-  width: 70%;
 }
 
 .text-black {
