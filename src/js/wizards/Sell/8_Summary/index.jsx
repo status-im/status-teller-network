@@ -25,6 +25,7 @@ class Summary extends Component {
       (this.props.seller.useCustomLimits === true && this.props.seller.limitL >= 0 && this.props.seller.limitU >= 0))) {
       return this.props.wizard.previous();
     }
+
     this.setState({ready: true});
     this.props.footer.enableNext();
     this.offerCreated = false;
@@ -41,7 +42,7 @@ class Summary extends Component {
 
   postOffer = () => {
     this.props.footer.hide();
-    this.props.addOffer(this.props.seller);
+    this.props.addOffer(this.props.seller, this.props.offerStake);
   };
 
   continue = () => {
