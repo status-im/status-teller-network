@@ -85,7 +85,7 @@ contract KyberFeeBurner is Ownable {
      * @dev Changes the current max slippage rate
      * @param _newSlippageRate New slippage rate
      */
-    function setMaxSlippageRate(uint _newSlippageRate) external onlyOwner {
+    function setMaxSlippageRate(uint _newSlippageRate) public onlyOwner {
         require(_newSlippageRate <= 10000, "Invalid slippage rate");
         emit SlippageRateChanged(msg.sender, maxSlippageRate, _newSlippageRate);
         maxSlippageRate = _newSlippageRate;
