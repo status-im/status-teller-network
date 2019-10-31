@@ -36,13 +36,13 @@ class Summary extends Component {
     }).catch(() => {
       this.setState({notificationAccepted: false});
     });
-
+    
     this.props.getOfferPrice();
   }
 
   postOffer = () => {
     this.props.footer.hide();
-    this.props.addOffer(this.props.seller);
+    this.props.addOffer(this.props.seller, this.props.offerStake);
   };
 
   continue = () => {
