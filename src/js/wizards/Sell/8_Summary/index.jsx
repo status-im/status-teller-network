@@ -42,7 +42,7 @@ class Summary extends Component {
 
   postOffer = () => {
     this.props.footer.hide();
-    this.props.addOffer(this.props.seller);
+    this.props.addOffer(this.props.seller, this.props.offerStake);
   };
 
   continue = () => {
