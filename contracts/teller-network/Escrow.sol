@@ -326,6 +326,10 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _isDispute indicates if the release happened due to a dispute
      */
     function _release(uint _escrowId, EscrowTransaction storage _trx, bool _isDispute) internal {
+        if(!_isDispute){
+            metadataStore.refundStake(_trx.offerId);
+        }
+
         _trx.status = EscrowStatus.RELEASED;
         address token = _trx.token;
         if(token == address(0)){
@@ -333,6 +337,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         } else {
             require(ERC20Token(token).transfer(_trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
         }
+
         _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
 
         emit Released(_escrowId);
@@ -541,8 +546,9 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         require(trx.buyer != _arbitrator && trx.seller != _arbitrator, "Arbitrator cannot be part of transaction");
 
-        if(_releaseFunds){
+        if (_releaseFunds) {
             _release(_escrowId, trx, true);
+            metadataStore.slashStake(trx.offerId);
         } else {
             _cancel(_escrowId, trx, true);
             _releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);

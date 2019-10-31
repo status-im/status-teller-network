@@ -2,7 +2,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
-
+    
     {
       console.log('Setting the initial SellerLicense "template", and calling the init() function');
 
@@ -66,6 +66,13 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
     deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
     deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
+
+    {
+      console.log('Setting the escrow address in MetadataStore');
+      const receipt = await deps.contracts.MetadataStore.methods.setEscrowContract(deps.contracts.EscrowProxy.options.address).send({from: main, gas: 2000000});
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
 
     const arbitrator = addresses[9];
 
