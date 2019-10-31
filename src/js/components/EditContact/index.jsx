@@ -22,9 +22,9 @@ class EditContact extends Component {
     }
   };
 
-  isENSName = (statusContactCode) => statusContactCode.endsWith(".eth");
+  isENSName = (statusContactCode) => statusContactCode && statusContactCode.endsWith(".eth");
 
-  isStatusENSDomain = (statusContactCode) => statusContactCode.indexOf(domain) > -1;
+  isStatusENSDomain = (statusContactCode) => statusContactCode && statusContactCode.indexOf(domain) > -1;
 
   render() {
     const {t, username, statusContactCode, isStatus, ensError} = this.props;

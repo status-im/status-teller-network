@@ -1,7 +1,8 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
-  SIGN_MESSAGE, DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED
+  SIGN_MESSAGE, DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
+  GET_OFFER_PRICE
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -12,7 +13,7 @@ export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
 export const loadOffers = (address) => ({ type: LOAD_OFFERS, address });
 
-export const addOffer = (seller) => ({
+export const addOffer = (seller, offerStake) => ({
   type: ADD_OFFER,
   user: {
     statusContactCode: seller.statusContactCode,
@@ -26,9 +27,12 @@ export const addOffer = (seller) => ({
     margin: seller.margin,
     arbitrator: seller.arbitrator,
     limitL: seller.useCustomLimits ? seller.limitL.toFixed(2).toString().replace('.', '') : 0,
-    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0
+    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0,
+    stake: offerStake
   }
 });
+
+export const getOfferPrice = () => ({type: GET_OFFER_PRICE});
 
 export const signMessage = (username, statusContactCode) => ({
   type: SIGN_MESSAGE,

@@ -12,7 +12,7 @@ import {
   LOAD_USER_LOCATION, LOAD_USER_LOCATION_SUCCEEDED, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   SIGN_MESSAGE, SIGN_MESSAGE_FAILED, SIGN_MESSAGE_SUCCEEDED,
   DELETE_OFFER, DELETE_OFFER_FAILED, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED,
-  ENABLE_ETHEREUM, ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED
+  ENABLE_ETHEREUM, ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED, GET_OFFER_PRICE, GET_OFFER_PRICE_SUCCEEDED, GET_OFFER_PRICE_FAILED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -193,7 +193,7 @@ export function *addOffer({user, offer}) {
     offer.margin,
     offer.arbitrator
   );
-  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend});
+  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend, value: offer.stake});
 }
 
 export function *onAddOffer() {
@@ -236,6 +236,18 @@ export function *onDeleteOffer() {
   yield takeEvery(DELETE_OFFER, doTransaction.bind(null, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED));
 }
 
+export function *getOfferPrice() {
+  try {
+    const price = yield MetadataStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+    yield put({type: GET_OFFER_PRICE_SUCCEEDED, price});
+  } catch(err){
+    yield put({type: GET_OFFER_PRICE_FAILED, error: err.message});
+  }
+}
+
+export function *onGetOfferPrice() {
+  yield takeEvery(GET_OFFER_PRICE, getOfferPrice);
+}
 
 export default [
   fork(onLoad),
@@ -246,5 +258,6 @@ export default [
   fork(onUpdateUser),
   fork(onSignMessage),
   fork(onDeleteOffer),
-  fork(onEnabledEthereum)
+  fork(onEnabledEthereum),
+  fork(onGetOfferPrice)
 ];
