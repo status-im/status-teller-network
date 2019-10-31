@@ -31,7 +31,7 @@ class Trade extends Component {
 
   componentDidMount() {
     if (isNaN(this.props.offerId)) {
-      return this.props.history.push('/offers/list');
+      return this.props.history.push('/buy');
     }
     this.validate(this.props.currencyQuantity, this.props.assetQuantity);
 

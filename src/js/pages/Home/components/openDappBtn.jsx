@@ -6,7 +6,7 @@ import {withNamespaces} from "react-i18next";
 import {Link} from "react-router-dom";
 
 const OpenDappBtn = ({t, loading, size, text}) => (
-  <Button size={size} tag={Link} disabled={loading} color="primary" to="/offers/list" className="d-inline-block mx-auto ">
+  <Button size={size} tag={Link} disabled={loading} color="primary" to="/buy" className="d-inline-block mx-auto ">
     {!loading ? text || t('home.openDapp') : t('home.loadingData')}
   </Button>
 );

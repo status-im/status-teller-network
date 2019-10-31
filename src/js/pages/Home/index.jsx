@@ -123,7 +123,7 @@ class Home extends Component {
                     <Offer key={`offer-${index}`}
                            withDetail offer={offer}
                            prices={prices} userAddress={address}
-                           offerClick={() => this.props.history.push('/offers/list')}/>)
+                           offerClick={() => this.props.history.push('/buy')}/>)
                   )}
                 </div>
               </Draggable>

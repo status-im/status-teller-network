@@ -157,10 +157,10 @@ class App extends Component {
                 <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
-                <Route exact path="/offers/list" component={OffersList}/>
+                <Route exact path="/buy" component={OffersList}/>
                 <Route exact path="/offers/map" component={OffersMap}/>
 
-                <Wizard path="/buy/" steps={[
+                <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade', component: BuyTrade},
                   {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
                   {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}

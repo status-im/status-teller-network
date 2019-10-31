@@ -45,7 +45,7 @@ class OffersList extends Component {
       this.props.history.push('/profile/offers');
     } else {
       this.props.setOfferId(offerId);
-      this.props.history.push('/buy');
+      this.props.history.push('/buy/trade');
     }
   };
 
