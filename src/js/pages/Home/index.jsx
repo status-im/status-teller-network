@@ -82,15 +82,19 @@ class Home extends Component {
     return (
       <div className="home px-4">
         <LandingHeader loading={!hasPrices && !priceError}/>
-        <Row className="home-headline">
-          <Col xs={12}>
-            <h1 className="text-center font-weight-bold" data-aos="fade-up">{t('home.welcome')}</h1>
-            <h3 className="text-center home-details font-weight-normal mt-2" data-aos="fade-up">{t('home.details')}</h3>
-          </Col>
-          <Col xs={12} className="text-center mt-3" data-aos="fade-up">
-            <OpenDappBtn loading={loading}/>
-          </Col>
-        </Row>
+        <div className="home-headline-container">
+          <Row className="home-headline">
+            <Col xs={12}>
+              <h1 className="text-center font-weight-bold"
+                  data-aos="fade-up">{t('home.welcome1')}<br/>{t('home.welcome2')}</h1>
+              <h3 className="text-center home-details font-weight-normal mt-2"
+                  data-aos="fade-up">{t('home.details')}</h3>
+            </Col>
+            <Col xs={12} className="text-center mt-3" data-aos="fade-up">
+              <OpenDappBtn loading={loading}/>
+            </Col>
+          </Row>
+        </div>
 
         <Row className="mt-4 mb-3">
           <IconGroup src={secureIcon} title="Secure & Private" aos="fade-right">
@@ -109,7 +113,7 @@ class Home extends Component {
           {offers.length > 0 &&
           <IconGroup src={mostPopularIcon} title="Most popular offers" className="mt-5 mb-2" fullSize aos="fade-up">
             <Fragment>
-              <p>Choose from a growing number of sellers</p>
+              <p data-aos="fade-up">Choose from a growing number of sellers</p>
               <Draggable
                 axis="x"
                 handle=".popular-offers"
@@ -118,7 +122,7 @@ class Home extends Component {
                 grid={[25, 25]}
                 bounds={this.state.bigScreen ? {left: -300, right: 300} : {left: -1120, right: 0}}
                 scale={1}>
-                <div className="popular-offers mb-3">
+                <div className="popular-offers mb-3" data-aos="fade-up">
                   {offers.sort(sortByRating).slice(0, 5).map((offer, index) => (
                     <Offer key={`offer-${index}`}
                            withDetail offer={offer}
@@ -127,14 +131,14 @@ class Home extends Component {
                   )}
                 </div>
               </Draggable>
-              <OpenDappBtn loading={loading} text={t('home.viewOffers')}/>
+              <OpenDappBtn loading={loading} text={t('home.viewOffers')} aos="fade-up"/>
             </Fragment>
           </IconGroup>}
 
           <IconGroup src={tradeIcon} title="How does the trade work?" fullSize className="mt-5" aos="fade-up">
-            Teller offers a decentralized, safe and private solution.
-            <img alt="trade example" src={escrowExample} className="mx-auto mt-2 mb-5 d-block"/>
-            <OpenDappBtn loading={loading}/>
+            <p data-aos="fade-up">Teller offers a decentralized, safe and private solution.</p>
+            <img alt="trade example" src={escrowExample} className="mx-auto mt-2 mb-5 d-block" data-aos="fade-up"/>
+            <OpenDappBtn loading={loading} data-aos="fade-up"/>
           </IconGroup>
         </Row>
 
