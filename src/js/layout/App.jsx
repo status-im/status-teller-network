@@ -65,7 +65,8 @@ class App extends Component {
     this.props.init();
     this.watchingTrades = false;
     this.state = {
-      hidePriceError: false
+      hidePriceError: false,
+      isHome: this.isHome()
     };
     setInterval(() => {
       this.props.getGasPrice();
@@ -74,6 +75,17 @@ class App extends Component {
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
+    this.props.loadOffers();
+
+    window.addEventListener('hashchange', () => {
+      if (this.state.isHome !== this.isHome()) {
+        this.setState({isHome: this.isHome()});
+      }
+    });
+  }
+
+  isHome() {
+    return window.location.hash === '#/';
   }
 
   componentDidUpdate(prevProps) {
@@ -105,7 +117,8 @@ class App extends Component {
       !_.isEqual(nextProps.profile, this.props.profile) ||
       nextProps.error !== this.props.error ||
       nextProps.hasToken !== this.props.hasToken ||
-      nextState.hidePriceError !== this.state.hidePriceError;
+      nextState.hidePriceError !== this.state.hidePriceError ||
+      nextState.isHome !== this.state.isHome;
   }
 
   hidePriceError = () => {
@@ -132,7 +145,7 @@ class App extends Component {
           <Container className="p-0" id="app-container">
             <NotificationManager/>
             <Header />
-            <div className="body-content">
+            <div className={(this.state.isHome ? 'home-body-content ' : 'app-body-content ') + "body-content"}>
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
               </Alert>}
@@ -156,10 +169,10 @@ class App extends Component {
                 <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
-                <Route exact path="/offers/list" component={OffersList}/>
+                <Route exact path="/buy" component={OffersList}/>
                 <Route exact path="/offers/map" component={OffersMap}/>
 
-                <Wizard path="/buy/" steps={[
+                <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade', component: BuyTrade},
                   {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
                   {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
@@ -205,6 +218,7 @@ App.propTypes = {
   resetState: PropTypes.func,
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func,
+  loadOffers: PropTypes.func,
   isEip1102Enabled: PropTypes.bool
 };
 
@@ -233,6 +247,7 @@ export default connect(
     resetState: network.actions.resetState,
     loadProfile: metadata.actions.load,
     setCurrentUser: metadata.actions.setCurrentUser,
-    watchEscrowCreations: escrow.actions.watchEscrowCreations
+    watchEscrowCreations: escrow.actions.watchEscrowCreations,
+    loadOffers: metadata.actions.loadOffers
   }
 )(App);

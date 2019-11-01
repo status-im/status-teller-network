@@ -35,7 +35,7 @@ class Summary extends Component {
 
   continue = () => {
     this.props.resetAddOfferStatus();
-    this.props.history.push('/offers/list');
+    this.props.history.push('/buy');
   };
 
   cancel = () => {
@@ -78,6 +78,7 @@ Summary.propTypes = {
   addOffer: PropTypes.func,
   setLimits: PropTypes.func,
   seller: PropTypes.object,
+  assetData: PropTypes.object,
   token: PropTypes.object,
   addOfferStatus: PropTypes.string,
   resetAddOfferStatus: PropTypes.func,

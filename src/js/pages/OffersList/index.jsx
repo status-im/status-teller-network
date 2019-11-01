@@ -36,7 +36,6 @@ class OffersList extends Component {
   }
 
   load() {
-    this.props.loadOffers();
     this.props.updateBalance('ETH');
   }
 
@@ -46,7 +45,7 @@ class OffersList extends Component {
       this.props.history.push('/profile/offers');
     } else {
       this.props.setOfferId(offerId);
-      this.props.history.push('/buy');
+      this.props.history.push('/buy/trade');
     }
   };
 
@@ -171,7 +170,6 @@ OffersList.propTypes = {
   t: PropTypes.func,
   offers: PropTypes.array,
   tokens: PropTypes.array,
-  loadOffers: PropTypes.func,
   prices: PropTypes.object,
   address: PropTypes.string,
   gasPrice: PropTypes.string,
@@ -195,7 +193,6 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
-    loadOffers: metadata.actions.loadOffers,
     updateBalance: network.actions.updateBalance,
     setOfferId: newBuy.actions.setOfferId
   })(withNamespaces()(withRouter(OffersList)));
