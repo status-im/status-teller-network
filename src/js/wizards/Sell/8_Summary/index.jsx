@@ -7,14 +7,17 @@ import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 import network from "../../../features/network";
 import {States} from "../../../utils/transaction";
+import {askPermission} from '../../../utils/notifUtils';
 
 import Loading from "../../../components/Loading";
 import ErrorInformation from "../../../components/ErrorInformation";
 import Success from "../7_Limits/components/Success";
 import SellSummary from "./components/SellSummary";
+import {Alert} from "reactstrap";
+import {withNamespaces} from "react-i18next";
 
 class Summary extends Component {
-  state = {ready: false};
+  state = {ready: false, notificationAccepted: null};
 
   componentDidMount() {
     // TODO check limits
@@ -26,6 +29,12 @@ class Summary extends Component {
     this.props.footer.enableNext();
     this.offerCreated = false;
     this.props.footer.onNext(this.postOffer);
+
+    askPermission().then(() => {
+      this.setState({notificationAccepted: true});
+    }).catch(() => {
+      this.setState({notificationAccepted: false});
+    });
   }
 
   postOffer = () => {
@@ -54,6 +63,7 @@ class Summary extends Component {
   }
 
   render() {
+    const {t} = this.props;
     if (!this.state.ready) {
       return <Loading page/>;
     }
@@ -63,7 +73,18 @@ class Summary extends Component {
       case States.failed:
         return <ErrorInformation transaction retry={this.postOffer} cancel={this.cancel}/>;
       case States.none:
-        return <SellSummary seller={this.props.seller} profile={this.props.profile} arbitratorProfile={this.props.arbitratorProfile} assetData={this.props.assetData}/>;
+        return <Fragment>
+          {this.state.notificationAccepted === null && <Alert color="info">
+            <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
+            <p className="mb-0">{t('notifications.onlyToInform')}</p>
+          </Alert>}
+          {this.state.notificationAccepted === false && <Alert color="warning">
+            <p className="mb-1">{t('notifications.rejected')}</p>
+            <p className="mb-1">{t('notifications.desktop')}</p>
+            <p className="mb-0">{t('notifications.changeSettings')}</p>
+          </Alert>}
+            <SellSummary seller={this.props.seller} profile={this.props.profile} arbitratorProfile={this.props.arbitratorProfile} assetData={this.props.assetData}/>
+          </Fragment>;
       case States.success:
         return <Success onClick={this.continue} />;
       default:
@@ -108,4 +129,4 @@ export default connect(
     addOffer: metadata.actions.addOffer,
     resetAddOfferStatus: metadata.actions.resetAddOfferStatus
   }
-)(withRouter(Summary));
+)(withRouter(withNamespaces()(Summary)));

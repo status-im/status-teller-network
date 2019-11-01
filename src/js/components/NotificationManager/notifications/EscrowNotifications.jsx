@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import escrow from '../../../features/escrow';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
-import {createNotification} from '../notifUtils';
+import {createNotification} from '../../../utils/notifUtils';
 
 class EscrowNotifications extends Component {
   componentDidUpdate(prevProps) {
@@ -25,7 +25,6 @@ class EscrowNotifications extends Component {
         });
     }
   }
-
   render() {
     return <NotificationContainer/>;
   }

@@ -18,7 +18,7 @@ const fourOFour = ({t, history}) => (
     </p>
     <p>
       <Button color="primary" onClick={history.goBack} className="mr-4">{t('errorInformation.404.back')}</Button>
-      <Button color="primary" tag={Link} to="/">{t('errorInformation.404.home')}</Button>
+      <Button color="primary" tag={Link} to="/buy">{t('errorInformation.404.home')}</Button>
     </p>
   </div>
 );
