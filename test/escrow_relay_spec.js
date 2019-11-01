@@ -58,11 +58,17 @@ config({
 
     EscrowRelay: {
       args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
+      onDeploy: [
+        "MetadataStore.methods.setAllowedContract('$EscrowRelay', true).send()"
+      ]
     },
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000],
+      onDeploy: [
+        "MetadataStore.methods.setAllowedContract('$Escrow', true).send()"
+      ]
     },
     TestEscrowUpgrade: {
       args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
@@ -86,9 +92,9 @@ contract("Escrow Relay", function() {
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
-
     const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+   
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
     const abiEncode = Escrow.methods.init(
@@ -103,15 +109,13 @@ contract("Escrow Relay", function() {
     receipt = await OwnedUpgradeabilityProxy.methods.upgradeToAndCall(Escrow.options.address, abiEncode).send();
     Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
 
+    await MetadataStore.methods.setAllowedContract(OwnedUpgradeabilityProxy.options.address, true).send();
+    
     EscrowRelay.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name === 'Created'));
   });
 
   it("Can create an escrow", async () => {
-    const hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
-    const signature = await web3.eth.sign(hash, accounts[1]);
-    const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-
-    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
     escrowId = receipt.events.Created.returnValues.escrowId;
   });
 

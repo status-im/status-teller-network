@@ -233,7 +233,7 @@ module.exports = {
         deps: ['RelayHub'],
         onDeploy: [
           "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 100000000000000000, gas: 1000000})"
+          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 1000000, gas: 1000000})"
         ]
       },
       Escrow: {

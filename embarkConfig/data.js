@@ -68,8 +68,14 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
     {
-      console.log('Setting the escrow address in MetadataStore');
-      const receipt = await deps.contracts.MetadataStore.methods.setEscrowContract(deps.contracts.EscrowProxy.options.address).send({from: main, gas: 2000000});
+      console.log('Setting the escrow proxy address in MetadataStore');
+      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true).send({from: main, gas: 2000000});
+      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+    {
+      console.log('Setting the EscrowRelay address in MetadataStore');
+      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true).send({from: main, gas: 2000000});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 

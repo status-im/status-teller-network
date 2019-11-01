@@ -18,17 +18,16 @@ contract IEscrow {
       EscrowStatus status;
   }
 
-  function createEscrow(
+  function createEscrow_relayed(
+        address payable _sender,
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
         bytes32 _pubkeyA,
         bytes32 _pubkeyB,
-        string memory _location,
-        string memory _username,
-        uint _nonce,
-        bytes memory _signature
-  ) public returns(uint escrowId);
+        string calldata _location,
+        string calldata _username
+    ) external returns(uint escrowId);
 
   function pay(uint _escrowId) external;
 

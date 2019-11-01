@@ -111,6 +111,16 @@ contract("MetadataStore", function () {
     assert.strictEqual(user.username, 'Anthony');
   });
 
+  it("should allow to update a user using a signature", async function () {
+    hash = await MetadataStore.methods.getDataHash("Anthony", PUBKEY_A, PUBKEY_B).call();
+    signature = await web3.eth.sign(hash, accounts[0]);
+    let nonce = await MetadataStore.methods.user_nonce(accounts[0]).call();
+
+    await MetadataStore.methods.addOrUpdateUser(signature, PUBKEY_A, PUBKEY_B, "Quebec", "Anthony", nonce).send();
+    const user = await MetadataStore.methods.users(accounts[0]).call();
+    assert.strictEqual(user.location, 'Quebec');
+  });
+
   it("should allow to delete an offer", async function () {
     const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
     const receipt = await MetadataStore.methods.addOffer(SNT.address, PUBKEY_A, PUBKEY_B, "London", "EUR", "Iuri", [0], 0, 0, 1, accounts[9]).send({value: amountToStake});

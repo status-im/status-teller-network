@@ -81,6 +81,11 @@ contract("Escrow", function() {
   describe("Upgradeable Escrows", async () => {
 
     before(async () => {
+
+      await MetadataStore.methods.setAllowedContract(OwnedUpgradeabilityProxy.options.address, true).send();
+      await MetadataStore.methods.setAllowedContract(EscrowRelay.options.address, true).send();
+
+
       await SNT.methods.generateTokens(accounts[0], 1000).send();
       await SNT.methods.generateTokens(arbitrator, 1000).send();
       const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
@@ -107,6 +112,14 @@ contract("Escrow", function() {
     });
 
     it("Can create an escrow", async () => {
+      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      const created = receipt.events.Created;
+      assert(!!created, "Created() not triggered");
+      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+    });
+
+    it("Can create an escrow using a signature", async () => {
       const hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       const signature = await web3.eth.sign(hash, accounts[1]);
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
