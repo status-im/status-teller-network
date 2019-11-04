@@ -1,18 +1,5 @@
-
 .error-information {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  margin-top: -120px;
   width: 100%;
   text-align: center;
   padding: 0 35px;
-
-  &.with-tip, &.with-button {
-    margin-top: -155px;
-
-    &.with-button {
-      margin-top: -205px;
-    }
-  }
 }

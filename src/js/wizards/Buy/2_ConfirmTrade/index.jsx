@@ -14,15 +14,18 @@ import Address from "../../../components/UserInformation/Address";
 import {limitDecimals} from '../../../utils/numbers';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import infoIcon from "../../../../images/small-info.svg";
-import {Col, Row} from "reactstrap";
+import {Col, Row, Alert} from "reactstrap";
+import {askPermission} from '../../../utils/notifUtils';
+import {withNamespaces} from "react-i18next";
 
 class ConfirmTrade extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ready: false
+      ready: false,
+      notificationAccepted: null
     };
-    props.footer.disableNext(); 
+    props.footer.disableNext();
     props.footer.onNext(() => {
       this.postEscrow();
       props.footer.hide();
@@ -34,6 +37,12 @@ class ConfirmTrade extends Component {
       return this.props.wizard.previous();
     }
     this.setState({ready: true});
+
+    askPermission().then(() => {
+      this.setState({notificationAccepted: true});
+    }).catch(() => {
+      this.setState({notificationAccepted: false});
+    });
   }
 
   postEscrow = () => {
@@ -63,6 +72,7 @@ class ConfirmTrade extends Component {
   }
 
   render() {
+    const {t} = this.props;
     if (!this.state.ready || this.props.signing) {
       return <Loading page/>;
     }
@@ -75,6 +85,15 @@ class ConfirmTrade extends Component {
       case States.none: {
         const fiatAmount = this.props.assetQuantity * this.props.price;
         return (<Fragment>
+          {this.state.notificationAccepted === null && <Alert color="info">
+            <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
+            <p className="mb-0">{t('notifications.onlyToInform')}</p>
+          </Alert>}
+          {this.state.notificationAccepted === false && <Alert color="warning">
+            <p className="mb-1">{t('notifications.rejected')}</p>
+            <p className="mb-1">{t('notifications.desktop')}</p>
+            <p className="mb-0">{t('notifications.changeSettings')}</p>
+          </Alert>}
           <h2>Summary</h2>
           <h3 className="mt-4 font-weight-normal">Seller</h3>
           <p className="mt-2 font-weight-medium mb-1">
@@ -108,6 +127,7 @@ class ConfirmTrade extends Component {
 }
 
 ConfirmTrade.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   wizard: PropTypes.object,
   footer: PropTypes.object,
@@ -165,4 +185,4 @@ export default connect(
     resetCreateStatus: escrow.actions.resetCreateStatus,
     resetNewBuy: newBuy.actions.resetNewBuy
   }
-)(withRouter(ConfirmTrade));
+)(withRouter(withNamespaces()(ConfirmTrade)));

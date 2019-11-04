@@ -75,7 +75,6 @@ class App extends Component {
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
-    this.props.loadOffers();
 
     window.addEventListener('hashchange', () => {
       if (this.state.isHome !== this.isHome()) {
@@ -89,6 +88,9 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (!prevProps.isReady && this.props.isReady) {
+      this.props.loadOffers();
+    }
     if ((!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) || (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.isReady)) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
         this.props.resetState();
@@ -173,9 +175,9 @@ class App extends Component {
                 <Route exact path="/offers/map" component={OffersMap}/>
 
                 <Wizard path="/buy/trade" steps={[
-                  {path: '/buy/trade', component: BuyTrade},
-                  {path: '/buy/contact', component: BuyContact, nextLabel: 'Sign contact info'},
-                  {path: '/buy/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
+                  {path: '/buy/trade/amount', component: BuyTrade},
+                  {path: '/buy/trade/contact', component: BuyContact, nextLabel: 'Sign contact info'},
+                  {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 
                 <Wizard path="/sell/" steps={[
