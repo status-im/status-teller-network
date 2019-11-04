@@ -4,6 +4,15 @@
   background-color: $blue;
   height: 78px;
   width: 100%;
+  border: none;
+
+  &.in-profile {
+    background: none;
+
+    .navbar {
+      background: none;
+    }
+  }
 
   .navbar {
     display: block;

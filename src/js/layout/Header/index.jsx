@@ -15,21 +15,23 @@ const Header = ({location, history}) => {
     // Not this header on the landing page
     return null;
   }
+  const isProfile = location.pathname === '/profile';
+
   return (
-    <header className="border-bottom app-header">
+    <header className={classnames("app-header", {'in-profile': isProfile})}>
       <Navbar expand="md">
         <Row noGutters>
           <Col xs={1}>
-            <NavbarBrand tag={Link} to="/buy">
+            {!isProfile && <NavbarBrand tag={Link} to="/buy">
               <img src={logoWhite} alt="Logo"/>
-            </NavbarBrand>
+            </NavbarBrand>}
           </Col>
 
           <Col xs={10}>
-            <Nav className="header-nav-btns">
+            {!isProfile && <Nav className="header-nav-btns">
               <Button tag={Link} to="/buy" size="sm" className={classnames("mr-3", {active: location.pathname === '/buy'})}>Buy</Button>
               <Button tag={Link} to="/sell" size="sm" className={classnames({active: location.pathname.indexOf('/sell') > -1})}>Sell</Button>
-            </Nav>
+            </Nav>}
           </Col>
 
           <Col xs={1}>
