@@ -106,6 +106,8 @@ contract("Escrow", function() {
   this.timeout(0);
 
   before(async () => {
+    await MetadataStore.methods.setAllowedContract(Escrow.options.address, true).send();
+
     await SNT.methods.generateTokens(accounts[0], 1000).send();
 
     // Register arbitrators
@@ -133,8 +135,16 @@ contract("Escrow", function() {
   });
 
   describe("Creating a new escrow", async () => {
-
     it("Buyer can create escrow", async () => {
+      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "Username").send({from: accounts[1]});
+
+      const created = receipt.events.Created;
+      assert(!!created, "Created() not triggered");
+      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+    });
+
+    it("Buyer can create escrow using signature", async () => {
       hash = await MetadataStore.methods.getDataHash("Username", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();

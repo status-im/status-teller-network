@@ -69,9 +69,7 @@ config({
     },
     Escrow: {
       args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
-      onDeploy: [
-        "MetadataStore.methods.setEscrowContract('$Escrow').send()"
-      ]
+      onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
     },
     StandardToken: {
     }
@@ -79,7 +77,6 @@ config({
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
   arbitrator = accounts[8];
-  arbitrator2 = accounts[9];
   blacklistedAccount = accounts[5];
 });
 
@@ -203,10 +200,7 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
-      signature = await web3.eth.sign(hash, accounts[1]);
-      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -280,10 +274,7 @@ contract("Escrow", function() {
 
     it("losing a dispute twice shoud not fail", async() => {
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
-      signature = await web3.eth.sign(hash, accounts[1]);
-      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 

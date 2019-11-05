@@ -25,6 +25,7 @@ class Summary extends Component {
       (this.props.seller.useCustomLimits === true && this.props.seller.limitL >= 0 && this.props.seller.limitU >= 0))) {
       return this.props.wizard.previous();
     }
+
     this.setState({ready: true});
     this.props.footer.enableNext();
     this.offerCreated = false;
