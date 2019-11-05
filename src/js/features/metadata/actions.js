@@ -13,7 +13,7 @@ export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
 export const loadOffers = (address) => ({ type: LOAD_OFFERS, address });
 
-export const addOffer = (seller, offerStake) => ({
+export const addOffer = (seller) => ({
   type: ADD_OFFER,
   user: {
     statusContactCode: seller.statusContactCode,
@@ -27,8 +27,7 @@ export const addOffer = (seller, offerStake) => ({
     margin: seller.margin,
     arbitrator: seller.arbitrator,
     limitL: seller.useCustomLimits ? seller.limitL.toFixed(2).toString().replace('.', '') : 0,
-    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0,
-    stake: offerStake
+    limitU: seller.useCustomLimits ? seller.limitU.toFixed(2).toString().replace('.', '') : 0
   }
 });
 
