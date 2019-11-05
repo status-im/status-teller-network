@@ -180,6 +180,8 @@ export function *onLoad() {
 export function *addOffer({user, offer}) {
   const coords = generateXY(user.statusContactCode);
 
+  const price = yield MetadataStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
     coords.x,
@@ -193,7 +195,7 @@ export function *addOffer({user, offer}) {
     offer.margin,
     offer.arbitrator
   );
-  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend, value: offer.stake});
+  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend, value: price});
 }
 
 export function *onAddOffer() {
