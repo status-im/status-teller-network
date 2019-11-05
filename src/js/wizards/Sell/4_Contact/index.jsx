@@ -16,8 +16,8 @@ import {contactCodeRegExp} from '../../../utils/address';
 class Contact extends Component {
   constructor(props) {
     super(props);
-    const username = props.seller.username || (props.profile && props.profile.username);
-    const statusContactCode = props.seller.statusContactCode || (props.profile && props.profile.statusContactCode);
+    const username = (props.seller && props.seller.username) || ((props.profile && props.profile.username) || "");
+    const statusContactCode = (props.seller && props.seller.statusContactCode) ||  ((props.profile && props.profile.statusContactCode) || "");
     this.state = {
       username,
       statusContactCode,

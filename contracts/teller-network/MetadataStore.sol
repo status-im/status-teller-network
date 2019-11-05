@@ -88,6 +88,9 @@ contract MetadataStore is Stakable, MessageSigned {
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
 
+        basePrice = 0.01 ether;
+
+
         _setOwner(msg.sender);
     }
 
