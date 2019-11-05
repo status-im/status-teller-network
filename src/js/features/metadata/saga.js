@@ -3,7 +3,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import {fork, takeEvery, put, all} from 'redux-saga/effects';
+import {fork, takeEvery, put, all, call} from 'redux-saga/effects';
 import {
   LOAD, LOAD_USER, LOAD_USER_FAILED, LOAD_USER_SUCCEEDED,
   LOAD_OFFERS_SUCCEEDED, LOAD_OFFERS_FAILED, LOAD_OFFERS, ADD_OFFER,
@@ -180,7 +180,7 @@ export function *onLoad() {
 export function *addOffer({user, offer}) {
   const coords = generateXY(user.statusContactCode);
 
-  const price = yield MetadataStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+  const price = yield call(getOfferPrice);
 
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
@@ -242,6 +242,7 @@ export function *getOfferPrice() {
   try {
     const price = yield MetadataStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
     yield put({type: GET_OFFER_PRICE_SUCCEEDED, price});
+    return price;
   } catch(err){
     yield put({type: GET_OFFER_PRICE_FAILED, error: err.message});
   }
