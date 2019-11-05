@@ -326,14 +326,16 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _isDispute indicates if the release happened due to a dispute
      */
     function _release(uint _escrowId, EscrowTransaction storage _trx, bool _isDispute) internal {
+        require(_trx.status != EscrowStatus.RELEASED, "Already released");
+        _trx.status = EscrowStatus.RELEASED;
+
         if(!_isDispute){
             metadataStore.refundStake(_trx.offerId);
         }
 
-        _trx.status = EscrowStatus.RELEASED;
         address token = _trx.token;
         if(token == address(0)){
-            _trx.buyer.transfer(_trx.tokenAmount);
+            _trx.buyer.call.value(_trx.tokenAmount)("");
         } else {
             require(ERC20Token(token).transfer(_trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
         }
@@ -402,15 +404,21 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
     function _cancel(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
-        if(trx.status == EscrowStatus.FUNDED){
+        EscrowStatus origStatus = trx.status;
+
+        require(trx.status != EscrowStatus.CANCELED, "Already canceled");
+
+        trx.status = EscrowStatus.CANCELED;
+
+        if (origStatus == EscrowStatus.FUNDED) {
             address token = trx.token;
             uint amount = trx.tokenAmount;
             if (!isDispute) {
                 amount += _getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
             }
 
-            if(token == address(0)){
-                trx.seller.transfer(amount);
+            if (token == address(0)) {
+                trx.seller.call.value(amount)("");
             } else {
                 ERC20Token erc20token = ERC20Token(token);
                 require(erc20token.transfer(trx.seller, amount), "Transfer failed");

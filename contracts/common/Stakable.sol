@@ -86,19 +86,19 @@ contract Stakable is Ownable {
 
         if (s.amount == 0) return; // No stake for item
 
-        if (s.token == address(0)) {
-            s.owner.transfer(s.amount);
-        } else {
-            require(ERC20Token(s.token).transfer(s.owner, s.amount), "Couldn't transfer funds");
-        }
+        uint amount = s.amount;
+        s.amount = 0;
 
         assert(stakeCounter[s.owner] > 0);
-
         stakeCounter[s.owner]--;
 
-        emit Unstaked(_itemId, s.owner, s.amount);
+        if (s.token == address(0)) {
+            s.owner.call.value(amount)("");
+        } else {
+            require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
+        }
 
-        s.amount = 0;
+        emit Unstaked(_itemId, s.owner, amount);
     }
 
     function _slash(uint _itemId) internal {
@@ -107,15 +107,16 @@ contract Stakable is Ownable {
         // TODO: what happens if offer was previosly validated and the user removed the stake?
         if (s.amount == 0) return;
 
+        uint amount = s.amount;
+        s.amount = 0;
+
         if (s.token == address(0)) {
-            burnAddress.transfer(s.amount);
+            burnAddress.call.value(amount)("");
         } else {
-            require(ERC20Token(s.token).transfer(burnAddress, s.amount), "Couldn't transfer funds");
+            require(ERC20Token(s.token).transfer(burnAddress, amount), "Couldn't transfer funds");
         }
 
-        emit Slashed(_itemId, s.owner, msg.sender, s.amount);
-
-        s.amount = 0;
+        emit Slashed(_itemId, s.owner, msg.sender, amount);
     }
 
     function _refundStake(uint _itemId) internal {
@@ -123,17 +124,18 @@ contract Stakable is Ownable {
 
         if (s.amount == 0) return;
 
-        if (s.amount != 0) {
-            if (s.token == address(0)) {
-                s.owner.transfer(s.amount);
-            } else {
-                require(ERC20Token(s.token).transfer(s.owner, s.amount), "Couldn't transfer funds");
-            }
-        }
-
+        uint amount = s.amount;
         s.amount = 0;
 
         stakeCounter[s.owner]--;
+
+        if (amount != 0) {
+            if (s.token == address(0)) {
+                s.owner.call.value(amount)("");
+            } else {
+                require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
+            }
+        }
     }
 
 }

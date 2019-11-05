@@ -53,6 +53,9 @@ contract Fees is Ownable {
      * @param _isDispute Boolean telling if it was from a dispute. With a dispute, the arbitrator gets more
     */
     function _releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal {
+        require(!locked, "Reentrant call detected!");
+        locked = true;
+
         uint _milliPercentToArbitrator;
         if (_isDispute) {
             _milliPercentToArbitrator = 100000; // 100%
@@ -71,12 +74,19 @@ contract Fees is Ownable {
                 require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer - destination");
             }
         } else {
-            _arbitrator.transfer(arbitratorValue);
+            // EIP1884 fix
+            _arbitrator.call.value(arbitratorValue)("");
             if (destinationValue > 0) {
-                feeDestination.transfer(destinationValue);
+                // EIP1884 fix
+                feeDestination.call.value(destinationValue)("");
             }
         }
+
+        locked = false;
     }
+
+    // Reentrancy guard
+    bool locked = false;
 
     /**
      * @dev Calculate fee of an amount based in milliPercent
