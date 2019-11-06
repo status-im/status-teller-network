@@ -18,6 +18,8 @@ import {Col, Row, Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
 import {withNamespaces} from "react-i18next";
 
+import './index.scss';
+
 class ConfirmTrade extends Component {
   constructor(props) {
     super(props);
@@ -83,7 +85,7 @@ class ConfirmTrade extends Component {
         return <ErrorInformation transaction retry={this.postEscrow} cancel={this.cancelTrade}/>;
       case States.none: {
         const fiatAmount = this.props.assetQuantity * this.props.price;
-        return (<Fragment>
+        return (<div className="confirmTrade">
           {this.state.notificationAccepted === null && <Alert color="info">
             <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
             <p className="mb-0">{t('notifications.onlyToInform')}</p>
@@ -96,10 +98,18 @@ class ConfirmTrade extends Component {
           <h2>Summary</h2>
           <h3 className="mt-4 font-weight-normal">Seller</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            <Identicon seed={this.props.offer.user.statusContactCode} className="rounded-circle border mr-2" scale={5}/>
+            <Identicon seed={this.props.offer.user.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
             {this.props.offer.user.username}
           </p>
-          <p className="text-muted text-small"><Address address={this.props.offer.user.statusContactCode} length={6}/>
+          <p className="text-muted text-small addr"><Address address={this.props.offer.user.statusContactCode} length={6}/>
+          </p>
+
+          <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
+          <p className="mt-2 font-weight-medium mb-1">
+            <Identicon seed={this.props.offer.arbitratorData.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+            {this.props.offer.arbitratorData.username}
+          </p>
+          <p className="text-muted text-small addr"><Address address={this.props.offer.arbitratorData.statusContactCode} length={6}/>
           </p>
 
           <h3 className="font-weight-normal">Price</h3>
@@ -117,7 +127,7 @@ class ConfirmTrade extends Component {
           <p className="mt-2 font-weight-medium mb-1">
             {limitDecimals(fiatAmount, 2)} {this.props.offer.currency} ~ {limitDecimals(this.props.assetQuantity)}
           </p>
-        </Fragment>);
+        </div>);
       }
       default:
         return <Fragment/>;

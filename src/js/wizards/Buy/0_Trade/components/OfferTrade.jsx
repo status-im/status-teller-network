@@ -1,39 +1,96 @@
-import React, {Fragment} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from "react-i18next";
-import {Row, Col, FormGroup, UncontrolledTooltip, Label, FormFeedback} from 'reactstrap';
+import {Row, Col, FormGroup, UncontrolledTooltip, FormFeedback} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan, higherThan} from "../../../../validators";
 import {limitDecimals} from '../../../../utils/numbers';
 import moment from "moment";
 import escrow from "../../../../features/escrow";
-import UserInformation from "../../../../components/UserInformation";
+import RoundedIcon from "../../../../ui/RoundedIcon";
+import ModalDialog from "../../../../components/ModalDialog";
+import Address from "../../../../components/UserInformation/Address";
+import Identicon from "../../../../components/UserInformation/Identicon";
+import infoIcon from "../../../../../images/small-info.svg";
+import upvoteImg from "../../../../../images/upvote.svg";
+import downvoteImg from "../../../../../images/downvote.svg";
+import arbitratorImg from "../../../../../images/arbitrator.svg";
+import disputeImg from "../../../../../images/dispute.svg";
+import questionIcon from "../../../../../images/question-mark.svg";
 
-const OfferTrade = ({
-  seller, minToken, maxToken, currency, asset, lastActivity, limitless,
-  assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-  limitH, limitL, sellerBalance
-}) => {
-  const minFiat = (parseFloat(limitL) / 100).toFixed(2);
-  const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
-  const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
 
-  return <Row noGutters>
-    <Col xs="12" className="mt-5 text-center">
+import './index.scss';
 
-      <UserInformation username={seller.username} reputation={{downCount: seller.downCount, upCount: seller.upCount}}
-                       identiconSeed={seller.statusContactCode} nbCreatedTrades={seller.nbCreatedTrades}
-                       nbReleasedTrades={seller.nbReleasedTrades}/>
+class OfferTrade extends Component {
+
+  state = {
+    displayDialogArbitrator: false,
+    displayDisputeDialog: false
+  }
+
+  toggleArbitratorDialog = (e) => {
+    e.preventDefault();
+    this.setState((oldState) => ({
+      displayDialogArbitrator: !oldState.displayDialogArbitrator,
+      displayDisputeDialog: false
+    }));
+    return false;
+  }
+
+  toggleDisputeDialog = (e) => {
+    e.preventDefault();
+    this.setState((oldState) => ({
+      displayDisputeDialog: !oldState.displayDisputeDialog
+    }));
+    return false;
+  }
+
+  render() {
+    const {
+      seller, minToken, maxToken, currency, asset, lastActivity, limitless,
+      assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
+      limitH, limitL, sellerBalance, price, arbitrator
+    } = this.props;
+
+    const minFiat = (parseFloat(limitL) / 100).toFixed(2);
+    const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
+    const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
+  
+    return <Fragment>
+  <Row noGutters className="offerTrade">
+    <Col xs="12">
+      <h3 className="mt-4 font-weight-normal">Seller</h3>
+      <Identicon seed={seller.statusContactCode} className="rounded-circle border mr-2" scale={7}/>
+      <p className="font-weight-medium mb-1 name">{seller.username}</p>
+      <p className="text-muted text-small addr mb-0"><Address address={seller.statusContactCode} length={13}/></p>
+      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" />{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3" />{seller.downCount}</p>
+
+      <h3 className="mt-4 font-weight-normal">Arbitrator <a href="#" onClick={this.toggleArbitratorDialog}><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></a></h3>
+      <p className="mt-2 font-weight-medium mb-1">
+        <Identicon seed={arbitrator.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+        {arbitrator.username}
+      </p>
+      <p className="text-muted text-small addr"><Address address={arbitrator.statusContactCode} length={13}/></p>
+
+
+      <h3 className="font-weight-normal mt-4">Price</h3>
+      <p className="mt-2 font-weight-medium mb-1">
+        1 {asset} = {price} {currency.id}
+      </p>
+      <p className="text-muted text-small mt-2">
+        <Row tag="span">
+          <Col tag="span" xs={1}><RoundedIcon image={infoIcon} bgColor="secondary" className="float-left" size="sm"/></Col>
+          <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
+        </Row>
+      </p>
     </Col>
     <Col xs="12" className="mt-4">
+      <h3>Trade Amount</h3>
       <Form className="text-center">
         <FormGroup>
           <Row>
-            <Col xs={2} sm={1} className="v-align-center">
-              <Label for="asset-quantity-input">Buy:</Label>
-            </Col>
-            <Col xs={10} sm={11}>
+            <Col xs={12} sm={12}>
               <Input type="text"
                      name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
                      data-maxvalue={parseFloat(maxToken) || ''}
@@ -46,10 +103,7 @@ const OfferTrade = ({
         </FormGroup>
         <FormGroup>
           <Row>
-            <Col xs={2} sm={1} className="v-align-center">
-              <Label for="fiat-quantity-input" className="align-baseline">For:</Label>
-            </Col>
-            <Col xs={10} sm={11}>
+            <Col xs={12} sm={12}>
               <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
                      data-maxvalue={limitless ? '' : maxFiat}
                      data-minvalue={0}
@@ -60,7 +114,7 @@ const OfferTrade = ({
             </Col>
           </Row>
         </FormGroup>
-        { limitless && <p className="mt-3">
+        { limitless && <p className="mt-3 limits">
         Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
         <UncontrolledTooltip placement="right" target="max-token">
           This is the current balance of the seller. This is why it is the maximum
@@ -68,7 +122,7 @@ const OfferTrade = ({
         </p> }
         { !limitless && <Fragment>
             { amountGreaterThanBalance && <FormFeedback className="d-block">Amount is greater than the seller&apos;s balance</FormFeedback> }
-            <p className="mt-3">Limits: {limitDecimals(minFiat)} {currency.id} to <span id="max-token">{limitDecimals(maxFiat)} {currency.id}</span></p>
+            <p className="mt-3 limits">Limits: {limitDecimals(minFiat)} {currency.id} to <span id="max-token">{limitDecimals(maxFiat)} {currency.id}</span></p>
           </Fragment>
         }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
@@ -77,9 +131,21 @@ const OfferTrade = ({
         </Col>}
       </Form>
     </Col>
-  </Row>;
-};
+  </Row>
+  <ModalDialog display={this.state.displayDialogArbitrator} onClose={this.toggleArbitratorDialog} buttonText="Ok got it">
+    <RoundedIcon image={arbitratorImg} className="mb-2" bgColor="blue" />
+    <h2>Arbitrator</h2>
+    <p className="text-muted">You can think of an arbitrator as a neutral <span className="text-black">judge</span> who, when the trade comes to the <a href="#" onClick={this.toggleDisputeDialog}>dispute</a>, will review the trade and resolve the dispute.</p>
+  </ModalDialog>
+  <ModalDialog display={this.state.displayDisputeDialog} onClose={this.toggleDisputeDialog} buttonText="Ok got it">
+    <RoundedIcon image={disputeImg} className="mb-2" bgColor="blue" />
+    <h2>Dispute</h2>
+    <p className="text-muted">A dispute is a disagreement on a point of law or fact, a conflict of legal views or of interests between two persons.</p>
+  </ModalDialog>
 
+  </Fragment>;
+  }
+}
 
 OfferTrade.propTypes = {
   t: PropTypes.func,
@@ -112,7 +178,8 @@ OfferTrade.propTypes = {
   lastActivity: PropTypes.number,
   limitless: PropTypes.bool,
   limitL: PropTypes.string,
-  limitH: PropTypes.string
+  limitH: PropTypes.string,
+  arbitrator: PropTypes.object
 };
 
 export default withNamespaces()(OfferTrade);
