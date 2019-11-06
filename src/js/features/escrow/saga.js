@@ -43,9 +43,7 @@ export function *createEscrow({user, escrow}) {
     coords.x,
     coords.y,
     '',
-    user.username,
-    user.nonce,
-    user.signature
+    user.username
     );
   yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
 }

@@ -3,7 +3,7 @@ pragma solidity >=0.5.0 <0.6.0;
 import "./License.sol";
 import "./ArbitrationLicense.sol";
 import "../common/MessageSigned.sol";
-import "../common/Ownable.sol";
+import "../common/SecuredFunctions.sol";
 import "../common/Stakable.sol";
 
 
@@ -11,7 +11,7 @@ import "../common/Stakable.sol";
 * @title MetadataStore
 * @dev User and offers registry
 */
-contract MetadataStore is Stakable, MessageSigned {
+contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
 
     struct User {
         bytes32 pubkeyA;
@@ -41,8 +41,6 @@ contract MetadataStore is Stakable, MessageSigned {
     Offer[] public offers;
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
-
-    address public escrowContract;
 
     bool internal _initialized;
 
@@ -88,6 +86,9 @@ contract MetadataStore is Stakable, MessageSigned {
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
 
+        basePrice = 0.01 ether;
+
+
         _setOwner(msg.sender);
     }
 
@@ -106,19 +107,6 @@ contract MetadataStore is Stakable, MessageSigned {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
-    }
-
-    event EscrowContractChanged(address sender, address oldEscrowContract, address newEscrowContract);
-
-    /**
-     * @dev Sets the escrow contract address. Only the escrow contract can trigger the stake slash
-     * @param _escrowContract New Escrow Contract Address
-     */
-    function setEscrowContract(
-        address _escrowContract
-    ) public onlyOwner {
-        emit EscrowContractChanged(msg.sender, escrowContract, _escrowContract);
-        escrowContract = _escrowContract;
     }
 
     /**
@@ -247,6 +235,26 @@ contract MetadataStore is Stakable, MessageSigned {
         string calldata _username
     ) external {
         _addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
+    }
+
+    /**
+     * @notice Adds or updates user information
+     * @dev can only be called by the escrow contract
+     * @param _sender Address that sets the user info
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _location New location
+     * @param _username New status username
+     * @return Signing user address
+     */
+    function addOrUpdateUser(
+        address _sender,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
+        string calldata _location,
+        string calldata _username
+    ) external onlyAllowedContracts {
+        _addOrUpdateUser(_sender, _pubkeyA, _pubkeyB, _location, _username);
     }
 
     /**
@@ -429,8 +437,7 @@ contract MetadataStore is Stakable, MessageSigned {
      * @dev Slash offer stake. If the sender is not the escrow contract, nothing will happen
      * @param _offerId Offer Id to slash
      */
-    function slashStake(uint _offerId) external {
-        if (msg.sender != escrowContract) return;
+    function slashStake(uint _offerId) external onlyAllowedContracts {
         _slash(_offerId);
     }
 
@@ -438,8 +445,7 @@ contract MetadataStore is Stakable, MessageSigned {
      * @dev Refunds a stake. Can be called automatically after an escrow is released
      * @param _offerId Offer Id to slash
      */
-    function refundStake(uint _offerId) external {
-        if (msg.sender != escrowContract) return;
+    function refundStake(uint _offerId) external onlyAllowedContracts {
         _refundStake(_offerId);
     }
 }

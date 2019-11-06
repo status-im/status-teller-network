@@ -25,7 +25,7 @@ class ConfirmTrade extends Component {
       ready: false,
       notificationAccepted: null
     };
-    props.footer.disableNext();
+
     props.footer.onNext(() => {
       this.postEscrow();
       props.footer.hide();
@@ -36,6 +36,9 @@ class ConfirmTrade extends Component {
     if (!this.props.price || !this.props.currencyQuantity || !this.props.assetQuantity) {
       return this.props.wizard.previous();
     }
+
+    this.props.footer.enableNext();
+
     this.setState({ready: true});
 
     askPermission().then(() => {
@@ -46,18 +49,14 @@ class ConfirmTrade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.signature, this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.statusContactCode, this.props.offer, this.props.nonce);
+    this.props.createEscrow(this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.statusContactCode, this.props.offer);
   };
 
   cancelTrade = () => {
     return this.props.history.push('/');
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.signing && !this.props.signing) {
-      this.props.footer.enableNext();
-    }
-
+  componentDidUpdate() {
     if (this.props.createEscrowStatus === States.success && !isNaN(this.props.escrowId)) {
       this.props.resetCreateStatus();
       this.props.resetNewBuy();
@@ -73,7 +72,7 @@ class ConfirmTrade extends Component {
 
   render() {
     const {t} = this.props;
-    if (!this.state.ready || this.props.signing) {
+    if (!this.state.ready) {
       return <Loading page/>;
     }
 
@@ -137,11 +136,9 @@ ConfirmTrade.propTypes = {
   resetNewBuy: PropTypes.func,
   createEscrow: PropTypes.func,
   createEscrowStatus: PropTypes.string,
-  signature: PropTypes.string,
   price: PropTypes.number,
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
-  signing: PropTypes.bool,
   currencyQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
@@ -150,11 +147,7 @@ ConfirmTrade.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  offer: PropTypes.object,
-  nonce: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ])
+  offer: PropTypes.object
 };
 
 const mapStateToProps = state => {
@@ -167,13 +160,10 @@ const mapStateToProps = state => {
     username: newBuy.selectors.username(state),
     ensError: network.selectors.getENSError(state),
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
-    signature: metadata.selectors.getSignature(state),
     price: newBuy.selectors.price(state),
     offer: metadata.selectors.getOfferById(state, offerId),
-    nonce: metadata.selectors.getNonce(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
-    signing: metadata.selectors.isSigning(state),
     offerId
   };
 };

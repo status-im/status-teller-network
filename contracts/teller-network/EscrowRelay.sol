@@ -20,7 +20,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   mapping(address => uint) public lastActivity;
 
-  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string,uint256,bytes)"));
+  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
@@ -90,8 +90,6 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _pubkeyB Second coordinate of Status Whisper Public Key
    * @param _location The location on earth
    * @param _username The username of the user
-   * @param _nonce buyer's nonce
-   * @param _signature buyer's signature
    */
   function createEscrow(
     uint _offerId,
@@ -100,21 +98,19 @@ contract EscrowRelay is RelayRecipient, Ownable {
     bytes32 _pubkeyA,
     bytes32 _pubkeyB,
     string memory _location,
-    string memory _username,
-    uint _nonce,
-    bytes memory _signature
+    string memory _username
   ) public returns (uint escrowId) {
-    lastActivity[getSender()] = block.timestamp;
-    escrowId = escrow.createEscrow(
+    address sender = getSender();
+    lastActivity[sender] = block.timestamp;
+    escrowId = escrow.createEscrow_relayed(
+         address(uint160(sender)),
          _offerId,
          _tokenAmount,
          _fiatAmount,
          _pubkeyA,
          _pubkeyB,
          _location,
-         _username,
-         _nonce,
-         _signature
+         _username
     );
   }
 

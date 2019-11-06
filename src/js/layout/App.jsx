@@ -176,7 +176,7 @@ class App extends Component {
 
                 <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade/amount', component: BuyTrade},
-                  {path: '/buy/trade/contact', component: BuyContact, nextLabel: 'Sign contact info'},
+                  {path: '/buy/trade/contact', component: BuyContact},
                   {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 

@@ -24,10 +24,6 @@ class Contact extends Component {
     props.footer.onPageChange(() => {
       props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
     });
-
-    props.footer.onNext(() => {
-      props.signMessage(this.state.username, this.state.statusContactCode);
-    });
   }
 
   componentDidMount() {
@@ -46,10 +42,6 @@ class Contact extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.signing && !this.props.signing && this.props.signature && this.props.username) {
-      return this.props.wizard.next();
-    }
-
     if(!prevProps.apiContactCode && this.props.apiContactCode){
       this.changeStatusContactCode(this.props.apiContactCode);
     }
@@ -124,9 +116,7 @@ Contact.propTypes = {
   profile: PropTypes.object,
   resolveENSName: PropTypes.func,
   ensError: PropTypes.string,
-  signMessage: PropTypes.func,
   createEscrow: PropTypes.func,
-  signature: PropTypes.string,
   price: PropTypes.number,
   escrowId: PropTypes.string,
   txHash: PropTypes.string,
@@ -135,11 +125,6 @@ Contact.propTypes = {
     PropTypes.number
   ]),
   offer: PropTypes.object,
-  nonce: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  signing: PropTypes.bool,
   isEip1102Enabled: PropTypes.bool,
   enableEthereum: PropTypes.func
 };
@@ -156,11 +141,8 @@ const mapStateToProps = state => {
     isStatus: network.selectors.isStatus(state),
     ensError: network.selectors.getENSError(state),
     profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount),
-    signature: metadata.selectors.getSignature(state),
     price: newBuy.selectors.price(state),
     offer: metadata.selectors.getOfferById(state, offerId),
-    nonce: metadata.selectors.getNonce(state),
-    signing: metadata.selectors.isSigning(state),
     assetQuantity: newBuy.selectors.assetQuantity(state),
     isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     offerId
@@ -174,7 +156,6 @@ export default connect(
     setContactInfo: newBuy.actions.setContactInfo,
     getContactCode: network.actions.getContactCode,
     resolveENSName: network.actions.resolveENSName,
-    signMessage: metadata.actions.signMessage,
     enableEthereum: metadata.actions.enableEthereum
   }
   )(withRouter(withNamespaces()(Contact)));

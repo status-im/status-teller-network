@@ -25,6 +25,7 @@ class Summary extends Component {
       (this.props.seller.useCustomLimits === true && this.props.seller.limitL >= 0 && this.props.seller.limitU >= 0))) {
       return this.props.wizard.previous();
     }
+
     this.setState({ready: true});
     this.props.footer.enableNext();
     this.offerCreated = false;
@@ -35,6 +36,8 @@ class Summary extends Component {
     }).catch(() => {
       this.setState({notificationAccepted: false});
     });
+
+    this.props.getOfferPrice();
   }
 
   postOffer = () => {
@@ -83,7 +86,7 @@ class Summary extends Component {
             <p className="mb-1">{t('notifications.desktop')}</p>
             <p className="mb-0">{t('notifications.changeSettings')}</p>
           </Alert>}
-            <SellSummary seller={this.props.seller} profile={this.props.profile} arbitratorProfile={this.props.arbitratorProfile} assetData={this.props.assetData}/>
+            <SellSummary seller={this.props.seller} stake={this.props.offerStake} profile={this.props.profile} arbitratorProfile={this.props.arbitratorProfile} assetData={this.props.assetData}/>
           </Fragment>;
       case States.success:
         return <Success onClick={this.continue} />;
@@ -107,7 +110,9 @@ Summary.propTypes = {
   footer: PropTypes.object,
   txHash: PropTypes.string,
   profile: PropTypes.object,
-  arbitratorProfile: PropTypes.object
+  arbitratorProfile: PropTypes.object,
+  getOfferPrice: PropTypes.func,
+  offerStake: PropTypes.string
 };
 
 const mapStateToProps = state => {
@@ -119,13 +124,15 @@ const mapStateToProps = state => {
     txHash: metadata.selectors.getAddOfferTx(state),
     profile: metadata.selectors.getProfile(state, defaultAccount),
     arbitratorProfile: metadata.selectors.getProfile(state, seller.arbitrator),
-    assetData: network.selectors.getTokenByAddress(state, seller.asset)
+    assetData: network.selectors.getTokenByAddress(state, seller.asset),
+    offerStake: metadata.selectors.nextOfferPrice(state)
   };
 };
 
 export default connect(
   mapStateToProps,
   {
+    getOfferPrice: metadata.actions.getOfferPrice,
     addOffer: metadata.actions.addOffer,
     resetAddOfferStatus: metadata.actions.resetAddOfferStatus
   }

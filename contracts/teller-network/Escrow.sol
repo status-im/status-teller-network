@@ -164,6 +164,31 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _pubkeyB Second coordinate of Status Whisper Public Key
      * @param _location The location on earth
      * @param _username The username of the user
+     * @return Id of the new escrow
+     * @dev Requires contract to be unpaused.
+     */
+    function createEscrow(
+        uint _offerId,
+        uint _tokenAmount,
+        uint _fiatAmount,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
+        string memory _location,
+        string memory _username
+    ) public returns(uint escrowId) {
+        metadataStore.addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
+        escrowId = _createTransaction(msg.sender, _offerId, _tokenAmount, _fiatAmount);
+    }
+
+    /**
+     * @notice Create a new escrow
+     * @param _offerId Offer
+     * @param _tokenAmount Amount buyer is willing to trade
+     * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _location The location on earth
+     * @param _username The username of the user
      * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
      * @param _signature buyer's signature
      * @return Id of the new escrow
@@ -185,11 +210,41 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
     }
 
+   /**
+     * @dev Relay function for creating a transaction
+     *      Can only be called by relayer address
+     * @param _sender Address marking the transaction as paid
+     * @param _offerId Offer
+     * @param _tokenAmount Amount buyer is willing to trade
+     * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
+     * @param _pubkeyA First coordinate of Status Whisper Public Key
+     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _location The location on earth
+     * @param _username The username of the user
+     * @return Id of the new escrow
+     * @dev Requires contract to be unpaused.
+     *      The seller needs to be licensed.
+     */
+    function createEscrow_relayed(
+        address payable _sender,
+        uint _offerId,
+        uint _tokenAmount,
+        uint _fiatAmount,
+        bytes32 _pubkeyA,
+        bytes32 _pubkeyB,
+        string calldata _location,
+        string calldata _username
+    ) external returns(uint escrowId) {
+        assert(msg.sender == relayer);
+
+        metadataStore.addOrUpdateUser(_sender, _pubkeyA, _pubkeyB, _location, _username);
+        escrowId = _createTransaction(_sender, _offerId, _tokenAmount, _fiatAmount);
+    }
+
     /**
      * @notice Fund a new escrow
      * @param _escrowId Id of the escrow
      * @dev Requires contract to be unpaused.
-     *      The seller needs to be licensed.
      *      The expiration time must be at least 10min in the future
      *      For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
@@ -202,7 +257,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _from Seller address
      * @param _escrowId Id of the escrow
      * @dev Requires contract to be unpaused.
-     *      The seller needs to be licensed.
      *      The expiration time must be at least 10min in the future
      *      For eth transfer, _amount must be equals to msg.value, for token transfer, requires an allowance and transfer valid for _amount
      */
@@ -326,14 +380,16 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _isDispute indicates if the release happened due to a dispute
      */
     function _release(uint _escrowId, EscrowTransaction storage _trx, bool _isDispute) internal {
+        require(_trx.status != EscrowStatus.RELEASED, "Already released");
+        _trx.status = EscrowStatus.RELEASED;
+
         if(!_isDispute){
             metadataStore.refundStake(_trx.offerId);
         }
 
-        _trx.status = EscrowStatus.RELEASED;
         address token = _trx.token;
         if(token == address(0)){
-            _trx.buyer.transfer(_trx.tokenAmount);
+            _trx.buyer.call.value(_trx.tokenAmount)("");
         } else {
             require(ERC20Token(token).transfer(_trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
         }
@@ -402,15 +458,21 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param trx EscrowTransaction with details of transaction to be marked as canceled
      */
     function _cancel(uint _escrowId, EscrowTransaction storage trx, bool isDispute) internal {
-        if(trx.status == EscrowStatus.FUNDED){
+        EscrowStatus origStatus = trx.status;
+
+        require(trx.status != EscrowStatus.CANCELED, "Already canceled");
+
+        trx.status = EscrowStatus.CANCELED;
+
+        if (origStatus == EscrowStatus.FUNDED) {
             address token = trx.token;
             uint amount = trx.tokenAmount;
             if (!isDispute) {
                 amount += _getValueOffMillipercent(trx.tokenAmount, feeMilliPercent);
             }
 
-            if(token == address(0)){
-                trx.seller.transfer(amount);
+            if (token == address(0)) {
+                trx.seller.call.value(amount)("");
             } else {
                 ERC20Token erc20token = ERC20Token(token);
                 require(erc20token.transfer(trx.seller, amount), "Transfer failed");
