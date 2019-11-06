@@ -93,7 +93,8 @@ contract Stakable is Ownable {
         stakeCounter[s.owner]--;
 
         if (s.token == address(0)) {
-            s.owner.call.value(amount)("");
+            (bool success, ) = s.owner.call.value(amount)("");
+            require(success, "Transfer failed.");
         } else {
             require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
         }
@@ -111,7 +112,8 @@ contract Stakable is Ownable {
         s.amount = 0;
 
         if (s.token == address(0)) {
-            burnAddress.call.value(amount)("");
+            (bool success, ) = burnAddress.call.value(amount)("");
+            require(success, "Transfer failed.");
         } else {
             require(ERC20Token(s.token).transfer(burnAddress, amount), "Couldn't transfer funds");
         }
@@ -131,7 +133,8 @@ contract Stakable is Ownable {
 
         if (amount != 0) {
             if (s.token == address(0)) {
-                s.owner.call.value(amount)("");
+                (bool success, ) = s.owner.call.value(amount)("");
+                require(success, "Transfer failed.");
             } else {
                 require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
             }

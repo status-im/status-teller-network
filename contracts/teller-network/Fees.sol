@@ -2,12 +2,13 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "../token/ERC20Token.sol";
 import "../common/Ownable.sol";
+import "../common/ReentrancyGuard.sol";
 
 /**
  * @title Fee utilities
  * @dev Fee registry, payment and withdraw utilities.
  */
-contract Fees is Ownable {
+contract Fees is Ownable, ReentrancyGuard {
     address payable public feeDestination;
     uint public feeMilliPercent;
     mapping(address => uint) public feeTokenBalances;
@@ -52,10 +53,7 @@ contract Fees is Ownable {
      * @param _value Value sold in the escrow
      * @param _isDispute Boolean telling if it was from a dispute. With a dispute, the arbitrator gets more
     */
-    function _releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal {
-        require(!locked, "Reentrant call detected!");
-        locked = true;
-
+    function _releaseFee(address payable _arbitrator, uint _value, address _tokenAddress, bool _isDispute) internal reentrancyGuard {
         uint _milliPercentToArbitrator;
         if (_isDispute) {
             _milliPercentToArbitrator = 100000; // 100%
@@ -75,18 +73,17 @@ contract Fees is Ownable {
             }
         } else {
             // EIP1884 fix
-            _arbitrator.call.value(arbitratorValue)("");
+            (bool success, ) = _arbitrator.call.value(arbitratorValue)("");
+            require(success, "Transfer failed.");
+
             if (destinationValue > 0) {
                 // EIP1884 fix
-                feeDestination.call.value(destinationValue)("");
+                (bool success, ) = feeDestination.call.value(destinationValue)("");
+                require(success, "Transfer failed.");
+
             }
         }
-
-        locked = false;
     }
-
-    // Reentrancy guard
-    bool locked = false;
 
     /**
      * @dev Calculate fee of an amount based in milliPercent
