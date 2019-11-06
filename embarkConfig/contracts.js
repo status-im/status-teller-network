@@ -6,28 +6,18 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 const dataMigration = require('./data.js');
 
 module.exports = {
-  // default applies to all environments
   default: {
-    // order of connections the dapp should connect to
     dappConnection: [
-      "$WEB3",  // uses pre existing web3 object if available (e.g in Mist)
+      "$EMBARK",
+      "$WEB3",
       "ws://localhost:8546",
       "http://localhost:8545"
     ],
 
-    // Automatically call `ethereum.enable` if true.
-    // If false, the following code must run before sending any transaction: `await EmbarkJS.enableEthereum();`
-    // Default value is true.
     dappAutoEnable: false,
 
     gas: "auto",
 
-    // Strategy for the deployment of the contracts:
-    // - implicit will try to deploy all the contracts located inside the contracts directory
-    //            or the directory configured for the location of the contracts. This is default one
-    //            when not specified
-    // - explicit will only attempt to deploy the contracts that are explicity specified inside the
-    //            contracts section.
     strategy: 'explicit',
 
     deploy: {
@@ -119,8 +109,6 @@ module.exports = {
     }
   },
 
-  // default environment, merges with the settings in default
-  // assumed to be the intended environment by `embark run`
   development: {
     deploy: {
       StandardToken: { },
@@ -130,13 +118,9 @@ module.exports = {
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS)
   },
 
-  // merges with the settings in default
-  // used with "embark run privatenet"
   privatenet: {
   },
 
-  // merges with the settings in default
-  // used with "embark run testnet"
   testnet: {
     tracking: 'shared.rinkeby.json',
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
