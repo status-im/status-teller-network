@@ -25,7 +25,7 @@ import {
   GET_FEE_MILLI_PERCENT, GET_FEE_MILLI_PERCENT_FAILED, GET_FEE_MILLI_PERCENT_SUCCEEDED
 } from './constants';
 import {eventTypes} from './helpers';
-import {ADD_OFFER_SUCCEEDED} from "../metadata/constants";
+import {ADD_OFFER_SUCCEEDED, LOAD_USER} from "../metadata/constants";
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
 
@@ -46,6 +46,8 @@ export function *createEscrow({user, escrow}) {
     user.username
     );
   yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
+  yield put({type: LOAD_USER, address: web3.eth.defaultAccount});
+ 
 }
 
 export function *onCreateEscrow() {
