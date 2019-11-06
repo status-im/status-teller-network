@@ -73,10 +73,14 @@ contract Fees is Ownable, ReentrancyGuard {
             }
         } else {
             // EIP1884 fix
-            _arbitrator.call.value(arbitratorValue)("");
+            (bool success, ) = _arbitrator.call.value(arbitratorValue)("");
+            require(success, "Transfer failed.");
+
             if (destinationValue > 0) {
                 // EIP1884 fix
-                feeDestination.call.value(destinationValue)("");
+                (bool success, ) = feeDestination.call.value(destinationValue)("");
+                require(success, "Transfer failed.");
+
             }
         }
     }

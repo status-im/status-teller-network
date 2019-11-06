@@ -168,7 +168,8 @@ contract KyberFeeBurner is Ownable {
         if (_token == address(0)) {
             uint ethBalance = address(this).balance;
             address ownerAddr = address(uint160(owner()));
-            ownerAddr.call.value(ethBalance)("");
+            (bool success, ) = ownerAddr.call.value(ethBalance)("");
+            require(success, "Transfer failed.");
             emit EscapeTriggered(msg.sender, _token, ethBalance);
         } else {
             ERC20Token t = ERC20Token(_token);
