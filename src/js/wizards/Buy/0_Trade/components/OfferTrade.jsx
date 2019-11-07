@@ -76,7 +76,7 @@ class OfferTrade extends Component {
 
       <h3 className="font-weight-normal mt-4">Price</h3>
       <p className="mt-2 font-weight-medium mb-1">
-        1 {asset} = {price} {currency.id}
+        1 {asset} = {price.toFixed(4)} {currency.id}
       </p>
       <p className="text-muted text-small mt-2">
         <Row tag="span">

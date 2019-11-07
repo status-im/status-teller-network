@@ -12,12 +12,11 @@ import escrow from "../../../features/escrow";
 import Identicon from "../../../components/UserInformation/Identicon";
 import Address from "../../../components/UserInformation/Address";
 import {limitDecimals} from '../../../utils/numbers';
-import RoundedIcon from "../../../ui/RoundedIcon";
-import infoIcon from "../../../../images/small-info.svg";
-import {Col, Row, Alert} from "reactstrap";
+import {Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
 import {withNamespaces} from "react-i18next";
 import { formatArbitratorName } from '../../../utils/strings';
+import PriceWarning from '../../../components/PriceWarning';
 
 import './index.scss';
 
@@ -59,6 +58,11 @@ class ConfirmTrade extends Component {
     return this.props.history.push('/');
   };
 
+  _calcPrice = () => {
+    const marginPrice = this.props.offer.margin / 100 * this.props.price;
+    return this.props.price + marginPrice;
+  };
+
   componentDidUpdate() {
     if (this.props.createEscrowStatus === States.success && !isNaN(this.props.escrowId)) {
       this.props.resetCreateStatus();
@@ -79,13 +83,14 @@ class ConfirmTrade extends Component {
       return <Loading page/>;
     }
 
+    const price = this._calcPrice();
+
     switch (this.props.createEscrowStatus) {
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
         return <ErrorInformation transaction retry={this.postEscrow} cancel={this.cancelTrade}/>;
       case States.none: {
-        const fiatAmount = this.props.assetQuantity * this.props.price;
         return (<div className="confirmTrade">
           {this.state.notificationAccepted === null && <Alert color="info">
             <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
@@ -116,18 +121,21 @@ class ConfirmTrade extends Component {
 
           <h3 className="font-weight-normal">Price</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            1 {this.props.offer.token.symbol} = {this.props.price} {this.props.offer.currency}
+            1 {this.props.offer.token.symbol} = {price.toFixed(4)} {this.props.offer.currency}
           </p>
-          <p className="text-muted text-small">
-            <Row tag="span">
-              <Col tag="span" xs={1}><RoundedIcon image={infoIcon} bgColor="secondary" className="float-left" size="sm"/></Col>
-              <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
-            </Row>
-          </p>
+
+          <PriceWarning 
+            currentPrice={this.props.price}
+            fiatAmount={this.props.currencyQuantity * 100}
+            fiatSymbol={this.props.offer.currency}
+            margin={this.props.offer.margin}
+            tokenAmount={this.props.assetQuantity}
+            tokenSymbol={this.props.offer.token.symbol}
+          />
 
           <h3 className="font-weight-normal">Trade amount</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            {limitDecimals(fiatAmount, 2)} {this.props.offer.currency} ~ {limitDecimals(this.props.assetQuantity)}
+            {limitDecimals(this.props.currencyQuantity, 2)} {this.props.offer.currency} ~ {limitDecimals(this.props.assetQuantity)} {this.props.offer.token.symbol}
           </p>
         </div>);
       }

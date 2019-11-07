@@ -169,7 +169,10 @@ Trade.propTypes = {
   setTrade: PropTypes.func,
   offer: PropTypes.object,
   address: PropTypes.string,
-  currencyQuantity: PropTypes.number,
+  currencyQuantity: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   assetQuantity: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
