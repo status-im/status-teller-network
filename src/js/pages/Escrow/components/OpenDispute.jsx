@@ -15,7 +15,8 @@ const OpenDispute = ({trade}) => {
         <RoundedIcon image={exclamationCircle} bgColor="red"/>
       </Col>
       <Col xs="10" className="my-auto">
-        <h6 className="m-0 font-weight-normal">Open dispute</h6>
+        <p className="m-0 font-weight-normal">Open dispute</p>
+        <p className="m-0 text-muted">Having problems?</p>
       </Col>
     </Row>
   );
