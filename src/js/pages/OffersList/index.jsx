@@ -33,6 +33,7 @@ class OffersList extends Component {
 
   componentDidMount() {
     this.load();
+    this.props.resetNewBuy();
   }
 
   load() {
@@ -168,6 +169,7 @@ class OffersList extends Component {
 
 OffersList.propTypes = {
   t: PropTypes.func,
+  resetNewBuy: PropTypes.func,
   offers: PropTypes.array,
   tokens: PropTypes.array,
   prices: PropTypes.object,
@@ -193,6 +195,7 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   {
+    resetNewBuy: newBuy.actions.resetNewBuy,
     updateBalance: network.actions.updateBalance,
     setOfferId: newBuy.actions.setOfferId
   })(withNamespaces()(withRouter(OffersList)));
