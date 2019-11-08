@@ -23,6 +23,7 @@ import {Col, Row} from 'reactstrap';
 import RoundedIcon from "../../ui/RoundedIcon";
 import exclamationCircle from "../../../images/exclamation-circle.png";
 
+
 import {zeroAddress, addressCompare} from '../../utils/address';
 import {States, checkNotEnoughETH} from '../../utils/transaction';
 import {toTokenDecimals, fromTokenDecimals} from '../../utils/numbers';
@@ -225,7 +226,6 @@ class Escrow extends Component {
       <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode}
                 withBuyer={!isBuyer}/>
       <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer}/>
-      <hr/>
       <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH}
                     canRelay={canRelay} lastActivity={lastActivity} isETHorSNT={isETHorSNT}/>
       {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) &&

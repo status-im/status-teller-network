@@ -17,6 +17,7 @@ import infoIcon from "../../../../images/small-info.svg";
 import {Col, Row, Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
 import {withNamespaces} from "react-i18next";
+import { formatArbitratorName } from '../../../utils/strings';
 
 import './index.scss';
 
@@ -108,6 +109,7 @@ class ConfirmTrade extends Component {
           <p className="mt-2 font-weight-medium mb-1">
             <Identicon seed={this.props.offer.arbitratorData.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
             {this.props.offer.arbitratorData.username}
+            {formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator)}
           </p>
           <p className="text-muted text-small addr"><Address address={this.props.offer.arbitratorData.statusContactCode} length={6}/>
           </p>
