@@ -1,3 +1,4 @@
+/* global web3 */
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
@@ -7,6 +8,7 @@ import network from "../../../features/network";
 import metadata from "../../../features/metadata";
 import ArbitratorSelectorForm from "./components/ArbitratorSelectorForm";
 import {addressCompare} from '../../../utils/address';
+import DOMPurify from "dompurify";
 
 class SelectArbitrator extends Component {
   constructor(props) {
@@ -38,9 +40,11 @@ class SelectArbitrator extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.username) {
-      return this.props.wizard.previous();
-    }
+    // Prefill username and contact code because we skipped prev. wizard page
+    if (this.props.profile && !this.props.seller.username) {
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
+    } else if(!this.props.seller.username) return this.props.wizard.previous();
+    
     this.setState({ready: true});
   }
 
@@ -81,14 +85,18 @@ SelectArbitrator.propTypes = {
   users: PropTypes.object,
   setArbitrator: PropTypes.func,
   getArbitrators: PropTypes.func,
-  getUser: PropTypes.func
+  getUser: PropTypes.func,
+  profile: PropTypes.object,
+  setContactInfo: PropTypes.func
 };
 
 const mapStateToProps = state => ({
   address: network.selectors.getAddress(state) || '',
   seller: newSeller.selectors.getNewSeller(state),
   arbitrators: arbitration.selectors.arbitrators(state),
-  users: metadata.selectors.getAllUsers(state)
+  users: metadata.selectors.getAllUsers(state),
+  profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
+
 });
 
 export default connect(
@@ -96,6 +104,7 @@ export default connect(
   {
     setArbitrator: newSeller.actions.setArbitrator,
     getArbitrators: arbitration.actions.getArbitrators,
-    getUser: metadata.actions.loadUserOnly
+    getUser: metadata.actions.loadUserOnly,
+    setContactInfo: newSeller.actions.setContactInfo
   }
 )(SelectArbitrator);
