@@ -22,7 +22,8 @@ import ErrorInformation from "../../components/ErrorInformation";
 import {Col, Row} from 'reactstrap';
 import RoundedIcon from "../../ui/RoundedIcon";
 import exclamationCircle from "../../../images/exclamation-circle.png";
-
+import checkCircle from "../../../images/check-circle.svg";
+import canceledIcon from "../../../images/cancel.svg";
 
 import {zeroAddress, addressCompare} from '../../utils/address';
 import {States, checkNotEnoughETH} from '../../utils/transaction';
@@ -31,7 +32,7 @@ import {toTokenDecimals, fromTokenDecimals} from '../../utils/numbers';
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
-import arbitration from '../../features/arbitration';
+import arbitrationF from '../../features/arbitration';
 import events from '../../features/events';
 import prices from '../../features/prices';
 
@@ -175,16 +176,48 @@ class Escrow extends Component {
     const escrowFiatAmount = (escrow.fiatAmount / 100).toFixed(2);
 
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
-
+    
     return (<Fragment>
       {arbitrationDetails.open && <Row className="mt-4">
         <Col xs="2">
           <RoundedIcon image={exclamationCircle} bgColor="red"/>
         </Col>
         <Col xs="10 my-auto text-danger">
-          This trade is in dispute
+          <p className="m-0">This trade is in dispute</p>
         </Col>
       </Row>}
+
+      {((!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
+         (isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
+      <Row className="mt-4">
+        <Col xs="2">
+          <RoundedIcon image={exclamationCircle} bgColor="red"/>
+        </Col>
+        <Col xs="10 my-auto text-danger">
+          <p className="m-0">Arbitrator ruled in your opponent’s favor</p>
+        </Col>
+      </Row>}
+
+      {((isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
+         (!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
+      <Row className="mt-4">
+        <Col xs="2">
+          <RoundedIcon image={checkCircle} className="disputeSuccess" />
+        </Col>
+        <Col xs="10 my-auto text-success">
+          <p className="m-0">Arbitrator ruled in your favor</p>
+        </Col>
+      </Row>}
+
+      {escrow.status === escrowF.helpers.tradeStates.canceled && <Row className="mt-4">
+      <Col xs="2">
+        <RoundedIcon image={canceledIcon} bgColor="red"/>
+      </Col>
+      <Col xs="10 my-auto text-danger">
+        <p className="m-0">This trade was canceled</p>
+      </Col>
+      </Row>}
+
       <div className={classnames("escrow", {'escrow-disabled': arbitrationDetails.open})}>
         <FundingEscrow
           isActive={escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting}
@@ -219,6 +252,7 @@ class Escrow extends Component {
               rateTransaction={rateTransaction} trade={escrow} isBuyer={isBuyer}
               rateBuyerStatus={escrow.rateBuyerStatus}
               rateSellerStatus={escrow.rateSellerStatus}
+              hadDispute={ arbitrationDetails.result !== arbitrationF.constants.ARBITRATION_UNSOLVED}
               />
       </div>
 
@@ -284,7 +318,7 @@ Escrow.propTypes = {
 
 const mapStateToProps = (state, props) => {
   const approvalLoading = approval.selectors.isLoading(state);
-  const arbitrationLoading = arbitration.selectors.isLoading(state);
+  const arbitrationLoading = arbitrationF.selectors.isLoading(state);
   const escrowId = props.match.params.id.toString();
   const theEscrow = escrowF.selectors.getEscrowById(state, escrowId);
   const address =  network.selectors.getAddress(state) || "";
@@ -292,8 +326,8 @@ const mapStateToProps = (state, props) => {
     address,
     escrowId:  escrowId,
     escrow: theEscrow,
-    arbitration: arbitration.selectors.getArbitration(state) || {},
-    arbitrationTxHash: arbitration.selectors.txHash(state),
+    arbitration: arbitrationF.selectors.getArbitration(state) || {},
+    arbitrationTxHash: arbitrationF.selectors.txHash(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     approvalTxHash: approval.selectors.txHash(state),
@@ -329,8 +363,8 @@ export default connect(
     cancelEscrow: escrowF.actions.cancelEscrow,
     updateBalances: network.actions.updateBalances,
     rateTransaction: escrowF.actions.rateTransaction,
-    loadArbitration: arbitration.actions.loadArbitration,
-    cancelDispute: arbitration.actions.cancelDispute,
+    loadArbitration: arbitrationF.actions.loadArbitration,
+    cancelDispute: arbitrationF.actions.cancelDispute,
     watchEscrow: escrowF.actions.watchEscrow,
     getLastActivity: escrowF.actions.getLastActivity
   }

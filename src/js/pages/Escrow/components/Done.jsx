@@ -6,7 +6,7 @@ import Reputation from "../../../components/Reputation";
 import {States} from '../../../utils/transaction';
 import CheckIcon from "../../../../images/check.svg";
 
-const Done = ({isDone, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => (
+const Done = ({isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="grey"/>}
@@ -24,7 +24,7 @@ const Done = ({isDone, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStat
 
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
-    {isActive && <Col xs="5" sm="3">
+    {isActive && !hadDispute && <Col xs="5" sm="3">
       <div className="rounded p-2 position-relative shadow-sm bg-white">
         <p className="mb-1 text-small text-black">How did the trade go?</p>
         <p className="m-0 text-center">
@@ -47,10 +47,12 @@ const Done = ({isDone, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStat
 Done.defaultProps = {
   isDone: false,
   isActive: false,
-  isBuyer: false
+  isBuyer: false,
+  hadDispute: false
 };
 
 Done.propTypes = {
+  hadDispute: PropTypes.bool,
   isDone: PropTypes.bool,
   isActive: PropTypes.bool,
   isBuyer: PropTypes.bool,
