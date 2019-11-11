@@ -54,7 +54,12 @@
   border-radius: 25px;
 }
 
-@media (min-width: 0px) { 
+.rating-rated {
+  width: 24px;
+  height: 24px;
+}
+
+@media (min-width: 0px) {
   .escrow {
     background-position-x: 6px;
   }
@@ -65,7 +70,7 @@
  }
 
 
-@media (min-width: 576px) { 
+@media (min-width: 576px) {
   .escrow {
     background-position-x: 11px;
   }
@@ -73,7 +78,7 @@
   .arrow {
     left: 15px;
   }
- } 
+ }
 
 @media (min-width: 730px) {
   .escrow {
