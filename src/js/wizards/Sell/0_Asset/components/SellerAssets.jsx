@@ -6,6 +6,8 @@ import {getTokenImage} from '../../../../utils/images';
 import {formatBalance} from '../../../../utils/numbers';
 import {addressCompare} from '../../../../utils/address';
 
+import './SellerAssets.scss';
+
 class SellerAssets extends Component {
   selectAsset(selectedAsset) {
     this.props.selectAsset(selectedAsset);
@@ -15,15 +17,16 @@ class SellerAssets extends Component {
     return (
       <React.Fragment>
         <h2>What assets are you going to sell</h2>
-        <ButtonGroup vertical className="w-100">
+        <ButtonGroup vertical className="w-100 asset-list">
           {!this.props.availableAssets.length &&
             <p className="text-warning">You have no assets in your wallet</p>}
           {this.props.availableAssets.map((asset) => (
             <CheckButton active={addressCompare(this.props.selectedAsset, asset.address)}
                          key={`asset-${asset.name}`} size="l"
                          onClick={(_e) => this.selectAsset(asset.address)}>
-              <img src={getTokenImage(asset.symbol)} alt={asset.name + ' icon'} className="mr-3"/>
-              {formatBalance(asset.balance)} {asset.symbol}
+              <img src={getTokenImage(asset.symbol)} alt={asset.name + ' icon'} className="asset-image mr-3 float-left"/>
+              <p>{asset.name}</p>
+              <p className="text-muted">{formatBalance(asset.balance)} {asset.symbol}</p>
             </CheckButton>
           ))}
         </ButtonGroup>
