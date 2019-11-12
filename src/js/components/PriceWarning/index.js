@@ -32,7 +32,7 @@ const PriceWarning = ({isBuyer = true, escrowStatus = tradeStates.waiting, fiatA
           </Row>
         </p>
       </Fragment> }
-  
+
      {escrowStatus === tradeStates.waiting && !isBuyer && currentPriceForCurrency  &&
      <Fragment>
        {shouldWarnSeller && <p className="text-danger text-small mb-0">
@@ -51,9 +51,15 @@ const PriceWarning = ({isBuyer = true, escrowStatus = tradeStates.waiting, fiatA
 PriceWarning.propTypes = {
     isBuyer: PropTypes.bool,
     escrowStatus: PropTypes.string,
-    fiatAmount: PropTypes.number,
-    tokenAmount: PropTypes.number,
-    tokenSymbol: PropTypes.string, 
+    fiatAmount: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    tokenAmount: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]),
+    tokenSymbol: PropTypes.string,
     fiatSymbol: PropTypes.string,
     margin: PropTypes.oneOfType([
         PropTypes.string,
