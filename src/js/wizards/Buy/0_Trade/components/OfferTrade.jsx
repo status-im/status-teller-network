@@ -56,7 +56,7 @@ class OfferTrade extends Component {
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
     const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
-  
+
     return <Fragment>
   <Row noGutters className="offerTrade">
     <Col xs="12">
@@ -64,10 +64,10 @@ class OfferTrade extends Component {
       <Identicon seed={seller.statusContactCode} className="rounded-circle border mr-2" scale={7}/>
       <p className="font-weight-medium mb-1 name">{seller.username}</p>
       <p className="text-muted text-small addr mb-0"><Address address={seller.statusContactCode} length={13}/></p>
-      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" />{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3" />{seller.downCount}</p>
+      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
-      <h3 className="mt-4 font-weight-normal">Arbitrator <a href="#" onClick={this.toggleArbitratorDialog}><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></a></h3>
-      <p className="mt-2 font-weight-medium mb-1">
+      <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></span></h3>
+      <p className="mt-2 font-weight-medium mb-1 overflow-hidden">
         <Identicon seed={arbitrator.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
         {arbitrator.username}
       </p>
@@ -135,7 +135,7 @@ class OfferTrade extends Component {
   <ModalDialog display={this.state.displayDialogArbitrator} onClose={this.toggleArbitratorDialog} buttonText="Ok got it">
     <RoundedIcon image={arbitratorImg} className="mb-2" bgColor="blue" />
     <h2>Arbitrator</h2>
-    <p className="text-muted">You can think of an arbitrator as a neutral <span className="text-black">judge</span> who, when the trade comes to the <a href="#" onClick={this.toggleDisputeDialog}>dispute</a>, will review the trade and resolve the dispute.</p>
+    <p className="text-muted">You can think of an arbitrator as a neutral <span className="text-black">judge</span> who, when the trade comes to the <span className="clickable" onClick={this.toggleDisputeDialog}>dispute</span>, will review the trade and resolve the dispute.</p>
   </ModalDialog>
   <ModalDialog display={this.state.displayDisputeDialog} onClose={this.toggleDisputeDialog} buttonText="Ok got it">
     <RoundedIcon image={disputeImg} className="mb-2" bgColor="blue" />

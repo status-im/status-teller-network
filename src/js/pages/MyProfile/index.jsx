@@ -98,7 +98,7 @@ class MyProfile extends Component {
 
     return (
       <Fragment>
-        {profile.statusContactCode !== zeroAddress && <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/> }
+        {profile.statusContactCode !== zeroAddress && <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.statusContactCode} username={profile.username}/>}
         <ProfileButton linkTo="/profile/trades" image={iconTrades} title="My trades" subtitle={`${activeTrades} active`} />
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title="My offers" subtitle={`${activeOffers} active`} />
         <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} active`} />
