@@ -35,7 +35,8 @@ import MyDisputes from '../pages/MyDisputes';
 
 // Buy
 import BuyTrade from '../wizards/Buy/0_Trade';
-import BuyContact from '../wizards/Buy/1_Contact';
+import BuyContact from '../wizards/Buy/1_1_ContactName';
+import BuyContactDetails from '../wizards/Buy/1_2_ContactDetails';
 import BuyConfirmTrade from '../wizards/Buy/2_ConfirmTrade';
 
 // Sell
@@ -177,7 +178,8 @@ class App extends Component {
 
                 <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade/amount', component: BuyTrade},
-                  {path: '/buy/trade/contact', component: BuyContact},
+                  {path: '/buy/trade/contact-name', component: BuyContact},
+                  {path: '/buy/trade/contact-details', component: BuyContactDetails},
                   {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 

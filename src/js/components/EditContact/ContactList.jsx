@@ -81,7 +81,7 @@ class EditContactList extends Component {
                        onBlur={this.handleContactCodeBlur}
                        className="form-control"
                        onChange={this.handleContactCodeChange}
-                       data-isStatus={this.isStatusSelected()}
+                       data-is-status={this.isStatusSelected()}
                        validations={[required, isContactCode]}/>
                 {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
 

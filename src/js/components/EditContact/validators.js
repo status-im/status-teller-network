@@ -31,7 +31,7 @@ export const validENS = username => {
 };
 
 export const isContactCode = (value, props) => {
-  const isStatus = props['data-isStatus'];
+  const isStatus = props['data-is-status'];
   if (!isStatus) {
     return;
   }

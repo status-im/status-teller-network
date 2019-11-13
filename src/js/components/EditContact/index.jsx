@@ -14,7 +14,7 @@ class EditContact extends Component {
         <h2 className="mb-4">{t('contactForm.yourNameTitle')}</h2>
         <Form>
           <FormGroup>
-            <Label for="nickname">{t('contactForm.statusKeyLabel')}</Label>
+            <Label for="nickname">{t('contactForm.yourNameLabel')}</Label>
             <Input type="text"
                    name="nickname"
                    id="nickname"
