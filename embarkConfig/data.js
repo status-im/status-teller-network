@@ -1,3 +1,5 @@
+const async = require('async');
+
 module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
@@ -96,28 +98,31 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
 
     console.log('Send ETH...');
     const value = 100 * Math.pow(10, 18);
-    await Promise.all(addresses.slice(1, 10).map(async (address) => {
+    let startNonce = await deps.web3.eth.getTransactionCount(main, undefined);
+    await Promise.all(addresses.slice(1, 10).map(async (address, idx) => {
       return deps.web3.eth.sendTransaction({
         to: address,
         from: main,
-        value: value.toString()
+        value: value.toString(),
+        nonce: startNonce + idx
       });
     }));
 
+
     console.log('Generate SNT...');
-    await Promise.all(addresses.map(async (address) => {
-      const generateToken = deps.contracts.SNT.methods.generateTokens(address, sntToken + '000000000000000000');
-      const gas = await generateToken.estimateGas({from: main});
-      return generateToken.send({from: main, gas});
-    }));
+    await async.eachLimit(addresses, 1, async (address) => {
+        const generateToken = deps.contracts.SNT.methods.generateTokens(address, sntToken + '000000000000000000');
+        const gas = await generateToken.estimateGas({from: main});
+        return generateToken.send({from: main, gas});
+    });
 
     console.log('Generate Standard Tokens');
     const weiToken = "5000000000000";
-    await Promise.all(addresses.slice(0, 9).map(async (address) => {
+    await async.eachLimit(addresses.slice(0, 9), 1, async (address) => {
       const generateToken = deps.contracts.StandardToken.methods.mint(address, weiToken.toString());
       const gas = await generateToken.estimateGas({from: main});
       return generateToken.send({from: main, gas});
-    }));
+    });
 
     console.log("Buy arbitration licenses");
     {
@@ -139,13 +144,13 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     }
 
     console.log('Buy Licenses...');
-    await Promise.all(addresses.slice(1, 7).map(async (address) => {
+    await async.eachLimit(addresses.slice(1, 7), 1, async (address) => {
       const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
       const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense);
 
       const gas = await toSend.estimateGas({from: address});
       return toSend.send({from: address, gas});
-    }));
+    });
 
     console.log('Generating Offers...');
     const tokens = [deps.contracts.SNT._address, '0x0000000000000000000000000000000000000000'];
@@ -155,7 +160,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const currencies = ['USD', 'EUR'];
     const offerStartIndex = 1;
 
-    const offerReceipts = await Promise.all(addresses.slice(offerStartIndex, offerStartIndex + 5).map(async (address) => {
+    const offerReceipts = await async.mapLimit(addresses.slice(offerStartIndex, offerStartIndex + 5), 1, async (address) => {
       const addOffer = deps.contracts.MetadataStore.methods.addOffer(
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
@@ -172,11 +177,10 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         arbitrator
       );
 
-
       const amountToStake = await deps.contracts.MetadataStore.methods.getAmountToStake(address).call();
       const gas = await addOffer.estimateGas({from: address, value: amountToStake});
       return addOffer.send({from: address, gas, value: amountToStake});
-    }));
+    });
 
     console.log('Creating escrows and rating them...');
     const val = 1000;
@@ -188,7 +192,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-    await Promise.all(addresses.slice(escrowStartIndex, escrowStartIndex + 1).map(async (creatorAddress, idx) => {
+    await async.eachOfLimit(addresses.slice(escrowStartIndex, escrowStartIndex + 1), 1, async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       // TODO when we re-enable creating tokens too, use this to know
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
@@ -222,32 +226,40 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
       gas = await rate.estimateGas({from: buyerAddress});
       await rate.send({from: buyerAddress, gas: gas + 1000});
-    }));
+    });
 
-    /*
     console.log('Creating arbitrations');
-
-
-    await Promise.all(addresses.slice(escrowStartIndex, 5).map(async (creatorAddress, idx) => {
+    await async.eachOfLimit(addresses.slice(escrowStartIndex, 5), 1, async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;
 
-      const creation = deps.contracts.Escrow.methods.create_and_fund(buyerAddress, ethOfferId, val, expirationTime, FIAT, 13555);
-      gas = await creation.estimateGas({from: creatorAddress, value: val + feeAmount});
-      receipt = await creation.send({from: creatorAddress, value: val + feeAmount, gas: gas + 1000});
-      const created = receipt.events.Created;
-      const escrowId = created.returnValues.escrowId;
+      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], PUBKEY_A, PUBKEY_B).call({from: buyerAddress});
+      signature = await deps.web3.eth.sign(hash, buyerAddress);
+      nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
+
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, PUBKEY_A, PUBKEY_B, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      gas = await creation.estimateGas({from: creatorAddress});
+      receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
+
+      created = receipt.events.Created;
+      escrowId = created.returnValues.escrowId;
+
+      // Fund
+      const fund = deps.contracts.Escrow.methods.fund(escrowId);
+      gas = await fund.estimateGas({from: creatorAddress, value: val + feeAmount});
+      await fund.send({from: creatorAddress, gas: gas + 1000, value: val + feeAmount});
+
 
       const pay = deps.contracts.Escrow.methods.pay(escrowId);
       gas = await pay.estimateGas({from: buyerAddress});
-      receipt = await pay.send({from: buyerAddress, gas: gas + 1000});
+      await pay.send({from: buyerAddress, gas: gas + 1000});
 
       const openCase = deps.contracts.Escrow.methods.openCase(escrowId, 'My Motive is...');
       gas = await openCase.estimateGas({from: buyerAddress});
-      receipt = await openCase.send({from: buyerAddress, gas: gas + 1000});
-    }));
-*/
-    const accounts = await Promise.all(addresses.map(async(address) => {
+      await openCase.send({from: buyerAddress, gas: gas + 1000});
+    });
+
+    const accounts = await async.mapLimit(addresses, 1, async (address) => {
       const ethBalance = await deps.web3.eth.getBalance(address);
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();
       const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
@@ -270,7 +282,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         ethBalance: deps.web3.utils.fromWei(ethBalance),
         sntBalance: deps.web3.utils.fromWei(sntBalance)
       };
-    }));
+    });
 
     console.log('Summary:');
     console.log('######################');
