@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {connect} from "react-redux";
@@ -6,9 +6,7 @@ import {connect} from "react-redux";
 import network from "../../../features/network";
 import newSeller from "../../../features/newSeller";
 import SellerAssets from './components/SellerAssets';
-import {Alert} from "reactstrap";
 import metadata from "../../../features/metadata";
-import {withNamespaces} from "react-i18next";
 
 class Asset extends Component {
   constructor(props) {
@@ -23,10 +21,9 @@ class Asset extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.isEip1102Enabled) {
-      this.props.enableEthereum();
+    if (this.props.isEip1102Enabled) {
+      this.load();
     }
-    this.load();
   }
 
   componentDidUpdate(prevProps) {
@@ -36,7 +33,7 @@ class Asset extends Component {
   }
 
   load() {
-    this.props.updateBalances();
+    this.props.updateBalances(this.props.address);
   }
 
   validate(asset) {
@@ -53,16 +50,14 @@ class Asset extends Component {
   };
 
   render() {
-    return (<Fragment>
-      {!this.props.isEip1102Enabled && <Alert color="warning">{this.props.t('ethereumEnable.createOffer')}</Alert>}
-      <SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset}
-                    availableAssets={this.props.tokens}/>
-    </Fragment>);
+    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset}
+                          availableAssets={this.props.tokens}
+                          isEip1102Enabled={this.props.isEip1102Enabled}
+                          enableEip1102={() => this.props.enableEthereum()}/>);
   }
 }
 
 Asset.propTypes = {
-  t: PropTypes.func,
   footer: PropTypes.object,
   wizard: PropTypes.object,
   setAsset: PropTypes.func,
@@ -70,10 +65,12 @@ Asset.propTypes = {
   seller: PropTypes.object,
   tokens: PropTypes.array,
   isEip1102Enabled: PropTypes.bool,
+  address: PropTypes.string,
   enableEthereum: PropTypes.func
 };
 
 const mapStateToProps = state => ({
+  address: network.selectors.getAddress(state) || '',
   seller: newSeller.selectors.getNewSeller(state),
   tokens: network.selectors.getTokensWithPositiveBalance(state),
   isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
@@ -86,4 +83,4 @@ export default connect(
     updateBalances: network.actions.updateBalances,
     enableEthereum: metadata.actions.enableEthereum
   }
-)(withNamespaces()(Asset));
+)(Asset);

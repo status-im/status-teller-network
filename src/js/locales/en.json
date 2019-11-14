@@ -10,7 +10,7 @@
     "loadingData": "Loading data"
   },
   "ethereumEnable": {
-    "createOffer": "Please give access to your address before you can create an offer",
+    "createOffer": "Connect wallet in order to see your crypto assets",
     "buyContact": "Please give access to your address before you can  sign",
     "profile": "Please give access to your address before you can view your profile"
   },

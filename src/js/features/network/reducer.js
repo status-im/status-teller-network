@@ -89,7 +89,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state
       };
       if (action.accounts && action.accounts[0]) {
-        result.addresss = action.accounts[0];
+        result.address = action.accounts[0];
       }
       return result;
     }
