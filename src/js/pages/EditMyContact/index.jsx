@@ -13,6 +13,7 @@ import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
 import DOMPurify from "dompurify";
 import {contactCodeRegExp} from "../../components/EditContact/validators";
+import EditContactList from "../../components/EditContact/ContactList";
 
 class EditMyContact extends Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class EditMyContact extends Component {
     this.state = {
       username: props.profile ? props.profile.username || '' : '',
       statusContactCode: props.profile ? props.profile.statusContactCode || '' : '',
-      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.statusContactCode) : true
+      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.statusContactCode) : true,
+      contactMethod: 'Status'
     };
   }
 
@@ -69,6 +71,10 @@ class EditMyContact extends Component {
     this.setState({statusContactCode});
   };
 
+  changeContactMethod = (contactMethod) => {
+    this.setState({contactMethod});
+  };
+
   changeUsername = (username) => {
     this.validate(username, this.state.statusContactCode);
     this.setState({username});
@@ -95,15 +101,18 @@ class EditMyContact extends Component {
       case States.none:
         return (
           <Fragment>
-            <EditContact isStatus={this.props.isStatus}
-                         statusContactCode={this.state.statusContactCode}
-                         username={this.state.username}
-                         changeStatusContactCode={this.changeStatusContactCode}
-                         getContactCode={this.getContactCode}
-                         changeUsername={this.changeUsername}
-                         resolveENSName={this.props.resolveENSName}
-                         ensError={this.props.ensError}
-                         />
+            <EditContact username={this.state.username}
+                         changeUsername={this.changeUsername}/>
+
+            <EditContactList isStatus={this.props.isStatus}
+                             contactMethod={this.state.contactMethod}
+                             contactCode={this.state.statusContactCode}
+                             changeContactCode={this.changeStatusContactCode}
+                             getContactCode={this.getContactCode}
+                             changeContactMethod={this.changeContactMethod}
+                             resolveENSName={this.props.resolveENSName}
+                             ensError={this.props.ensError}/>
+
             <UpdateButton disabled={this.state.updateDisabled} onClick={this.update}/>
         </Fragment>
         );

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import DOMPurify from "dompurify";
 
-import EditContact from '../../../components/EditContact';
+import EditContactList from '../../../components/EditContact/ContactList';
 import Loading from '../../../components/Loading';
 
 import newSeller from "../../../features/newSeller";
@@ -16,25 +16,26 @@ import {contactCodeRegExp} from '../../../utils/address';
 class Contact extends Component {
   constructor(props) {
     super(props);
-    const username = (props.seller && props.seller.username) || ((props.profile && props.profile.username) || "");
-    const statusContactCode = (props.seller && props.seller.statusContactCode) ||  ((props.profile && props.profile.statusContactCode) || "");
+    const username = props.seller && props.seller.username;
+    const contactCode = (props.seller && props.seller.statusContactCode) ||  ((props.profile && props.profile.statusContactCode) || "");
     this.state = {
-      username,
-      statusContactCode,
+      contactCode,
+      contactMethod: 'Status',
       ready: false
     };
-    this.validate(username, statusContactCode);
+    this.validate(contactCode);
     props.footer.onPageChange(() => {
-      props.setContactInfo({username: DOMPurify.sanitize(this.state.username), statusContactCode: DOMPurify.sanitize(this.state.statusContactCode)});
+      // TODO change this to work with the other methods once the contract is changed
+      props.setContactInfo({username: DOMPurify.sanitize(username), statusContactCode: DOMPurify.sanitize(this.state.contactCode)});
     });
   }
 
   componentDidMount() {
-    if (!this.props.seller.location) {
+    if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
 
-    if (this.props.profile && this.props.profile.username) {
+    if (this.props.profile && this.props.profile.statusContactCode) {
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
       return this.props.wizard.next();
     }
@@ -43,13 +44,13 @@ class Contact extends Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.statusContactCode !== this.props.statusContactCode) {
-      this.changeStatusContactCode(this.props.statusContactCode);
+      this.changeContactCode(this.props.statusContactCode);
     }
   }
 
-  validate(username, statusContactCode) {
-    if (username && statusContactCode) {
-      if(!contactCodeRegExp.test(statusContactCode)){
+  validate(contactCode) {
+    if (contactCode) {
+      if(!contactCodeRegExp.test(contactCode)){
         this.props.footer.disableNext();
       } else {
         return this.props.footer.enableNext();
@@ -58,21 +59,20 @@ class Contact extends Component {
     this.props.footer.disableNext();
   }
 
-  changeStatusContactCode = (statusContactCode) => {
-    this.validate(this.state.username, statusContactCode);
-    this.setState({statusContactCode});
+  changeContactCode = (contactCode) => {
+    this.validate(contactCode);
+    this.setState({contactCode});
   };
 
-  changeUsername = (username) => {
-    this.validate(username, this.state.statusContactCode);
-    this.setState({username});
+  changeContactMethod = (contactMethod) => {
+    this.setState({contactMethod});
   };
 
   getContactCode = () => {
     if(!this.props.statusContactCode){
       this.props.getContactCode();
     } else {
-      this.setState({ statusContactCode: this.props.statusContactCode });
+      this.setState({ contactCode: this.props.statusContactCode });
     }
   };
 
@@ -81,15 +81,14 @@ class Contact extends Component {
       return <Loading page/>;
     }
 
-    return <EditContact isStatus={this.props.isStatus}
-                         statusContactCode={this.state.statusContactCode}
-                         username={this.state.username}
-                         changeStatusContactCode={this.changeStatusContactCode}
-                         getContactCode={this.getContactCode}
-                         changeUsername={this.changeUsername}
-                         resolveENSName={this.props.resolveENSName}
-                         ensError={this.props.ensError}
-                         />;
+    return <EditContactList isStatus={this.props.isStatus}
+                            contactCode={this.state.contactCode}
+                            contactMethod={this.state.contactMethod}
+                            changeContactCode={this.changeContactCode}
+                            changeContactMethod={this.changeContactMethod}
+                            getContactCode={this.getContactCode}
+                            resolveENSName={this.props.resolveENSName}
+                            ensError={this.props.ensError}/>;
   }
 }
 

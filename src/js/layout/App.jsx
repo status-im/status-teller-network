@@ -35,12 +35,14 @@ import MyDisputes from '../pages/MyDisputes';
 
 // Buy
 import BuyTrade from '../wizards/Buy/0_Trade';
-import BuyContact from '../wizards/Buy/1_Contact';
+import BuyContact from '../wizards/Buy/1_1_ContactName';
+import BuyContactDetails from '../wizards/Buy/1_2_ContactDetails';
 import BuyConfirmTrade from '../wizards/Buy/2_ConfirmTrade';
 
 // Sell
 import SellLocation from '../wizards/Sell/3_Location';
-import SellContact from '../wizards/Sell/4_Contact';
+import SellContactName from '../wizards/Sell/4_1_ContactName';
+import SellContactDetails from '../wizards/Sell/4_2_ContactDetails';
 import SellAsset from '../wizards/Sell/0_Asset';
 import SellPaymentMethods from '../wizards/Sell/1_PaymentMethods';
 import SellArbitrator from '../wizards/Sell/5_SelectArbitrator';
@@ -176,7 +178,8 @@ class App extends Component {
 
                 <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade/amount', component: BuyTrade},
-                  {path: '/buy/trade/contact', component: BuyContact},
+                  {path: '/buy/trade/contact-name', component: BuyContact},
+                  {path: '/buy/trade/contact-details', component: BuyContactDetails},
                   {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
                 ]}/>
 
@@ -185,7 +188,8 @@ class App extends Component {
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
                   {path: '/sell/currency', component: SellCurrency},
                   {path: '/sell/location', component: SellLocation},
-                  (!this.props.profile || !this.props.profile.username) && {path: '/sell/contact', component: SellContact},
+                  (!this.props.profile || !this.props.profile.username) && {path: '/sell/contact', component: SellContactName},
+                  (!this.props.profile || !this.props.profile.statusContactCode) && {path: '/sell/contact-details', component: SellContactDetails},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},

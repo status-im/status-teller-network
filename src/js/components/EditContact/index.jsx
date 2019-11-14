@@ -1,38 +1,20 @@
 import React, {Component, Fragment} from 'react';
-import {FormGroup, Button} from 'reactstrap';
+import {FormGroup, Label} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import Textarea from 'react-validation/build/textarea';
 import {withNamespaces} from "react-i18next";
 import PropTypes from 'prop-types';
-import {required, isContactCode, validENS} from "./validators";
-
-const domain = ".stateofus.eth";
+import {required} from "./validators";
 
 class EditContact extends Component {
-  handleContactCodeChange = (e) => {
-    const statusContactCode = e.target.value.toLowerCase();
-    this.props.changeStatusContactCode(statusContactCode);
-  };
-
-  handleContactCodeBlur = (e) => {
-    const statusContactCode = e.target.value.toLowerCase();
-    if(validENS(statusContactCode) && !this.isStatusENSDomain(statusContactCode) && !this.isENSName(statusContactCode)){
-      this.props.changeStatusContactCode(statusContactCode + domain);
-    }
-  };
-
-  isENSName = (statusContactCode) => statusContactCode && statusContactCode.endsWith(".eth");
-
-  isStatusENSDomain = (statusContactCode) => statusContactCode && statusContactCode.indexOf(domain) > -1;
-
   render() {
-    const {t, username, statusContactCode, isStatus, ensError} = this.props;
+    const {t, username} = this.props;
     return (
       <Fragment>
-        <h2 className="mb-4">{t('contactForm.yourName')}</h2>
+        <h2 className="mb-4">{t('contactForm.yourNameTitle')}</h2>
         <Form>
           <FormGroup>
+            <Label for="nickname">{t('contactForm.yourNameLabel')}</Label>
             <Input type="text"
                    name="nickname"
                    id="nickname"
@@ -42,25 +24,6 @@ class EditContact extends Component {
                    onChange={(e) => this.props.changeUsername(e.target.value)}
                    validations={[required]}/>
           </FormGroup>
-          <FormGroup>
-            <Textarea type="text"
-                   name="contactCode"
-                   id="contactCode"
-                   rows="5"
-                   placeholder="Status contact code or Status ENS name"
-                   value={statusContactCode}
-                   onBlur={this.handleContactCodeBlur}
-                   className="form-control"
-                   onChange={this.handleContactCodeChange}
-                   validations={[required, isContactCode]}/>
-            {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
-            {isStatus && <Button className="input-icon p-0" color="link" onClick={(_e) => this.props.getContactCode()}>Give access</Button>}
-          </FormGroup>
-          {this.isENSName(statusContactCode) && <p className="text-center">
-            <Button color="primary" onClick={(_e) => this.props.resolveENSName(statusContactCode)}>
-              Resolve ENS name
-            </Button>
-          </p>}
         </Form>
       </Fragment>
     );
@@ -70,13 +33,7 @@ class EditContact extends Component {
 EditContact.propTypes = {
   t: PropTypes.func,
   changeUsername: PropTypes.func,
-  changeStatusContactCode: PropTypes.func,
-  getContactCode: PropTypes.func,
-  username: PropTypes.string,
-  statusContactCode: PropTypes.string,
-  isStatus: PropTypes.bool,
-  resolveENSName: PropTypes.func,
-  ensError: PropTypes.string
+  username: PropTypes.string
 };
 
 export default withNamespaces()(EditContact);
