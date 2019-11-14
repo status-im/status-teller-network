@@ -185,12 +185,12 @@ class App extends Component {
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
                   {path: '/sell/currency', component: SellCurrency},
                   {path: '/sell/location', component: SellLocation},
-                  {path: '/sell/contact', component: SellContact},
+                  (!this.props.profile || !this.props.profile.username) && {path: '/sell/contact', component: SellContact},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},
                   {path: '/sell/summary', component: SellSummary, nextLabel: 'Post the offer'}
-                ]}/>
+                ].filter(x => x)}/>
 
                 <Route path="/tmp/signature" component={SignatureContainer}/>
 
