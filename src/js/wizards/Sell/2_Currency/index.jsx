@@ -2,11 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {withNamespaces} from 'react-i18next';
 import {connect} from 'react-redux';
-
+import prices from '../../../features/prices';
 import FiatSelectorForm from "./components/FiatSelectorForm";
 import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import {CURRENCY_DATA} from "../../../constants/currencies";
+import network from '../../../features/network';
 
 class Currency extends Component {
   constructor(props) {
@@ -49,7 +50,7 @@ class Currency extends Component {
     }
 
     return (<FiatSelectorForm value={this.state.currency}
-                              currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
+                              currencies={CURRENCY_DATA.filter(x => this.props.prices[this.props.token.symbol][x.id]).map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
                               changeCurrency={this.changeCurrency}/>);
   }
 }
@@ -59,11 +60,15 @@ Currency.propTypes = {
   wizard: PropTypes.object,
   setCurrency: PropTypes.func,
   seller: PropTypes.object,
-  footer: PropTypes.object
+  footer: PropTypes.object,
+  prices: PropTypes.object,
+  token: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  seller: newSeller.selectors.getNewSeller(state)
+  seller: newSeller.selectors.getNewSeller(state),
+  prices: prices.selectors.getPrices(state),
+  token: network.selectors.getTokenByAddress(state, newSeller.selectors.getNewSeller(state).asset),
 });
 
 export default connect(
