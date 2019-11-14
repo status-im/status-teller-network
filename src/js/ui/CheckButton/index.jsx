@@ -13,7 +13,7 @@ const CheckButton = ({children, active, onClick, size, align, isCheckBox}) => (
     large: size === 'l',
     small: size === 's'
   })} size="lg" color="link" block active={active} onClick={onClick}>
-    {!isCheckBox && <FontAwesomeIcon className={classnames({"float-right": align === "right", "float-left": align !== "right", "text-primary": active, "text-secondary": !active})}
+    {!isCheckBox && <FontAwesomeIcon className={classnames('radio-box', {"float-right": align === "right", "float-left": align !== "right", "text-primary": active, "text-secondary": !active})}
                      icon={active ? faCircleReg : faCircle}/>}
     {isCheckBox && <span className={classnames("d-inline-block check-box text-center", {'bg-secondary': !active, 'bg-primary': active, "float-right": align === "right", "float-left": align !== "right"})}>
       {active && <FontAwesomeIcon className="text-white" icon={faCheck}/>}

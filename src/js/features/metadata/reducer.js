@@ -29,7 +29,7 @@ const DEFAULT_STATE = {
   signing: false,
   signature: '',
   deleteOfferStatus: States.none,
-  offerPrice: '',
+  offerPrice: ''
 };
 
 function formatOffer(offer) {
