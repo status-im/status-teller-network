@@ -179,7 +179,10 @@
     }
   },
   "contactForm": {
-    "yourName": "Set your nickname and contact details"
+    "yourNameTitle": "Set your teller nickname",
+    "yourNameLabel": "Teller nickname",
+    "contactTitle": "Choose contact method",
+    "statusKeyLabel": "Status chat key"
   },
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",

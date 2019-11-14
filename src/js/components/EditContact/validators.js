@@ -30,7 +30,11 @@ export const validENS = username => {
   return true;
 };
 
-export const isContactCode = (value) => {
+export const isContactCode = (value, props) => {
+  const isStatus = props['data-isStatus'];
+  if (!isStatus) {
+    return;
+  }
   if (!(validENS(value) || (value.startsWith("0x") && contactCodeRegExp.test(value)))){
     return <NamespacesConsumer>
       {t => <FormFeedback className="d-block">{t('validators.isContactCode')}</FormFeedback>}
