@@ -91,7 +91,7 @@ class App extends Component {
     if (!prevProps.isReady && this.props.isReady) {
       this.props.loadOffers();
     }
-    if ((!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) || (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.isReady)) {
+    if (!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) {
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
         this.props.resetState();
       }
