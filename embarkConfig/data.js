@@ -2,7 +2,15 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
-    
+
+
+    const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
+    if (balance !== '0') {
+      console.log('Data script already ran once.');
+      console.log('If you want to run it again (eg you updated the Escrow contract), use `embark reset`');
+      return;
+    }
+
     {
       console.log('Setting the initial SellerLicense "template", and calling the init() function');
 
@@ -83,10 +91,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const arbitrator = addresses[9];
 
     const sntToken = 10000000;
-    const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
-    if (balance !== '0') {
-      return;
-    }
 
     console.log("Seeding data...");
 
@@ -168,8 +172,10 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         arbitrator
       );
 
-      const gas = await addOffer.estimateGas({from: address});
-      return addOffer.send({from: address, gas});
+
+      const amountToStake = await deps.contracts.MetadataStore.methods.getAmountToStake(address).call();
+      const gas = await addOffer.estimateGas({from: address, value: amountToStake});
+      return addOffer.send({from: address, gas, value: amountToStake});
     }));
 
     console.log('Creating escrows and rating them...');
@@ -182,12 +188,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-    console.log('START', escrowStartIndex);
-    console.log('RECiptys', offerReceipts.length);
     await Promise.all(addresses.slice(escrowStartIndex, escrowStartIndex + 1).map(async (creatorAddress, idx) => {
-      console.log('Index = ', idx - offerStartIndex + escrowStartIndex);
-      console.log('Address used:; ', creatorAddress);
-      console.log('OWNER', offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.owner);
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       // TODO when we re-enable creating tokens too, use this to know
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
