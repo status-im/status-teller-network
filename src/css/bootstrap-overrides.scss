@@ -10,7 +10,6 @@
   color: #000000 !important;
 }
 
-
 .body-content {
   padding-right: 15px;
   padding-left: 15px;
@@ -178,4 +177,30 @@ $input-icon-height: 20px;
 
 .card-body a:hover {
   text-decoration: none;
+}
+
+.modal {
+  .modal-dialog {
+    margin: 80px 32px 0;
+
+    .modal-content {
+      border-radius: 16px;
+
+      .modal-header {
+        text-align: center;
+        border: none;
+        margin: 0 auto;
+        padding-bottom: 0;
+
+        .modal-title {
+          font-size: 17px;
+          font-weight: bold;
+        }
+      }
+
+      .modal-body {
+        padding: 8px 24px;
+      }
+    }
+  }
 }

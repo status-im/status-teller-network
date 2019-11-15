@@ -13,7 +13,7 @@
   left: 0;
   background-color: rgba(0, 0, 0, 0.8);
   display: none;
-  z-index: 8999;
+  z-index: 980;
 
   &.open {
     display: block;
@@ -30,7 +30,7 @@ $menu-width: 85%;
   width: 0;
   max-width: 400px;
   background-color: white;
-  z-index: 9000;
+  z-index: 990;
   padding: 24px 0;
   overflow: hidden;
   transition: width 0.5s, padding 0.5s;
