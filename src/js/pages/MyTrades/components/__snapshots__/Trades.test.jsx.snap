@@ -40,10 +40,8 @@ exports[`Trades should render correctly 1`] = `
       transform={null}
     />
   </p>
-  <Card
-    body={true}
+  <div
     className="profile-trades-list border-0 pt-0"
-    tag="div"
   >
     <Row
       className="my-1 border-bottom shadow-sm p-2 mb-3"
@@ -63,7 +61,7 @@ exports[`Trades should render correctly 1`] = `
         }
       />
     </Row>
-  </Card>
+  </div>
 </div>
 `;
 
