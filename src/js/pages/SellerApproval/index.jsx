@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import {withRouter, Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import network from '../../features/network';
 import arbitration from '../../features/arbitration';
 import license from '../../features/license';
@@ -8,18 +8,10 @@ import metadata from '../../features/metadata';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import PropTypes from 'prop-types';
-import { ListGroup, ListGroupItem, Button, Row,  Col } from 'reactstrap';
 import Switch from "react-switch";
-import classnames from 'classnames';
-import { formatArbitratorName } from '../../utils/strings';
+import SellerApprovalItem from "./SellerApprovalItem";
 
 import './index.scss';
-
-const requestStatus = {
-  [arbitration.constants.AWAIT]: "Pending",
-  [arbitration.constants.ACCEPTED]: "Accepted",
-  [arbitration.constants.REJECTED]: "Rejected"
-};
 
 class SellerApproval extends Component {
 
@@ -54,11 +46,11 @@ class SellerApproval extends Component {
     }
   }
 
-  acceptRequest = id => () => {
+  acceptRequest = (id) => {
     this.props.acceptRequest(id);
   };
 
-  rejectRequest = id => () => {
+  rejectRequest = (id) => {
     this.props.rejectRequest(id);
   };
 
@@ -93,39 +85,16 @@ class SellerApproval extends Component {
         </div>
 
         {!acceptsEveryone && <Fragment>
-          <p className="mt-2 mb-0 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can choose you as an arbitrator</p>
-          <p className="mt-0 text-muted">If you activate it, you will still be able to blacklist sellers individually</p>
+          <p className="mt-2 mb-0 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can
+            choose you as an arbitrator</p>
+          <p className="mt-0 text-muted">If you activate it, you will still be able to blacklist sellers
+            individually</p>
           <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
-          <ListGroup>
-            {requests.length === 0 && <p>No requests</p>}
-            {requests.map((request, i) => {
-                const text = formatArbitratorName(users[request.seller], request.seller);
-
-                return <ListGroupItem key={i}>
-                  <Row>
-                    <Col xs="12" sm="9" className="pb-3" tag={Link} to={`/profile/${request.seller}`}>
-                      <span className="text-small">{request.seller}</span>
-                      <br/>
-                      <span className={classnames("font-weight-bold")}>{text}</span>
-                    </Col>
-                    <Col xs="12" sm="3" className="text-center">
-                      {request.status === arbitration.constants.AWAIT &&
-                      <Button onClick={this.acceptRequest(request.id)} className="m-2">Accept</Button>}
-                      {(request.status === arbitration.constants.AWAIT || request.status === arbitration.constants.ACCEPTED) &&
-                      <Button className="m-2" onClick={this.rejectRequest(request.id)}>Reject</Button>}
-                      <p className={classnames('text-small', {
-                        'text-success': request.status === arbitration.constants.ACCEPTED,
-                        'text-danger': request.status === arbitration.constants.REJECTED,
-                        'text-muted': request.status === arbitration.constants.AWAIT
-                      })}>
-                        ({requestStatus[request.status]})
-                      </p>
-                    </Col>
-                  </Row>
-                </ListGroupItem>;
-              }
-            )}
-          </ListGroup>
+          {requests.length === 0 && <p>No requests</p>}
+          {requests.map((request, i) => (
+            <SellerApprovalItem key={'approval-' + i} status={request.status} address={request.seller}
+                                user={users[request.seller]} acceptRequest={() => this.acceptRequest(request.id)}
+                                rejectRequest={() => this.rejectRequest(request.id)}/>))}
         </Fragment>
         }
 
@@ -134,19 +103,14 @@ class SellerApproval extends Component {
           <h3 className="mb-2 mt-5">Blacklist sellers</h3>
           <p className="text-muted">Even though you accept every seller, you can blacklist some sellers if you suspect
             them to be malicious</p>
-          <ListGroup>
-            {sellers.map((seller, i) => {
-              const isBlacklisted = blacklistedSellers.includes(seller.address);
-              return (<ListGroupItem key={i}>
-                <span
-                  className="mr-2">{users[seller.address] && formatArbitratorName(users[seller.address], seller.address, 'No username', i)}{!users[seller.address] && seller.address}</span>
-                {isBlacklisted &&
-                <Button color="success" className="float-right" onClick={(e) => this.unBlacklist(e, seller.address)}>Un-Blacklist</Button>}
-                {!isBlacklisted &&
-                <Button color="danger" className="float-right" onClick={(e) => this.blacklist(e, seller.address)}>Blacklist</Button>}
-              </ListGroupItem>);
-            })}
-          </ListGroup>
+          {sellers.map((seller, i) => {
+            const isBlacklisted = blacklistedSellers.includes(seller.address);
+
+            return <SellerApprovalItem key={'approval-' + i} status={isBlacklisted ? 'Blacklisted' : ''}
+                                       address={seller.address}
+                                       user={users[seller.address]} blacklist={(e) => this.blacklist(e, seller.address)}
+                                       unBlacklist={(e) => this.unBlacklist(e, seller.address)}/>;
+          })}
         </Fragment>}
       </Fragment>
     );

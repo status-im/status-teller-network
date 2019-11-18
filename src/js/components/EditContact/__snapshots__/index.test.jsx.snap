@@ -9,6 +9,19 @@ exports[`EditContact should render correctly 1`] = `
     <FormGroup
       tag="div"
     >
+      <Label
+        for="nickname"
+        tag="label"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      />
       <Control(s)
         className="form-control"
         id="nickname"
@@ -21,27 +34,6 @@ exports[`EditContact should render correctly 1`] = `
             [Function],
           ]
         }
-      />
-    </FormGroup>
-    <FormGroup
-      tag="div"
-    >
-      <Control(s)
-        className="form-control"
-        id="contactCode"
-        name="contactCode"
-        onBlur={[Function]}
-        onChange={[Function]}
-        placeholder="Status contact code or Status ENS name"
-        rows="5"
-        type="text"
-        validations={
-          Array [
-            [Function],
-            [Function],
-          ]
-        }
-        value="contractCode"
       />
     </FormGroup>
   </Form(t)>
