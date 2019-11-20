@@ -2,11 +2,12 @@
 import React, {Fragment, Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {withNamespaces, Trans} from "react-i18next";
+import {withNamespaces} from "react-i18next";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
-import CancelIcon from "../../../../images/close.svg";
+import CancelIcon from "../../../../images/cancel.svg";
+import CancelIconGray from "../../../../images/cancel-gray.svg";
 import classnames from 'classnames';
 import moment from 'moment';
 
@@ -39,7 +40,7 @@ class CancelEscrow extends Component {
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
     const relayFutureDate = escrow.helpers.nextRelayDate(lastActivity);
 
-    let disabled;
+    let disabled = false;
     if(isBuyer){
       if(notEnoughETH){
         disabled = !canRelay || !isETHorSNT;
@@ -50,42 +51,30 @@ class CancelEscrow extends Component {
 
     return shouldDisplay && <Fragment>
       <div onClick={this.displayDialog(true)} className="clickable">
-        <Row className={classnames("mt-4 text-primary", {'disabled': disabled})}>
+        <Row className={classnames("mt-4 text-primary")}>
           <Col xs="2">
-            <RoundedIcon image={CancelIcon} bgColor="red"/>
+            <RoundedIcon image={!disabled ? CancelIcon : CancelIconGray} bgColor={disabled ? "secondary" : "red"}/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <h6 className="m-0 font-weight-normal text-danger">Cancel trade</h6>
+            <p className={classnames("m-0 font-weight-normal",{'text-danger': !disabled, 'text-muted': disabled})}>
+              { (isBuyer || (!isBuyer &&  trade.status === escrow.helpers.tradeStates.waiting)) && 'Cancel trade' } 
+              { !isBuyer &&  trade.status === escrow.helpers.tradeStates.funded && 'Cancel trade and withdraw funds back' }
+            </p>
+            <p className="m-0 text-muted">
+            { ((isBuyer && !disabled )|| (!isBuyer &&  trade.status === escrow.helpers.tradeStates.waiting)) && 'Changed your mind?' }
+            { !isBuyer &&  trade.status === escrow.helpers.tradeStates.funded && !disabled && 'Buyer is not responding?'}
+            { !isBuyer && trade.status === escrow.helpers.tradeStates.funded && disabled && <Fragment>
+                {(function () {
+                  // This a weird and impromptu function, but it's a simple way to only generate a variable in the jsx render
+                  const amountTime = moment(new Date(trade.expirationTime * 1000)).toNow(true);
+                  return 'Available in:' + amountTime;
+                }())}
+            </Fragment>}
+            { disabled && isBuyer && isETHorSNT && 'Escrow can be canceled in ' + moment(relayFutureDate).toNow(true) }
+            { disabled && isBuyer && !isETHorSNT && 'Only ETH and SNT transactions can be canceled when you don&quot;t have enough balance in your wallet' }
+            </p>
           </Col>
         </Row>
-        {
-          disabled && !isBuyer && <Row>
-            <Col xs="2">
-            </Col>
-            <Col xs="10" className="text-small">
-              {(function () {
-                // This a weird and impromptu function, but it's a simple way to only generate a variable in the jsx render
-                const amountTime = moment(new Date(trade.expirationTime * 1000)).toNow(true);
-                return <Trans i18nKey="cancelEscrow.expire" amountTime={amountTime}>
-                  Once funded, an escrow can only be canceled by you after it expires (in <b>{{amountTime}}</b>)
-                </Trans>;
-              }())}
-            </Col>
-          </Row>
-        }
-        {
-          disabled && isBuyer && <Row>
-            <Col xs="2">
-            </Col>
-            {isETHorSNT && <Col xs="10" className="text-small">
-              Escrow can be canceled in {moment(relayFutureDate).toNow(true)}
-            </Col>}
-            {!isETHorSNT && <Col xs="10" className="text-small">
-              Only ETH and SNT transactions can be canceled when you don&quot;t have enough balance in your wallet
-            </Col>}
-          </Row>
-        }
-
       </div>
       { !disabled && <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?" cancelText="No" /> }
     </Fragment>;
