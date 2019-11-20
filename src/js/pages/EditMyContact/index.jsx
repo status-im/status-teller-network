@@ -54,7 +54,7 @@ class EditMyContact extends Component {
       address: this.props.address,
       username: DOMPurify.sanitize(this.state.username),
       statusContactCode: DOMPurify.sanitize(this.state.statusContactCode),
-      location: DOMPurify.sanitize(this.props.profile.location)
+      location: DOMPurify.sanitize(this.props.profile ? this.props.profile.location : '')
     });
   };
 

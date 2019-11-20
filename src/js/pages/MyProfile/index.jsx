@@ -21,7 +21,7 @@ import iconTrades from '../../../images/change.svg';
 import iconOffers from '../../../images/make_admin.svg';
 import iconDisputes from '../../../images/info.svg';
 import iconBecomeArbitrator from '../../../images/arbitrator.svg';
-import iconChat from '../../../images/read-chat.svg';
+import iconSettings from '../../../images/settings.svg';
 
 import "./index.scss";
 import {withNamespaces} from "react-i18next";
@@ -108,7 +108,7 @@ class MyProfile extends Component {
         { profile.isArbitrator && <ProfileButton linkTo="/sellers" image={iconDisputes} title="Manage sellers" subtitle={`${pendingRequests} pending requests`} />}
 
         <Separator />
-        <ProfileButton linkTo="/profile/contact/edit" image={iconChat} title="Profile settings"/>
+        <ProfileButton linkTo="/profile/settings" image={iconSettings} title="Profile settings"/>
       </Fragment>
     );
   }
