@@ -1,3 +1,5 @@
+@import "../../../css/variable-overrides";
+
 .topCircle {
   z-index: 90;
   position: relative;
@@ -17,13 +19,16 @@
   .profile-button-icon,
   .profile-button-title {
     font-size: 15px;
+
+    &.line-height-40 {
+      line-height: 40px;
+    }
   }
 }
 
-
-
 .separator {
+  display: block;
   width: 300px;
-  border: 1px solid #EEF2F5;
-  float: right;
+  border: 1px solid $secondary;
+  margin: 0 auto;
 }

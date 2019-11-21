@@ -198,7 +198,7 @@
     "button": "Buy license"
   },
   "updateUser": {
-    "button": "Update"
+    "button": "Sign & Save changes"
   },
   "loading": {
     "mining": "Waiting for the confirmation from miners",

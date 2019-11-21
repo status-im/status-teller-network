@@ -89,10 +89,6 @@ class EditMyContact extends Component {
   };
 
   render() {
-    if(!this.props.profile){
-      return <Loading />;
-    }
-
     switch(this.props.updateUserStatus){
       case States.pending:
         return <Loading mining/>;
