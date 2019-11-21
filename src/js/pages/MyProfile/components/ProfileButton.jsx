@@ -3,6 +3,7 @@ import {Row, Col} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
+import classnames from 'classnames';
 
 const ProfileButton = ({linkTo, image, title, subtitle}) => (
   <Link to={linkTo} className="profile-button">
@@ -11,8 +12,8 @@ const ProfileButton = ({linkTo, image, title, subtitle}) => (
         <span className="float-left mr-2 profile-button-icon">
             <RoundedIcon image={image} bgColor="blue" />
         </span>
-        <h6 className="m-0 font-weight-normal profile-button-title">{title}</h6>
-        <span className="text-muted text-small">{subtitle}</span>
+        <h6 className={classnames("m-0 font-weight-normal profile-button-title", {'line-height-40': !subtitle})}>{title}</h6>
+        {subtitle && <span className="text-muted text-small">{subtitle}</span>}
       </Col>
     </Row>
   </Link>

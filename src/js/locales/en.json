@@ -198,7 +198,10 @@
     "button": "Buy license"
   },
   "updateUser": {
-    "button": "Update"
+    "button": "Sign & Save changes"
+  },
+  "profileSettings": {
+    "title": "Profile settings"
   },
   "loading": {
     "mining": "Waiting for the confirmation from miners",

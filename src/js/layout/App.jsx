@@ -32,6 +32,7 @@ import MyProfile from '../pages/MyProfile';
 import MyOffers from '../pages/MyOffers';
 import MyTrades from '../pages/MyTrades';
 import MyDisputes from '../pages/MyDisputes';
+import ProfileSettings from '../pages/ProfileSettings';
 
 // Buy
 import BuyTrade from '../wizards/Buy/0_Trade';
@@ -159,7 +160,8 @@ class App extends Component {
                 <Route exact path="/settings" component={Settings}/>
 
                 <Route exact path="/profile" component={MyProfile}/>
-                <Route exact path="/profile/contact/edit" component={EditMyContact}/>
+                <Route exact path="/profile/settings" component={ProfileSettings}/>
+                <Route exact path="/profile/settings/contact" component={EditMyContact}/>
                 <Route exact path="/profile/offers" component={MyOffers} />
                 <Route exact path="/profile/trades" component={MyTrades} />
                 <Route exact path="/profile/disputes" component={MyDisputes} />

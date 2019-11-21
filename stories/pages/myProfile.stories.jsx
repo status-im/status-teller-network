@@ -6,7 +6,6 @@ import {withKnobs} from '@storybook/addon-knobs';
 
 import Offers from '../../src/js/pages/MyOffers/components/Offers';
 import Trades from '../../src/js/pages/MyTrades/components/Trades';
-import StatusContactCode from '../../src/js/pages/MyProfile/components/StatusContactCode';
 
 storiesOf('Pages/MyProfile', module)
   .addDecorator(withKnobs)
@@ -30,12 +29,6 @@ storiesOf('Pages/MyProfile', module)
     "Without Offers",
     withInfo({inline: true})(() => (
       <Offers location="London" offers={[]}/>
-    ))
-  )
-  .add(
-    "Status Contact Code",
-    withInfo({inline: true})(() => (
-      <StatusContactCode value="0xlsakjd123123" />
     ))
   )
   .add(

@@ -15,13 +15,13 @@ import UserInformation from '../../components/UserInformation';
 import Loading from "../../components/Loading";
 
 import Separator from './components/Separator';
-import StatusContactCode from './components/StatusContactCode';
 import ProfileButton from './components/ProfileButton';
 
 import iconTrades from '../../../images/change.svg';
 import iconOffers from '../../../images/make_admin.svg';
 import iconDisputes from '../../../images/info.svg';
 import iconBecomeArbitrator from '../../../images/arbitrator.svg';
+import iconSettings from '../../../images/settings.svg';
 
 import "./index.scss";
 import {withNamespaces} from "react-i18next";
@@ -103,10 +103,12 @@ class MyProfile extends Component {
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title="My offers" subtitle={`${activeOffers} active`} />
         <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} active`} />
         <Separator />
-        {!profile.isArbitrator && <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title="Become an arbitrator" subtitle="Make tokens by judging disputes" /> }
+        {!profile.isArbitrator && <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title="Become an arbitrator" subtitle="Make tokens by judging disputes" />}
         <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title="Manage arbitrators" subtitle="Some explanation text here" />
-        { profile.isArbitrator && <ProfileButton linkTo="/sellers" image={iconDisputes} title="Manage sellers" subtitle={`${pendingRequests} pending requests`} /> }
-        {profile.username && <StatusContactCode value={profile.statusContactCode} />}
+        { profile.isArbitrator && <ProfileButton linkTo="/sellers" image={iconDisputes} title="Manage sellers" subtitle={`${pendingRequests} pending requests`} />}
+
+        <Separator />
+        <ProfileButton linkTo="/profile/settings" image={iconSettings} title="Profile settings"/>
       </Fragment>
     );
   }
