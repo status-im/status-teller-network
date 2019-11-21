@@ -62,7 +62,8 @@ class Contact extends Component {
       }
       return this.props.footer.enableNext();
     }
-    this.props.footer.disableNext();
+
+    this.props.footer.enableNext();
   }
 
   changeContactCode = (contactUsername) => {
