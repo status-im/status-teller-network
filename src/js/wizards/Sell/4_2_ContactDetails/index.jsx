@@ -38,7 +38,6 @@ class Contact extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
