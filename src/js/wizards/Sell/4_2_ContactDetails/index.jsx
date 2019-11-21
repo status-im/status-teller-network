@@ -38,6 +38,7 @@ class Contact extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props);
     if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
@@ -62,8 +63,7 @@ class Contact extends Component {
       }
       return this.props.footer.enableNext();
     }
-
-    this.props.footer.enableNext();
+    this.props.footer.disableNext();
   }
 
   changeContactCode = (contactUsername) => {
