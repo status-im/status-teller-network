@@ -58,6 +58,7 @@ class EditContactList extends Component {
   render() {
     const {t, contactCode, isStatus, ensError, contactMethod} = this.props;
     const selectedMethod = this.contactMethods.find(method => method.name === contactMethod);
+        
     return (
       <Fragment>
         <h2 className="mb-4">{t('contactForm.contactTitle')}</h2>
@@ -93,7 +94,7 @@ class EditContactList extends Component {
               </Col>}
             </Row>
           </FormGroup>
-          {selectedMethod === STATUS && this.isENSName(contactCode) && <p className="text-center">
+          {contactMethod === STATUS && this.isENSName(contactCode) && <p className="text-center">
             <Button color="primary" onClick={(_e) => this.props.resolveENSName(contactCode)}>
               Resolve ENS name
             </Button>
