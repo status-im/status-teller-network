@@ -16,7 +16,7 @@ export const tradeStatesFormatted = {
   paid: 'Paid',
   funded: 'Funded',
   released: 'Done',
-  arbitration_open: 'Arbitration',
+  arbitration_open: 'Dispute',
   arbitration_closed: 'Resolved',
   canceled: 'Canceled',
   expired: 'Expired'

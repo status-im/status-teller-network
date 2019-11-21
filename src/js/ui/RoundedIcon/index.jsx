@@ -18,7 +18,7 @@ const RoundedIcon = ({icon, image, bgColor, size, className}) => (
     [className]: !!className
   })}>
     {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
-    {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon"/>}
+    {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon" width={13} height={13}/>}
   </span>
 );
 

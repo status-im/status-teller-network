@@ -47,7 +47,6 @@ export function *createEscrow({user, escrow}) {
     );
   yield doTransaction(CREATE_ESCROW_PRE_SUCCESS, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_FAILED, {user, escrow, toSend});
   yield put({type: LOAD_USER, address: web3.eth.defaultAccount});
- 
 }
 
 export function *onCreateEscrow() {
@@ -177,9 +176,12 @@ export function *doLoadEscrows({address}) {
     const escrows = yield all(events.map(function *(ev) {
       const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
+
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
-      escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
-      escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
+      escrow.currency = escrow.offer.currency;
+      escrow.margin = escrow.offer.margin;
+      escrow.seller = yield select(state => state.metadata.users[escrow.offer.owner]);
+      escrow.buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
       escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
       escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
       return escrow;

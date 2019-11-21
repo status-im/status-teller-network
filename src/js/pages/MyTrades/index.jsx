@@ -13,6 +13,7 @@ import { zeroAddress } from '../../utils/address';
 
 import Loading from "../../components/Loading";
 import events from "../../features/events";
+import prices from "../../features/prices";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -57,6 +58,10 @@ class MyTrades extends Component {
       });
   }
 
+  tradeClick = (escrowId) => {
+    this.props.history.push('/escrow/' + escrowId);
+  };
+
   render() {
     const {profile} = this.props;
 
@@ -72,9 +77,9 @@ class MyTrades extends Component {
 
     return <Fragment>
         <h3 className="d-inline-block">Active trades</h3>
-        <Trades trades={trades} active address={this.props.address} />
+        <Trades trades={trades} active address={this.props.address} tradeClick={this.tradeClick} prices={this.props.prices}/>
         <h3 className="d-inline-block">Past trades</h3>
-        <Trades trades={trades} address={this.props.address} />
+        <Trades trades={trades} address={this.props.address} tradeClick={this.tradeClick} prices={this.props.prices}/>
       </Fragment>;
   }
 }
@@ -88,6 +93,7 @@ MyTrades.propTypes = {
   loadProfile: PropTypes.func,
   getDisputedEscrows: PropTypes.func,
   escrowEvents: PropTypes.object,
+  prices: PropTypes.object,
   watchEscrow: PropTypes.func
 };
 
@@ -99,7 +105,8 @@ const mapStateToProps = state => {
     profile,
     trades: escrow.selectors.getTrades(state, address, profile.offers.map(offer => offer.id)),
     disputes: arbitration.selectors.escrows(state),
-    escrowEvents: events.selectors.getEscrowEvents(state)
+    escrowEvents: events.selectors.getEscrowEvents(state),
+    prices: prices.selectors.getPrices(state)
   };
 };
 

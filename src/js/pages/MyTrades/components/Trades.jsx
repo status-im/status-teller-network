@@ -1,40 +1,66 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {Card, Row, Col, Form, FormGroup, Label, Input} from 'reactstrap';
-import {Link} from "react-router-dom";
+import {Card, Row, Col, Form, FormGroup, Label, Input, CardBody, CardFooter} from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
-import Identicon from "../../../components/UserInformation/Identicon";
-import {formatBalance} from "../../../utils/numbers";
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
+import {truncateTwo} from '../../../utils/numbers';
+import {calculateEscrowPrice} from '../../../utils/transaction';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
+import RoundedIcon from "../../../ui/RoundedIcon";
 
 import './Trades.scss';
+import {getTokenImage} from "../../../utils/images";
+import messageImage from '../../../../images/read-chat.svg';
+import moneyImage from '../../../../images/money-hand.svg';
+
+import {PAYMENT_METHODS} from "../../../features/metadata/constants";
+
+import UserInfoRow from "../../../components/UserInfoRow";
 
 const getTradeStyle = (trade, isBuyer) => {
   if (trade.mining) {
     return {text: 'Mining', className: 'bg-info'};
   }
-  if(trade.arbitration){
-    if(trade.arbitration.open){
+  if (trade.arbitration) {
+    if (trade.arbitration.open) {
       trade.status = tradeStates.arbitration_open;
     } else {
-      if(trade.arbitration.result !== '0'){
+      if (trade.arbitration.result !== '0') {
         trade.status = tradeStates.arbitration_closed;
       }
     }
   }
   const tradeStyle = {text: tradeStatesFormatted[trade.status]};
 
-  switch(trade.status){
-    case tradeStates.waiting: tradeStyle.className = 'bg-primary'; break;
-    case tradeStates.funded: tradeStyle.className = 'bg-primary'; break;
-    case tradeStates.paid: tradeStyle.className = 'bg-primary'; break;
-    case tradeStates.released: tradeStyle.className = 'bg-success'; break;
-    case tradeStates.canceled: tradeStyle.className = 'bg-secondary text-black'; break;
-    case tradeStates.expired: tradeStyle.className = 'bg-secondary text-black'; break;
+  const actionNeeded = 'Action needed';
+  const sellersTurn = "Seller's turn";
+  const buyersTurn = "Buyer's turn";
+
+  switch (trade.status) {
+    case tradeStates.waiting:
+      tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
+      tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
+      break;
+    case tradeStates.funded:
+      tradeStyle.className = isBuyer ? 'bg-warning' : 'bg-dark';
+      tradeStyle.text = isBuyer ? actionNeeded : buyersTurn;
+      break;
+    case tradeStates.paid:
+      tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
+      tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
+      break;
+    case tradeStates.released:
+      tradeStyle.className = 'bg-success';
+      break;
+    case tradeStates.canceled:
+      tradeStyle.className = 'bg-danger';
+      break;
+    case tradeStates.expired:
+      tradeStyle.className = 'bg-secondary text-black';
+      break;
     case tradeStates.arbitration_open: tradeStyle.className = 'bg-warning'; break;
     case tradeStates.arbitration_closed: {
       let className;
@@ -68,7 +94,6 @@ class Trades extends Component {
   }
 
   renderTrades() {
-    const address = this.props.address;
     return (
       <Fragment>
 
@@ -90,43 +115,55 @@ class Trades extends Component {
 
         {!this.state.showFilters && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
 
-        <Card body className="profile-trades-list border-0 pt-0">
+        <div className="profile-trades-list border-0 pt-0">
           {(() => {
             const trades = this.props.trades.filter(x => { return this.props.active ? !completedStates.includes(x.status) : completedStates.includes(x.status); }).map((trade, index) => {
               if (this.state.filteredState && trade.status !== this.state.filteredState) {
                 return null;
               }
-              const isBuyer = addressCompare(trade.buyer, address);
+
+              const isBuyer = addressCompare(trade.buyer, this.props.address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
-              return <Link key={index} to={"/escrow/" + trade.escrowId} className="text-black">
-                <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
-                  <Col className="align-self-center pr-0" xs="2">
-                    <Identicon seed={isBuyer ? trade.seller.statusContactCode : trade.buyerInfo.statusContactCode}
-                               scale={5} className="align-middle rounded-circle topCircle border"/>
-                  </Col>
-                  <Col className="align-self-center" xs="3">
-                    <span>{isBuyer ? trade.seller.username : trade.buyerInfo.username}</span>
-                  </Col>
-                  <Col className="align-self-center" xs="3" md={4}>
-                    {isBuyer ? 'Buy' : 'Sell'} {formatBalance(trade.tokenAmount)} {trade.token.symbol}
-                  </Col>
-                  <Col className="align-self-center text-center text-success" xs="4" md={3}>
-                  <span
-                    className={"p-1 text-uppercase d-inline text-white rounded-sm text-small nowrap " + tradeStyle.className}>{tradeStyle.text}</span>
-                  </Col>
-                </Row>
-              </Link>;
+
+              return (<Card key={index} className="mb-3 shadow border-0 offer-card"
+                            onClick={() => this.props.tradeClick(trade.escrowId)}>
+                <CardBody>
+                  <UserInfoRow hideAddress user={isBuyer ? trade.seller : trade.buyerInfo}
+                               address={isBuyer ? trade.buyer : trade.offer.owner}
+                               lastColSize={4}
+                               lastCol={<div className="text-right">
+                                 <span
+                                   className={"p-1 px-2 d-inline text-white rounded-sm text-small nowrap " + tradeStyle.className}>{tradeStyle.text}</span>
+                               </div>}/>
+                   <Row className="mt-2">
+                     <Col xs={2}><RoundedIcon image={messageImage} bgColor="blue" size="sm"/></Col>
+                     <Col xs={10} className="pl-0">Status {/*TODO Put the real comm method once contract is implemented*/}</Col>
+                   </Row>
+                   <Row className="mt-2">
+                     <Col xs={2}><RoundedIcon image={moneyImage} bgColor="blue" size="sm"/></Col>
+                     <Col xs={10} className="pl-0">{trade.offer.paymentMethods.map(method => PAYMENT_METHODS[method]).join(', ')}</Col>
+                   </Row>
+                </CardBody>
+                <CardFooter className="bg-white text-right border-0 pt-0 clickable">
+                  <p className="m-0 border-top pt-2">
+                    Buy <span className="text-black"><img
+                    src={getTokenImage(trade.token.symbol)}
+                    alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> at <span
+                    className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(trade, this.props.prices))} {trade.currency}</span>
+                  </p>
+                </CardFooter>
+              </Card>);
             });
             if (trades.every(trade => trade === null)) {
               return (
                 <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
                   <Col className="align-self-center pt-3 pb-3 text-center text-muted">{this.props.t('trades.noFilteredTrades')}</Col>
                 </Row>
-              )
+              );
             }
             return trades;
           })()}
-        </Card>
+        </div>
       </Fragment>
     );
   }
@@ -157,7 +194,9 @@ Trades.defaultProps = {
 Trades.propTypes = {
   t: PropTypes.func,
   trades: PropTypes.array,
+  prices: PropTypes.object,
   address: PropTypes.string,
+  tradeClick: PropTypes.func,
   active: PropTypes.bool
 };
 
