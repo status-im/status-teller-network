@@ -50,13 +50,13 @@ class Contact extends Component {
 
   validate(contactCode) {
     if (contactCode) {
-      if(!contactCodeRegExp.test(contactCode)){
-        this.props.footer.disableNext();
-      } else {
+      this.props.footer.disableNext();
+      if(contactCodeRegExp.test(contactCode)){
         return this.props.footer.enableNext();
       }
     }
-    this.props.footer.disableNext();
+
+    this.props.footer.enableNext();
   }
 
   changeContactCode = (contactCode) => {

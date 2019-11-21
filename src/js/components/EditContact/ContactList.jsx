@@ -37,10 +37,11 @@ class EditContactList extends Component {
   };
 
   handleContactCodeBlur = (e) => {
+    const contactCode = e.target.value.toLowerCase();
     if (!this.isStatusSelected()) {
+      this.props.changeContactCode(contactCode);
       return;
     }
-    const contactCode = e.target.value.toLowerCase();
     if (validENS(contactCode) && !this.isStatusENSDomain(contactCode) && !this.isENSName(contactCode)) {
       this.props.changeContactCode(contactCode + domain);
     }
@@ -92,7 +93,7 @@ class EditContactList extends Component {
               </Col>}
             </Row>
           </FormGroup>
-          {this.isENSName(contactCode) && <p className="text-center">
+          {selectedMethod === STATUS && this.isENSName(contactCode) && <p className="text-center">
             <Button color="primary" onClick={(_e) => this.props.resolveENSName(contactCode)}>
               Resolve ENS name
             </Button>

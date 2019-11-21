@@ -65,16 +65,7 @@ export function *loadUser({address}) {
     };
 
     const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
-    user.statusContactCode = keyFromXY(user.pubkeyA, user.pubkeyB);
-
-    if(user.pubkeyA === zeroBytes && user.pubkeyB === zeroBytes){
-      if(isArbitrator || isSeller) {
-        yield put({type: LOAD_USER_SUCCEEDED, user: userLicenses, address});
-      }
-      return;
-    }
-
-
+    
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
     }
@@ -206,7 +197,6 @@ export function *addOffer({user, offer}) {
   const coords = generateXY(user.statusContactCode);
 
   const price = yield call(getOfferPrice);
-
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
     coords.x,
@@ -228,10 +218,8 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const coords = generateXY(user.statusContactCode);
-  const toSend = MetadataStore.methods['addOrUpdateUser(bytes32,bytes32,string,string)'](
-    coords.x,
-    coords.y,
+  const toSend = MetadataStore.methods['addOrUpdateUser(string,string,string)'](
+    user.contactMethod + ':' + user.contactData,
     user.location,
     user.username
   );

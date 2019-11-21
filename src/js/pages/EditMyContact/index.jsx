@@ -15,14 +15,21 @@ import DOMPurify from "dompurify";
 import {contactCodeRegExp} from "../../components/EditContact/validators";
 import EditContactList from "../../components/EditContact/ContactList";
 
+const getContactDataItem = (contactData, item) => {
+  if(!contactData) return '';
+  contactData = contactData.split(':');
+  if(contactData[item]) return contactData[item];
+  return '';
+};
+
 class EditMyContact extends Component {
   constructor(props) {
     super(props);
     this.state = {
       username: props.profile ? props.profile.username || '' : '',
-      statusContactCode: props.profile ? props.profile.statusContactCode || '' : '',
-      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.statusContactCode) : true,
-      contactMethod: 'Status'
+      statusContactCode: props.profile ? getContactDataItem(props.profile.contactData, 1) || '' : '',
+      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.contactData, getContactDataItem(props.profile.contactData, 0) || 'Status') : true,
+      contactMethod: props.profile ? getContactDataItem(props.profile.contactData, 0) : 'Status'
     };
   }
 
@@ -53,17 +60,18 @@ class EditMyContact extends Component {
     this.props.updateUser({
       address: this.props.address,
       username: DOMPurify.sanitize(this.state.username),
-      statusContactCode: DOMPurify.sanitize(this.state.statusContactCode),
+      contactMethod: this.state.contactMethod,
+      contactData:  DOMPurify.sanitize(this.state.statusContactCode),
       location: DOMPurify.sanitize(this.props.profile.location)
     });
   };
 
-  isUpdateDisabled(username, statusContactCode) {
-    return !username || !statusContactCode || !contactCodeRegExp.test(statusContactCode);
+  isUpdateDisabled(username, statusContactCode, contactMethod) {
+    return !username || !statusContactCode || (contactMethod === 'Status' && !contactCodeRegExp.test(statusContactCode));
   }
 
   validate(username, statusContactCode) {
-    this.setState({updateDisabled: this.isUpdateDisabled(username, statusContactCode)});
+    this.setState({updateDisabled: this.isUpdateDisabled(username, statusContactCode, this.state.contactMethod)});
   }
 
   changeStatusContactCode = (statusContactCode) => {
