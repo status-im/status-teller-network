@@ -11,16 +11,12 @@ import ErrorInformation from '../../components/ErrorInformation';
 import EditContact from '../../components/EditContact';
 import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
+import {getContactDataItem} from '../../utils/strings';
 import DOMPurify from "dompurify";
 import {contactCodeRegExp} from "../../components/EditContact/validators";
 import EditContactList from "../../components/EditContact/ContactList";
 
-const getContactDataItem = (contactData, item) => {
-  if(!contactData) return '';
-  contactData = contactData.split(':');
-  if(contactData[item]) return contactData[item];
-  return '';
-};
+
 
 class EditMyContact extends Component {
   constructor(props) {

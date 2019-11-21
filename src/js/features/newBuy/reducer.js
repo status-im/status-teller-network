@@ -16,7 +16,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.username,
-        statusContactCode: action.statusContactCode
+        contactData: action.contactMethod + ':' + action.contactUsername
       };
     case SET_TRADE:
       return {

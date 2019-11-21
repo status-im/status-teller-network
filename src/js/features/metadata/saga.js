@@ -139,7 +139,6 @@ export function *loadOffers({address}) {
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
         offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call({from: defaultAccount});
-        offer.arbitratorData.statusContactCode = keyFromXY(offer.arbitratorData.pubkeyA, offer.arbitratorData.pubkeyB);
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -194,13 +193,10 @@ export function *onLoad() {
 }
 
 export function *addOffer({user, offer}) {
-  const coords = generateXY(user.statusContactCode);
-
   const price = yield call(getOfferPrice);
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
-    coords.x,
-    coords.y,
+    user.contactData,
     user.location,
     offer.currency,
     user.username,

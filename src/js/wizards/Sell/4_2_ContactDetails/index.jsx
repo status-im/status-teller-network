@@ -10,27 +10,30 @@ import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 import network from '../../../features/network';
-
+import {getContactDataItem} from '../../../utils/strings';
 import {contactCodeRegExp} from '../../../utils/address';
 
 class Contact extends Component {
   constructor(props) {
     super(props);
     const username = props.seller && props.seller.username;
-    const contactCode = (props.seller && props.seller.statusContactCode) ||  ((props.profile && props.profile.statusContactCode) || "");
+    const contactUsername = (props.seller && getContactDataItem(props.seller.contactData, 1)) ||  ((props.profile && getContactDataItem(props.profile.contactData, 1)) || "");
+    const contactMethod = (props.seller && getContactDataItem(props.seller.contactData, 0)) ||  ((props.profile && getContactDataItem(props.profile.contactData, 0)) || "Status");
+
     this.state = {
-      contactCode,
-      contactMethod: 'Status',
+      contactUsername,
+      contactMethod,
       ready: false
     };
-    this.validate(contactCode);
+    this.validate(contactUsername, contactMethod);
     props.footer.onPageChange(() => {
       // TODO change this to work with the other methods once the contract is changed
-      props.setContactInfo({username: DOMPurify.sanitize(username), statusContactCode: DOMPurify.sanitize(this.state.contactCode)});
+      props.setContactInfo({username: DOMPurify.sanitize(username), contactMethod: DOMPurify.sanitize(this.state.contactMethod), contactUsername: DOMPurify.sanitize(this.state.contactUsername)});
     });
   }
 
   componentDidMount() {
+    console.log(this.props);
     if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
@@ -48,20 +51,19 @@ class Contact extends Component {
     }
   }
 
-  validate(contactCode) {
-    if (contactCode) {
-      this.props.footer.disableNext();
-      if(contactCodeRegExp.test(contactCode)){
-        return this.props.footer.enableNext();
+  validate(contactUsername, contactMethod) {
+    if (contactUsername) {
+      if(contactMethod === 'Status' && !contactCodeRegExp.test(contactUsername)){
+        return this.props.footer.disableNext();
       }
+      return this.props.footer.enableNext();
     }
-
-    this.props.footer.enableNext();
+    this.props.footer.disableNext();
   }
 
-  changeContactCode = (contactCode) => {
-    this.validate(contactCode);
-    this.setState({contactCode});
+  changeContactCode = (contactUsername) => {
+    this.validate(contactUsername, this.state.contactMethod);
+    this.setState({contactUsername});
   };
 
   changeContactMethod = (contactMethod) => {
@@ -82,7 +84,7 @@ class Contact extends Component {
     }
 
     return <EditContactList isStatus={this.props.isStatus}
-                            contactCode={this.state.contactCode}
+                            contactCode={this.state.contactUsername}
                             contactMethod={this.state.contactMethod}
                             changeContactCode={this.changeContactCode}
                             changeContactMethod={this.changeContactMethod}

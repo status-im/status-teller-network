@@ -9,6 +9,7 @@ import metadata from "../../../features/metadata";
 import ArbitratorSelectorForm from "./components/ArbitratorSelectorForm";
 import {addressCompare} from '../../../utils/address';
 import DOMPurify from "dompurify";
+import {getContactDataItem} from '../../../utils/strings';
 
 class SelectArbitrator extends Component {
   constructor(props) {
@@ -42,7 +43,7 @@ class SelectArbitrator extends Component {
   componentDidMount() {
     // Prefill username and contact code because we skipped prev. wizard page
     if (this.props.profile && !this.props.seller.username) {
-      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactMethod: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 0)), contactUsername: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 1))});
     } else if(!this.props.seller.username) return this.props.wizard.previous();
     
     this.setState({ready: true});
