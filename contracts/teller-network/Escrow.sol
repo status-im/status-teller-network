@@ -160,8 +160,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location The location on earth
      * @param _username The username of the user
      * @return Id of the new escrow
@@ -171,12 +170,11 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string memory _contactData,
         string memory _location,
         string memory _username
     ) public returns(uint escrowId) {
-        metadataStore.addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
+        metadataStore.addOrUpdateUser(msg.sender, _contactData, _location, _username);
         escrowId = _createTransaction(msg.sender, _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -185,9 +183,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
-     * @param _location The location on earth
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _username The username of the user
      * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
      * @param _signature buyer's signature
@@ -199,14 +195,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string memory _contactData,
         string memory _location,
         string memory _username,
         uint _nonce,
         bytes memory _signature
     ) public returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _pubkeyA, _pubkeyB, _location, _username, _nonce);
+        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _contactData, _location, _username, _nonce);
         escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -217,8 +212,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location The location on earth
      * @param _username The username of the user
      * @return Id of the new escrow
@@ -230,14 +224,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         string calldata _location,
         string calldata _username
     ) external returns(uint escrowId) {
         assert(msg.sender == relayer);
 
-        metadataStore.addOrUpdateUser(_sender, _pubkeyA, _pubkeyB, _location, _username);
+        metadataStore.addOrUpdateUser(_sender, _contactData, _location, _username);
         escrowId = _createTransaction(_sender, _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -281,8 +274,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
-     * @param _bPubkeyA First coordinate of Status Whisper Public Key
-     * @param _bPubkeyB Second coordinate of Status Whisper Public Key
+     * @param _bContactData Contact Data   ContactType:UserId
      * @param _bLocation The location on earth
      * @param _bUsername The username of the user
      * @param _bNonce The nonce for the user (from MetadataStore.user_nonce(address))
@@ -295,14 +287,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        bytes32 _bPubkeyA,
-        bytes32 _bPubkeyB,
+        string memory _bContactData,
         string memory _bLocation,
         string memory _bUsername,
         uint _bNonce,
         bytes memory _bSignature
     ) public payable returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bPubkeyA, _bPubkeyB, _bLocation, _bUsername, _bNonce);
+        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bContactData, _bLocation, _bUsername, _bNonce);
         escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
         _fund(msg.sender, escrowId);
     }

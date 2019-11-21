@@ -14,8 +14,7 @@ import "../common/Stakable.sol";
 contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
 
     struct User {
-        bytes32 pubkeyA;
-        bytes32 pubkeyB;
+        string contactData;
         string location;
         string username;
     }
@@ -112,83 +111,74 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     /**
      * @dev Get datahash to be signed
      * @param _username Username
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _nonce Nonce value (obtained from user_nonce)
      * @return bytes32 to sign
      */
-    function _dataHash(string memory _username, bytes32 _pubkeyA, bytes32 _pubkeyB, uint _nonce) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _pubkeyA, _pubkeyB, _nonce));
+    function _dataHash(string memory _username, string memory _contactData, uint _nonce) internal view returns (bytes32) {
+        return keccak256(abi.encodePacked(address(this), _username, _contactData, _nonce));
     }
 
     /**
      * @notice Get datahash to be signed
      * @param _username Username
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @return bytes32 to sign
      */
-    function getDataHash(string calldata _username, bytes32 _pubkeyA, bytes32 _pubkeyB) external view returns (bytes32) {
-        return _dataHash(_username, _pubkeyA, _pubkeyB, user_nonce[msg.sender]);
+    function getDataHash(string calldata _username, string calldata _contactData) external view returns (bytes32) {
+        return _dataHash(_username, _contactData, user_nonce[msg.sender]);
     }
 
     /**
      * @dev Get signer address from signature. This uses the signature parameters to validate the signature
      * @param _username Status username
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _nonce User nonce
      * @param _signature Signature obtained from the previous parameters
      * @return Signing user address
      */
     function _getSigner(
         string memory _username,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string memory _contactData,
         uint _nonce,
         bytes memory _signature
     ) internal view returns(address) {
-        bytes32 signHash = _getSignHash(_dataHash(_username, _pubkeyA, _pubkeyB, _nonce));
+        bytes32 signHash = _getSignHash(_dataHash(_username, _contactData, _nonce));
         return _recoverAddress(signHash, _signature);
     }
 
     /**
      * @notice Get signer address from signature
      * @param _username Status username
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _nonce User nonce
      * @param _signature Signature obtained from the previous parameters
      * @return Signing user address
      */
     function getMessageSigner(
         string calldata _username,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         uint _nonce,
         bytes calldata _signature
     ) external view returns(address) {
-        return _getSigner(_username, _pubkeyA, _pubkeyB, _nonce, _signature);
+        return _getSigner(_username, _contactData, _nonce, _signature);
     }
 
     /**
      * @dev Adds or updates user information
      * @param _user User address to update
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location New location
      * @param _username New status username
      */
     function _addOrUpdateUser(
         address _user,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string memory _contactData,
         string memory _location,
         string memory _username
     ) internal {
         User storage u = users[_user];
-        u.pubkeyA = _pubkeyA;
-        u.pubkeyB = _pubkeyB;
+        u.contactData = _contactData;
         u.location = _location;
         u.username = _username;
     }
@@ -196,72 +186,65 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     /**
      * @notice Adds or updates user information via signature
      * @param _signature Signature
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location New location
      * @param _username New status username
      * @return Signing user address
      */
     function addOrUpdateUser(
         bytes calldata _signature,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         string calldata _location,
         string calldata _username,
         uint _nonce
     ) external returns(address payable _user) {
-        _user = address(uint160(_getSigner(_username, _pubkeyA, _pubkeyB, _nonce, _signature)));
+        _user = address(uint160(_getSigner(_username, _contactData, _nonce, _signature)));
         
         require(_nonce == user_nonce[_user], "Invalid nonce");
 
         user_nonce[_user]++;
-        _addOrUpdateUser(_user, _pubkeyA, _pubkeyB, _location, _username);
+        _addOrUpdateUser(_user, _contactData, _location, _username);
 
         return _user;
     }
 
     /**
      * @notice Adds or updates user information
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location New location
      * @param _username New status username
      * @return Signing user address
      */
     function addOrUpdateUser(
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         string calldata _location,
         string calldata _username
     ) external {
-        _addOrUpdateUser(msg.sender, _pubkeyA, _pubkeyB, _location, _username);
+        _addOrUpdateUser(msg.sender, _contactData, _location, _username);
     }
 
     /**
      * @notice Adds or updates user information
      * @dev can only be called by the escrow contract
      * @param _sender Address that sets the user info
-     * @param _pubkeyA First coordinate of Status Whisper Public Key
-     * @param _pubkeyB Second coordinate of Status Whisper Public Key
+     * @param _contactData Contact Data   ContactType:UserId
      * @param _location New location
      * @param _username New status username
      * @return Signing user address
      */
     function addOrUpdateUser(
         address _sender,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         string calldata _location,
         string calldata _username
     ) external onlyAllowedContracts {
-        _addOrUpdateUser(_sender, _pubkeyA, _pubkeyB, _location, _username);
+        _addOrUpdateUser(_sender, _contactData, _location, _username);
     }
 
     /**
     * @dev Add a new offer with a new user if needed to the list
     * @param _asset The address of the erc20 to exchange, pass 0x0 for Eth
-    * @param _pubkeyA First coordinate of Status Whisper Public Key
-    * @param _pubkeyB Second coordinate of Status Whisper Public Key
+    * @param _contactData Contact Data   ContactType:UserId
     * @param _location The location on earth
     * @param _currency The currency the user want to receive (USD, EUR...)
     * @param _username The username of the user
@@ -273,8 +256,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     */
     function addOffer(
         address _asset,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string memory _contactData,
         string memory _location,
         string memory _currency,
         string memory _username,
@@ -296,8 +278,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
 
         _addOrUpdateUser(
             msg.sender,
-            _pubkeyA,
-            _pubkeyB,
+            _contactData,
             _location,
             _username
         );

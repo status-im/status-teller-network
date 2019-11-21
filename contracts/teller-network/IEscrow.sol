@@ -23,8 +23,7 @@ contract IEscrow {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        bytes32 _pubkeyA,
-        bytes32 _pubkeyB,
+        string calldata _contactData,
         string calldata _location,
         string calldata _username
     ) external returns(uint escrowId);

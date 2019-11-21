@@ -13,8 +13,7 @@ let ethOfferId;
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
 config({
   deployment: {
@@ -93,7 +92,7 @@ contract("Escrow Relay", function() {
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
    
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
@@ -115,7 +114,7 @@ contract("Escrow Relay", function() {
   });
 
   it("Can create an escrow", async () => {
-    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
     escrowId = receipt.events.Created.returnValues.escrowId;
   });
 
