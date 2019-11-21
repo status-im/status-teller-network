@@ -193,7 +193,7 @@ class App extends Component {
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},
-                  {path: '/sell/summary', component: SellSummary, nextLabel: 'Post the offer'}
+                  {path: '/sell/summary', component: SellSummary, nextLabel: 'Finish'}
                 ].filter(x => x)}/>
 
                 <Route path="/tmp/signature" component={SignatureContainer}/>

@@ -15,9 +15,11 @@ import Success from "../7_Limits/components/Success";
 import SellSummary from "./components/SellSummary";
 import {Alert} from "reactstrap";
 import {withNamespaces} from "react-i18next";
+import prices from "../../../features/prices";
+import FinalModal from './components/FinalModal';
 
 class Summary extends Component {
-  state = {ready: false, notificationAccepted: null};
+  state = {ready: false, notificationAccepted: null, showFinalModal: false};
 
   componentDidMount() {
     // TODO check limits
@@ -29,7 +31,7 @@ class Summary extends Component {
     this.setState({ready: true});
     this.props.footer.enableNext();
     this.offerCreated = false;
-    this.props.footer.onNext(this.postOffer);
+    this.props.footer.onNext(this.showFinalModal);
 
     askPermission().then(() => {
       this.setState({notificationAccepted: true});
@@ -41,6 +43,7 @@ class Summary extends Component {
   }
 
   postOffer = () => {
+    this.setState({showFinalModal: false});
     this.props.footer.hide();
     this.props.addOffer(this.props.seller);
   };
@@ -65,6 +68,14 @@ class Summary extends Component {
     }
   }
 
+  showFinalModal = () => {
+    this.setState({showFinalModal: true});
+  };
+  hideFinalModal = () => {
+    this.setState({showFinalModal: false});
+    this.props.wizard.previous();
+  };
+
   render() {
     const {t} = this.props;
     if (!this.state.ready) {
@@ -86,10 +97,19 @@ class Summary extends Component {
             <p className="mb-1">{t('notifications.desktop')}</p>
             <p className="mb-0">{t('notifications.changeSettings')}</p>
           </Alert>}
-            <SellSummary seller={this.props.seller} stake={this.props.offerStake} profile={this.props.profile} arbitratorProfile={this.props.arbitratorProfile} assetData={this.props.assetData}/>
-          </Fragment>;
+          <SellSummary seller={this.props.seller}
+                       profile={this.props.profile}
+                       arbitratorProfile={this.props.arbitratorProfile}
+                       assetData={this.props.assetData}
+                       prices={this.props.prices}/>
+
+          <FinalModal hide={this.hideFinalModal}
+                      isOpen={this.state.showFinalModal}
+                      postOffer={this.postOffer}
+                      stake={this.props.offerStake}/>
+        </Fragment>;
       case States.success:
-        return <Success onClick={this.continue} />;
+        return <Success onClick={this.continue}/>;
       default:
         return <Fragment/>;
     }
@@ -104,6 +124,7 @@ Summary.propTypes = {
   seller: PropTypes.object,
   assetData: PropTypes.object,
   token: PropTypes.object,
+  prices: PropTypes.object,
   addOfferStatus: PropTypes.string,
   resetAddOfferStatus: PropTypes.func,
   wizard: PropTypes.object,
@@ -123,6 +144,7 @@ const mapStateToProps = state => {
     addOfferStatus: metadata.selectors.getAddOfferStatus(state),
     txHash: metadata.selectors.getAddOfferTx(state),
     profile: metadata.selectors.getProfile(state, defaultAccount),
+    prices: prices.selectors.getPrices(state),
     arbitratorProfile: metadata.selectors.getProfile(state, seller.arbitrator),
     assetData: network.selectors.getTokenByAddress(state, seller.asset),
     offerStake: metadata.selectors.nextOfferPrice(state)
