@@ -10,8 +10,8 @@ const TestEscrowUpgrade = embark.require('Embark/contracts/TestEscrowUpgrade');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 
 let accounts, arbitrator;
 let receipt;
@@ -92,7 +92,7 @@ contract("Escrow", function() {
       await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall2).send({from: arbitrator});
       await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
     });
 
@@ -112,7 +112,7 @@ contract("Escrow", function() {
     });
 
     it("Can create an escrow", async () => {
-      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -120,11 +120,11 @@ contract("Escrow", function() {
     });
 
     it("Can create an escrow using a signature", async () => {
-      const hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
+      const hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       const signature = await web3.eth.sign(hash, accounts[1]);
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
