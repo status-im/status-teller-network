@@ -27,13 +27,11 @@ class Contact extends Component {
     };
     this.validate(contactUsername, contactMethod);
     props.footer.onPageChange(() => {
-      // TODO change this to work with the other methods once the contract is changed
       props.setContactInfo({username: DOMPurify.sanitize(username), contactMethod: DOMPurify.sanitize(this.state.contactMethod), contactUsername: DOMPurify.sanitize(this.state.contactUsername)});
     });
   }
 
   componentDidMount() {
-    console.log(this.props);
     if (!this.props.seller.username) {
       return this.props.wizard.previous();
     }
