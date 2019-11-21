@@ -12,19 +12,24 @@ import {contactCodeRegExp} from '../../../utils/address';
 import DOMPurify from 'dompurify';
 import metadata from "../../../features/metadata";
 import {Alert} from "reactstrap";
+import {getContactDataItem} from '../../../utils/strings';
 
 class ContactDetails extends Component {
   constructor(props) {
     super(props);
+
+    const contactUsername = getContactDataItem(props.contactCode, 1);
+    const contactMethod = getContactDataItem(props.contactCode, 0) || 'Status';
+
     this.state = {
       username: props.username,
-      contactCode: props.contactCode,
-      contactMethod: 'Status'
+      contactUsername,
+      contactMethod
     };
-    this.validate(props.contactCode);
+
+    this.validate(contactUsername, contactMethod);
     props.footer.onPageChange(() => {
-      // TODO change this to work with the other methods once the contract is changed
-      props.setContactInfo({username: DOMPurify.sanitize(props.username), statusContactCode: DOMPurify.sanitize(this.state.contactCode)});
+      props.setContactInfo({username: DOMPurify.sanitize(props.username), contactUsername: DOMPurify.sanitize(this.state.contactUsername), contactMethod: DOMPurify.sanitize(this.state.contactMethod)});
     });
   }
 
@@ -33,7 +38,7 @@ class ContactDetails extends Component {
       return this.props.wizard.previous();
     }
     if (this.props.profile && this.props.profile.username) {
-      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactUsername: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 1)), contactMethod: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 0))});
       return this.props.wizard.next();
     }
     if (!this.props.isEip1102Enabled) {
@@ -55,9 +60,9 @@ class ContactDetails extends Component {
     }
   }
 
-  validate(contactCode) {
-    if (this.props.isEip1102Enabled && contactCode) {
-      if(!contactCodeRegExp.test(contactCode)){
+  validate(contactUsername, contactMethod) {
+    if (this.props.isEip1102Enabled && contactUsername) {
+      if(contactMethod === 'Status' && !contactCodeRegExp.test(contactUsername)){
         return this.props.footer.disableNext();
       }
       return this.props.footer.enableNext();
@@ -65,9 +70,9 @@ class ContactDetails extends Component {
     this.props.footer.disableNext();
   }
 
-  changeContactCode = (contactCode) => {
-    this.validate(contactCode);
-    this.setState({contactCode});
+  changeContactCode = (contactUsername) => {
+    this.validate(contactUsername);
+    this.setState({contactUsername});
   };
 
   changeContactMethod = (contactMethod) => {
@@ -78,16 +83,18 @@ class ContactDetails extends Component {
     if(!this.props.apiContactCode){
       this.props.getContactCode();
     } else {
-      this.setState({ contactCode: this.props.apiContactCode });
+      this.setState({ contactUsername: this.props.apiContactCode });
     }
   };
 
   render() {
+    if (this.props.profile && this.props.profile.username) return null;
+
     return (<Fragment>
       {!this.props.isEip1102Enabled && <Alert color="warning">{this.props.t('ethereumEnable.buyContact')}</Alert>}
 
       <EditContactList isStatus={this.props.isStatus}
-                       contactCode={this.state.contactCode}
+                       contactCode={this.state.contactUsername}
                        contactMethod={this.state.contactMethod}
                        changeContactCode={this.changeContactCode}
                        changeContactMethod={this.changeContactMethod}

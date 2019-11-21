@@ -1,4 +1,5 @@
 export const statusContactCode = state => state.newBuy.statusContactCode || '';
+export const contactData = state => state.newBuy.contactData || '';
 export const username = state => state.newBuy.username || '';
 export const assetQuantity = state => state.newBuy.assetQuantity;
 export const currencyQuantity = state => state.newBuy.currencyQuantity;
