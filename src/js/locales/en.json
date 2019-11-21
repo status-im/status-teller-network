@@ -125,6 +125,7 @@
   "validators": {
     "required": "This field is required",
     "isInteger": "This field needs to be an integer",
+    "isEmail": "This field needs to be a valid email address",
     "isNumber": "This field needs to be an number",
     "lowerThan": "This field needs to be lower than {{max}}",
     "lowerEqThan": "This field needs to be lower or equal than {{max}}",
@@ -202,6 +203,14 @@
   },
   "profileSettings": {
     "title": "Profile settings"
+  },
+  "notificationSettings": {
+    "title": "Notifications",
+    "emailSwitcher": "Email notifications",
+    "saveButton": "Subscribe"
+  },
+  "validateEmail": {
+    "title": "Validating your email address"
   },
   "loading": {
     "mining": "Waiting for the confirmation from miners",

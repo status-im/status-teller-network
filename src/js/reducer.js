@@ -14,7 +14,7 @@ import newBuy from './features/newBuy';
 import metadata from './features/metadata';
 import approval from './features/approval';
 import events from './features/events';
-
+import emailNotifications from './features/emailNotifications';
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
@@ -28,7 +28,8 @@ const rootReducer = combineReducers({
   newBuy: newBuy.reducer,
   metadata: metadata.reducer,
   approval: approval.reducer,
-  events: events.reducer
+  events: events.reducer,
+  emailNotifications: emailNotifications.reducer
 });
 
 export default rootReducer;
