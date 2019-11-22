@@ -1,5 +1,6 @@
 import {SET_CONTACT_INFO, SET_TRADE, SET_OFFER_ID, RESET_NEW_BUY} from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
+import {getContactData} from "../../utils/strings";
 
 const DEFAULT_STATE = {
   currencyQuantity: 0,
@@ -16,7 +17,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.username,
-        statusContactCode: action.statusContactCode
+        contactData: getContactData(action.contactMethod, action.contactUsername)
       };
     case SET_TRADE:
       return {
