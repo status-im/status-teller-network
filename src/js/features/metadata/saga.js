@@ -42,7 +42,8 @@ import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import { zeroAddress, addressCompare, zeroBytes, keyFromXY, generateXY } from '../../utils/address';
+import { zeroAddress, addressCompare, generateXY } from '../../utils/address';
+import {getContactData} from '../../utils/strings';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -215,7 +216,7 @@ export function *onAddOffer() {
 
 export function *updateUser({user}) {
   const toSend = MetadataStore.methods['addOrUpdateUser(string,string,string)'](
-    user.contactMethod + ':' + user.contactData,
+    getContactData(user.contactMethod, user.contactData),
     user.location,
     user.username
   );

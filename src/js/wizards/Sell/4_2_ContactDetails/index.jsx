@@ -10,15 +10,21 @@ import Loading from '../../../components/Loading';
 import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 import network from '../../../features/network';
-import {getContactDataItem} from '../../../utils/strings';
+import {stringToContact} from '../../../utils/strings';
 import {contactCodeRegExp} from '../../../utils/address';
 
 class Contact extends Component {
   constructor(props) {
     super(props);
-    const username = props.seller && props.seller.username;
-    const contactUsername = (props.seller && getContactDataItem(props.seller.contactData, 1)) ||  ((props.profile && getContactDataItem(props.profile.contactData, 1)) || "");
-    const contactMethod = (props.seller && getContactDataItem(props.seller.contactData, 0)) ||  ((props.profile && getContactDataItem(props.profile.contactData, 0)) || "Status");
+
+    const seller = props.seller;
+    const profile = props.profile;
+    const sellerContactObject = stringToContact(seller && seller.contactData);
+    const profileContactObject = stringToContact(profile && profile.contactData);
+
+    const username = seller && seller.username;
+    const contactUsername = (seller && sellerContactObject.userId) || (profile && profileContactObject.userId) || "";
+    const contactMethod = (seller && sellerContactObject.method) || (profile && profileContactObject.method) || "Status";
 
     this.state = {
       contactUsername,

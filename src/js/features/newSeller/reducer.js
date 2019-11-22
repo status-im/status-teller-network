@@ -10,6 +10,7 @@ import {
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {ADD_OFFER_SUCCEEDED,RESET_NEW_OFFER} from '../metadata/constants';
+import {getContactData} from "../../utils/strings";
 
 
 const DEFAULT_STATE = {
@@ -62,7 +63,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.username,
-        contactData: action.contactMethod && action.contactUsername ? action.contactMethod + ':' + action.contactUsername : ''
+        contactData: action.contactMethod && action.contactUsername ? getContactData(action.contactMethod, action.contactUsername) : ''
       };
     case SET_LIMITS: 
       return {

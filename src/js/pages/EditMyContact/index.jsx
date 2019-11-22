@@ -11,21 +11,24 @@ import ErrorInformation from '../../components/ErrorInformation';
 import EditContact from '../../components/EditContact';
 import UpdateButton from './components/UpdateButton';
 import { States } from '../../utils/transaction';
-import {getContactDataItem} from '../../utils/strings';
+import {stringToContact} from '../../utils/strings';
 import DOMPurify from "dompurify";
 import {contactCodeRegExp} from "../../components/EditContact/validators";
 import EditContactList from "../../components/EditContact/ContactList";
 
 
-
 class EditMyContact extends Component {
   constructor(props) {
     super(props);
+    
+    const profile = props.profile;
+    const contactObject = stringToContact(profile && profile.contactData);
+
     this.state = {
-      username: props.profile ? props.profile.username || '' : '',
-      statusContactCode: props.profile ? getContactDataItem(props.profile.contactData, 1) || '' : '',
-      updateDisabled: props.profile ? this.isUpdateDisabled(props.profile.username, props.profile.contactData, getContactDataItem(props.profile.contactData, 0) || 'Status') : true,
-      contactMethod: props.profile ? getContactDataItem(props.profile.contactData, 0) : 'Status'
+      username: profile ? profile.username || '' : '',
+      statusContactCode: profile ? contactObject.userId || '' : '',
+      updateDisabled: profile ? this.isUpdateDisabled(profile.username, profile.contactData, contactObject.method || 'Status') : true,
+      contactMethod: profile ? contactObject.method : 'Status'
     };
   }
 
