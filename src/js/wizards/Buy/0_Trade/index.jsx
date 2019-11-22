@@ -141,7 +141,9 @@ class Trade extends Component {
     let limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
     return (
       <OfferTrade seller={this.props.offer.user}
+                  sellerAddress={this.props.offer.owner}
                   arbitrator={this.props.offer.arbitratorData}
+                  arbitratorAddress={this.props.offer.arbitrator}
                   minToken={minToken}
                   maxToken={maxToken}
                   limitless={limitless}

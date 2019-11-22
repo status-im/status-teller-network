@@ -50,7 +50,7 @@ class OfferTrade extends Component {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-      limitH, limitL, sellerBalance, price, arbitrator
+      limitH, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress
     } = this.props;
 
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
@@ -61,17 +61,17 @@ class OfferTrade extends Component {
   <Row noGutters className="offerTrade">
     <Col xs="12">
       <h3 className="mt-4 font-weight-normal">Seller</h3>
-      <Identicon seed={seller.statusContactCode} className="rounded-circle border mr-2" scale={7}/>
+      <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
       <p className="font-weight-medium mb-1 name">{seller.username}</p>
-      <p className="text-muted text-small addr mb-0"><Address address={seller.statusContactCode} length={13}/></p>
+      <p className="text-muted text-small addr mb-0"><Address address={sellerAddress} length={13}/></p>
       <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
       <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></span></h3>
       <p className="mt-2 font-weight-medium mb-1 overflow-hidden">
-        <Identicon seed={arbitrator.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+        <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
         {arbitrator.username}
       </p>
-      <p className="text-muted text-small addr"><Address address={arbitrator.statusContactCode} length={13}/></p>
+      <p className="text-muted text-small addr"><Address address={arbitratorAddress} length={13}/></p>
 
 
       <h3 className="font-weight-normal mt-4">Price</h3>
@@ -179,7 +179,9 @@ OfferTrade.propTypes = {
   limitless: PropTypes.bool,
   limitL: PropTypes.string,
   limitH: PropTypes.string,
-  arbitrator: PropTypes.object
+  arbitrator: PropTypes.object,
+  sellerAddress: PropTypes.string,
+  arbitratorAddress: PropTypes.string
 };
 
 export default withNamespaces()(OfferTrade);

@@ -104,7 +104,7 @@ class ConfirmTrade extends Component {
           <h2>Summary</h2>
           <h3 className="mt-4 font-weight-normal">Seller</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            <Identicon seed={this.props.offer.user.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+            <Identicon seed={this.props.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
             {this.props.offer.user.username}
           </p>
           <p className="text-muted text-small addr"><Address address={this.props.offer.user.statusContactCode} length={6}/>
@@ -112,7 +112,7 @@ class ConfirmTrade extends Component {
 
           <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            <Identicon seed={this.props.offer.arbitratorData.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+            <Identicon seed={this.props.offer.arbitrator} className="rounded-circle border mr-2 float-left" scale={5}/>
             {this.props.offer.arbitratorData.username}
             {formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator)}
           </p>

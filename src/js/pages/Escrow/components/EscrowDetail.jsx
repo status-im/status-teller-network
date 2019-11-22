@@ -37,28 +37,28 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
       {isBuyer && <Fragment>
         <h3 className="mt-4 font-weight-normal">Seller</h3>
         <p className="mt-2 font-weight-medium mb-1">
-          <Identicon seed={escrow.seller.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+          <Identicon seed={escrow.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
           {escrow.seller.username}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.seller.statusContactCode} length={6}/></p>
+        <p className="text-muted text-small addr"><Address address={escrow.offer.owner} length={6}/></p>
       </Fragment>}
 
       {!isBuyer && <Fragment>
         <h3 className="mt-4 font-weight-normal">Buyer</h3>
         <p className="mt-2 font-weight-medium mb-1">
-          <Identicon seed={escrow.buyerInfo.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
+          <Identicon seed={escrow.buyer} className="rounded-circle border mr-2 float-left" scale={5}/>
           {escrow.buyerInfo.username}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.buyerInfo.statusContactCode} length={6}/></p>
+        <p className="text-muted text-small addr"><Address address={escrow.buyer} length={6}/></p>
       </Fragment>}
 
       {escrow.arbitratorInfo && <Fragment>
         <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
         <p className="mt-2 font-weight-medium mb-1">
-          <Identicon seed={escrow.arbitratorInfo.statusContactCode} className="rounded-circle border mr-2 float-left" scale={5}/>
-          {formatArbitratorName(escrow.arbitratorInfo, escrow.offer.arbitrator)}
+          <Identicon seed={escrow.arbitrator} className="rounded-circle border mr-2 float-left" scale={5}/>
+          {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.arbitratorInfo.statusContactCode} length={6}/></p>
+        <p className="text-muted text-small addr"><Address address={escrow.arbitrator} length={6}/></p>
         </Fragment>
       }
 
