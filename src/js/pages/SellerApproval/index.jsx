@@ -47,7 +47,6 @@ class SellerApproval extends Component {
   }
 
   acceptRequest = (id) => {
-    console.log('ACCEPT?' ,id);
     this.props.acceptRequest(id);
   };
 

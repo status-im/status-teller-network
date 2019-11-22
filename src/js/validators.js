@@ -11,6 +11,14 @@ export const required = (value) => {
   }
 };
 
+export const isEmail = (value) => {
+  if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/).test(value)) {
+    return <NamespacesConsumer>
+      {t => <FormFeedback className="d-block">{t('validators.isEmail')}</FormFeedback>}
+    </NamespacesConsumer>;
+  }
+};
+
 export const conditionalRequire = (value, props) => {
   const condition = props['data-condition'];
   if (condition && !value.toString().trim().length) {

@@ -18,6 +18,7 @@ import signature from './features/signature';
 import arbitration from './features/arbitration';
 import metadata from './features/metadata';
 import approval from './features/approval';
+import emailNotifications from './features/emailNotifications';
 
 const emptyMiddleWare = _store => next => action => {
   next(action);
@@ -46,7 +47,8 @@ function *root() {
     ...signature.saga,
     ...arbitration.saga,
     ...metadata.saga,
-    ...approval.saga
+    ...approval.saga,
+    ...emailNotifications.saga
   ]);
 }
 
