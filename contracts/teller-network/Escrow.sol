@@ -26,10 +26,10 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
     MetadataStore public metadataStore;
 
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
-    event Funded(uint indexed escrowId, uint expirationTime, uint amount);
-    event Paid(uint indexed escrowId);
-    event Released(uint indexed escrowId);
-    event Canceled(uint indexed escrowId);
+    event Funded(uint indexed escrowId, address indexed buyer, uint expirationTime, uint amount);
+    event Paid(uint indexed escrowId, address indexed seller);
+    event Released(uint indexed escrowId, address indexed seller, address indexed buyer, bool isDispute);
+    event Canceled(uint indexed escrowId, address indexed seller, address indexed buyer, bool isDispute);
     
     event Rating(uint indexed offerId, address indexed participant, uint indexed escrowId, uint rating, bool ratingSeller);
 
@@ -273,7 +273,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         _payFee(_from, _escrowId, tokenAmount, token);
 
-        emit Funded(_escrowId, block.timestamp + 5 days, tokenAmount);
+        emit Funded(_escrowId, transactions[_escrowId].buyer, block.timestamp + 5 days, tokenAmount);
     }
 
     /**
@@ -321,7 +321,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         trx.status = EscrowStatus.PAID;
 
-        emit Paid(_escrowId);
+        emit Paid(_escrowId, trx.seller);
     }
 
     /**
@@ -397,7 +397,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
 
-        emit Released(_escrowId);
+        emit Released(_escrowId, _trx.seller, _trx.buyer, _isDispute);
     }
 
     /**
@@ -482,7 +482,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         }
 
         trx.status = EscrowStatus.CANCELED;
-        emit Canceled(_escrowId);
+
+        emit Canceled(_escrowId, trx.seller, trx.buyer, isDispute);
     }
 
 
