@@ -18,7 +18,7 @@ import prices from "../../features/prices";
 const NULL_PROFILE = {
   address: zeroAddress,
   username: '',
-  statusContactCode: '0x0000000000000000000000000000000000000000',
+  contactData: '',
   reputation: {upCount: 0, downCount: 0},
   offers: []
 };
@@ -37,7 +37,7 @@ class MyTrades extends Component {
   }
 
   componentDidUpdate(oldProps){
-    if(this.props.profile && !this.props.profile.statusContactCode){
+    if(this.props.profile && !this.props.profile.contactData){
       return this.props.history.push("/profile/contact/edit");
     }
 
