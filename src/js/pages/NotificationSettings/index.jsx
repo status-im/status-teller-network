@@ -1,23 +1,19 @@
 import React, {Component, Fragment} from "react";
 import {withNamespaces} from "react-i18next";
 import PropTypes from "prop-types";
-import {FormGroup, Label, Button, Alert} from 'reactstrap';
-import Input from 'react-validation/build/input';
-import Form from 'react-validation/build/form';
+import {Alert} from 'reactstrap';
 import Switch from "react-switch";
 import {connect} from "react-redux";
 import emailNotifications from '../../features/emailNotifications';
-import {required, isEmail} from "../../validators";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
+import NotificationForm from "../../components/NotificationForm";
 
 class NotificationSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showEmailSection: props.isSubscribed,
-      email: props.email,
-      emailValid: false
+      showEmailSection: props.isSubscribed
     };
     this.props.checkSubscription();
   }
@@ -36,13 +32,6 @@ class NotificationSettings extends Component {
     }
   };
 
-  changeEmail = (e) => {
-    this.setState({
-      email: e.target.value,
-      emailValid: !isEmail(e.target.value) // isEmail returns an error on failure
-    });
-  };
-
   hideError = () => {
     this.props.hideError();
   };
@@ -51,14 +40,12 @@ class NotificationSettings extends Component {
     this.props.hideSuccess();
   };
 
-  subscribe = () => {
-    this.props.subscribe(this.state.email);
+  subscribe = (email) => {
+    this.props.subscribe(email);
   };
 
   render() {
     const {t, working, error, subscribeSuccess} = this.props;
-
-    const disabled = working || !this.state.emailValid;
 
     return (<Fragment>
       <h2 className="mb-4 mt-3">{t('notificationSettings.title')}</h2>
@@ -75,22 +62,9 @@ class NotificationSettings extends Component {
                 checkedIcon={false}/>}
         {typeof this.state.showEmailSection !== 'boolean' && <p className="float-right">Loading...</p>}
       </div>
-      {this.state.showEmailSection && !this.props.isSubscribed && <Form className="mt-4">
-        <FormGroup>
-          <Label for="notification-email">Email</Label>
-          <Input type="email"
-                 name="email"
-                 id="notification-email"
-                 placeholder="eg. vitalik94@ethereum.org"
-                 className="form-control"
-                 value={this.state.email}
-                 onChange={this.changeEmail}
-                 validations={[required, isEmail]}/>
-        </FormGroup>
-        <div className="text-center">
-          <Button color="primary" onClick={this.subscribe} disabled={disabled}>{t('notificationSettings.saveButton')}</Button>
-        </div>
-      </Form>}
+
+      {this.state.showEmailSection && !this.props.isSubscribed &&
+      <NotificationForm disabled={working} subscribe={this.subscribe}/>}
     </Fragment>);
   }
 }
