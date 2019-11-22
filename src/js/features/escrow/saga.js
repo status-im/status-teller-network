@@ -177,8 +177,20 @@ export function *doLoadEscrows({address}) {
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
       escrow.currency = escrow.offer.currency;
       escrow.margin = escrow.offer.margin;
-      escrow.seller = yield select(state => state.metadata.users[escrow.offer.owner]);
-      escrow.buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
+
+      let sellerInfo = yield select(state => state.metadata.users[escrow.offer.owner]);
+      if(!sellerInfo) {
+        sellerInfo = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+      }
+      
+      let buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
+      if(!buyerInfo){
+        buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
+      }
+
+      escrow.seller = sellerInfo;
+      escrow.buyerInfo = buyerInfo;
+
       return escrow;
     }));
 
