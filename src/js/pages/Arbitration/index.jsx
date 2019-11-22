@@ -95,10 +95,10 @@ class Arbitration extends Component {
     this.props.resolveDispute(this.props.escrow.escrowId, addressCompare(this.state.selectedUser, this.props.escrow.buyer) ? ARBITRATION_SOLVED_BUYER : ARBITRATION_SOLVED_SELLER);
   };
 
-  renderAccountInfo(userInfo, isBuyer) {
+  renderAccountInfo(address, userInfo, isBuyer) {
     return (<Fragment>
       <span className="text-center float-left mr-3">
-                      <Identicon seed={userInfo.statusContactCode} className="rounded-circle border" scale={5}/>
+                      <Identicon seed={address} className="rounded-circle border" scale={5}/>
                       <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer})}>{isBuyer ? 'Buyer' : 'Seller'}</span>
                     </span>
       <span className="d-inline-block pt-2">{userInfo.username}</span>
@@ -116,11 +116,11 @@ class Arbitration extends Component {
         <ButtonGroup vertical className="w-100">
           <CheckButton active={addressCompare(selectedUser, escrow.buyer)} size="l"
                        onClick={this.selectUser(escrow.buyer)}>
-            {this.renderAccountInfo(buyerInfo, true)}
+            {this.renderAccountInfo(escrow.buyer, buyerInfo, true)}
           </CheckButton>
           <CheckButton active={addressCompare(selectedUser, escrow.seller)} size="l"
                        onClick={this.selectUser(escrow.seller)}>
-            {this.renderAccountInfo(sellerInfo, false)}
+            {this.renderAccountInfo(escrow.seller, sellerInfo, false)}
           </CheckButton>
         </ButtonGroup>
         <p className="text-center">

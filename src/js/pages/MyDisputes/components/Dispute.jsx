@@ -30,8 +30,8 @@ class Dispute extends Component {
         <div className="d-flex my-1">
             <span className="flex-fill align-self-center">
               <Link to={"/arbitration/" + dispute.escrowId}>
-                 <Identicon seed={buyerInfo.statusContactCode} scale={5} className="align-middle rounded-circle topCircle border"/>
-                 <Identicon seed={sellerInfo.statusContactCode} scale={5} className="align-middle rounded-circle bottomCircle border"/>
+                 <Identicon seed={dispute.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
+                 <Identicon seed={dispute.seller} scale={5} className="align-middle rounded-circle bottomCircle border"/>
                 <span className="ml-2">{buyerInfo.username} & {sellerInfo.username}</span>
               </Link>
             </span>

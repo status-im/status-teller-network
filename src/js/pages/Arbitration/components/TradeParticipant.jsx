@@ -11,7 +11,7 @@ const TradeParticipant = ({profile, address, isBuyer, winner}) => (
     <Col className="p-0">
       <Row>
         <Col xs={3} md={2} className="text-center">
-          <Identicon seed={profile.statusContactCode} className="rounded-circle border" scale={5}/>
+          <Identicon seed={address} className="rounded-circle border" scale={5}/>
           <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer, 'text-success': winner})}>
             {isBuyer ? 'Buyer' : 'Seller'}
           </span>

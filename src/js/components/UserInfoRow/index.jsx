@@ -11,7 +11,7 @@ const UserInfoRow = ({address, user = {}, lastCol, hideAddress, lastColSize}) =>
   return <Row>
     <Col xs={2}>
       <div className="rounded-icon rounded-circle rounded-icon__blue">
-        <Identicon seed={user.statusContactCode} className="rounded-circle border" scale={5}/>
+        <Identicon seed={address} className="rounded-circle border" scale={5}/>
       </div>
     </Col>
     <Col xs={12 - (lastColSize + 2)}>

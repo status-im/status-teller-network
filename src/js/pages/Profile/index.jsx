@@ -45,7 +45,7 @@ class Profile extends Component {
     return (
       <div className="seller-profile-container">
         <UserInformation username={profile.username} reputation={profile.reputation}
-                         identiconSeed={profile.statusContactCode} nbCreatedTrades={profile.nbCreatedTrades}
+                         identiconSeed={profile.address} nbCreatedTrades={profile.nbCreatedTrades}
                          nbReleasedTrades={profile.nbReleasedTrades}/>
         {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
                                 markers={[profile.coords]}/>}
