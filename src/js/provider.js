@@ -9,7 +9,7 @@ Escrow.options.address = EscrowProxy.options.address;
 
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
-  "createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string)": "36c6d573",
+  "createEscrow(uint256,uint256,uint256,string,string,string)":"56a9480a",
   "openCase(uint256,string)": "58b67904",
   "pay(uint256)": "c290d691",
   "rateTransaction(uint256,uint256)":"79347b06"

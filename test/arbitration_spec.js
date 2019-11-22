@@ -12,8 +12,8 @@ let arbitrator, arbitrator2, blacklistedAccount;
 const feePercent = 1;
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 
 
 config({
@@ -105,14 +105,14 @@ contract("Escrow", function() {
 
     const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
   describe("Arbitrations", async() => {
     beforeEach(async() => {
       // Create
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -143,7 +143,7 @@ contract("Escrow", function() {
       let messageToSign, signature;
 
       // Create
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -275,7 +275,7 @@ contract("Escrow", function() {
     it('should not allow a blacklisted seller to open an offer', async () => {
       try {
         const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount, value: amountToStake});
+        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount, value: amountToStake});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");

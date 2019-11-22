@@ -20,7 +20,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   mapping(address => uint) public lastActivity;
 
-  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,bytes32,bytes32,string,string)"));
+  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,string,string,string)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
@@ -86,8 +86,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _offerId Offer
    * @param _tokenAmount Amount buyer is willing to trade
    * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
-   * @param _pubkeyA First coordinate of Status Whisper Public Key
-   * @param _pubkeyB Second coordinate of Status Whisper Public Key
+   * @param _contactData Contact Data   ContactType:UserId
    * @param _location The location on earth
    * @param _username The username of the user
    */
@@ -95,8 +94,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     uint _offerId,
     uint _tokenAmount,
     uint _fiatAmount,
-    bytes32 _pubkeyA,
-    bytes32 _pubkeyB,
+    string memory _contactData,
     string memory _location,
     string memory _username
   ) public returns (uint escrowId) {
@@ -107,8 +105,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
          _offerId,
          _tokenAmount,
          _fiatAmount,
-         _pubkeyA,
-         _pubkeyB,
+         _contactData,
          _location,
          _username
     );

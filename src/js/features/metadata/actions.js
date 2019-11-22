@@ -16,7 +16,7 @@ export const loadOffers = (address) => ({ type: LOAD_OFFERS, address });
 export const addOffer = (seller) => ({
   type: ADD_OFFER,
   user: {
-    statusContactCode: seller.statusContactCode,
+    contactData: seller.contactData,
     location: seller.location,
     username: seller.username
   },

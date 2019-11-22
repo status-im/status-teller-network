@@ -191,7 +191,7 @@ class App extends Component {
                   {path: '/sell/currency', component: SellCurrency},
                   {path: '/sell/location', component: SellLocation},
                   (!this.props.profile || !this.props.profile.username) && {path: '/sell/contact', component: SellContactName},
-                  (!this.props.profile || !this.props.profile.statusContactCode) && {path: '/sell/contact-details', component: SellContactDetails},
+                  (!this.props.profile || !this.props.profile.contactData) && {path: '/sell/contact-details', component: SellContactDetails},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},

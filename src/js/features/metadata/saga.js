@@ -42,7 +42,8 @@ import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import { zeroAddress, addressCompare, zeroBytes, keyFromXY, generateXY } from '../../utils/address';
+import { zeroAddress, addressCompare, generateXY } from '../../utils/address';
+import {getContactData} from '../../utils/strings';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -65,16 +66,7 @@ export function *loadUser({address}) {
     };
 
     const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
-    user.statusContactCode = keyFromXY(user.pubkeyA, user.pubkeyB);
-
-    if(user.pubkeyA === zeroBytes && user.pubkeyB === zeroBytes){
-      if(isArbitrator || isSeller) {
-        yield put({type: LOAD_USER_SUCCEEDED, user: userLicenses, address});
-      }
-      return;
-    }
-
-
+    
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
     }
@@ -148,7 +140,6 @@ export function *loadOffers({address}) {
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
         offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call({from: defaultAccount});
-        offer.arbitratorData.statusContactCode = keyFromXY(offer.arbitratorData.pubkeyA, offer.arbitratorData.pubkeyB);
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -203,14 +194,10 @@ export function *onLoad() {
 }
 
 export function *addOffer({user, offer}) {
-  const coords = generateXY(user.statusContactCode);
-
   const price = yield call(getOfferPrice);
-
   const toSend = MetadataStore.methods.addOffer(
     offer.asset,
-    coords.x,
-    coords.y,
+    user.contactData,
     user.location,
     offer.currency,
     user.username,
@@ -228,10 +215,8 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const coords = generateXY(user.statusContactCode);
-  const toSend = MetadataStore.methods['addOrUpdateUser(bytes32,bytes32,string,string)'](
-    coords.x,
-    coords.y,
+  const toSend = MetadataStore.methods['addOrUpdateUser(string,string,string)'](
+    getContactData(user.contactMethod, user.contactData),
     user.location,
     user.username
   );

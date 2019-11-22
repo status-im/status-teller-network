@@ -15,8 +15,8 @@ let arbitrator, blacklistedAccount;
 const feePercent = 1;
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
-const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
 
 
 config({
@@ -112,25 +112,25 @@ contract("Escrow", function() {
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.01", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
     
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.09", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.16", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
     });
 
@@ -163,7 +163,7 @@ contract("Escrow", function() {
       let amountToStake; 
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
@@ -192,7 +192,7 @@ contract("Escrow", function() {
 
       // Create Offer
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
@@ -200,7 +200,7 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -230,7 +230,7 @@ contract("Escrow", function() {
 
       // Create Offer
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
@@ -238,10 +238,10 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -274,7 +274,7 @@ contract("Escrow", function() {
 
     it("losing a dispute twice shoud not fail", async() => {
       // Create Escrow
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -296,7 +296,7 @@ contract("Escrow", function() {
 
       // Create Offer
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, PUBKEY_A, PUBKEY_B, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
@@ -304,10 +304,10 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0.04", "ether"));
 
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", PUBKEY_A, PUBKEY_B).call({from: accounts[1]});
+      hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, PUBKEY_A, PUBKEY_B, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 

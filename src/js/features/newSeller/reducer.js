@@ -10,11 +10,12 @@ import {
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {ADD_OFFER_SUCCEEDED,RESET_NEW_OFFER} from '../metadata/constants';
+import {getContactData} from "../../utils/strings";
 
 
 const DEFAULT_STATE = {
   asset: '',
-  statusContactCode: '',
+  contactData: '',
   location: '',
   currency: '',
   username: '',
@@ -62,7 +63,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.username,
-        statusContactCode: action.statusContactCode
+        contactData: action.contactMethod && action.contactUsername ? getContactData(action.contactMethod, action.contactUsername) : ''
       };
     case SET_LIMITS: 
       return {
