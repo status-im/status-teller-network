@@ -57,8 +57,7 @@ class EditContactList extends Component {
 
   render() {
     const {t, contactCode, isStatus, ensError, contactMethod} = this.props;
-    const selectedMethod = this.contactMethods.find(method => method.name === contactMethod);
-        
+    const selectedMethod = this.contactMethods.find(method => method.name === (contactMethod || STATUS));
     return (
       <Fragment>
         <h2 className="mb-4">{t('contactForm.contactTitle')}</h2>
@@ -67,7 +66,7 @@ class EditContactList extends Component {
             {this.contactMethods.map((method, index) => (
               <CheckButton key={'contact-' + index} inline align="left"
                            onClick={() => this.changeContactMethod(method.name)}
-                           active={method.name === contactMethod}>
+                           active={method.name === (contactMethod || STATUS)}>
                 {method.name}
               </CheckButton>
             ))}
