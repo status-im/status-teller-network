@@ -12,12 +12,12 @@ import { toTokenDecimals } from '../../utils/numbers';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 Escrow.options.address = EscrowProxy.options.address;
 
-export const createEscrow = (username, tokenAmount, currencyQuantity, statusContactCode, offer) => {
+export const createEscrow = (username, tokenAmount, currencyQuantity, contactData, offer) => {
   tokenAmount = toTokenDecimals(tokenAmount, offer.token.decimals);
   return {
     type: CREATE_ESCROW,
     user: {
-      statusContactCode,
+      contactData,
       username
     },
     escrow: {

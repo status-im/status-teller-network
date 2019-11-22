@@ -35,13 +35,11 @@ Escrow.options.address = EscrowProxy.options.address;
 const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
-  const coords = generateXY(user.statusContactCode);
   const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
     escrow.currencyQuantity,
-    coords.x,
-    coords.y,
+    user.contactData,
     '',
     user.username
     );
@@ -176,14 +174,11 @@ export function *doLoadEscrows({address}) {
     const escrows = yield all(events.map(function *(ev) {
       const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
-
       escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
       escrow.currency = escrow.offer.currency;
       escrow.margin = escrow.offer.margin;
       escrow.seller = yield select(state => state.metadata.users[escrow.offer.owner]);
       escrow.buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
-      escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
-      escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
       return escrow;
     }));
 
@@ -207,9 +202,6 @@ export function *doGetEscrow({escrowId}) {
     escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
     escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
     escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
-    escrow.seller.statusContactCode = keyFromXY(escrow.seller.pubkeyA, escrow.seller.pubkeyB);
-    escrow.buyerInfo.statusContactCode = keyFromXY(escrow.buyerInfo.pubkeyA, escrow.buyerInfo.pubkeyB);
-    escrow.arbitratorInfo.statusContactCode = keyFromXY(escrow.arbitratorInfo.pubkeyA, escrow.arbitratorInfo.pubkeyB);
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);

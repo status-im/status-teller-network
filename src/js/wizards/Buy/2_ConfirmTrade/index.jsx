@@ -51,7 +51,7 @@ class ConfirmTrade extends Component {
   }
 
   postEscrow = () => {
-    this.props.createEscrow(this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.statusContactCode, this.props.offer);
+    this.props.createEscrow(this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.contactData, this.props.offer);
   };
 
   cancelTrade = () => {
@@ -148,6 +148,7 @@ class ConfirmTrade extends Component {
 ConfirmTrade.propTypes = {
   t: PropTypes.func,
   history: PropTypes.object,
+  contactData: PropTypes.string,
   wizard: PropTypes.object,
   footer: PropTypes.object,
   username: PropTypes.string,
@@ -177,6 +178,7 @@ const mapStateToProps = state => {
     txHash: escrow.selectors.txHash(state),
     escrowId: escrow.selectors.getCreateEscrowId(state),
     statusContactCode: newBuy.selectors.statusContactCode(state),
+    contactData: newBuy.selectors.contactData(state),
     username: newBuy.selectors.username(state),
     ensError: network.selectors.getENSError(state),
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
