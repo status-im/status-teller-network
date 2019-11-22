@@ -12,14 +12,15 @@ import {contactCodeRegExp} from '../../../utils/address';
 import DOMPurify from 'dompurify';
 import metadata from "../../../features/metadata";
 import {Alert} from "reactstrap";
-import {getContactDataItem} from '../../../utils/strings';
+import {stringToContact} from '../../../utils/strings';
 
 class ContactDetails extends Component {
   constructor(props) {
     super(props);
 
-    const contactUsername = getContactDataItem(props.contactCode, 1);
-    const contactMethod = getContactDataItem(props.contactCode, 0) || 'Status';
+    const contactObj = stringToContact(props.contactCode);
+    const contactUsername = contactObj.userId;
+    const contactMethod = contactObj.method || 'Status';
 
     this.state = {
       username: props.username,
@@ -38,7 +39,8 @@ class ContactDetails extends Component {
       return this.props.wizard.previous();
     }
     if (this.props.profile && this.props.profile.username) {
-      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactUsername: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 1)), contactMethod: DOMPurify.sanitize(getContactDataItem(this.props.profile.contactData, 0))});
+      const contactObj = stringToContact(this.props.profile.contactData);
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactUsername: DOMPurify.sanitize(contactObj.userId), contactMethod: DOMPurify.sanitize(contactObj.method)});
       return this.props.wizard.next();
     }
     if (!this.props.isEip1102Enabled) {
