@@ -55,8 +55,8 @@
     "cryptocurrency-icons": "^0.16.0",
     "css-loader": "^2.1.0",
     "dompurify": "^2.0.1",
-    "elliptic": "^6.5.0",
-    "embark": "^4.0.2",
+    "elliptic": "^6.5.2",
+    "embark": "^8.0.0",
     "embark-solc": "^4.0.3",
     "embark-solium": "0.1.0",
     "embarkjs-connector-web3": "^4.0.0",
@@ -97,7 +97,7 @@
     "sass-loader": "^7.1.0",
     "staking-pool": "^0.0.1",
     "tabookey-gasless": "^0.4.1",
-    "web3": "1.0.0-beta.37"
+    "web3": "1.2.0"
   },
   "jest": {
     "moduleNameMapper": {
