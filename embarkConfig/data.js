@@ -1,5 +1,3 @@
-import {getContactData} from "../src/js/utils/strings";
-
 const async = require('async');
 
 module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, deps) => {
@@ -167,7 +165,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
-        getContactData('Status', address),
+        'Status:' + address, // Cannot use the utils function, because it uses imports and exports which are not supported by Node 10
         locations[Math.floor(Math.random() * locations.length)],
         currencies[Math.floor(Math.random() * currencies.length)],
         usernames[Math.floor(Math.random() * usernames.length)],
