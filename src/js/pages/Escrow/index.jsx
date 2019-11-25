@@ -310,6 +310,9 @@ class Escrow extends Component {
                     onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>Copy</Button>
           </Col>
         </Row>
+        {!isStatus && ((isBuyer && escrow.seller.contactData.startsWith("Status")) || (!isBuyer && escrow.buyerInfo.contactData.startsWith("Status"))) && <p className="text-center text-muted mt-3">
+          <span>Not a Status user?</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">Get Status now!</a>
+        </p>}
       </ModalDialog>
       <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer}/>
       <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH}
