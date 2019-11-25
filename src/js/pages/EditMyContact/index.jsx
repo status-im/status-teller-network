@@ -15,6 +15,7 @@ import {stringToContact} from '../../utils/strings';
 import DOMPurify from "dompurify";
 import {contactCodeRegExp} from "../../components/EditContact/validators";
 import EditContactList from "../../components/EditContact/ContactList";
+import {STATUS} from '../../constants/contactMethods';
 
 
 class EditMyContact extends Component {
@@ -27,8 +28,8 @@ class EditMyContact extends Component {
     this.state = {
       username: profile ? profile.username || '' : '',
       statusContactCode: profile ? contactObject.userId || '' : '',
-      updateDisabled: profile ? this.isUpdateDisabled(profile.username, profile.contactData, contactObject.method || 'Status') : true,
-      contactMethod: profile ? contactObject.method : 'Status'
+      updateDisabled: profile ? this.isUpdateDisabled(profile.username, profile.contactData, contactObject.method || STATUS) : true,
+      contactMethod: profile ? contactObject.method : STATUS
     };
   }
 
@@ -66,7 +67,7 @@ class EditMyContact extends Component {
   };
 
   isUpdateDisabled(username, statusContactCode, contactMethod) {
-    return !username || !statusContactCode || (contactMethod === 'Status' && !contactCodeRegExp.test(statusContactCode));
+    return !username || !statusContactCode || (contactMethod === STATUS && !contactCodeRegExp.test(statusContactCode));
   }
 
   validate(username, statusContactCode) {

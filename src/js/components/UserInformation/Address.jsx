@@ -31,7 +31,7 @@ class Address extends Component {
       return null;
     }
     const address = this.props.compact || (!this.state.fixed &&  !this.state.addressHovered) ? compactAddress(this.props.address, this.props.length) : this.props.address;
-    return (<span className="addr clickable" title={this.props.address} onClick={this.handleClick} onMouseOver={this.mouseOverAddress}
+    return (<span className="addr clickable" title={this.props.address} onClick={this.handleClick} {...(this.props.disableHover ? {} : {onMouseOver: this.mouseOverAddress})}
                   onMouseOut={this.mouseOutAddress}>{address}
     </span>);
   }

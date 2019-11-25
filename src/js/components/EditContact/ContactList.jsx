@@ -7,13 +7,12 @@ import PropTypes from 'prop-types';
 import {required, isContactCode, validENS} from "./validators";
 import CheckButton from "../../ui/CheckButton";
 import RoundedIcon from "../../ui/RoundedIcon";
-
+import {STATUS} from '../../constants/contactMethods';
 import infoImageRed from '../../../images/info-red.svg';
 import infoImage from '../../../images/small-info.svg';
 import checkCircleImage from '../../../images/check-circle.svg';
 
 const domain = ".stateofus.eth";
-const STATUS = 'Status';
 
 class EditContactList extends Component {
   constructor(props) {

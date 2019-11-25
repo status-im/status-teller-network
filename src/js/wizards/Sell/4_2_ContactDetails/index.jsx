@@ -12,6 +12,7 @@ import metadata from "../../../features/metadata";
 import network from '../../../features/network';
 import {stringToContact} from '../../../utils/strings';
 import {contactCodeRegExp} from '../../../utils/address';
+import {STATUS} from '../../../constants/contactMethods';
 
 class Contact extends Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class Contact extends Component {
 
   validate(contactUsername, contactMethod) {
     if (contactUsername) {
-      if(contactMethod === 'Status' && !contactCodeRegExp.test(contactUsername)){
+      if(contactMethod === STATUS && !contactCodeRegExp.test(contactUsername)){
         return this.props.footer.disableNext();
       }
       return this.props.footer.enableNext();

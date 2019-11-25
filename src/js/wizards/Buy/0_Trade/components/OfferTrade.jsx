@@ -18,7 +18,7 @@ import downvoteImg from "../../../../../images/downvote.svg";
 import arbitratorImg from "../../../../../images/arbitrator.svg";
 import disputeImg from "../../../../../images/dispute.svg";
 import questionIcon from "../../../../../images/question-mark.svg";
-
+import {STATUS} from '../../../../constants/contactMethods';
 
 import './index.scss';
 import { stringToContact } from '../../../../utils/strings';
@@ -68,7 +68,7 @@ class OfferTrade extends Component {
       <h3 className="mt-4 font-weight-normal">Seller</h3>
       <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
       <p className="font-weight-medium mb-1 name">{seller.username}</p>
-      <p className="text-muted text-small addr mb-0">{sellerContactObj.method}: {sellerContactObj.method === 'Status' ? <Address address={sellerContactObj.userId} length={13} disableHover/> : sellerContactObj.userId }</p>
+      <p className="text-muted text-small addr mb-0">{sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address address={sellerContactObj.userId} length={13} disableHover/> : sellerContactObj.userId }</p>
       <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
       <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></span></h3>
@@ -76,7 +76,7 @@ class OfferTrade extends Component {
         <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
         {arbitrator.username}
       </p>
-      <p className="text-muted text-small addr">{arbitratorContactObj.method}: {arbitratorContactObj.method === 'Status' ? <Address address={arbitratorContactObj.userId} disableHover length={13}/> : arbitratorContactObj.userId }</p>
+      <p className="text-muted text-small addr">{arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address address={arbitratorContactObj.userId} disableHover length={13}/> : arbitratorContactObj.userId }</p>
 
 
       <h3 className="font-weight-normal mt-4">Price</h3>

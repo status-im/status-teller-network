@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import moment from "moment";
 import Identicon from "../../../components/UserInformation/Identicon";
 import Address from "../../../components/UserInformation/Address";
-import { formatArbitratorName } from '../../../utils/strings';
+import { formatArbitratorName, stringToContact} from '../../../utils/strings';
 import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import PriceWarning from '../../../components/PriceWarning';
-import {stringToContact} from '../../../utils/strings';
+import {STATUS} from '../../../constants/contactMethods';
 
 const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
@@ -46,7 +46,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           {escrow.seller.username}
         </p>
         <p className="text-muted text-small addr">
-        {buyerContactObj.method}: {buyerContactObj.method === 'Status' ? <Address disableHover address={buyerContactObj.userId} length={6}/> : buyerContactObj.userId }
+        {buyerContactObj.method}: {buyerContactObj.method === STATUS ? <Address disableHover address={buyerContactObj.userId} length={6}/> : buyerContactObj.userId }
         </p>
       </Fragment>}
 
@@ -57,7 +57,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           {escrow.buyerInfo.username}
         </p>
         <p className="text-muted text-small addr">
-          {sellerContactObj.method}: {sellerContactObj.method === 'Status' ? <Address disableHover address={sellerContactObj.userId} length={6}/> : sellerContactObj.userId }
+          {sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address disableHover address={sellerContactObj.userId} length={6}/> : sellerContactObj.userId }
         </p>
       </Fragment>}
 
@@ -68,7 +68,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}
         </p>
         <p className="text-muted text-small addr">
-        {arbitratorContactObj.method}: {arbitratorContactObj.method === 'Status' ? <Address disableHover address={arbitratorContactObj.userId} length={6}/> : arbitratorContactObj.userId }
+        {arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address disableHover address={arbitratorContactObj.userId} length={6}/> : arbitratorContactObj.userId }
 
           </p>
         </Fragment>
