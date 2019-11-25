@@ -257,5 +257,10 @@
     "rejected": "You rejected to receive notifications",
     "desktop": "When you are on desktop, those notifications are the only way we can send you information quickly on your trade and offers",
     "changeSettings": "If you which to receive notifications, go in your browser settings, search Teller and unblock the notifications"
+  },
+  "emailNotifications": {
+    "notifOnTrades": "Get notifications on new trades and important trade events.",
+    "youCanChange": "This is optional. You can always change this setting in the Notification Settings in your Profile.",
+    "success": "Success subscribing. Please check your emails to verify your subscription"
   }
 }

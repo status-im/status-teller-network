@@ -31,7 +31,7 @@ class MyDisputes extends Component {
 
   componentDidUpdate(){
     if(this.props.profile && !this.props.profile.contactData){
-      return this.props.history.push("/profile/contact/edit");
+      return this.props.history.push("/profile/settings/contact");
     }
   }
 

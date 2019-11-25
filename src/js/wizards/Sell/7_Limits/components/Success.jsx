@@ -15,6 +15,6 @@ const Success = ({onClick}) => (
 
 Success.propTypes = {
     onClick: PropTypes.func
-}
+};
 
 export default Success;

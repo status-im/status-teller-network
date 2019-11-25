@@ -6,8 +6,15 @@ import classnames from "classnames";
 import './index.scss';
 import FundingEscrow from "../../pages/Escrow/components/FundingEscrow";
 
-const RoundedIcon = ({icon, image, bgColor, size, className}) => (
-  <span className={classnames("rounded-icon rounded-circle", {
+const RoundedIcon = ({icon, image, bgColor, size, className}) => {
+  let sizePx;
+  switch (size) {
+    case 'xs': sizePx = 10; break;
+    case 'sm': sizePx = 13; break;
+    case 'md': sizePx = 20; break;
+    default: sizePx = null;
+  }
+  return (<span className={classnames("rounded-icon rounded-circle", {
     'rounded-icon__grey': bgColor === 'grey',
     'rounded-icon__blue': bgColor === 'blue',
     'rounded-icon__primary': bgColor === 'primary',
@@ -18,9 +25,10 @@ const RoundedIcon = ({icon, image, bgColor, size, className}) => (
     [className]: !!className
   })}>
     {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
-    {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon" width={size === 'sm' ? 13 : 20} height={size === 'sm' ? 13 : 20}/>}
-  </span>
-);
+    {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon" width={sizePx}
+                   height={sizePx}/>}
+  </span>);
+};
 
 FundingEscrow.defaultProps = {
   size: 'lg'

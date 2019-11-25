@@ -17,11 +17,13 @@ import {Alert} from "reactstrap";
 import {withNamespaces} from "react-i18next";
 import prices from "../../../features/prices";
 import FinalModal from './components/FinalModal';
+import emailNotifications from "../../../features/emailNotifications";
 
 class Summary extends Component {
   state = {ready: false, notificationAccepted: null, showFinalModal: false};
 
   componentDidMount() {
+    this.props.checkEmailSubscription();
     // TODO check limits
     if (!(this.props.seller.useCustomLimits === false ||
       (this.props.seller.useCustomLimits === true && this.props.seller.limitL >= 0 && this.props.seller.limitU >= 0))) {
@@ -50,7 +52,13 @@ class Summary extends Component {
 
   continue = () => {
     this.props.resetAddOfferStatus();
-    this.props.history.push('/buy');
+    const target = '/buy';
+    if (this.props.isSubscribed) {
+      this.props.history.push(target);
+    } else {
+      this.props.setRedirectTarget(target);
+      this.props.history.push('/email-subscribe');
+    }
   };
 
   cancel = () => {
@@ -133,7 +141,10 @@ Summary.propTypes = {
   profile: PropTypes.object,
   arbitratorProfile: PropTypes.object,
   getOfferPrice: PropTypes.func,
-  offerStake: PropTypes.string
+  offerStake: PropTypes.string,
+  isSubscribed: PropTypes.bool,
+  checkEmailSubscription: PropTypes.func,
+  setRedirectTarget: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -147,7 +158,8 @@ const mapStateToProps = state => {
     prices: prices.selectors.getPrices(state),
     arbitratorProfile: metadata.selectors.getProfile(state, seller.arbitrator),
     assetData: network.selectors.getTokenByAddress(state, seller.asset),
-    offerStake: metadata.selectors.nextOfferPrice(state)
+    offerStake: metadata.selectors.nextOfferPrice(state),
+    isSubscribed: emailNotifications.selectors.isSubscribed(state)
   };
 };
 
@@ -156,6 +168,8 @@ export default connect(
   {
     getOfferPrice: metadata.actions.getOfferPrice,
     addOffer: metadata.actions.addOffer,
-    resetAddOfferStatus: metadata.actions.resetAddOfferStatus
+    resetAddOfferStatus: metadata.actions.resetAddOfferStatus,
+    checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
+    setRedirectTarget: emailNotifications.actions.setRedirectTarget
   }
 )(withRouter(withNamespaces()(Summary)));

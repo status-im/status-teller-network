@@ -5,7 +5,7 @@ import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
-import {addressCompare, zeroAddress, generateXY, keyFromXY} from '../../utils/address';
+import {addressCompare, zeroAddress} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
   LOAD_ESCROWS, LOAD_ESCROWS_FAILED, LOAD_ESCROWS_SUCCEEDED,

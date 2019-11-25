@@ -1,7 +1,12 @@
-import {CHECK_EMAIL_SUBSCRIPTION, SUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL, HIDE_ERROR, VERIFY_EMAIL, HIDE_SUCCESS} from './constants';
+import {CHECK_EMAIL_SUBSCRIPTION, SUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL,
+  HIDE_ERROR, VERIFY_EMAIL, HIDE_SUCCESS, SET_REDIRECT_TARGET} from './constants';
 
 export const checkEmailSubscription = () => {
   return {type: CHECK_EMAIL_SUBSCRIPTION};
+};
+
+export const setRedirectTarget = (redirectTarget) => {
+  return {type: SET_REDIRECT_TARGET, redirectTarget};
 };
 
 export const subscribeToEmail = (email) => {

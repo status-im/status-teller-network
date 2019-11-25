@@ -15,7 +15,7 @@ exports[`StatusContactCode should render correctly 1`] = `
       <Link
         className="float-right"
         replace={false}
-        to="/profile/contact/edit"
+        to="/profile/settings/contact"
       />
     </span>
   </div>

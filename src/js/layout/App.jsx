@@ -35,6 +35,7 @@ import MyDisputes from '../pages/MyDisputes';
 import ProfileSettings from '../pages/ProfileSettings';
 import NotificationSettings from '../pages/NotificationSettings';
 
+import SubscribeToEmails from '../pages/SubscribeToEmails';
 import ValidateEmail from '../pages/ValidateEmail';
 
 // Buy
@@ -172,6 +173,7 @@ class App extends Component {
                 <Route exact path="/profile/arbitrators" component={Arbitrators} />
                 <Route exact path="/profile/:address" component={Profile}/>
 
+                <Route exact path="/email-subscribe" component={SubscribeToEmails}/>
                 <Route exact path="/verify-email/:token" component={ValidateEmail}/>
 
                 <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>

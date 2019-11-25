@@ -24,6 +24,8 @@ import RoundedIcon from "../../ui/RoundedIcon";
 import exclamationCircle from "../../../images/exclamation-circle.png";
 import checkCircle from "../../../images/check-circle.svg";
 import canceledIcon from "../../../images/cancel.svg";
+import bellIcon from "../../../images/bell.svg";
+import closeIcon from "../../../images/close_profile.svg";
 
 import {zeroAddress, addressCompare} from '../../utils/address';
 import {States, checkNotEnoughETH} from '../../utils/transaction';
@@ -35,6 +37,7 @@ import approval from '../../features/approval';
 import arbitrationF from '../../features/arbitration';
 import events from '../../features/events';
 import prices from '../../features/prices';
+import emailNotifications from "../../features/emailNotifications";
 
 import "./index.scss";
 
@@ -44,11 +47,13 @@ class Escrow extends Component {
   constructor(props) {
     super(props);
     this.loadData();
+    this.props.checkEmailSubscription();
   }
 
   state = {
     showApproveFundsScreen: false,
-    releaseAnyway: false
+    releaseAnyway: false,
+    hideNotifBox: false
   };
 
   loadData() {
@@ -110,11 +115,19 @@ class Escrow extends Component {
     return offer;
   };
 
+  goToEmailPage = (e) => {
+    if (e.target.alt === 'close') {
+      return;
+    }
+    this.props.setRedirectTarget(this.props.location.pathname);
+    this.props.history.push('/email-subscribe');
+  };
+
   render() {
     let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash} = this.props;
-      
+
     const {showApproveFundsScreen} = this.state;
 
     const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
@@ -166,7 +179,7 @@ class Escrow extends Component {
         showFundButton = true;
       }
     }
-    
+
     const feePercent = feeMilliPercent / 1000;
     const tokenAmount = toBN(toTokenDecimals(escrow.tokenAmount, escrow.token.decimals));
     const divider = 100 * (feeMilliPercent / 1000);
@@ -176,8 +189,16 @@ class Escrow extends Component {
     const escrowFiatAmount = (escrow.fiatAmount / 100).toFixed(2);
 
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
-    
+
     return (<Fragment>
+      {!this.props.isSubscribed && !this.state.hideNotifBox && <div className="rounded shadow p-3 position-relative" onClick={this.goToEmailPage}>
+        <img alt="close" src={closeIcon} className="close-email-notification-box clickable" width={25} height={25}
+             onClick={() => this.setState({hideNotifBox: true})}/>
+        <RoundedIcon image={bellIcon} bgColor="blue" className="float-left mr-3"/>
+        <p className="font-weight-medium mb-0">Email notifications</p>
+        <p className="text-muted mb-0 text-small">Get notifications on important trade events</p>
+      </div>}
+
       {arbitrationDetails.open && <Row className="mt-4">
         <Col xs="2">
           <RoundedIcon image={exclamationCircle} bgColor="red"/>
@@ -279,6 +300,7 @@ class Escrow extends Component {
 
 Escrow.propTypes = {
   history: PropTypes.object,
+  location: PropTypes.object,
   escrow: PropTypes.object,
   arbitration: PropTypes.object,
   escrowId: PropTypes.string,
@@ -313,7 +335,10 @@ Escrow.propTypes = {
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
   gasPrice: PropTypes.string,
-  feeMilliPercent: PropTypes.string
+  feeMilliPercent: PropTypes.string,
+  isSubscribed: PropTypes.bool,
+  checkEmailSubscription: PropTypes.func,
+  setRedirectTarget: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -343,7 +368,8 @@ const mapStateToProps = (state, props) => {
     assetCurrentPrice: (theEscrow && theEscrow.token) ? prices.selectors.getAssetPrice(state, theEscrow.token.symbol) : null,
     gasPrice: network.selectors.getNetworkGasPrice(state),
     feeMilliPercent: escrowF.selectors.feeMilliPercent(state),
-    ethBalance: network.selectors.getBalance(state, 'ETH')
+    ethBalance: network.selectors.getBalance(state, 'ETH'),
+    isSubscribed: emailNotifications.selectors.isSubscribed(state)
   };
 };
 
@@ -366,6 +392,8 @@ export default connect(
     loadArbitration: arbitrationF.actions.loadArbitration,
     cancelDispute: arbitrationF.actions.cancelDispute,
     watchEscrow: escrowF.actions.watchEscrow,
-    getLastActivity: escrowF.actions.getLastActivity
+    getLastActivity: escrowF.actions.getLastActivity,
+    checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
+    setRedirectTarget: emailNotifications.actions.setRedirectTarget
   }
 )(withRouter(Escrow));
