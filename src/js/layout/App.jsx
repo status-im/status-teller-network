@@ -24,7 +24,7 @@ import License from '../pages/License';
 import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import OffersMap from '../pages/OffersMap';
-import Settings from '../pages/Settings';
+import CacheSettings from '../pages/Settings';
 import NotificationManager from '../components/NotificationManager';
 
 // Profile
@@ -161,12 +161,11 @@ class App extends Component {
               <Switch>
                 <Route exact path="/" component={Home}/>
 
-                <Route exact path="/settings" component={Settings}/>
-
                 <Route exact path="/profile" component={MyProfile}/>
                 <Route exact path="/profile/settings" component={ProfileSettings}/>
                 <Route exact path="/profile/settings/contact" component={EditMyContact}/>
                 <Route exact path="/profile/settings/notifications" component={NotificationSettings}/>
+                <Route exact path="/profile/settings/cache" component={CacheSettings}/>
                 <Route exact path="/profile/offers" component={MyOffers} />
                 <Route exact path="/profile/trades" component={MyTrades} />
                 <Route exact path="/profile/disputes" component={MyDisputes} />
