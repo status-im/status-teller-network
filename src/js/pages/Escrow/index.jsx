@@ -38,19 +38,11 @@ import arbitrationF from '../../features/arbitration';
 import events from '../../features/events';
 import prices from '../../features/prices';
 import emailNotifications from "../../features/emailNotifications";
-
+import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 
 const {toBN} = web3.utils;
-
-const ContactMethods = {
-  'Status': 'Status chat key',
-  'Telegram': 'Telegram ID',
-  'Line': 'Line ID',
-  'KakaoTalk': 'KakaoTalk ID',
-  'WeChat': 'WeChat ID'
-};
 
 class Escrow extends Component {
   constructor(props) {
