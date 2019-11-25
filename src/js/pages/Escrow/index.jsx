@@ -19,18 +19,18 @@ import Loading from '../../components/Loading';
 import ApproveTokenFunds from './components/ApproveTokenFunds';
 import { ARBITRATION_UNSOLVED } from '../../features/arbitration/constants';
 import ErrorInformation from "../../components/ErrorInformation";
-import {Col, Row} from 'reactstrap';
+import {Col, Row, Input, Button} from 'reactstrap';
 import RoundedIcon from "../../ui/RoundedIcon";
 import exclamationCircle from "../../../images/exclamation-circle.png";
 import checkCircle from "../../../images/check-circle.svg";
 import canceledIcon from "../../../images/cancel.svg";
 import bellIcon from "../../../images/bell.svg";
 import closeIcon from "../../../images/close_profile.svg";
-
+import ModalDialog from '../../components/ModalDialog';
 import {zeroAddress, addressCompare} from '../../utils/address';
 import {States, checkNotEnoughETH} from '../../utils/transaction';
 import {toTokenDecimals, fromTokenDecimals} from '../../utils/numbers';
-
+import ProfileIcon from "../../../images/profileUser.svg";
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
 import approval from '../../features/approval';
@@ -38,8 +38,9 @@ import arbitrationF from '../../features/arbitration';
 import events from '../../features/events';
 import prices from '../../features/prices';
 import emailNotifications from "../../features/emailNotifications";
-
+import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import "./index.scss";
+import { stringToContact, copyToClipboard } from '../../utils/strings';
 
 const {toBN} = web3.utils;
 
@@ -53,8 +54,16 @@ class Escrow extends Component {
   state = {
     showApproveFundsScreen: false,
     releaseAnyway: false,
-    hideNotifBox: false
+    hideNotifBox: false,
+    displayDialog: false
   };
+
+  displayDialog = show => (e) => {
+    if(e) e.preventDefault();
+    this.setState({displayDialog: show});
+    return false;
+  }
+  
 
   loadData() {
     this.props.getEscrow(this.props.escrowId);
@@ -125,7 +134,7 @@ class Escrow extends Component {
 
   render() {
     let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity,
+      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash} = this.props;
 
     const {showApproveFundsScreen} = this.state;
@@ -278,8 +287,33 @@ class Escrow extends Component {
       </div>
 
       <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice}/>
-      <OpenChat statusContactCode={isBuyer ? escrow.seller.statusContactCode : escrow.buyerInfo.statusContactCode}
-                withBuyer={!isBuyer}/>
+      <OpenChat onClick={this.displayDialog(true)}
+                buyerContactData={escrow.buyerInfo.contactData}
+                sellerContactData={escrow.seller.contactData}
+                isStatus={isStatus}
+                withBuyer={!isBuyer} />
+      <ModalDialog display={this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
+        <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
+        {!isBuyer && <Fragment>{escrow.buyerInfo.username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(escrow.buyerInfo.contactData).method]}</span></Fragment>}
+        {isBuyer && <Fragment>{escrow.seller.username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(escrow.seller.contactData).method]}</span></Fragment>}
+        <Row noGutters className="mt-4">
+          <Col xs={9}>
+            <Input type="text"
+                    value={stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId}
+                    readOnly
+                    className="form-control"
+                    />
+          </Col>
+          <Col xs={3}>
+            <Button className="px-3 float-right" 
+                    color="primary"
+                    onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>Copy</Button>
+          </Col>
+        </Row>
+        {!isStatus && ((isBuyer && escrow.seller.contactData.startsWith("Status")) || (!isBuyer && escrow.buyerInfo.contactData.startsWith("Status"))) && <p className="text-center text-muted mt-3">
+          <span>Not a Status user?</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">Get Status now!</a>
+        </p>}
+      </ModalDialog>
       <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer}/>
       <CancelEscrow trade={escrow} cancelEscrow={cancelEscrow} isBuyer={isBuyer} notEnoughETH={notEnoughETH}
                     canRelay={canRelay} lastActivity={lastActivity} isETHorSNT={isETHorSNT}/>
@@ -338,7 +372,8 @@ Escrow.propTypes = {
   feeMilliPercent: PropTypes.string,
   isSubscribed: PropTypes.bool,
   checkEmailSubscription: PropTypes.func,
-  setRedirectTarget: PropTypes.func
+  setRedirectTarget: PropTypes.func,
+  isStatus: PropTypes.bool
 };
 
 const mapStateToProps = (state, props) => {
@@ -349,6 +384,7 @@ const mapStateToProps = (state, props) => {
   const address =  network.selectors.getAddress(state) || "";
   return {
     address,
+    isStatus: network.selectors.isStatus(state),
     escrowId:  escrowId,
     escrow: theEscrow,
     arbitration: arbitrationF.selectors.getArbitration(state) || {},
