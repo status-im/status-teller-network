@@ -4,12 +4,17 @@ import PropTypes from 'prop-types';
 import moment from "moment";
 import Identicon from "../../../components/UserInformation/Identicon";
 import Address from "../../../components/UserInformation/Address";
-import { formatArbitratorName } from '../../../utils/strings';
+import { formatArbitratorName, stringToContact} from '../../../utils/strings';
 import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import PriceWarning from '../../../components/PriceWarning';
+import {STATUS} from '../../../constants/contactMethods';
 
 const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
+  const sellerContactObj = stringToContact(escrow.seller.contactData);
+  const buyerContactObj = stringToContact(escrow.buyerInfo.contactData);
+  const arbitratorContactObj = stringToContact(escrow.arbitratorInfo.contactData);
+  
   return <div className="escrowDetails">
       <h2 className="mt-5">Trade Details</h2>
       <h3 className="font-weight-normal mt-4">Trade Amount</h3>
@@ -40,7 +45,9 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           <Identicon seed={escrow.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
           {escrow.seller.username}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.offer.owner} length={6}/></p>
+        <p className="text-muted text-small addr">
+        {buyerContactObj.method}: {buyerContactObj.method === STATUS ? <Address disableHover address={buyerContactObj.userId} length={6}/> : buyerContactObj.userId }
+        </p>
       </Fragment>}
 
       {!isBuyer && <Fragment>
@@ -49,7 +56,9 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           <Identicon seed={escrow.buyer} className="rounded-circle border mr-2 float-left" scale={5}/>
           {escrow.buyerInfo.username}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.buyer} length={6}/></p>
+        <p className="text-muted text-small addr">
+          {sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address disableHover address={sellerContactObj.userId} length={6}/> : sellerContactObj.userId }
+        </p>
       </Fragment>}
 
       {escrow.arbitratorInfo && <Fragment>
@@ -58,7 +67,10 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           <Identicon seed={escrow.arbitrator} className="rounded-circle border mr-2 float-left" scale={5}/>
           {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}
         </p>
-        <p className="text-muted text-small addr"><Address address={escrow.arbitrator} length={6}/></p>
+        <p className="text-muted text-small addr">
+        {arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address disableHover address={arbitratorContactObj.userId} length={6}/> : arbitratorContactObj.userId }
+
+          </p>
         </Fragment>
       }
 

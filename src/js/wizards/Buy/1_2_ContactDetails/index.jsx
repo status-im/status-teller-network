@@ -13,6 +13,7 @@ import DOMPurify from 'dompurify';
 import metadata from "../../../features/metadata";
 import {Alert} from "reactstrap";
 import {stringToContact} from '../../../utils/strings';
+import {STATUS} from '../../../constants/contactMethods';
 
 class ContactDetails extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class ContactDetails extends Component {
 
     const contactObj = stringToContact(props.contactCode);
     const contactUsername = contactObj.userId;
-    const contactMethod = contactObj.method || 'Status';
+    const contactMethod = contactObj.method || STATUS;
 
     this.state = {
       username: props.username,
@@ -64,7 +65,7 @@ class ContactDetails extends Component {
 
   validate(contactUsername, contactMethod) {
     if (this.props.isEip1102Enabled && contactUsername) {
-      if(contactMethod === 'Status' && !contactCodeRegExp.test(contactUsername)){
+      if(contactMethod === STATUS && !contactCodeRegExp.test(contactUsername)){
         return this.props.footer.disableNext();
       }
       return this.props.footer.enableNext();

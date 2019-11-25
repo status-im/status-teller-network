@@ -5,3 +5,5 @@ export const DialogOptions = {
     'KakaoTalk': 'KakaoTalk ID',
     'WeChat': 'WeChat ID'
   };
+  
+export const STATUS = 'Status';
