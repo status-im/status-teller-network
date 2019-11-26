@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
-import Textarea from 'react-validation/build/textarea';
-import Form from 'react-validation/build/form';
-import {Button} from 'reactstrap';
+import {Button, ButtonGroup} from 'reactstrap';
 import Loading from '../../components/Loading';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import PropTypes from 'prop-types';
 import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import arbitration from '../../features/arbitration';
+import network from '../../features/network';
+import CheckButton from '../../ui/CheckButton';
+
 import successImage from '../../../images/success.png';
-import {ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
+import {ARBITRATION_UNSOLVED, UNRESPONSIVE, PAYMENT, OTHER} from "../../features/arbitration/constants";
+import { addressCompare } from '../../utils/address';
 
 class OpenDispute extends Component {
   state = {
@@ -30,6 +32,10 @@ class OpenDispute extends Component {
     }
   }
 
+  setMotive = motive => () => {
+    this.setState({motive});
+  }
+
   handleChange = (e) => {
     this.setState({motive: e.target.value});
   }
@@ -47,10 +53,12 @@ class OpenDispute extends Component {
   }
 
   render(){
-    const {escrow, loading, receipt} = this.props;
+    const {escrow, loading, receipt, address} = this.props;
 
     if(!escrow) return <Loading page />;
     if(loading) return <Loading mining />;
+
+    const isBuyer = addressCompare(escrow.buyer, address);
 
     if(receipt) return (
       <div className="text-center p-5">
@@ -67,23 +75,26 @@ class OpenDispute extends Component {
       <div className="openDispute">
         <h2>Open dispute</h2>
         <p>Describe details of your trade</p>
-        <Form>
-          <Textarea
-            type="text"
-            name="disputeDetails"
-            id="disputeDetails"
-            rows="7"
-            placeholder="What has happened?"
-            className="form-control mb-2"
-            value={this.state.motive}
-            onChange={this.handleChange}
-            validations={[]}
-          />
-          <p className="text-muted">The process of resolving your dispute could take up to 5 days.</p>
-          <p className="text-center">
-            <Button color="primary" disabled={!this.state.motive} onClick={this.displayDialog(true)}>Send</Button>
-          </p>
-        </Form>
+        <ButtonGroup vertical className="w-100">
+          <CheckButton size="l" active={this.state.motive === UNRESPONSIVE} onClick={this.setMotive(UNRESPONSIVE)}>
+          <b>Unresponsive</b>
+          { isBuyer && <span className="text-muted text-small"><br />you have made the payment but seller is unresponsive</span>}
+          { !isBuyer && <span className="text-muted text-small"><br />buyer has marked trade as paid but is unresponsive and inactive</span>}
+          </CheckButton>
+          <CheckButton size="l" active={this.state.motive === PAYMENT} onClick={this.setMotive(PAYMENT)}>
+          <b>Payment issue</b>
+          { isBuyer && <span className="text-muted text-small"><br />you have made the payment, seller is responsive but states that something is wrong with the payment process, refuses to release</span> }
+          { !isBuyer && <span className="text-muted text-small"><br />buyer is active, has made an attempt to pay, but there are issues with the payment</span>}
+          </CheckButton>
+          <CheckButton size="l" active={this.state.motive === OTHER} onClick={this.setMotive(OTHER)}>
+          <b>Other</b>
+          { isBuyer && <span className="text-muted text-small"><br />any other reason</span> }
+          </CheckButton>
+        </ButtonGroup>
+        <p className="text-muted">The process of resolving your dispute could take up to 5 days.</p>
+        <p className="text-center">
+          <Button color="primary" disabled={!this.state.motive} onClick={this.displayDialog(true)}>Send</Button>
+        </p>
         <ConfirmDialog display={this.state.displayDialog} onConfirm={this.handleClickDialog(escrow.escrowId)} onCancel={this.displayDialog(false)} title="Open dispute" content="Are you sure?" cancelText="No" />
       </div>
     );
@@ -91,6 +102,7 @@ class OpenDispute extends Component {
 }
 
 OpenDispute.propTypes = {
+  address: PropTypes.string,
   history: PropTypes.object,
   escrow: PropTypes.object,
   escrowId: PropTypes.string,
@@ -103,6 +115,7 @@ OpenDispute.propTypes = {
 
 const mapStateToProps = (state, props) => {
   return {
+    address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
     escrow: arbitration.selectors.getArbitration(state),
     loading: arbitration.selectors.loading(state),

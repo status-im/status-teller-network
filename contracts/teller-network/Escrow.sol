@@ -543,7 +543,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _escrowId Id of the escrow
      * @param _motive Motive for opening the dispute
      */
-    function openCase(uint _escrowId, string calldata _motive) external {
+    function openCase(uint _escrowId, uint8 _motive) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
@@ -559,7 +559,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _escrowId Id of the escrow
      * @param _motive Motive for opening the dispute
      */
-    function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external {
+    function openCase_relayed(address _sender, uint256 _escrowId, uint8 _motive) external {
         assert(msg.sender == relayer);
 
         EscrowTransaction storage trx = transactions[_escrowId];
@@ -578,7 +578,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _signature Signed message result of openCaseSignHash(uint256)
      * @dev Consider opening a dispute in aragon court.
      */
-    function openCase(uint _escrowId, string calldata _motive, bytes calldata _signature) external {
+    function openCase(uint _escrowId, uint8 _motive, bytes calldata _signature) external {
         EscrowTransaction storage trx = transactions[_escrowId];
 
         require(!isDisputed(_escrowId), "Case already exist");
@@ -626,13 +626,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @return message hash
      * @dev Once message is signed, pass it as _signature of openCase(uint256,bytes)
      */
-    function openCaseSignHash(uint _escrowId, string memory motive) public view returns(bytes32){
+    function openCaseSignHash(uint _escrowId, uint8 _motive) public view returns(bytes32){
         return keccak256(
             abi.encodePacked(
                 address(this),
                 "openCase(uint256)",
                 _escrowId,
-                motive
+                _motive
             )
         );
     }

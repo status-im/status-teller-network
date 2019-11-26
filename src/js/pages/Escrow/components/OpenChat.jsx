@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';

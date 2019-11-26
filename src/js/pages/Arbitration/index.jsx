@@ -21,7 +21,7 @@ import bubbleTriangle from "../../../images/diamond.png";
 
 import {addressCompare} from "../../utils/address";
 
-import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED} from "../../features/arbitration/constants";
+import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED, UNRESPONSIVE, PAYMENT, OTHER} from "../../features/arbitration/constants";
 
 import './index.scss';
 import classnames from "classnames";
@@ -157,7 +157,7 @@ class Arbitration extends Component {
           <p><span className="font-weight-bold">Winner:</span> {escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER ? 'Buyer' : 'Seller'}</p>
         </Fragment>}
 
-        <p className="arbitrationMotive mt-3 mb-0">{escrow.arbitration.motive}</p>
+        <p className="arbitrationMotive mt-3 mb-0">{getMotiveTxt(escrow, openedByBuyer)}</p>
         <span className="triangle"><img src={bubbleTriangle} alt="buble-triangle"/></span>
         <TradeParticipant address={escrow.arbitration.openBy}
                           profile={openedByBuyer ? buyerInfo : sellerInfo} isBuyer={openedByBuyer}/>
@@ -225,3 +225,20 @@ export default connect(
     getProfile: metadata.actions.loadUserOnly
   }
 )(withRouter(Arbitration));
+
+
+function getMotiveTxt(escrow, openedByBuyer) {
+  switch (escrow.arbitration.motive) {
+    case UNRESPONSIVE:
+      if (openedByBuyer) return 'Seller is unresponsive/inactive after payment is made';
+      return 'Buyer is unresponsive/inactive after marking the transaction as paid';
+    case PAYMENT:
+      if (openedByBuyer) return 'Seller states something is wrong with payment and refuses to release';
+      return 'Buyer made attempt to pay but there are issues with the payment';
+    case OTHER:
+      return 'Other reasons';
+    default:
+      return escrow.arbitration.motive;
+  }
+}
+

@@ -10,6 +10,8 @@ import "./ArbitrationLicense.sol";
 contract Arbitrable {
 
     enum ArbitrationResult {UNSOLVED, BUYER, SELLER}
+    enum ArbitrationMotive {NONE, UNRESPONSIVE, PAYMENT_ISSUE, OTHER}
+
 
     ArbitrationLicense public arbitratorLicenses;
 
@@ -20,7 +22,7 @@ contract Arbitrable {
         address openBy;
         address arbitrator;
         ArbitrationResult result;
-        string motive;
+        ArbitrationMotive motive;
     }
 
     event ArbitratorChanged(address arbitrator);
@@ -89,9 +91,9 @@ contract Arbitrable {
      * @notice Opens a dispute between a seller and a buyer
      * @param _escrowId Id of the Escrow that is being disputed
      * @param _openBy Address of the person opening the dispute (buyer or seller)
-     * @param motive Description of the problem
+     * @param _motive Description of the problem
      */
-    function _openDispute(uint _escrowId, address _openBy, string memory motive) internal {
+    function _openDispute(uint _escrowId, address _openBy, uint8 _motive) internal {
         require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && !arbitrationCases[_escrowId].open,
                 "Arbitration already solved or has been opened before");
 
@@ -104,7 +106,7 @@ contract Arbitrable {
             openBy: _openBy,
             arbitrator: arbitratorAddress,
             result: ArbitrationResult.UNSOLVED,
-            motive: motive
+            motive: ArbitrationMotive(_motive)
         });
 
         emit ArbitrationRequired(_escrowId);

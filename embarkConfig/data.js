@@ -253,7 +253,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       gas = await pay.estimateGas({from: buyerAddress});
       await pay.send({from: buyerAddress, gas: gas + 1000});
 
-      const openCase = deps.contracts.Escrow.methods.openCase(escrowId, 'My Motive is...');
+      const openCase = deps.contracts.Escrow.methods.openCase(escrowId, '1');
       gas = await openCase.estimateGas({from: buyerAddress});
       await openCase.send({from: buyerAddress, gas: gas + 1000});
     });
