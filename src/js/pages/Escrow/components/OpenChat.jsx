@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import RoundedIcon from "../../../ui/RoundedIcon";
 import PropTypes from 'prop-types';
@@ -7,10 +7,9 @@ import { stringToContact } from '../../../utils/strings';
 
 class OpenChat extends Component {
 
-  
   render(){
     const {buyerContactData, sellerContactData, isStatus, withBuyer, onClick} = this.props;
- 
+
     const buyerContactObj = stringToContact(buyerContactData);
     const sellerContactObj = stringToContact(sellerContactData);
 

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {Button, Col, Row} from "reactstrap";
+import {Button} from "reactstrap";
 import network from '../../features/network';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
@@ -15,11 +15,13 @@ class Settings extends Component {
   };
 
   render() {
-    return (<Row>
-      <Col xs="8" className="v-align-center text-right">
-        <Button color="secondary" onClick={this.clearCache}>Reset cache</Button>
-      </Col>
-    </Row>);
+    return (<Fragment>
+      <h2 className="mt-3">Cache settings</h2>
+      <p>Press this button to reset your local cache.</p>
+      <p>This delete your current cache and up to date data will be loaded.</p>
+      <p>None of your data will be permanently lost</p>
+      <Button color="secondary" onClick={this.clearCache}>Reset cache</Button>
+    </Fragment>);
   }
 }
 
