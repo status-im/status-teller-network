@@ -36,7 +36,8 @@
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
     "enzyme-to-json": "^3.3.5",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "node-sass": "^4.13.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
@@ -56,8 +57,7 @@
     "css-loader": "^2.1.0",
     "dompurify": "^2.0.1",
     "elliptic": "^6.5.0",
-    "embark": "5.0.0-alpha.1",
-    "embark-solc": "^4.0.3",
+    "embark-solc": "^4.1.1",
     "embark-solium": "0.1.0",
     "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.0.0",
@@ -94,7 +94,6 @@
     "redux-persist": "^5.10.0",
     "redux-saga": "^0.16.2",
     "sass-loader": "^7.1.0",
-    "staking-pool": "^0.0.1",
     "tabookey-gasless": "^0.4.1",
     "web3": "1.0.0-beta.37"
   },
