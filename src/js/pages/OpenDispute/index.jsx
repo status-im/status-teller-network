@@ -77,18 +77,18 @@ class OpenDispute extends Component {
         <p>Describe details of your trade</p>
         <ButtonGroup vertical className="w-100">
           <CheckButton size="l" active={this.state.motive === UNRESPONSIVE} onClick={this.setMotive(UNRESPONSIVE)}>
-          <b>Unresponsive</b>
-          { isBuyer && <span className="text-muted text-small"><br />you have made the payment but seller is unresponsive</span>}
-          { !isBuyer && <span className="text-muted text-small"><br />buyer has marked trade as paid but is unresponsive and inactive</span>}
+          <span className="font-weight-bold">Unresponsive</span>
+          { isBuyer && <p className="text-muted text-small">You have made the payment but seller is unresponsive</p>}
+          { !isBuyer && <p className="text-muted text-small">Buyer has marked trade as paid but is unresponsive and inactive</p>}
           </CheckButton>
           <CheckButton size="l" active={this.state.motive === PAYMENT} onClick={this.setMotive(PAYMENT)}>
-          <b>Payment issue</b>
-          { isBuyer && <span className="text-muted text-small"><br />you have made the payment, seller is responsive but states that something is wrong with the payment process, refuses to release</span> }
-          { !isBuyer && <span className="text-muted text-small"><br />buyer is active, has made an attempt to pay, but there are issues with the payment</span>}
+          <span className="font-weight-bold">Payment issue</span>
+          { isBuyer && <p className="text-muted text-small">You have made the payment, seller is responsive but states that something is wrong with the payment process, refuses to release</p> }
+          { !isBuyer && <p className="text-muted text-small">Buyer is active, has made an attempt to pay, but there are issues with the payment</p>}
           </CheckButton>
           <CheckButton size="l" active={this.state.motive === OTHER} onClick={this.setMotive(OTHER)}>
-          <b>Other</b>
-          { isBuyer && <span className="text-muted text-small"><br />any other reason</span> }
+          <span className="font-weight-bold">Other</span>
+          <p className="text-muted text-small">Any other reason</p>
           </CheckButton>
         </ButtonGroup>
         <p className="text-muted">The process of resolving your dispute could take up to 5 days.</p>

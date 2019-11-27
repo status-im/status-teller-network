@@ -230,8 +230,7 @@ export default connect(
 function getMotiveTxt(escrow, openedByBuyer) {
   switch (escrow.arbitration.motive) {
     case UNRESPONSIVE:
-      if (openedByBuyer) return 'Seller is unresponsive/inactive after payment is made';
-      return 'Buyer is unresponsive/inactive after marking the transaction as paid';
+      return `${openedByBuyer ? "Seller" : "Buyer"} is unresponsive/inactive after transaction is marked as paid`;
     case PAYMENT:
       if (openedByBuyer) return 'Seller states something is wrong with payment and refuses to release';
       return 'Buyer made attempt to pay but there are issues with the payment';
