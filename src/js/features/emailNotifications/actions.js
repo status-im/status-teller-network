@@ -1,5 +1,6 @@
 import {CHECK_EMAIL_SUBSCRIPTION, SUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL,
-  HIDE_ERROR, VERIFY_EMAIL, HIDE_SUCCESS, SET_REDIRECT_TARGET} from './constants';
+  HIDE_ERROR, VERIFY_EMAIL, HIDE_SUCCESS, SET_REDIRECT_TARGET,
+  REFUSE_EMAIL_NOTIFICATIONS} from './constants';
 
 export const checkEmailSubscription = () => {
   return {type: CHECK_EMAIL_SUBSCRIPTION};
@@ -27,4 +28,8 @@ export const hideSuccess = () => {
 
 export const verifyEmail = (token) => {
   return {type: VERIFY_EMAIL, token};
+};
+
+export const refuseEmailNotifications = () => {
+  return {type: REFUSE_EMAIL_NOTIFICATIONS};
 };
