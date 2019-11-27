@@ -188,6 +188,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const buyerAddress = addresses[offerStartIndex];
     const escrowStartIndex = offerStartIndex + 1;
     let receipt, hash, signature, nonce, created, escrowId;
+    const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
     const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
@@ -199,11 +200,11 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       let gas;
 
       // Create
-      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], PUBKEY_A, PUBKEY_B).call({from: buyerAddress});
+      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, PUBKEY_A, PUBKEY_B, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
       gas = await creation.estimateGas({from: creatorAddress});
       receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
 
@@ -232,11 +233,11 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let gas, receipt;
 
-      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], PUBKEY_A, PUBKEY_B).call({from: buyerAddress});
+      hash = await deps.contracts.MetadataStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, PUBKEY_A, PUBKEY_B, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
       gas = await creation.estimateGas({from: creatorAddress});
       receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
 
