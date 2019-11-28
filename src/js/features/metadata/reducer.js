@@ -82,7 +82,9 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         addOfferStatus: States.success,
-        users: {...state.users, [toChecksumAddress(action.receipt.from)]: action.user}
+        users: {...state.users, [toChecksumAddress(action.receipt.from)]: {
+          ...Object.assign({}, state.users[toChecksumAddress(action.receipt.from)], action.user)
+        }}
       };
     }
     case ADD_OFFER_FAILED:

@@ -96,11 +96,6 @@ class ConfirmTrade extends Component {
             <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
             <p className="mb-0">{t('notifications.onlyToInform')}</p>
           </Alert>}
-          {this.state.notificationAccepted === false && <Alert color="warning">
-            <p className="mb-1">{t('notifications.rejected')}</p>
-            <p className="mb-1">{t('notifications.desktop')}</p>
-            <p className="mb-0">{t('notifications.changeSettings')}</p>
-          </Alert>}
           <h2>Summary</h2>
           <h3 className="mt-4 font-weight-normal">Seller</h3>
           <p className="mt-2 font-weight-medium mb-1">
@@ -124,7 +119,7 @@ class ConfirmTrade extends Component {
             1 {this.props.offer.token.symbol} = {price.toFixed(4)} {this.props.offer.currency}
           </p>
 
-          <PriceWarning 
+          <PriceWarning
             currentPrice={this.props.price}
             fiatAmount={this.props.currencyQuantity * 100}
             fiatSymbol={this.props.offer.currency}

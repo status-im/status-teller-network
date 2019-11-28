@@ -12,6 +12,15 @@ import bellIcon from "../../../images/bell.svg";
 import {withRouter} from "react-router-dom";
 
 class SubscribeToEmails extends Component {
+  state = {ready: false};
+
+  componentDidMount() {
+    if (this.props.refusedEmailNotifications) {
+      return this.moveToNextPage();
+    }
+    this.setState({ready: true});
+  }
+
   hideError = () => {
     this.props.hideError();
   };
@@ -24,11 +33,20 @@ class SubscribeToEmails extends Component {
     this.props.subscribe(email);
   };
 
-  moveOn = () => {
+  refuseNotifications = () => {
+    this.props.refuseEmailNotifications();
+    this.moveToNextPage();
+  };
+
+  moveToNextPage = () => {
     this.props.history.push(this.props.redirectTarget || '/buy');
   };
 
   render() {
+    if (!this.state.ready) {
+      return null;
+    }
+
     const {t, working, error, subscribeSuccess, isSubscribed} = this.props;
 
     return <div className="px-5">
@@ -49,8 +67,8 @@ class SubscribeToEmails extends Component {
 
       {!subscribeSuccess && !isSubscribed && <NotificationForm disabled={working} subscribe={this.subscribe}/>}
       <div className="text-center">
-        {!subscribeSuccess && !isSubscribed && <Button color="secondary" className="mt-2" onClick={this.moveOn}>Skip</Button>}
-        {(subscribeSuccess || isSubscribed) && <Button color="primary" onClick={this.moveOn}>Ok</Button>}
+        {!subscribeSuccess && !isSubscribed && <Button color="secondary" className="mt-2" onClick={this.refuseNotifications}>Skip</Button>}
+        {(subscribeSuccess || isSubscribed) && <Button color="primary" onClick={this.moveToNextPage}>Ok</Button>}
       </div>
     </div>;
   }
@@ -64,6 +82,8 @@ SubscribeToEmails.propTypes = {
   working: PropTypes.bool,
   subscribeSuccess: PropTypes.bool,
   isSubscribed: PropTypes.bool,
+  refusedEmailNotifications: PropTypes.bool,
+  refuseEmailNotifications: PropTypes.func,
   hideError: PropTypes.func,
   hideSuccess: PropTypes.func,
   subscribe: PropTypes.func
@@ -76,7 +96,8 @@ const mapStateToProps = (state) => {
     email: emailNotifications.selectors.email(state),
     error: emailNotifications.selectors.error(state),
     redirectTarget: emailNotifications.selectors.redirectTarget(state),
-    working: emailNotifications.selectors.working(state)
+    working: emailNotifications.selectors.working(state),
+    refusedEmailNotifications: emailNotifications.selectors.refusedEmailNotifications(state)
   };
 };
 
@@ -85,6 +106,7 @@ export default connect(
   {
     subscribe: emailNotifications.actions.subscribeToEmail,
     hideError: emailNotifications.actions.hideError,
-    hideSuccess: emailNotifications.actions.hideSuccess
+    hideSuccess: emailNotifications.actions.hideSuccess,
+    refuseEmailNotifications: emailNotifications.actions.refuseEmailNotifications
   }
 )(withRouter(withNamespaces()(SubscribeToEmails)));

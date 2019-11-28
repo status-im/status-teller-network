@@ -39,10 +39,6 @@ class Contact extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.username) {
-      return this.props.wizard.previous();
-    }
-
     if (this.props.profile && this.props.profile.statusContactCode) {
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), statusContactCode: DOMPurify.sanitize(this.props.profile.statusContactCode)});
       return this.props.wizard.next();

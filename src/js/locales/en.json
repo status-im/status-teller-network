@@ -253,10 +253,7 @@
   },
   "notifications": {
     "youWillBeAsked": "You will be asked for your permission to send notifications",
-    "onlyToInform": "Those notifications are only to inform you of changes to your trades and offers",
-    "rejected": "You rejected to receive notifications",
-    "desktop": "When you are on desktop, those notifications are the only way we can send you information quickly on your trade and offers",
-    "changeSettings": "If you which to receive notifications, go in your browser settings, search Teller and unblock the notifications"
+    "onlyToInform": "Those notifications are only to inform you of changes to your trades and offers"
   },
   "emailNotifications": {
     "notifOnTrades": "Get notifications on new trades and important trade events.",

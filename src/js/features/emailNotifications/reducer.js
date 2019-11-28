@@ -3,7 +3,7 @@ import {
   SUBSCRIBE_EMAIL, SUBSCRIBE_EMAIL_SUCCESS, SUBSCRIBE_EMAIL_FAILURE, HIDE_ERROR,
   VERIFY_EMAIL, VERIFY_EMAIL_FAILURE, VERIFY_EMAIL_SUCCESS, HIDE_SUCCESS,
   UNSUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL_FAILURE, UNSUBSCRIBE_EMAIL_SUCCESS,
-  SET_REDIRECT_TARGET
+  SET_REDIRECT_TARGET, REFUSE_EMAIL_NOTIFICATIONS
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from '../network/constants';
 
@@ -12,7 +12,8 @@ const DEFAULT_STATE = {
   email: '',
   verifySuccess: null,
   subscribeSuccess: null,
-  redirectTarget: null
+  redirectTarget: null,
+  refusedEmailNotifications: false
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -85,6 +86,12 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, ...{
           verifySuccess: null,
           subscribeSuccess: null
+        }
+      };
+    case REFUSE_EMAIL_NOTIFICATIONS:
+      return {
+        ...state, ...{
+          refusedEmailNotifications: true
         }
       };
     case RESET_STATE:

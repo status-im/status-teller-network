@@ -100,11 +100,6 @@ class Summary extends Component {
             <p className="mb-1">{t('notifications.youWillBeAsked')}</p>
             <p className="mb-0">{t('notifications.onlyToInform')}</p>
           </Alert>}
-          {this.state.notificationAccepted === false && <Alert color="warning">
-            <p className="mb-1">{t('notifications.rejected')}</p>
-            <p className="mb-1">{t('notifications.desktop')}</p>
-            <p className="mb-0">{t('notifications.changeSettings')}</p>
-          </Alert>}
           <SellSummary seller={this.props.seller}
                        profile={this.props.profile}
                        arbitratorProfile={this.props.arbitratorProfile}
