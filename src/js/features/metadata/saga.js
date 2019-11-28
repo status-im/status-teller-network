@@ -3,7 +3,7 @@ import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import {fork, takeEvery, put, all, call} from 'redux-saga/effects';
+import {fork, takeEvery, put, all, call, select} from 'redux-saga/effects';
 import {
   LOAD,
   LOAD_USER,
@@ -33,7 +33,8 @@ import {
   GET_OFFER_PRICE,
   GET_OFFER_PRICE_SUCCEEDED,
   GET_OFFER_PRICE_FAILED,
-  SET_CURRENT_USER
+  SET_CURRENT_USER,
+  CHECK_ACCOUNT_CHANGE
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -45,6 +46,7 @@ import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicense
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
 import {enableEthereum} from '../../services/embarkjs';
+import network from '../../features/network';
 
 MetadataStore.options.address = MetadataStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
@@ -92,6 +94,18 @@ export function *loadLocation({user, address}) {
 
 export function *onLoadLocation() {
   yield takeEvery(LOAD_USER_LOCATION, loadLocation);
+}
+
+export function *verifyAccountChange() {
+  const accounts = yield web3.eth.getAccounts();
+  const currAddress = yield select((state) => state.network.address);
+  if(currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))){
+    yield put(network.actions.clearCache(
+      setTimeout(() => {
+        window.location.reload();
+      }, 500)
+    ));
+  }
 }
 
 export function *enabledEthereum() {
@@ -242,6 +256,10 @@ export function *onGetOfferPrice() {
   yield takeEvery(GET_OFFER_PRICE, getOfferPrice);
 }
 
+export function *onAccountChange() {
+  yield takeEvery(CHECK_ACCOUNT_CHANGE, verifyAccountChange);
+}
+
 export default [
   fork(onLoad),
   fork(onLoadUser),
@@ -251,5 +269,6 @@ export default [
   fork(onUpdateUser),
   fork(onDeleteOffer),
   fork(onEnabledEthereum),
-  fork(onGetOfferPrice)
+  fork(onGetOfferPrice),
+  fork(onAccountChange)
 ];

@@ -2,7 +2,7 @@ import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
   DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
-  GET_OFFER_PRICE
+  GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
 import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
@@ -53,6 +53,10 @@ export const setMainnetWarningShowed = () => ({
 export const updateUser = (user) => ({
   type: UPDATE_USER,
   user
+});
+
+export const checkAccountChange = () => ({
+  type: CHECK_ACCOUNT_CHANGE
 });
 
 export const resetUpdateUserStatus = () => ({
