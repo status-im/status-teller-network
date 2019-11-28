@@ -23,7 +23,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
   bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,string,string,string)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
-  bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,string)"));
+  bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,uint8)"));
   bytes4 constant RATE_SIGNATURE  = bytes4(keccak256("rateTransaction(uint256,uint256)"));
 
   uint256 constant OK = 0;
@@ -145,7 +145,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
    * @param _escrowId Escrow to open a dispute
    * @param _motive Motive a dispute is being opened
    */
-  function openCase(uint _escrowId, string memory _motive) public {
+  function openCase(uint _escrowId, uint8 _motive) public {
     address sender = getSender();
     escrow.openCase_relayed(sender, _escrowId, _motive);
   }

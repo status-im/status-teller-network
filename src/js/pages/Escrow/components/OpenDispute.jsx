@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 import {zeroAddress} from '../../../utils/address';
 
 const OpenDispute = ({trade}) => {
-  const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid && trade.offer.arbitrator !== zeroAddress;
+  const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid && trade.arbitrator !== zeroAddress;
   return shouldDisplay && (
     <Row className="mt-4 text-danger" tag={Link} to={"/openCase/" + trade.escrowId}>
       <Col xs="2">

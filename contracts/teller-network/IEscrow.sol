@@ -36,9 +36,9 @@ contract IEscrow {
 
   function cancel_relayed(address _sender, uint _escrowId) external;
 
-  function openCase(uint  _escrowId, string calldata _motive) external;
+  function openCase(uint  _escrowId, uint8 _motive) external;
 
-  function openCase_relayed(address _sender, uint256 _escrowId, string calldata _motive) external;
+  function openCase_relayed(address _sender, uint256 _escrowId, uint8 _motive) external;
 
   function rateTransaction(uint _escrowId, uint _rate) external;
 
