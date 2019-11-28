@@ -17,6 +17,7 @@ import {addressCompare, zeroAddress} from "../../utils/address";
 import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
+import {stringToContact} from "../../utils/strings";
 
 class OffersList extends Component {
   constructor(props) {
@@ -139,7 +140,7 @@ class OffersList extends Component {
     if (this.state.commFilter !== '') {
       hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => {
-        return offer.user.contactData.split(':')[0] === this.state.commFilter;
+        return stringToContact(offer.user.contactData).method === this.state.commFilter;
       });
     }
 

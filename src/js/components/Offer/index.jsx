@@ -15,6 +15,7 @@ import chatIcon from '../../../images/read-chat.svg';
 import {CURRENCY_DATA} from "../../constants/currencies";
 import {getTokenImage} from "../../utils/images";
 import RoundedIcon from "../../ui/RoundedIcon";
+import {stringToContact} from "../../utils/strings";
 
 import './index.scss';
 
@@ -61,7 +62,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
         {showCommunicationMethod && <p className="text-black m-0 mt-2 clearfix">
           <RoundedIcon image={chatIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
-          {offer.user.contactData && offer.user.contactData.split(':')[0]}
+          {stringToContact(offer.user.contactData).method}
         </p>}
 
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
