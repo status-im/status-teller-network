@@ -37,10 +37,6 @@ class MyTrades extends Component {
   }
 
   componentDidUpdate(oldProps){
-    if(this.props.profile && !this.props.profile.contactData){
-      return this.props.history.push("/profile/settings/contact");
-    }
-
     if ((!oldProps.trades && this.props.trades) || oldProps.trades.length !== this.props.trades.length) {
       this.watchEscrows();
     }

@@ -25,11 +25,6 @@ class MyProfile extends Component {
     this.props.loadProfile(this.props.address);
   }
 
-  componentDidUpdate(){
-    if(this.props.profile && !this.props.profile.contactData){
-      return this.props.history.push("/profile/settings/contact");
-    }
-  }
   render() {
     const {profile, deleteOfferStatus, txHash} = this.props;
     if(!profile) return <Loading page={true} />;
