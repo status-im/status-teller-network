@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
 import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
+import {DialogOptions} from "../../../constants/contactMethods";
 import CheckButton from '../../../ui/CheckButton';
 
 import './SorterFilter.scss';
@@ -39,6 +40,21 @@ class FilterMenu extends Component {
                 value={props.tokenFilter}
                 onChange={props.setTokenFilter}
               />
+            </FormGroup>
+
+            <h5>Communication method</h5>
+            <FormGroup>
+              <Typeahead
+                id="commFilter"
+                options={Object.keys(DialogOptions)}
+                placeholder={'Filter communication method'}
+                value={props.commFilter}
+                onChange={props.setCommFilter}
+              />
+              <CheckButton onClick={props.toggleCommunicationMethod}
+                           active={props.showCommunicationMethod}>
+                Show Communication method
+              </CheckButton>
             </FormGroup>
 
             <h5 className="mt-4">Location</h5>
@@ -101,13 +117,20 @@ FilterMenu.propTypes = {
   sortTypes: PropTypes.array,
   tokens: PropTypes.array,
   setTokenFilter: PropTypes.func,
+  setCommFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,
   setLocation: PropTypes.func,
   clear: PropTypes.func,
   tokenFilter: PropTypes.string,
-  paymentMethodFilter: PropTypes.number,
-  sortType: PropTypes.number
+  commFilter: PropTypes.string,
+  paymentMethodFilter: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  sortType: PropTypes.number,
+  showCommunicationMethod: PropTypes.bool,
+  toggleCommunicationMethod: PropTypes.func
 };
 
 class SorterFilter extends Component {

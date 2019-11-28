@@ -23,10 +23,12 @@ class OffersList extends Component {
     super(props);
     this.defaultState = {
       tokenFilter: '',
+      commFilter: '',
       paymentMethodFilter: -1,
       sortType: 0,
       locationCoords: null,
-      calculatingLocation: false
+      calculatingLocation: false,
+      showCommunicationMethod: false
     };
     this.state = this.defaultState;
   }
@@ -69,11 +71,23 @@ class OffersList extends Component {
     this.setState({tokenFilter});
   };
 
+  setCommFilter = (selected) => {
+    let commFilter = '';
+    if (selected[0]) {
+      commFilter = selected[0];
+    }
+    this.setState({commFilter});
+  };
+
   setSortType = (sortType) => {
     if (this.state.sortType === sortType) {
       sortType = 0;
     }
     this.setState({sortType});
+  };
+
+  toggleCommunicationMethod = () => {
+    this.setState({showCommunicationMethod: !this.state.showCommunicationMethod});
   };
 
   setLocation = (location) => {
@@ -122,6 +136,12 @@ class OffersList extends Component {
       hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
+    if (this.state.commFilter !== '') {
+      hasFilter = true;
+      filteredOffers = filteredOffers.filter(offer => {
+        return offer.user.contactData.split(':')[0] === this.state.commFilter;
+      });
+    }
 
     // Sort
     let sortFunction;
@@ -141,11 +161,15 @@ class OffersList extends Component {
                         tokens={this.props.tokens}
                         clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}
+                        setCommFilter={this.setCommFilter}
                         setSortType={this.setSortType}
                         setLocation={this.setLocation}
                         setPaymentMethodFilter={this.setPaymentMethodFilter}
                         tokenFilter={this.state.tokenFilter}
+                        commFilter={this.state.commFilter}
                         paymentMethodFilter={this.state.paymentMethodFilter}
+                        toggleCommunicationMethod={this.toggleCommunicationMethod}
+                        showCommunicationMethod={this.state.showCommunicationMethod}
                         hasFilter={hasFilter}/>
         </div>
 
@@ -159,6 +183,7 @@ class OffersList extends Component {
             <Offer key={`offer-${index}`}
                    withDetail offer={offer}
                    prices={this.props.prices} userAddress={this.props.address}
+                   showCommunicationMethod={this.state.showCommunicationMethod}
                    offerClick={this.offerClick}/>)
           )}
         </div>

@@ -11,13 +11,14 @@ import {PAYMENT_METHODS} from '../../features/metadata/constants';
 import {withNamespaces} from "react-i18next";
 import limitIcon from '../../../images/limits.svg';
 import bankIcon from '../../../images/bank.svg';
+import chatIcon from '../../../images/read-chat.svg';
 import {CURRENCY_DATA} from "../../constants/currencies";
 import {getTokenImage} from "../../utils/images";
 import RoundedIcon from "../../ui/RoundedIcon";
 
 import './index.scss';
 
-const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
+const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommunicationMethod}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
@@ -58,6 +59,11 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick}) => {
           No limits
         </p>}
 
+        {showCommunicationMethod && <p className="text-black m-0 mt-2 clearfix">
+          <RoundedIcon image={chatIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
+          {offer.user.contactData && offer.user.contactData.split(':')[0]}
+        </p>}
+
         {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
 
@@ -91,6 +97,7 @@ Offer.propTypes = {
   t: PropTypes.func,
   offer: PropTypes.object,
   withDetail: PropTypes.bool,
+  showCommunicationMethod: PropTypes.bool,
   prices: PropTypes.object,
   userAddress: PropTypes.string,
   offerClick: PropTypes.func
