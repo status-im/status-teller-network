@@ -23,9 +23,6 @@ import {
   LOAD_USER_LOCATION,
   LOAD_USER_LOCATION_SUCCEEDED,
   LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE,
-  SIGN_MESSAGE_FAILED,
-  SIGN_MESSAGE_SUCCEEDED,
   DELETE_OFFER,
   DELETE_OFFER_FAILED,
   DELETE_OFFER_PRE_SUCCESS,
@@ -42,7 +39,7 @@ import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import { zeroAddress, addressCompare, generateXY } from '../../utils/address';
+import { zeroAddress, addressCompare } from '../../utils/address';
 import {getContactData} from '../../utils/strings';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
@@ -66,7 +63,7 @@ export function *loadUser({address}) {
     };
 
     const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
-    
+
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
     }
@@ -227,23 +224,6 @@ export function *onUpdateUser() {
   yield takeEvery(UPDATE_USER, updateUser);
 }
 
-export function *signMessage({statusContactCode, username}) {
-  try {
-    const coords = generateXY(statusContactCode);
-    const hash = yield MetadataStore.methods.getDataHash(username, coords.x, coords.y).call({from: web3.eth.defaultAccount});
-    const signature = yield web3.eth.personal.sign(hash, web3.eth.defaultAccount);
-    const nonce = yield MetadataStore.methods.user_nonce(web3.eth.defaultAccount).call();
-
-    yield put({type: SIGN_MESSAGE_SUCCEEDED, signature, nonce});
-  } catch(err){
-    yield put({type: SIGN_MESSAGE_FAILED, error: err.message});
-  }
-}
-
-export function *onSignMessage() {
-  yield takeEvery(SIGN_MESSAGE, signMessage);
-}
-
 export function *onDeleteOffer() {
   yield takeEvery(DELETE_OFFER, doTransaction.bind(null, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_SUCCEEDED, DELETE_OFFER_FAILED));
 }
@@ -269,7 +249,6 @@ export default [
   fork(onLoadOffers),
   fork(onAddOffer),
   fork(onUpdateUser),
-  fork(onSignMessage),
   fork(onDeleteOffer),
   fork(onEnabledEthereum),
   fork(onGetOfferPrice)
