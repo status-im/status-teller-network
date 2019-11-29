@@ -1,7 +1,7 @@
 import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
-  SIGN_MESSAGE, DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
+  DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
   GET_OFFER_PRICE
 } from './constants';
 import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
@@ -32,12 +32,6 @@ export const addOffer = (seller) => ({
 });
 
 export const getOfferPrice = () => ({type: GET_OFFER_PRICE});
-
-export const signMessage = (username, statusContactCode) => ({
-  type: SIGN_MESSAGE,
-  statusContactCode,
-  username
-});
 
 export const setCurrentUser = (currentUser) => ({
   type: SET_CURRENT_USER,

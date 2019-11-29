@@ -56,9 +56,6 @@ import SellMargin from '../wizards/Sell/6_Margin';
 import SellLimits from '../wizards/Sell/7_Limits';
 import SellSummary from '../wizards/Sell/8_Summary';
 
-// Tmp
-import SignatureContainer from '../pages/tmp/SignatureContainer';
-
 import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
@@ -204,8 +201,6 @@ class App extends Component {
                   {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},
                   {path: '/sell/summary', component: SellSummary, nextLabel: 'Finish'}
                 ].filter(x => x)}/>
-
-                <Route path="/tmp/signature" component={SignatureContainer}/>
 
                 <Route component={fourOFour}/>
               </Switch>

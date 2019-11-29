@@ -3,8 +3,7 @@ import {
   ADD_OFFER, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, RESET_ADD_OFFER_STATUS, ADD_OFFER_PRE_SUCCESS,
   UPDATE_USER, UPDATE_USER_SUCCEEDED, UPDATE_USER_FAILED, RESET_UPDATE_USER_STATUS,
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-  SIGN_MESSAGE, SIGN_MESSAGE_SUCCEEDED, SIGN_MESSAGE_FAILED, DELETE_OFFER_SUCCEEDED,
-  RESET_NEW_OFFER,
+  DELETE_OFFER_SUCCEEDED, RESET_NEW_OFFER,
   DELETE_OFFER, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_FAILED,
   ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED,
   SET_MAINNET_WARNING_SHOWED,
@@ -26,8 +25,6 @@ const DEFAULT_STATE = {
   updateUserStatus: States.none,
   users: {},
   offers: {},
-  signing: false,
-  signature: '',
   deleteOfferStatus: States.none,
   offerPrice: ''
 };
@@ -197,31 +194,9 @@ function reducer(state = DEFAULT_STATE, action) {
     }
     case PURGE_STATE:
       return DEFAULT_STATE;
-    case SIGN_MESSAGE:
-      return {
-        ...state,
-        signing: true
-      };
-    case SIGN_MESSAGE_SUCCEEDED:
-      return {
-        ...state,
-        signing: false,
-        signature: action.signature,
-        nonce: action.nonce
-      };
-    case SIGN_MESSAGE_FAILED:
-      return {
-        ...state,
-        signing: false,
-        signature: "",
-        nonce: 0
-      };
     case RESET_NEW_BUY:
       return {
-        ...state,
-        signing: false,
-        signature: "",
-        nonce: 0
+        ...state
       };
     case DELETE_OFFER:
       return {
