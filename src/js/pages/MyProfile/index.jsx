@@ -55,7 +55,7 @@ class MyProfile extends Component {
       this.load();
     }
 
-    if(this.props.profile && !this.props.profile.contactData){
+    if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.contactData){
       return this.props.history.push("/profile/settings/contact");
     }
 
