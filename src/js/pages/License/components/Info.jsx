@@ -31,9 +31,9 @@ class LicenseInfo extends Component {
 LicenseInfo.propTypes = {
   t: PropTypes.func,
   price: PropTypes.oneOfType([
-  PropTypes.string,
-  PropTypes.number
-])
+    PropTypes.string,
+    PropTypes.number
+  ])
 };
 
 export default withNamespaces()(LicenseInfo);
