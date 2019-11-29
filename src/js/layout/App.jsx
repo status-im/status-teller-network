@@ -72,10 +72,14 @@ class App extends Component {
       hidePriceError: false,
       isHome: this.isHome()
     };
+
     setInterval(() => {
       this.props.getGasPrice();
       this.props.fetchExchangeRates();
     }, PRICE_FETCH_INTERVAL);
+
+    setInterval(this.props.checkAccountChange, 1000);
+
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
@@ -229,7 +233,8 @@ App.propTypes = {
   currentUser: PropTypes.string,
   watchEscrowCreations: PropTypes.func,
   loadOffers: PropTypes.func,
-  isEip1102Enabled: PropTypes.bool
+  isEip1102Enabled: PropTypes.bool,
+  checkAccountChange: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -250,6 +255,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
+    checkAccountChange: metadata.actions.checkAccountChange,
     fetchPrices: prices.actions.fetchPrices,
     fetchExchangeRates: prices.actions.fetchExchangeRates,
     getGasPrice: network.actions.getGasPrice,
