@@ -64,13 +64,13 @@ config({
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000],
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000],
       onDeploy: [
         "MetadataStore.methods.setAllowedContract('$Escrow', true).send()"
       ]
     },
     TestEscrowUpgrade: {
-      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     StandardToken: { }
   }
@@ -97,6 +97,7 @@ contract("Escrow Relay", function() {
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
     const abiEncode = Escrow.methods.init(
+      accounts[0],
       EscrowRelay.options.address,
       ArbitrationLicense.options.address,
       MetadataStore.options.address,

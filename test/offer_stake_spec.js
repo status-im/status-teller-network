@@ -68,7 +68,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
       onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
     },
     StandardToken: {
@@ -252,7 +252,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
       // Open dispute
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       // Seller loses dispute
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
@@ -285,7 +285,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
       // Open dispute
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       // Seller loses dispute
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
@@ -318,7 +318,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
       // Open dispute
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       // Seller wins dispute
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});

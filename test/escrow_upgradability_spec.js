@@ -63,10 +63,10 @@ config({
     OwnedUpgradeabilityProxy: {
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     TestEscrowUpgrade: {
-      args: ["0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
     StandardToken: { }
   }
@@ -99,6 +99,7 @@ contract("Escrow", function() {
 
     it("Can create initial escrow version", async () => {
       const abiEncode = Escrow.methods.init(
+        accounts[0],
         EscrowRelay.options.address,
         ArbitrationLicense.options.address,
         MetadataStore.options.address,

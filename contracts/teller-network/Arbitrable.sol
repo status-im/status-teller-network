@@ -17,24 +17,28 @@ contract Arbitrable {
 
     mapping(uint => ArbitrationCase) public arbitrationCases;
 
+    address public fallbackArbitrator;
+
     struct ArbitrationCase {
         bool open;
         address openBy;
         address arbitrator;
+        uint arbitratorTimeout;
         ArbitrationResult result;
         ArbitrationMotive motive;
     }
 
     event ArbitratorChanged(address arbitrator);
     event ArbitrationCanceled(uint escrowId);
-    event ArbitrationRequired(uint escrowId);
+    event ArbitrationRequired(uint escrowId, uint timeout);
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
 
     /**
      * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
      */
-    constructor(address _arbitratorLicenses) public {
+    constructor(address _arbitratorLicenses, address _fallbackArbitrator) public {
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
+        fallbackArbitrator = _fallbackArbitrator;
     }
 
     /**
@@ -101,15 +105,18 @@ contract Arbitrable {
 
         require(arbitratorAddress != address(0), "Arbitrator is required");
 
+        uint timeout = block.timestamp + 5 days;
+
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
             openBy: _openBy,
             arbitrator: arbitratorAddress,
+            arbitratorTimeout: timeout,
             result: ArbitrationResult.UNSOLVED,
             motive: ArbitrationMotive(_motive)
         });
 
-        emit ArbitrationRequired(_escrowId);
+        emit ArbitrationRequired(_escrowId, timeout);
     }
 
     /**
@@ -122,7 +129,12 @@ contract Arbitrable {
                 "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
         require(arbitratorLicenses.isLicenseOwner(msg.sender), "Only arbitrators can invoke this function");
-        require(arbitrationCases[_escrowId].arbitrator == msg.sender, "Invalid escrow arbitrator");
+
+        if (block.timestamp > arbitrationCases[_escrowId].arbitratorTimeout) {
+            require(arbitrationCases[_escrowId].arbitrator == msg.sender || msg.sender == fallbackArbitrator, "Invalid escrow arbitrator");
+        } else {
+            require(arbitrationCases[_escrowId].arbitrator == msg.sender, "Invalid escrow arbitrator");
+        }
 
         arbitrationCases[_escrowId].open = false;
         arbitrationCases[_escrowId].result = _result;

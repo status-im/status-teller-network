@@ -73,7 +73,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
     },
     StandardToken: {
     }
