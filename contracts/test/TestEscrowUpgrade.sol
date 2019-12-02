@@ -11,13 +11,14 @@ import "../teller-network/Escrow.sol";
 contract TestEscrowUpgrade is Escrow {
 
     constructor (
+        address _fallbackArbitrator,
         address _relayer,
         address _arbitrationLicense,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent
       )
-      Escrow(_relayer, _arbitrationLicense, _metadataStore, _feeDestination, _feeMilliPercent)
+      Escrow(_fallbackArbitrator, _relayer, _arbitrationLicense, _metadataStore, _feeDestination, _feeMilliPercent)
       public {
     }
 

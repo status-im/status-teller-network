@@ -65,7 +65,7 @@ config({
       args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
     },
     Escrow: {
-      args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
       onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
     },
     StandardToken: {
@@ -122,7 +122,7 @@ contract("Escrow", function() {
     it("should allow a buyer to open a case", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
       assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");
@@ -132,7 +132,7 @@ contract("Escrow", function() {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
 
       try {
-        await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[3]});
+        await Escrow.methods.openCase(escrowId, '1').send({from: accounts[3]});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
@@ -154,10 +154,10 @@ contract("Escrow", function() {
 
       receipt = await Escrow.methods['pay(uint256,bytes)'](escrowId, signature).send({from: accounts[8]});
 
-      messageToSign = await Escrow.methods.openCaseSignHash(escrowId, "My motive is...").call();
+      messageToSign = await Escrow.methods.openCaseSignHash(escrowId, "1").call();
       signature = await web3.eth.sign(messageToSign, accounts[1]);
 
-      receipt = await Escrow.methods['openCase(uint256,string,bytes)'](escrowId, "My motive is...", signature).send({from: accounts[9]});
+      receipt = await Escrow.methods['openCase(uint256,uint8,bytes)'](escrowId, "1", signature).send({from: accounts[9]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
       assert.equal(arbitrationRequired.returnValues.escrowId, escrowId, "Invalid escrowId");
@@ -168,7 +168,7 @@ contract("Escrow", function() {
 
     it("non arbitrators cannot resolve a case", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       try {
         receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
@@ -180,7 +180,7 @@ contract("Escrow", function() {
 
     it("non selected arbitrator cannot resolve a case", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       try {
         receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator2});
@@ -192,7 +192,7 @@ contract("Escrow", function() {
 
     it("should allow whoever opened an arbitration to cancel it", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       try {
         receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[0]});
@@ -209,7 +209,7 @@ contract("Escrow", function() {
 
     it("should transfer to buyer if case is solved in their favor", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
       const released = receipt.events.Released;
@@ -218,7 +218,7 @@ contract("Escrow", function() {
 
     it("should cancel escrow if case is solved in favor of the seller", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
@@ -228,7 +228,7 @@ contract("Escrow", function() {
 
     it("cannot cancel a solved arbitration", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
       try {
@@ -241,9 +241,9 @@ contract("Escrow", function() {
 
     it("can open an arbitration on a escrow that had a canceled arbitration before", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
       receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
-      receipt = await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      receipt = await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
       const arbitrationRequired = receipt.events.ArbitrationRequired;
       assert(!!arbitrationRequired, "ArbitrationRequired() not triggered");
     });
@@ -258,7 +258,7 @@ contract("Escrow", function() {
 
     it("should not be able to rate an open dispute", async() => {
       await Escrow.methods.pay(escrowId).send({from: accounts[1]});
-      await Escrow.methods.openCase(escrowId, 'Motive').send({from: accounts[1]});
+      await Escrow.methods.openCase(escrowId, '1').send({from: accounts[1]});
 
       try {
         await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});

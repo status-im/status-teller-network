@@ -59,6 +59,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       console.log('Setting the initial Escrow "template", and calling the init() function');
 
       const abiEncode = deps.contracts.Escrow.methods.init(
+        main,
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.MetadataStoreProxy.options.address,
@@ -189,8 +190,6 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     const escrowStartIndex = offerStartIndex + 1;
     let receipt, hash, signature, nonce, created, escrowId;
     const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-    const PUBKEY_A = "0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
-    const PUBKEY_B = "0xBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     await async.eachOfLimit(addresses.slice(escrowStartIndex, escrowStartIndex + 1), 1, async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;

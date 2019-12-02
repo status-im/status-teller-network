@@ -37,6 +37,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     /**
      * @param _relayer EscrowRelay contract address
+     * @param _fallbackArbitrator Default arbitrator to use after timeout on solving arbitrations
      * @param _arbitratorLicenses License contract instance address for arbitrators
      * @param _metadataStore MetadataStore contract address
      * @param _feeDestination Address where the fees are going to be sent
@@ -44,12 +45,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     constructor(
         address _relayer,
+        address _fallbackArbitrator,
         address _arbitratorLicenses,
         address _metadataStore,
         address payable _feeDestination,
         uint _feeMilliPercent)
         Fees(_feeDestination, _feeMilliPercent)
-        Arbitrable(_arbitratorLicenses)
+        Arbitrable(_arbitratorLicenses, _fallbackArbitrator)
         public {
         _initialized = true;
         relayer = _relayer;
@@ -58,6 +60,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
     /**
      * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _fallbackArbitrator Default arbitrator to use after timeout on solving arbitrations
      * @param _relayer EscrowRelay contract address
      * @param _arbitratorLicenses License contract instance address for arbitrators
      * @param _metadataStore MetadataStore contract address
@@ -65,6 +68,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @param _feeMilliPercent Percentage applied as a fee to each escrow. 1000 == 1%
      */
     function init(
+        address _fallbackArbitrator,
         address _relayer,
         address _arbitratorLicenses,
         address _metadataStore,
@@ -75,6 +79,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
 
         _initialized = true;
 
+        fallbackArbitrator = _fallbackArbitrator;
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
         metadataStore = MetadataStore(_metadataStore);
         relayer = _relayer;
@@ -90,6 +95,14 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      */
     function setRelayer(address _relayer) external onlyOwner {
         relayer = _relayer;
+    }
+
+    /**
+     * @dev Update fallback arbitrator. Can only be called by the contract owner
+     * @param _fallbackArbitrator New fallback arbitrator
+     */
+    function setFallbackArbitrator(address _fallbackArbitrator) external onlyOwner {
+        fallbackArbitrator = _fallbackArbitrator;
     }
 
     /**

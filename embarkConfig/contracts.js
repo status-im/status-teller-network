@@ -114,7 +114,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "OwnedUpgradeabilityProxy"
