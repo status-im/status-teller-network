@@ -29,6 +29,19 @@
   }
 }
 
+.filter-modal {
+  .separator-container {
+    position: relative;
+    width: 100%;
+
+    .separator {
+      width: 435px;
+      position: absolute;
+      right: -24px;
+    }
+  }
+}
+
 .filter-menu-backdrop {
   position: fixed;
   right: 0;

@@ -15,6 +15,7 @@ import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
 import Draggable from "react-draggable";
+import Separator from "../../MyProfile/components/Separator";
 
 class FilterMenu extends Component {
   setLocation = (e) => {
@@ -139,18 +140,19 @@ FilterMenu.propTypes = {
 };
 
 const SorterModal = ({onClose, sortTypes, setSortType, sortType}) => (
-  <Modal isOpen={true} toggle={onClose} backdrop={true}>
+  <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
     <ModalBody>
       <ButtonGroup vertical className="w-100">
         {sortTypes.map((_sortType, index) => (
-          <CheckButton key={'sort-' + index}
-                       onClick={() => {
-                         setSortType(index);
-                         onClose();
-                       }}
-                       active={index === sortType}>
-            {_sortType}
-          </CheckButton>
+          <Fragment key={'sort-' + index}>
+            <CheckButton onClick={() => {
+              setSortType(index);
+              onClose();
+            }} active={index === sortType}>
+              {_sortType}
+            </CheckButton>
+            {index !== sortTypes.length - 1 && <Separator className="mb-2"/>}
+          </Fragment>
         ))}
       </ButtonGroup>
     </ModalBody>
@@ -162,6 +164,53 @@ SorterModal.propTypes = {
   setSortType: PropTypes.func,
   sortTypes: PropTypes.array,
   sortType: PropTypes.number
+};
+
+const PaymentMethodModal = ({onClose, paymentMethodFilter, setPaymentMethodFilter}) => (
+  <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
+    <ModalBody>
+      <div className="mb-2 mt-2 text-center">
+        <Button onClick={onClose}>Clear</Button>
+        <Button onClick={onClose} color="primary">Apply</Button>
+      </div>
+
+      <p className="text-muted text-small mb-0">Popular</p>
+      <ButtonGroup vertical className="w-100">
+        {POPULAR_PAYMENT_METHODS_INDEXES.map((index) => (
+          <Fragment key={'paymentMethod-' + index}>
+            <CheckButton active={index === paymentMethodFilter}
+                         onClick={(_e) => setPaymentMethodFilter(index)}>
+              {PAYMENT_METHODS[index]}
+            </CheckButton>
+            <Separator/>
+          </Fragment>
+        ))}
+      </ButtonGroup>
+
+      <p className="text-muted text-small mt-3 mb-0">All payment methods (A-Z)</p>
+      <ButtonGroup vertical className="w-100 pb-3">
+        {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
+          <Fragment key={'paymentMethod-' + index}>
+            <CheckButton active={index === paymentMethodFilter}
+                         key={'paymentMethod-' + index}
+                         onClick={(_e) => setPaymentMethodFilter(index)}>
+              {PAYMENT_METHODS[index]}
+            </CheckButton>
+            <Separator/>
+          </Fragment>
+        ))}
+      </ButtonGroup>
+    </ModalBody>
+  </Modal>
+);
+
+PaymentMethodModal.propTypes = {
+  onClose: PropTypes.func,
+  paymentMethodFilter:  PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  setPaymentMethodFilter: PropTypes.func
 };
 
 class LocationModal extends Component {
@@ -182,7 +231,7 @@ class LocationModal extends Component {
 
   render() {
     const {onClose, setLocation} = this.props;
-    return (<Modal isOpen={true} toggle={onClose} backdrop={true}>
+    return (<Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
       <ModalBody>
         <FormGroup className="text-center pt-4">
           <input className="form-control" type="text" placeholder="Enter a city, state, etc."
@@ -222,6 +271,7 @@ class SorterFilter extends Component {
 
     this.state = {
       sortOpen: false,
+      paymentMethodOpen: false,
       locationOpen: false
     };
   }
@@ -229,7 +279,8 @@ class SorterFilter extends Component {
   closeMenu = () => {
     this.setState({
       sortOpen: false,
-      locationOpen: false
+      locationOpen: false,
+      paymentMethodOpen: false
     });
   };
 
@@ -239,6 +290,10 @@ class SorterFilter extends Component {
 
   openLocation = () => {
     this.setState({locationOpen: true});
+  };
+
+  openPaymentMethod = () => {
+    this.setState({paymentMethodOpen: true});
   };
 
   render() {
@@ -265,7 +320,9 @@ class SorterFilter extends Component {
             <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.location})} onClick={this.openLocation}>
               <FlagIcon className="mr-2"/>Location
             </Button>
-            <Button className="p-2 px-3 mr-3 inactive"><MoneyIcon className="mr-2"/>Payment method</Button>
+            <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.paymentMethodFilter === -1})} onClick={this.openPaymentMethod}>
+              <MoneyIcon className="mr-2"/>Payment method
+            </Button>
             <Button className="p-2 px-3 mr-3 inactive"><TransferIcon className="mr-2"/>Amount</Button>
             <Button className="p-2 px-3 mr-3 inactive"><ChatIcon className="mr-2"/>Contact method</Button>
           </div>
@@ -277,7 +334,13 @@ class SorterFilter extends Component {
                    sortType={this.props.sortType} sortTypes={this.props.sortTypes}/>}
 
       {this.state.locationOpen &&
-      <LocationModal onClose={this.closeMenu} setLocation={this.props.setLocation} location={this.props.location}/>}
+      <LocationModal onClose={this.closeMenu} setLocation={this.props.setLocation}
+                     location={this.props.location}/>}
+
+      {this.state.paymentMethodOpen &&
+      <PaymentMethodModal onClose={this.closeMenu}
+                          paymentMethodFilter={this.props.paymentMethodFilter}
+                          setPaymentMethodFilter={this.props.setPaymentMethodFilter}/>}
     </Fragment>);
   }
 }
@@ -293,7 +356,10 @@ SorterFilter.propTypes = {
   setSortType: PropTypes.func,
   clear: PropTypes.func,
   tokenFilter: PropTypes.string,
-  paymentMethodFilter: PropTypes.number,
+  paymentMethodFilter: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   sortType: PropTypes.number,
   hasFilter: PropTypes.bool
 };
