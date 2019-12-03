@@ -164,21 +164,81 @@ SorterModal.propTypes = {
   sortType: PropTypes.number
 };
 
+class LocationModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      location: props.location || ''
+    };
+  }
+
+  componentDidMount() {
+    this.locationInput.focus();
+  }
+
+  onChange = (e) => {
+    this.setState({location: e.target.value});
+  };
+
+  render() {
+    const {onClose, setLocation} = this.props;
+    return (<Modal isOpen={true} toggle={onClose} backdrop={true}>
+      <ModalBody>
+        <FormGroup className="text-center pt-4">
+          <input className="form-control" type="text" placeholder="Enter a city, state, etc."
+                 ref={(input) => { this.locationInput = input; }}
+                 autoFocus
+                 value={this.state.location}
+                 onChange={this.onChange}
+                 onKeyUp={(e) => {
+                   if (e.key === 'Enter') {
+                     setLocation(e.target.value);
+                     onClose();
+                   }
+                 }}/>
+          <Button onClick={() => {
+            setLocation('');
+            onClose();
+          }} className="mt-3 d-inline-block mr-3">Clear</Button>
+          <Button color="primary" onClick={() => {
+            setLocation(this.state.location);
+            onClose();
+          }} className="mt-3 d-inline-block">Apply</Button>
+        </FormGroup>
+      </ModalBody>
+    </Modal>);
+  }
+}
+
+LocationModal.propTypes = {
+  onClose: PropTypes.func,
+  location: PropTypes.string,
+  setLocation: PropTypes.func
+};
+
 class SorterFilter extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      sortOpen: false
+      sortOpen: false,
+      locationOpen: false
     };
   }
 
   closeMenu = () => {
-    this.setState({sortOpen: false});
+    this.setState({
+      sortOpen: false,
+      locationOpen: false
+    });
   };
 
   openSort = () => {
     this.setState({sortOpen: true});
+  };
+
+  openLocation = () => {
+    this.setState({locationOpen: true});
   };
 
   render() {
@@ -202,7 +262,9 @@ class SorterFilter extends Component {
             <Button className="p-2 px-3 mr-3" onClick={this.openSort}>
               <ListIcon className="mr-2"/>{this.props.sortTypes[this.props.sortType]}
             </Button>
-            <Button className="p-2 px-3 mr-3 inactive"><FlagIcon className="mr-2"/>Country</Button>
+            <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.location})} onClick={this.openLocation}>
+              <FlagIcon className="mr-2"/>Location
+            </Button>
             <Button className="p-2 px-3 mr-3 inactive"><MoneyIcon className="mr-2"/>Payment method</Button>
             <Button className="p-2 px-3 mr-3 inactive"><TransferIcon className="mr-2"/>Amount</Button>
             <Button className="p-2 px-3 mr-3 inactive"><ChatIcon className="mr-2"/>Contact method</Button>
@@ -213,6 +275,9 @@ class SorterFilter extends Component {
       {this.state.sortOpen &&
       <SorterModal onClose={this.closeMenu} setSortType={this.props.setSortType}
                    sortType={this.props.sortType} sortTypes={this.props.sortTypes}/>}
+
+      {this.state.locationOpen &&
+      <LocationModal onClose={this.closeMenu} setLocation={this.props.setLocation} location={this.props.location}/>}
     </Fragment>);
   }
 }
@@ -221,6 +286,8 @@ SorterFilter.propTypes = {
   paymentMethods: PropTypes.array,
   sortTypes: PropTypes.array,
   tokens: PropTypes.array,
+  location: PropTypes.string,
+  setLocation: PropTypes.func,
   setTokenFilter: PropTypes.func,
   setPaymentMethodFilter: PropTypes.func,
   setSortType: PropTypes.func,

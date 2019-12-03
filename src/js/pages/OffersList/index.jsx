@@ -93,7 +93,7 @@ class OffersList extends Component {
 
   setLocation = (location) => {
     if (!location) {
-      return this.setState({calculatingLocation: false, locationCoords: null});
+      return this.setState({calculatingLocation: false, locationCoords: null, location: ''});
     }
     if (location === this.state.location) {
       return;
@@ -163,6 +163,7 @@ class OffersList extends Component {
                         setTokenFilter={this.setTokenFilter}
                         setCommFilter={this.setCommFilter}
                         setSortType={this.setSortType}
+                        location={this.state.location}
                         setLocation={this.setLocation}
                         setPaymentMethodFilter={this.setPaymentMethodFilter}
                         tokenFilter={this.state.tokenFilter}
