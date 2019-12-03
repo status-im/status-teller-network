@@ -144,9 +144,10 @@ class OffersList extends Component {
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
     if (this.state.commFilter !== '') {
-      filteredOffers = filteredOffers.filter(offer => {
-        return stringToContact(offer.user.contactData).method === this.state.commFilter;
-      });
+      filteredOffers = filteredOffers.filter(offer => stringToContact(offer.user.contactData).method === this.state.commFilter);
+    }
+    if (this.state.currency !== '') {
+      filteredOffers = filteredOffers.filter(offer => offer.currency === this.state.currency);
     }
 
     // Sort
