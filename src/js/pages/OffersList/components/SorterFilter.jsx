@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
+import {ButtonGroup, FormGroup, Input, Button, ModalBody, Modal} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
 import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
 import {DialogOptions} from "../../../constants/contactMethods";
@@ -138,20 +138,47 @@ FilterMenu.propTypes = {
   toggleCommunicationMethod: PropTypes.func
 };
 
+const SorterModal = ({onClose, sortTypes, setSortType, sortType}) => (
+  <Modal isOpen={true} toggle={onClose} backdrop={true}>
+    <ModalBody>
+      <ButtonGroup vertical className="w-100">
+        {sortTypes.map((_sortType, index) => (
+          <CheckButton key={'sort-' + index}
+                       onClick={() => {
+                         setSortType(index);
+                         onClose();
+                       }}
+                       active={index === sortType}>
+            {_sortType}
+          </CheckButton>
+        ))}
+      </ButtonGroup>
+    </ModalBody>
+  </Modal>
+);
+
+SorterModal.propTypes = {
+  onClose: PropTypes.func,
+  setSortType: PropTypes.func,
+  sortTypes: PropTypes.array,
+  sortType: PropTypes.number
+};
+
 class SorterFilter extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      open: false
+      sortOpen: false
     };
   }
 
   closeMenu = () => {
+    this.setState({sortOpen: false});
   };
 
-  openMenu = () => {
-    this.setState({open: true});
+  openSort = () => {
+    this.setState({sortOpen: true});
   };
 
   render() {
@@ -172,7 +199,9 @@ class SorterFilter extends Component {
           bounds={{left: -450, right: 0}}
           scale={1}>
           <div className="filter-menu-slider mt-3">
-            <Button className="p-2 px-3 mr-3"><ListIcon className="mr-2"/>Most popular</Button>
+            <Button className="p-2 px-3 mr-3" onClick={this.openSort}>
+              <ListIcon className="mr-2"/>{this.props.sortTypes[this.props.sortType]}
+            </Button>
             <Button className="p-2 px-3 mr-3 inactive"><FlagIcon className="mr-2"/>Country</Button>
             <Button className="p-2 px-3 mr-3 inactive"><MoneyIcon className="mr-2"/>Payment method</Button>
             <Button className="p-2 px-3 mr-3 inactive"><TransferIcon className="mr-2"/>Amount</Button>
@@ -180,6 +209,10 @@ class SorterFilter extends Component {
           </div>
         </Draggable>
       </div>
+
+      {this.state.sortOpen &&
+      <SorterModal onClose={this.closeMenu} setSortType={this.props.setSortType}
+                   sortType={this.props.sortType} sortTypes={this.props.sortTypes}/>}
     </Fragment>);
   }
 }
