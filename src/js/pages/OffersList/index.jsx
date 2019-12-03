@@ -156,7 +156,6 @@ class OffersList extends Component {
     return (
       <Fragment>
         <div>
-          <h2 className="d-inline-block pt-2">{this.props.t('offers.listTitle')}</h2>
           <SorterFilter sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
                         tokens={this.props.tokens}

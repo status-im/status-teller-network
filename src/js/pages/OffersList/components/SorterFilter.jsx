@@ -1,7 +1,5 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Input, Button} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
@@ -9,7 +7,14 @@ import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../feature
 import {DialogOptions} from "../../../constants/contactMethods";
 import CheckButton from '../../../ui/CheckButton';
 
+import { ReactComponent as ListIcon } from '../../../../images/list.svg';
+import { ReactComponent as FlagIcon } from '../../../../images/flag.svg';
+import { ReactComponent as MoneyIcon } from '../../../../images/money-hand.svg';
+import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg';
+import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
+
 import './SorterFilter.scss';
+import Draggable from "react-draggable";
 
 class FilterMenu extends Component {
   setLocation = (e) => {
@@ -143,7 +148,6 @@ class SorterFilter extends Component {
   }
 
   closeMenu = () => {
-    this.setState({open: false});
   };
 
   openMenu = () => {
@@ -152,13 +156,30 @@ class SorterFilter extends Component {
 
   render() {
     return (<Fragment>
-      <FilterMenu open={this.state.open} close={this.closeMenu} {...this.props}/>
-      <span className={classnames("filter-icon rounded d-inline-block text-center float-right py-3 clickable", {
-        'bg-secondary text-primary': !this.props.hasFilter,
-        'bg-primary text-secondary': this.props.hasFilter
-      })} onClick={this.openMenu}>
-        <FontAwesomeIcon icon={faFilter}/>
-      </span>
+      <Typeahead
+        id="tokenFilter"
+        options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+        placeholder={'Search cryptocurrencies'}
+        value={this.props.tokenFilter}
+        onChange={this.props.setTokenFilter}
+      />
+      <div className="filter-menu-slider-container position-relative">
+        <Draggable
+          axis="x"
+          handle=".filter-menu-slider"
+          defaultPosition={{x: 0, y: 0}}
+          grid={[25, 25]}
+          bounds={{left: -450, right: 0}}
+          scale={1}>
+          <div className="filter-menu-slider mt-3">
+            <Button className="p-2 px-3 mr-3"><ListIcon className="mr-2"/>Most popular</Button>
+            <Button className="p-2 px-3 mr-3 inactive"><FlagIcon className="mr-2"/>Country</Button>
+            <Button className="p-2 px-3 mr-3 inactive"><MoneyIcon className="mr-2"/>Payment method</Button>
+            <Button className="p-2 px-3 mr-3 inactive"><TransferIcon className="mr-2"/>Amount</Button>
+            <Button className="p-2 px-3 mr-3 inactive"><ChatIcon className="mr-2"/>Contact method</Button>
+          </div>
+        </Draggable>
+      </div>
     </Fragment>);
   }
 }
