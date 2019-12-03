@@ -10,12 +10,14 @@ import CheckButton from '../../../ui/CheckButton';
 import { ReactComponent as ListIcon } from '../../../../images/list.svg';
 import { ReactComponent as FlagIcon } from '../../../../images/flag.svg';
 import { ReactComponent as MoneyIcon } from '../../../../images/money-hand.svg';
+import { ReactComponent as CurrencyIcon } from '../../../../images/dollar.svg';
 import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg';
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
 import Draggable from "react-draggable";
 import Separator from "../../MyProfile/components/Separator";
+import {withNamespaces} from "react-i18next";
 
 class FilterMenu extends Component {
   setLocation = (e) => {
@@ -139,6 +141,29 @@ FilterMenu.propTypes = {
   toggleCommunicationMethod: PropTypes.func
 };
 
+const ClearAndApplyButtons = ({onClear, onApply, close}) => (
+  <div className="mb-2 mt-2 text-center">
+    <Button onClick={() => {
+      if (onClear) {
+        onClear();
+      }
+      close();
+    }} className="mr-3">Clear</Button>
+    <Button onClick={() => {
+      if (onApply) {
+        onApply();
+      }
+      close();
+    }} color="primary">Apply</Button>
+  </div>
+);
+
+ClearAndApplyButtons.propTypes = {
+  onClear: PropTypes.func,
+  onApply: PropTypes.func,
+  close: PropTypes.func
+};
+
 const SorterModal = ({onClose, sortTypes, setSortType, sortType}) => (
   <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
     <ModalBody>
@@ -166,13 +191,53 @@ SorterModal.propTypes = {
   sortType: PropTypes.number
 };
 
+const CurrencyModal = ({t, onClose, selected, currencies, changeCurrency}) => {
+  const defaultSelectedValue = [];
+  if (selected) {
+    const currency = currencies.find(x => x.id === selected);
+    defaultSelectedValue.push(currency);
+  }
+  return (
+    <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
+      <ModalBody>
+        <Typeahead className="mb-3 mt-3"
+                   id="fiatSelector"
+                   onChange={(items) => {
+                     if (items.length) {
+                       const item = items[0];
+                       changeCurrency(item.id);
+                     }
+                   }}
+                   options={currencies}
+                   placeholder={t("fiatSelectorForm.placeholder")}
+                   onInputChange={(text) => {
+                     const symbol = currencies.find(x => x.label === text);
+                     if (symbol) {
+                       changeCurrency(symbol.id);
+                     }
+                   }}
+                   submitFormOnEnter={true}
+                   emptyLabel={t("fiatSelectorForm.emptyLabel")}
+                   defaultSelected={defaultSelectedValue}
+        />
+        <ClearAndApplyButtons onClear={() => changeCurrency('')} close={onClose}/>
+      </ModalBody>
+    </Modal>
+  );
+};
+
+CurrencyModal.propTypes = {
+  t: PropTypes.func,
+  onClose: PropTypes.func,
+  changeCurrency: PropTypes.func,
+  currencies: PropTypes.array,
+  selected: PropTypes.string
+};
+
 const PaymentMethodModal = ({onClose, paymentMethodFilter, setPaymentMethodFilter}) => (
   <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
     <ModalBody>
-      <div className="mb-2 mt-2 text-center">
-        <Button onClick={onClose}>Clear</Button>
-        <Button onClick={onClose} color="primary">Apply</Button>
-      </div>
+      <ClearAndApplyButtons close={onClose} onClear={() =>  setPaymentMethodFilter(-1)}/>
 
       <p className="text-muted text-small mb-0">Popular</p>
       <ButtonGroup vertical className="w-100">
@@ -234,7 +299,7 @@ class LocationModal extends Component {
     return (<Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
       <ModalBody>
         <FormGroup className="text-center pt-4">
-          <input className="form-control" type="text" placeholder="Enter a city, state, etc."
+          <input className="form-control mb-3" type="text" placeholder="Enter a city, state, etc."
                  ref={(input) => { this.locationInput = input; }}
                  autoFocus
                  value={this.state.location}
@@ -245,14 +310,8 @@ class LocationModal extends Component {
                      onClose();
                    }
                  }}/>
-          <Button onClick={() => {
-            setLocation('');
-            onClose();
-          }} className="mt-3 d-inline-block mr-3">Clear</Button>
-          <Button color="primary" onClick={() => {
-            setLocation(this.state.location);
-            onClose();
-          }} className="mt-3 d-inline-block">Apply</Button>
+
+          <ClearAndApplyButtons close={onClose} onClear={() =>  setLocation('')} onApply={() => setLocation(this.state.location)}/>
         </FormGroup>
       </ModalBody>
     </Modal>);
@@ -272,6 +331,7 @@ class SorterFilter extends Component {
     this.state = {
       sortOpen: false,
       paymentMethodOpen: false,
+      currencyModalOpen: false,
       locationOpen: false
     };
   }
@@ -280,6 +340,7 @@ class SorterFilter extends Component {
     this.setState({
       sortOpen: false,
       locationOpen: false,
+      currencyModalOpen: false,
       paymentMethodOpen: false
     });
   };
@@ -294,6 +355,10 @@ class SorterFilter extends Component {
 
   openPaymentMethod = () => {
     this.setState({paymentMethodOpen: true});
+  };
+
+  openCurrencyModal = () => {
+    this.setState({currencyModalOpen: true});
   };
 
   render() {
@@ -318,10 +383,13 @@ class SorterFilter extends Component {
               <ListIcon className="mr-2"/>{this.props.sortTypes[this.props.sortType]}
             </Button>
             <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.location})} onClick={this.openLocation}>
-              <FlagIcon className="mr-2"/>Location
+              <FlagIcon className="mr-2"/>{this.props.location ? this.props.location : 'Location'}
             </Button>
             <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.paymentMethodFilter === -1})} onClick={this.openPaymentMethod}>
-              <MoneyIcon className="mr-2"/>Payment method
+              <MoneyIcon className="mr-2"/>{this.props.paymentMethodFilter !== -1 ? PAYMENT_METHODS[this.props.paymentMethodFilter] : 'Payment method'}
+            </Button>
+            <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.paymentMethodFilter === -1})} onClick={this.openCurrencyModal}>
+              <CurrencyIcon className="mr-2"/>{this.props.selectedCurrency ? this.props.selectedCurrency : 'Currency'}
             </Button>
             <Button className="p-2 px-3 mr-3 inactive"><TransferIcon className="mr-2"/>Amount</Button>
             <Button className="p-2 px-3 mr-3 inactive"><ChatIcon className="mr-2"/>Contact method</Button>
@@ -341,11 +409,16 @@ class SorterFilter extends Component {
       <PaymentMethodModal onClose={this.closeMenu}
                           paymentMethodFilter={this.props.paymentMethodFilter}
                           setPaymentMethodFilter={this.props.setPaymentMethodFilter}/>}
+
+      {this.state.currencyModalOpen &&
+      <CurrencyModal onClose={this.closeMenu} changeCurrency={this.props.changeCurrency}
+                     currencies={this.props.currencies} selected={this.props.selectedCurrency} t={this.props.t}/>}
     </Fragment>);
   }
 }
 
 SorterFilter.propTypes = {
+  t: PropTypes.func,
   paymentMethods: PropTypes.array,
   sortTypes: PropTypes.array,
   tokens: PropTypes.array,
@@ -361,7 +434,9 @@ SorterFilter.propTypes = {
     PropTypes.number
   ]),
   sortType: PropTypes.number,
-  hasFilter: PropTypes.bool
+  currencies: PropTypes.array,
+  changeCurrency: PropTypes.func,
+  selectedCurrency: PropTypes.string
 };
 
-export default SorterFilter;
+export default withNamespaces()(SorterFilter);

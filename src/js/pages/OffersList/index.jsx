@@ -18,6 +18,8 @@ import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transacti
 import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
 import {stringToContact} from "../../utils/strings";
+import {CURRENCY_DATA} from "../../constants/currencies";
+import FiatSelectorForm from "../../wizards/Sell/2_Currency/components/FiatSelectorForm";
 
 class OffersList extends Component {
   constructor(props) {
@@ -29,7 +31,8 @@ class OffersList extends Component {
       sortType: 0,
       locationCoords: null,
       calculatingLocation: false,
-      showCommunicationMethod: false
+      showCommunicationMethod: false,
+      currency: ''
     };
     this.state = this.defaultState;
   }
@@ -119,26 +122,28 @@ class OffersList extends Component {
     return Math.sqrt(Math.pow(userCoords.lat - this.state.locationCoords.lat, 2) + Math.pow(userCoords.lng - this.state.locationCoords.lng, 2));
   };
 
+  changeCurrency= (currency) => {
+    if (!currency) {
+      currency = '';
+    }
+    this.setState({currency});
+  };
+
   render() {
-    let hasFilter = false;
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     if (this.state.locationCoords) {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
     }
 
     if (this.state.tokenFilter !== '') {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
     if (this.state.paymentMethodFilter !== -1) {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
     if (this.state.commFilter !== '') {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => {
         return stringToContact(offer.user.contactData).method === this.state.commFilter;
       });
@@ -147,8 +152,7 @@ class OffersList extends Component {
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address);
-        hasFilter = true; break;
+      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address); break;
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
@@ -171,7 +175,9 @@ class OffersList extends Component {
                         paymentMethodFilter={this.state.paymentMethodFilter}
                         toggleCommunicationMethod={this.toggleCommunicationMethod}
                         showCommunicationMethod={this.state.showCommunicationMethod}
-                        hasFilter={hasFilter}/>
+                        currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
+                        changeCurrency={this.changeCurrency}
+                        selectedCurrency={this.state.currency}/>
         </div>
 
         {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
