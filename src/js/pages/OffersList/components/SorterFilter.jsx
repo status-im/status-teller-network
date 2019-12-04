@@ -327,6 +327,33 @@ PaymentMethodModal.propTypes = {
   setPaymentMethodFilter: PropTypes.func
 };
 
+const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilter}) => (
+  <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
+    <ModalBody className="pb-4">
+      <ButtonGroup vertical className="w-100">
+        {Object.keys(DialogOptions).map((dialogOption) => (
+          <Fragment key={'dialogOption-' + dialogOption}>
+            <CheckButton className="mt-2" active={dialogOption === contactMethodFilter}
+                         onClick={(_e) => {
+                           setContactMethodFilter(dialogOption);
+                           onClose();
+                         }}>
+              {dialogOption}
+            </CheckButton>
+            <Separator/>
+          </Fragment>
+        ))}
+      </ButtonGroup>
+    </ModalBody>
+  </Modal>
+);
+
+ContactMethodModal.propTypes = {
+  onClose: PropTypes.func,
+  contactMethodFilter: PropTypes.string,
+  setContactMethodFilter: PropTypes.func
+};
+
 class LocationModal extends Component {
   constructor(props) {
     super(props);
@@ -378,6 +405,7 @@ const defaultState = {
   paymentMethodOpen: false,
   currencyModalOpen: false,
   amountModalOpen: false,
+  contactMethodModalOpen: false,
   locationOpen: false
 };
 class SorterFilter extends Component {
@@ -407,8 +435,12 @@ class SorterFilter extends Component {
     this.setState({currencyModalOpen: true});
   };
 
-  openAmountModalOpen = () => {
+  openAmountModal = () => {
     this.setState({amountModalOpen: true});
+  };
+
+  contactMethodModal = () => {
+    this.setState({contactMethodModalOpen: true});
   };
 
   render() {
@@ -441,10 +473,12 @@ class SorterFilter extends Component {
             <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.selectedCurrency})} onClick={this.openCurrencyModal}>
               <CurrencyIcon className="mr-2"/>{this.props.selectedCurrency ? this.props.selectedCurrency : 'Currency'}
             </Button>
-            {this.props.selectedCurrency && <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.amountFilter === -1})} onClick={this.openAmountModalOpen}>
+            {this.props.selectedCurrency && <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.amountFilter === -1})} onClick={this.openAmountModal}>
               <TransferIcon className="mr-2"/>{this.props.amountFilter !== -1 ? `${this.props.amountFilter} ${this.props.selectedCurrency}` : 'Amount'}
             </Button>}
-            <Button className="p-2 px-3 mr-3 inactive"><ChatIcon className="mr-2"/>Contact method</Button>
+            <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.contactMethodFilter})} onClick={this.contactMethodModal}>
+              <ChatIcon className="mr-2"/>{this.props.contactMethodFilter ? this.props.contactMethodFilter : 'Contact method'}
+            </Button>
           </div>
         </Draggable>
       </div>
@@ -468,6 +502,9 @@ class SorterFilter extends Component {
 
       {this.state.amountModalOpen &&
       <AmountModal onClose={this.closeMenu} amount={this.props.amountFilter} setAmount={this.props.setAmountFilter}/>}
+
+      {this.state.contactMethodModalOpen &&
+      <ContactMethodModal onClose={this.closeMenu} contactMethodFilter={this.props.contactMethodFilter} setContactMethodFilter={this.props.setContactMethodFilter}/>}
     </Fragment>);
   }
 }
@@ -493,6 +530,8 @@ SorterFilter.propTypes = {
   changeCurrency: PropTypes.func,
   selectedCurrency: PropTypes.string,
   amountFilter: PropTypes.number,
+  contactMethodFilter: PropTypes.string,
+  setContactMethodFilter: PropTypes.func,
   setAmountFilter: PropTypes.func
 };
 

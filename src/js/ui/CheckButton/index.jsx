@@ -8,12 +8,13 @@ import classnames from 'classnames';
 
 import "./index.scss";
 
-const CheckButton = ({children, active, onClick, size, align, isCheckBox, inline}) => (
+const CheckButton = ({children, active, onClick, size, align, isCheckBox, inline, className}) => (
   <Button className={classnames('check-button', 'text-left', 'text-body', 'px-0', 'py-2', 'v-align-center', 'mb-2', {
     large: size === 'l',
     small: size === 's',
     'mr-2': inline && align === 'left',
-    'ml-2': inline && align === 'right'
+    'ml-2': inline && align === 'right',
+    [className]: !!className
   })} size="lg" color="link" block={!inline} active={active} onClick={onClick}>
     {!isCheckBox && <FontAwesomeIcon className={classnames('radio-box', {
       "float-right": align === "right",
@@ -44,6 +45,7 @@ CheckButton.propTypes = {
     PropTypes.node
   ]),
   align: PropTypes.string,
+  className: PropTypes.string,
   active: PropTypes.bool,
   isCheckBox: PropTypes.bool,
   onClick: PropTypes.func,

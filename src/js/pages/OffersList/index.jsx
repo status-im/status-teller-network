@@ -25,14 +25,14 @@ class OffersList extends Component {
     super(props);
     this.defaultState = {
       tokenFilter: '',
-      commFilter: '',
       paymentMethodFilter: -1,
       amountFilter: -1,
       sortType: 0,
       locationCoords: null,
       calculatingLocation: false,
       showCommunicationMethod: false,
-      currency: ''
+      currency: '',
+      contactMethodFilter: ''
     };
     this.state = this.defaultState;
   }
@@ -73,14 +73,6 @@ class OffersList extends Component {
       tokenFilter = selected[0].value;
     }
     this.setState({tokenFilter});
-  };
-
-  setCommFilter = (selected) => {
-    let commFilter = '';
-    if (selected[0]) {
-      commFilter = selected[0];
-    }
-    this.setState({commFilter});
   };
 
   setSortType = (sortType) => {
@@ -136,6 +128,13 @@ class OffersList extends Component {
     this.setState({amountFilter});
   };
 
+  setContactMethodFilter= (contactMethodFilter) => {
+    if (!contactMethodFilter || contactMethodFilter === this.state.contactMethodFilter) {
+      contactMethodFilter = '';
+    }
+    this.setState({contactMethodFilter});
+  };
+
   render() {
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
@@ -150,8 +149,8 @@ class OffersList extends Component {
     if (this.state.paymentMethodFilter !== -1) {
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
-    if (this.state.commFilter !== '') {
-      filteredOffers = filteredOffers.filter(offer => stringToContact(offer.user.contactData).method === this.state.commFilter);
+    if (this.state.contactMethodFilter !== '') {
+      filteredOffers = filteredOffers.filter(offer => stringToContact(offer.user.contactData).method === this.state.contactMethodFilter);
     }
     if (this.state.currency !== '') {
       filteredOffers = filteredOffers.filter(offer => offer.currency === this.state.currency);
@@ -180,13 +179,11 @@ class OffersList extends Component {
                         tokens={this.props.tokens}
                         clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}
-                        setCommFilter={this.setCommFilter}
                         setSortType={this.setSortType}
                         location={this.state.location}
                         setLocation={this.setLocation}
                         setPaymentMethodFilter={this.setPaymentMethodFilter}
                         tokenFilter={this.state.tokenFilter}
-                        commFilter={this.state.commFilter}
                         paymentMethodFilter={this.state.paymentMethodFilter}
                         toggleCommunicationMethod={this.toggleCommunicationMethod}
                         showCommunicationMethod={this.state.showCommunicationMethod}
@@ -194,7 +191,9 @@ class OffersList extends Component {
                         changeCurrency={this.changeCurrency}
                         selectedCurrency={this.state.currency}
                         amountFilter={Number.parseFloat(this.state.amountFilter)}
-                        setAmountFilter={this.setAmountFilter}/>
+                        setAmountFilter={this.setAmountFilter}
+                        contactMethodFilter={this.state.contactMethodFilter}
+                        setContactMethodFilter={this.setContactMethodFilter}/>
         </div>
 
         {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
