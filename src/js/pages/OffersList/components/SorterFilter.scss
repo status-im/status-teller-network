@@ -37,6 +37,8 @@
 }
 
 .filter-modal {
+  position: relative;
+
   .separator-container {
     position: relative;
     width: 100%;
@@ -46,6 +48,13 @@
       position: absolute;
       right: -24px;
     }
+  }
+
+  .clear-button {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    border-radius: 40px;
   }
 }
 

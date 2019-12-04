@@ -20,7 +20,6 @@ import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg'
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
-import {sym} from "enzyme/src/Utils";
 
 const ClearAndApplyButtons = ({onClear, onApply, close}) => (
   <div className="mb-2 mt-2 text-center">
@@ -42,6 +41,20 @@ const ClearAndApplyButtons = ({onClear, onApply, close}) => (
 ClearAndApplyButtons.propTypes = {
   onClear: PropTypes.func,
   onApply: PropTypes.func,
+  close: PropTypes.func
+};
+
+const ClearButton = ({onClear, close}) => (
+    <Button onClick={() => {
+      if (onClear) {
+        onClear();
+      }
+      close();
+    }} className="px-2 py-0 clear-button">Clear</Button>
+);
+
+ClearButton.propTypes = {
+  onClear: PropTypes.func,
   close: PropTypes.func
 };
 
@@ -166,15 +179,17 @@ AmountModal.propTypes = {
 
 const PaymentMethodModal = ({onClose, paymentMethodFilter, setPaymentMethodFilter}) => (
   <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
-    <ModalBody>
-      <ClearAndApplyButtons close={onClose} onClear={() =>  setPaymentMethodFilter(-1)}/>
-
+    <ClearButton close={onClose} onClear={() =>  setPaymentMethodFilter(-1)}/>
+    <ModalBody className="mt-4">
       <p className="text-muted text-small mb-0">Popular</p>
       <ButtonGroup vertical className="w-100">
         {POPULAR_PAYMENT_METHODS_INDEXES.map((index) => (
           <Fragment key={'paymentMethod-' + index}>
-            <CheckButton active={index === paymentMethodFilter}
-                         onClick={(_e) => setPaymentMethodFilter(index)}>
+            <CheckButton active={index === paymentMethodFilter} className="mt-2 mb-0"
+                         onClick={(_e) => {
+                           setPaymentMethodFilter(index);
+                           onClose();
+                         }}>
               {PAYMENT_METHODS[index]}
             </CheckButton>
             <Separator/>
@@ -188,7 +203,10 @@ const PaymentMethodModal = ({onClose, paymentMethodFilter, setPaymentMethodFilte
           <Fragment key={'paymentMethod-' + index}>
             <CheckButton active={index === paymentMethodFilter}
                          key={'paymentMethod-' + index}
-                         onClick={(_e) => setPaymentMethodFilter(index)}>
+                         onClick={(_e) => {
+                           setPaymentMethodFilter(index);
+                           onClose();
+                         }}>
               {PAYMENT_METHODS[index]}
             </CheckButton>
             <Separator/>
