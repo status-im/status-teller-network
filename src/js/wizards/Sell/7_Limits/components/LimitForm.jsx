@@ -41,6 +41,16 @@ class LimitForm extends Component {
         <FormGroup className="mb-0">
           <Row>
             <Col>
+              <CheckButton align="left" active={!this.props.useCustomLimits} onClick={() => { this.setCustomLimits(false); }}>
+                <span>No limits</span>
+                <p className="text-small text-muted ml-4 pl-1">The maximum limit will be set according to the amount you have in your wallet.</p>
+              </CheckButton>
+            </Col>
+          </Row>
+        </FormGroup>
+        <FormGroup className="mb-0">
+          <Row>
+            <Col>
               <CheckButton align="left" active={this.props.useCustomLimits} onClick={() => { this.setCustomLimits(true); }}>
               Set limits
               </CheckButton>
@@ -82,17 +92,6 @@ class LimitForm extends Component {
                       validations={[isNumber, higherEqThan, conditionalRequire]}
                       placeholder="Max. sell limit" step="any"/>
               <span className="input-icon mr-3">{currency}</span>
-            </Col>
-          </Row>
-        </FormGroup>
-        <FormGroup>
-          <Row className="mt-3">
-            <Col>
-              <CheckButton align="left" active={!this.props.useCustomLimits} onClick={() => { this.setCustomLimits(false); }}>
-              <span className="float-left">No limits</span>
-              <span className="text-small text-muted float-left">The maximum limit will be set according to the amount you have in your wallet.</span>
-
-              </CheckButton>
             </Col>
           </Row>
         </FormGroup>
