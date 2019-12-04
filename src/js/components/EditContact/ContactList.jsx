@@ -99,28 +99,22 @@ class EditContactList extends Component {
           </p>}
         </Form>
 
-        <div className="infos-and-warnings mt-5">
-          <Row noGutters className="mt-2">
-            <Col xs={1} className="pr-2">
-              <RoundedIcon image={checkCircleImage} bgColor="secondary" size="sm"/>
-            </Col>
-            <Col xs={11}>
+        <div className="infos-and-warnings mt-4">
+          <Row noGutters>
+            <Col>
+              <RoundedIcon image={checkCircleImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
               <p className="info text-muted"><a href="https://status.im">Status</a> is the recommended chat platform</p>
             </Col>
           </Row>
-          <Row noGutters className="mt-2">
-            <Col xs={1} className="pr-2">
-              <RoundedIcon image={infoImageRed} bgColor="secondary" size="sm"/>
-            </Col>
-            <Col xs={11}>
+          <Row noGutters className="mt-1">
+            <Col>
+              <RoundedIcon image={infoImageRed} bgColor="red" size="sm" className="mr-2 float-left"/>
               <p className="info text-muted">Contact details will be written on the blockchain</p>
             </Col>
           </Row>
-          <Row noGutters className="mt-2">
-            <Col xs={1} className="pr-2">
-              <RoundedIcon image={infoImage} bgColor="secondary" size="sm"/>
-            </Col>
-            <Col xs={11}>
+          <Row noGutters className="mt-1">
+            <Col>
+              <RoundedIcon image={infoImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
               <p className="info text-muted">Consider which method you choose as buyers and arbitrators will contact you using it</p>
             </Col>
           </Row>
