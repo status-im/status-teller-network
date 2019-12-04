@@ -96,24 +96,6 @@ class Trades extends Component {
   renderTrades() {
     return (
       <Fragment>
-        {false && <Form><b>Filters:</b>
-          <FormGroup row className="state-filters">
-            <Label for="trade-state-filter" xs={2}>States</Label>
-            <Col xs={10}>
-              <Input type="select" name="select" id="trade-state-filter"
-                     onChange={(e) => this.filterState(e.target.value)}>
-                <option/>
-                { Object.keys(tradeStatesFormatted)
-                        .filter(x => { return this.props.active ?  !completedStates.includes(x) : completedStates.includes(x); })
-                        .map((tradeState, index) => <option
-                  key={`tradeState-${index}`}>{tradeStatesFormatted[tradeState]}</option>)}
-              </Input>
-            </Col>
-          </FormGroup>
-        </Form>}
-
-        {false && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
-
         <div className="profile-trades-list border-0 pt-0">
           {(() => {
             const trades = this.props.trades.filter(x => { return this.props.active ? !completedStates.includes(x.status) : completedStates.includes(x.status); }).map((trade, index) => {
@@ -124,7 +106,7 @@ class Trades extends Component {
               const isBuyer = addressCompare(trade.buyer, this.props.address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
 
-              return (<Card key={index} className={classnames("mb-3", "shadow", "border-0", "offer-card", {"card-transparent": !this.props.active})}
+              return (<Card key={index} className={classnames("mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
                 <CardBody>
                   <UserInfoRow hideAddress user={isBuyer ? trade.seller : trade.buyerInfo}
