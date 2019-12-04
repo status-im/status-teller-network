@@ -2,10 +2,15 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import {ButtonGroup, FormGroup, Button, ModalBody, Modal, Label} from "reactstrap";
-import {Typeahead} from "react-bootstrap-typeahead";
+import {Typeahead, Highlighter} from "react-bootstrap-typeahead";
+import {getOptionLabel} from "react-bootstrap-typeahead/lib/utils";
 import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
 import {DialogOptions} from "../../../constants/contactMethods";
 import CheckButton from '../../../ui/CheckButton';
+import Draggable from "react-draggable";
+import Separator from "../../MyProfile/components/Separator";
+import {withNamespaces} from "react-i18next";
+import {getTokenImage} from "../../../utils/images";
 
 import { ReactComponent as ListIcon } from '../../../../images/list.svg';
 import { ReactComponent as FlagIcon } from '../../../../images/flag.svg';
@@ -15,9 +20,7 @@ import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg'
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
-import Draggable from "react-draggable";
-import Separator from "../../MyProfile/components/Separator";
-import {withNamespaces} from "react-i18next";
+import {sym} from "enzyme/src/Utils";
 
 const ClearAndApplyButtons = ({onClear, onApply, close}) => (
   <div className="mb-2 mt-2 text-center">
@@ -329,6 +332,21 @@ class SorterFilter extends Component {
         placeholder={'Search cryptocurrencies'}
         value={this.props.tokenFilter}
         onChange={this.props.setTokenFilter}
+        renderMenuItemChildren={(option, props, _idx) => {
+          const symbol = getOptionLabel(option, props.labelKey);
+          return (
+            <div className="mt-2">
+              <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
+              <span className="text-muted mr-2 d-inline-block mb-2">
+                {this.props.tokens.find(token => token.symbol === symbol).name}
+              </span>
+              <Highlighter search={props.text}>
+                {symbol}
+              </Highlighter>
+              <Separator/>
+            </div>
+          );
+        }}
       />
       <div className="filter-menu-slider-container position-relative">
         <Draggable
