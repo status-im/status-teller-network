@@ -176,6 +176,7 @@ class OffersList extends Component {
         <div>
           <SorterFilter sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
+                        offers={this.props.offers}
                         tokens={this.props.tokens}
                         clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}

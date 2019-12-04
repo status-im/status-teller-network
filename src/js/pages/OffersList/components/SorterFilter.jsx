@@ -328,22 +328,32 @@ class SorterFilter extends Component {
     return (<Fragment>
       <Typeahead
         id="tokenFilter"
+        className="filter-modal"
         options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
         placeholder={'Search cryptocurrencies'}
         value={this.props.tokenFilter}
         onChange={this.props.setTokenFilter}
-        renderMenuItemChildren={(option, props, _idx) => {
+        renderMenuItemChildren={(option, props, idx) => {
           const symbol = getOptionLabel(option, props.labelKey);
+          let nbOffersForToken = 0;
+          this.props.offers.forEach(offer => {
+            if (offer.token.symbol === symbol) {
+              nbOffersForToken++;
+            }
+          });
           return (
             <div className="mt-2">
               <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
-              <span className="text-muted mr-2 d-inline-block mb-2">
-                {this.props.tokens.find(token => token.symbol === symbol).name}
-              </span>
+              {this.props.tokens.find(token => token.symbol === symbol).name}
+              <span className="text-muted ml-2 d-inline-block mb-2">
               <Highlighter search={props.text}>
                 {symbol}
               </Highlighter>
-              <Separator/>
+              </span>
+              <span className="text-muted float-right">
+                ({nbOffersForToken})
+              </span>
+              {idx !== this.props.tokens.length - 1 && <Separator/>}
             </div>
           );
         }}
@@ -428,6 +438,7 @@ SorterFilter.propTypes = {
   amountFilter: PropTypes.number,
   contactMethodFilter: PropTypes.string,
   setContactMethodFilter: PropTypes.func,
+  offers: PropTypes.array,
   setAmountFilter: PropTypes.func
 };
 
