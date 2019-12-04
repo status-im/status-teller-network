@@ -10,7 +10,7 @@ import {truncateTwo} from '../../../utils/numbers';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 import RoundedIcon from "../../../ui/RoundedIcon";
-
+import classnames from 'classnames';
 import './Trades.scss';
 import {getTokenImage} from "../../../utils/images";
 import messageImage from '../../../../images/read-chat.svg';
@@ -96,8 +96,7 @@ class Trades extends Component {
   renderTrades() {
     return (
       <Fragment>
-
-        {this.state.showFilters && <Form><b>Filters:</b>
+        {false && <Form><b>Filters:</b>
           <FormGroup row className="state-filters">
             <Label for="trade-state-filter" xs={2}>States</Label>
             <Col xs={10}>
@@ -113,7 +112,7 @@ class Trades extends Component {
           </FormGroup>
         </Form>}
 
-        {!this.state.showFilters && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
+        {false && <p className="text-small text-muted mb-1 clickable" onClick={() => this.setState({showFilters: true})}>Show Filters <FontAwesomeIcon icon={faCaretDown}/></p>}
 
         <div className="profile-trades-list border-0 pt-0">
           {(() => {
@@ -125,7 +124,7 @@ class Trades extends Component {
               const isBuyer = addressCompare(trade.buyer, this.props.address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
 
-              return (<Card key={index} className="mb-3 shadow border-0 offer-card"
+              return (<Card key={index} className={classnames("mb-3", "shadow", "border-0", "offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
                 <CardBody>
                   <UserInfoRow hideAddress user={isBuyer ? trade.seller : trade.buyerInfo}
