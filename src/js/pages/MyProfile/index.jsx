@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {withRouter} from "react-router-dom";
-
 import metadata from '../../features/metadata';
 import network from '../../features/network';
 import escrow from '../../features/escrow';
@@ -11,9 +10,9 @@ import events from "../../features/events";
 
 import { zeroAddress, addressCompare } from '../../utils/address';
 
+import ConnectWallet from '../../components/ConnectWallet';
 import UserInformation from '../../components/UserInformation';
 import Loading from "../../components/Loading";
-
 import Separator from './components/Separator';
 import ProfileButton from './components/ProfileButton';
 
@@ -43,11 +42,9 @@ class MyProfile extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.isEip1102Enabled) {
-      return this.props.enableEthereum();
+    if (this.props.isEip1102Enabled) {
+      this.load();
     }
-    this.load();
-
   }
 
   componentDidUpdate(oldProps) {
@@ -83,10 +80,10 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {t, profile, address, requests, trades} = this.props;
+    const {profile, address, requests, trades, enableEthereum} = this.props;
 
     if (!this.props.isEip1102Enabled) {
-      return <p>{t('ethereumEnable.profile')}</p>;
+      return <ConnectWallet enableEthereum={enableEthereum} />;
     }
 
     if(!profile) return <Loading page={true} />;
