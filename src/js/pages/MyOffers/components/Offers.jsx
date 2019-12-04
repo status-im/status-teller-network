@@ -39,13 +39,13 @@ class Offers extends Component {
     const {t} = this.props;
     return offers.map((offer, index) => (
       <Card key={index} className={classnames('mb-2', 'shadow-sm', {'card-transparent': !enabled})}>
-        <CardHeader>
+        <CardHeader className="bg-transparent border-bottom-0">
           {offer.token.symbol}
           <FontAwesomeIcon icon={faArrowRight} className="mx-4"/>
           <span className="text-small font-italic mr-2">{CURRENCY_DATA.find(x => x.id === offer.currency).symbol}</span>
           {offer.currency}
           { enabled && (
-            <Button className="p-0 pl-3 pr-3 m-0 float-right btn-primary-outline" onClick={this.confirmDelete(offer.id)}>
+            <Button className="p-0 pl-3 pr-3 m-0 float-right" color="link" onClick={this.confirmDelete(offer.id)}>
               <img src={iconDelete} alt="Delete icon" />
             </Button>
           )}
