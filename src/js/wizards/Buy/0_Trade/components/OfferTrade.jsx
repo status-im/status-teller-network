@@ -69,9 +69,9 @@ class OfferTrade extends Component {
       <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
       <p className="font-weight-medium mb-1 name">{seller.username}</p>
       <p className="text-muted text-small addr mb-0">{sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address address={sellerContactObj.userId} length={13} disableHover/> : sellerContactObj.userId }</p>
-      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-4">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
+      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-2">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
-      <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline"/></span></h3>
+      <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
       <p className="mt-2 font-weight-medium mb-1 overflow-hidden">
         <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
         {arbitrator.username}
@@ -84,10 +84,8 @@ class OfferTrade extends Component {
         1 {asset} = {price.toFixed(4)} {currency.id}
       </p>
       <p className="text-muted text-small mt-2">
-        <Row tag="span">
-          <Col tag="span" xs={1}><RoundedIcon image={infoIcon} bgColor="secondary" className="float-left" size="sm"/></Col>
-          <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
-        </Row>
+        <RoundedIcon image={infoIcon} bgColor="secondary" className="float-left mr-1" size="sm"/>
+        <span className="pt-2">Only continue if you are comfortable with this price</span>
       </p>
     </Col>
     <Col xs="12" className="mt-4">
