@@ -32,7 +32,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
     currencySymbol = currencySymbol.symbol;
   }
 
-  return (<Card className="mb-3 shadow border-0 offer-card" onClick={() => offerClick(offer.id)}>
+  return (<Card className="mb-3 shadow border-0 offer-card clickable" onClick={() => offerClick(offer.id)}>
     <CardBody>
       <CardTitle className={classnames('seller-name', 'font-weight-bold', {
         'text-black': !isOwner,

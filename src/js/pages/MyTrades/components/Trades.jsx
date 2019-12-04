@@ -106,7 +106,7 @@ class Trades extends Component {
               const isBuyer = addressCompare(trade.buyer, this.props.address);
               const tradeStyle = getTradeStyle(trade, isBuyer);
 
-              return (<Card key={index} className={classnames("mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
+              return (<Card key={index} className={classnames("clickable mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
                 <CardBody>
                   <UserInfoRow hideAddress user={isBuyer ? trade.seller : trade.buyerInfo}
