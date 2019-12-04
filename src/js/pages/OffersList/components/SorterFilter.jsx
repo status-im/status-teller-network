@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {ButtonGroup, FormGroup, Input, Button, ModalBody, Modal, Label} from "reactstrap";
+import {ButtonGroup, FormGroup, Button, ModalBody, Modal, Label} from "reactstrap";
 import {Typeahead} from "react-bootstrap-typeahead";
 import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
 import {DialogOptions} from "../../../constants/contactMethods";
@@ -18,128 +18,6 @@ import './SorterFilter.scss';
 import Draggable from "react-draggable";
 import Separator from "../../MyProfile/components/Separator";
 import {withNamespaces} from "react-i18next";
-
-class FilterMenu extends Component {
-  setLocation = (e) => {
-    this.props.setLocation(e.target.value);
-  };
-
-  onKeyUp = (e) => {
-    if (e.key === 'Enter') {
-      this.setLocation(e);
-    }
-  };
-
-  render() {
-    const props = this.props;
-    return (
-      <Fragment>
-        <div className={classnames({"filter-menu-backdrop": true, "open": props.open})} onClick={props.close}/>
-        <div className={classnames("filter-menu", {"open": props.open})}>
-          <Button color="link" className="clear-all-btn p-0" onClick={props.clear}>Clear all</Button>
-
-          <div className="filter-menu-content mt-4 pr-3">
-            <h5>Cryptocurrency</h5>
-            <FormGroup>
-              <Typeahead
-                id="tokenFilter"
-                options={props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-                placeholder={'Search cryptocurrencies'}
-                value={props.tokenFilter}
-                onChange={props.setTokenFilter}
-              />
-            </FormGroup>
-
-            <h5>Communication method</h5>
-            <FormGroup>
-              <Typeahead
-                id="commFilter"
-                options={Object.keys(DialogOptions)}
-                placeholder={'Filter communication method'}
-                value={props.commFilter}
-                onChange={props.setCommFilter}
-              />
-              <CheckButton onClick={props.toggleCommunicationMethod}
-                           active={props.showCommunicationMethod}>
-                Show Communication method
-              </CheckButton>
-            </FormGroup>
-
-            <h5 className="mt-4">Location</h5>
-            <FormGroup>
-              <Input type="text" placeholder="Enter a city, state, etc."
-                     onBlur={this.setLocation}
-                     onKeyUp={this.onKeyUp}/>
-            </FormGroup>
-
-            <h5 className="mt-4">Sort</h5>
-            <ButtonGroup vertical className="w-100">
-              {props.sortTypes.map((sortType, index) => (
-                <CheckButton key={'sort-' + index}
-                             onClick={() => {
-                               props.setSortType(index);
-                             }}
-                             active={index === props.sortType}>
-                  {sortType}
-                </CheckButton>
-              ))}
-            </ButtonGroup>
-
-            <h5 className="mt-4">Payment method</h5>
-            <span className="text-muted text-small">Popular</span>
-            <ButtonGroup vertical className="w-100">
-              {POPULAR_PAYMENT_METHODS_INDEXES.map((index) => (
-                <CheckButton active={index === props.paymentMethodFilter}
-                            key={'paymentMethod-' + index}
-                            onClick={(_e) => props.setPaymentMethodFilter(index)}>
-                  {PAYMENT_METHODS[index]}
-                </CheckButton>
-              ))}
-            </ButtonGroup>
-
-            <span className="text-muted text-small mt-3">All payment methods (A-Z)</span>
-            <ButtonGroup vertical className="w-100 pb-3">
-              {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
-                <CheckButton active={index === props.paymentMethodFilter}
-                    key={'paymentMethod-' + index}
-                    onClick={(_e) => props.setPaymentMethodFilter(index)}>
-                {PAYMENT_METHODS[index]}
-                </CheckButton>
-              ))}
-            </ButtonGroup>
-
-            <div className="filter-button">
-              <Button color="primary" onClick={props.close} className="mx-auto mt-2 d-block">Apply filters</Button>
-            </div>
-          </div>
-        </div>
-      </Fragment>
-    );
-  }
-}
-
-FilterMenu.propTypes = {
-  open: PropTypes.bool,
-  close: PropTypes.func,
-  paymentMethods: PropTypes.array,
-  sortTypes: PropTypes.array,
-  tokens: PropTypes.array,
-  setTokenFilter: PropTypes.func,
-  setCommFilter: PropTypes.func,
-  setPaymentMethodFilter: PropTypes.func,
-  setSortType: PropTypes.func,
-  setLocation: PropTypes.func,
-  clear: PropTypes.func,
-  tokenFilter: PropTypes.string,
-  commFilter: PropTypes.string,
-  paymentMethodFilter: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
-  sortType: PropTypes.number,
-  showCommunicationMethod: PropTypes.bool,
-  toggleCommunicationMethod: PropTypes.func
-};
 
 const ClearAndApplyButtons = ({onClear, onApply, close}) => (
   <div className="mb-2 mt-2 text-center">
