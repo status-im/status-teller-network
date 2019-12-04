@@ -19,7 +19,6 @@ import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
 import {stringToContact} from "../../utils/strings";
 import {CURRENCY_DATA} from "../../constants/currencies";
-import FiatSelectorForm from "../../wizards/Sell/2_Currency/components/FiatSelectorForm";
 
 class OffersList extends Component {
   constructor(props) {
@@ -28,6 +27,7 @@ class OffersList extends Component {
       tokenFilter: '',
       commFilter: '',
       paymentMethodFilter: -1,
+      amountFilter: -1,
       sortType: 0,
       locationCoords: null,
       calculatingLocation: false,
@@ -129,6 +129,13 @@ class OffersList extends Component {
     this.setState({currency});
   };
 
+  setAmountFilter= (amountFilter) => {
+    if (!amountFilter) {
+      amountFilter = -1;
+    }
+    this.setState({amountFilter});
+  };
+
   render() {
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
@@ -148,6 +155,13 @@ class OffersList extends Component {
     }
     if (this.state.currency !== '') {
       filteredOffers = filteredOffers.filter(offer => offer.currency === this.state.currency);
+    }
+    if (this.state.amountFilter !== -1) {
+      filteredOffers = filteredOffers.filter(offer => {
+        const limitH = parseFloat(offer.limitH);
+        const limitL = parseFloat(offer.limitL);
+        return (limitH === 0 || limitH >= this.state.amountFilter) && (limitL === 0 || limitL <= this.state.amountFilter);
+      });
     }
 
     // Sort
@@ -178,7 +192,9 @@ class OffersList extends Component {
                         showCommunicationMethod={this.state.showCommunicationMethod}
                         currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
                         changeCurrency={this.changeCurrency}
-                        selectedCurrency={this.state.currency}/>
+                        selectedCurrency={this.state.currency}
+                        amountFilter={Number.parseFloat(this.state.amountFilter)}
+                        setAmountFilter={this.setAmountFilter}/>
         </div>
 
         {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
