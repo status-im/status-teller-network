@@ -8,7 +8,7 @@ import {isNumber, required, lowerEqThan, higherThan} from '../../../../validator
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
-import infoIcon from '../../../../../images/info.svg';
+import infoIcon from '../../../../../images/small-info.svg';
 import RoundedIcon from "../../../../ui/RoundedIcon";
 
 class MarginSelectorForm extends Component {
@@ -35,10 +35,17 @@ class MarginSelectorForm extends Component {
       <Form ref={c => {
         this.form = c;
       }}>
-        <h2>{t('sellerMarginContainer.title')}</h2>
+        <h2 className="mb-4">{t('sellerMarginContainer.title')}</h2>
+
+        {calcPrice !== null && <Fragment>
+          <span>Selling Price</span>
+          <p className="font-weight-bold">1 {token.symbol} = {calcPrice.toFixed(4)} {currency}</p>
+        </Fragment>}
+        {calcPrice === null && <p>{t('marginSelectorForm.noPrice')}</p>}
+
         <FormGroup className="mb-0">
           <Row>
-            <Col md={9} sm={8} xs={7}>
+            <Col md={10} sm={9} xs={8}>
               <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={0}
                       onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
@@ -58,26 +65,39 @@ class MarginSelectorForm extends Component {
               </InputGroup>
             </Col>
           </Row>
-          <p className="text-muted">A negative margin means you sell assets for less than what they are worth</p>
         </FormGroup>
 
-        <h3>{t('marginSelectorForm.sellPrice')}</h3>
-        {calcPrice !== null && <Fragment>
-          <div className="border rounded p-3">
-            1 {token.symbol} = {calcPrice.toFixed(4)} {currency}
-          </div>
-          <small>{t('marginSelectorForm.priceOrigin')}</small>
-        </Fragment>}
-        {calcPrice === null && <p>{t('marginSelectorForm.noPrice')}</p>}
 
-        {(feeMilliPercent || '0') !== '0' && <div className="clearfix mt-5">
-          <span className="float-left mr-3">
-            <RoundedIcon image={infoIcon} bgColor="blue" />
-          </span>
-          {t('marginSelectorForm.ourFee', {percentage: feeMilliPercent / 1000})}
-        </div>}
+        <div className="infos-and-warnings mt-4">
+          <Row noGutters>
+            <Col>
+              <RoundedIcon image={infoIcon} bgColor="secondary" size="sm" className="mr-2 float-left"/>
+              <p className="info text-muted">A positive margin means you sell assets for more than they are worth.</p>
+            </Col>
+          </Row>
+          <Row noGutters className="mt-1">
+            <Col>
+              <RoundedIcon image={infoIcon} bgColor="secondary" size="sm" className="mr-2 float-left"/>
+              <p className="info text-muted">Sellers typically choose a margin of roughly 2% above the market price.</p>
+            </Col>
+          </Row>
 
-        {!margin && margin !== 0 && <p className="text-muted mt-4">{t('marginSelectorForm.enterMargin')}</p>}
+        {(feeMilliPercent || '0') !== '0' && <Row noGutters className="mt-1">
+            <Col>
+              <RoundedIcon image={infoIcon} bgColor="secondary" size="sm" className="mr-2 float-left"/>
+              <p className="info text-muted">Teller charges {feeMilliPercent / 1000}% of each transaction</p>
+            </Col>
+          </Row>}
+          
+          <Row noGutters className="mt-1">
+            <Col>
+              <RoundedIcon image={infoIcon} bgColor="secondary" size="sm" className="mr-2 float-left"/>
+              <p className="info text-muted">Prices come from www.cryptocompare.com</p>
+            </Col>
+          </Row>
+        </div>
+      
+      
       </Form>
     );
   }
