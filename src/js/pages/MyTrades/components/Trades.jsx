@@ -1,9 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {Card, Row, Col, Form, FormGroup, Label, Input, CardBody, CardFooter} from 'reactstrap';
+import {Card, Row, Col, CardBody, CardFooter} from 'reactstrap';
 import {withNamespaces} from 'react-i18next';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
 import {truncateTwo} from '../../../utils/numbers';
@@ -20,6 +18,7 @@ import {PAYMENT_METHODS} from "../../../features/metadata/constants";
 
 import UserInfoRow from "../../../components/UserInfoRow";
 
+// eslint-disable-next-line complexity
 const getTradeStyle = (trade, isBuyer) => {
   if (trade.mining) {
     return {text: 'Mining', className: 'bg-info'};
