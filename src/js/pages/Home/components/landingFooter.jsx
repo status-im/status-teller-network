@@ -12,12 +12,12 @@ import {Link} from "react-router-dom";
 const LandingFooter = () => (
   <footer className="landing-footer border-top pt-5 mt-5" data-aos="fade-up">
     <Row>
-      <Col xs={6} md={3}>
+      <Col xs={6} md={3} className="order-first mb-4 pb-5">
         <img src={logo} alt="Logo" className="mr-2"/><img src={logoText} alt="Logo text"/>
         <img src={betaTag} alt="Beta tag" className="ml-2 mt-1"/>
       </Col>
 
-      <Col xs={6} md={3}>
+      <Col xs={6} md={3} className="order-1 order-md-0">
         <h5>Documentation</h5>
         <ul>
           <li><Link to="offer/list">Getting Started</Link></li>
@@ -26,7 +26,7 @@ const LandingFooter = () => (
         </ul>
       </Col>
 
-      <Col xs={6} md={3}>
+      <Col xs={6} md={3} className="order-2 order-md-1">
         <h5>Status Network</h5>
         <ul>
           <li><a target="_blank" href="https://status.im">Status</a></li>
@@ -36,7 +36,7 @@ const LandingFooter = () => (
         </ul>
       </Col>
 
-      <Col xs={6} md={3}>
+      <Col xs={6} md={3} className="order-0 order-md-2">
         <p className="text-right home-details mb-1">We are part of</p>
         <p className="text-right">
           <a target="_blank" href="https://status.im"><img src={statusLogo} alt="Logo"/></a>
