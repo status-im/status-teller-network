@@ -324,7 +324,8 @@ class LocationModal extends Component {
   render() {
     const {onClose, setLocation} = this.props;
     return (<Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
-      <ModalBody>
+      <ClearButton close={onClose} onClear={() =>  setLocation('')}/>
+      <ModalBody className="mt-3">
         <FormGroup className="text-center pt-4">
           <input className="form-control mb-3" type="text" placeholder="Enter a city, state, etc."
                  ref={(input) => { this.locationInput = input; }}
@@ -337,8 +338,9 @@ class LocationModal extends Component {
                      onClose();
                    }
                  }}/>
-
-          <ClearAndApplyButtons close={onClose} onClear={() =>  setLocation('')} onApply={() => setLocation(this.state.location)}/>
+          <div className="text-right">
+            <Button onClick={() => setLocation(this.state.location)} color="primary">Apply</Button>
+          </div>
         </FormGroup>
       </ModalBody>
     </Modal>);
