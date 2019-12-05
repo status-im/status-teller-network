@@ -24,6 +24,11 @@ $filter-modal-padding: 16px;
       margin-bottom: 5px;
       margin-top: -5px;
     }
+
+    .dropdown-item {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
   }
 }
 
@@ -51,9 +56,7 @@ $filter-modal-padding: 16px;
   }
 }
 
-.modal .modal-dialog.filter-modal {
-  position: relative;
-
+.filter-modal {
   .separator-container {
     position: relative;
     width: 100%;
@@ -64,6 +67,10 @@ $filter-modal-padding: 16px;
       right: -$filter-modal-padding;
     }
   }
+}
+
+.modal .modal-dialog.filter-modal {
+  position: relative;
 
   .clear-button {
     position: absolute;
