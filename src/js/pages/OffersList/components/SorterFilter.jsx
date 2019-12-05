@@ -5,7 +5,7 @@ import {ButtonGroup, FormGroup, Button, ModalBody, Modal, Label} from "reactstra
 import {Typeahead, Highlighter} from "react-bootstrap-typeahead";
 import {getOptionLabel} from "react-bootstrap-typeahead/lib/utils";
 import {PAYMENT_METHODS, POPULAR_PAYMENT_METHODS_INDEXES} from '../../../features/metadata/constants';
-import {DialogOptions} from "../../../constants/contactMethods";
+import {DialogOptions, DialogOptionsIcons} from "../../../constants/contactMethods";
 import CheckButton from '../../../ui/CheckButton';
 import Draggable from "react-draggable";
 import Separator from "../../MyProfile/components/Separator";
@@ -266,8 +266,8 @@ PaymentMethodModal.propTypes = {
 const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilter, offers}) => (
   <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
     <ClearButton onClear={() => setContactMethodFilter('')} close={onClose}/>
-    <ModalBody className="pb-4 mt-4">
-      <ButtonGroup vertical className="w-100">
+    <ModalBody className="pb-4 mt-4 ">
+      <ButtonGroup vertical className="w-100 pt-2">
         {Object.keys(DialogOptions).map((dialogOption) => {
           let nbOffersForCommMethod = 0;
 
@@ -278,13 +278,14 @@ const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilte
           });
 
           return (<Fragment key={'dialogOption-' + dialogOption}>
-              <p className={classnames("pt-3 pb-3 mb-0 w-100 clickable", {'font-weight-bold': dialogOption === contactMethodFilter})}
+              <p className={classnames("pt-2 pb-2 mb-0 w-100 clickable", {'font-weight-bold': dialogOption === contactMethodFilter})}
                  onClick={(_e) => {
                    setContactMethodFilter(dialogOption);
                    onClose();
                  }}>
+                <RoundedIcon bgColor="blue" image={DialogOptionsIcons[dialogOption]} size="md"  className="d-inline-block mr-3"/>
                 {dialogOption}
-                <span className="text-muted float-right">
+                <span className="text-muted float-right mt-1">
                 ({nbOffersForCommMethod})
               </span>
               </p>
