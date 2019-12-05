@@ -18,18 +18,21 @@ import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transacti
 import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
 import {stringToContact} from "../../utils/strings";
+import {CURRENCY_DATA} from "../../constants/currencies";
 
 class OffersList extends Component {
   constructor(props) {
     super(props);
     this.defaultState = {
       tokenFilter: '',
-      commFilter: '',
       paymentMethodFilter: -1,
+      amountFilter: -1,
       sortType: 0,
       locationCoords: null,
       calculatingLocation: false,
-      showCommunicationMethod: false
+      showCommunicationMethod: false,
+      currency: '',
+      contactMethodFilter: ''
     };
     this.state = this.defaultState;
   }
@@ -72,14 +75,6 @@ class OffersList extends Component {
     this.setState({tokenFilter});
   };
 
-  setCommFilter = (selected) => {
-    let commFilter = '';
-    if (selected[0]) {
-      commFilter = selected[0];
-    }
-    this.setState({commFilter});
-  };
-
   setSortType = (sortType) => {
     if (this.state.sortType === sortType) {
       sortType = 0;
@@ -93,7 +88,7 @@ class OffersList extends Component {
 
   setLocation = (location) => {
     if (!location) {
-      return this.setState({calculatingLocation: false, locationCoords: null});
+      return this.setState({calculatingLocation: false, locationCoords: null, location: ''});
     }
     if (location === this.state.location) {
       return;
@@ -119,36 +114,59 @@ class OffersList extends Component {
     return Math.sqrt(Math.pow(userCoords.lat - this.state.locationCoords.lat, 2) + Math.pow(userCoords.lng - this.state.locationCoords.lng, 2));
   };
 
+  changeCurrency= (currency) => {
+    if (!currency) {
+      currency = '';
+    }
+    this.setState({currency});
+  };
+
+  setAmountFilter= (amountFilter) => {
+    if (!amountFilter) {
+      amountFilter = -1;
+    }
+    this.setState({amountFilter});
+  };
+
+  setContactMethodFilter= (contactMethodFilter) => {
+    if (!contactMethodFilter || contactMethodFilter === this.state.contactMethodFilter) {
+      contactMethodFilter = '';
+    }
+    this.setState({contactMethodFilter});
+  };
+
   render() {
-    let hasFilter = false;
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
     let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     if (this.state.locationCoords) {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
     }
 
     if (this.state.tokenFilter !== '') {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
     if (this.state.paymentMethodFilter !== -1) {
-      hasFilter = true;
       filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
     }
-    if (this.state.commFilter !== '') {
-      hasFilter = true;
+    if (this.state.contactMethodFilter !== '') {
+      filteredOffers = filteredOffers.filter(offer => stringToContact(offer.user.contactData).method === this.state.contactMethodFilter);
+    }
+    if (this.state.currency !== '') {
+      filteredOffers = filteredOffers.filter(offer => offer.currency === this.state.currency);
+    }
+    if (this.state.amountFilter !== -1) {
       filteredOffers = filteredOffers.filter(offer => {
-        return stringToContact(offer.user.contactData).method === this.state.commFilter;
+        const limitH = parseFloat(offer.limitH);
+        const limitL = parseFloat(offer.limitL);
+        return (limitH === 0 || limitH >= this.state.amountFilter) && (limitL === 0 || limitL <= this.state.amountFilter);
       });
     }
 
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address);
-        hasFilter = true; break;
+      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address); break;
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
@@ -156,22 +174,26 @@ class OffersList extends Component {
     return (
       <Fragment>
         <div>
-          <h2 className="d-inline-block pt-2">{this.props.t('offers.listTitle')}</h2>
           <SorterFilter sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
                         tokens={this.props.tokens}
                         clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}
-                        setCommFilter={this.setCommFilter}
                         setSortType={this.setSortType}
+                        location={this.state.location}
                         setLocation={this.setLocation}
                         setPaymentMethodFilter={this.setPaymentMethodFilter}
                         tokenFilter={this.state.tokenFilter}
-                        commFilter={this.state.commFilter}
                         paymentMethodFilter={this.state.paymentMethodFilter}
                         toggleCommunicationMethod={this.toggleCommunicationMethod}
                         showCommunicationMethod={this.state.showCommunicationMethod}
-                        hasFilter={hasFilter}/>
+                        currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
+                        changeCurrency={this.changeCurrency}
+                        selectedCurrency={this.state.currency}
+                        amountFilter={Number.parseFloat(this.state.amountFilter)}
+                        setAmountFilter={this.setAmountFilter}
+                        contactMethodFilter={this.state.contactMethodFilter}
+                        setContactMethodFilter={this.setContactMethodFilter}/>
         </div>
 
         {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}

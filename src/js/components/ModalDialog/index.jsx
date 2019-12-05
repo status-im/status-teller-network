@@ -23,6 +23,7 @@ ModalDialog.propTypes = {
   content: PropTypes.string,
   display: PropTypes.bool,
   buttonText: PropTypes.string,
+  children: PropTypes.node,
   hideButton: PropTypes.bool
 };
 

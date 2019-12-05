@@ -10,7 +10,6 @@ class FiatSelectorForm extends Component {
     if (symbol) {
       this.props.changeCurrency(symbol.id);
     }
-
   };
 
   onChange = (items) => {

@@ -5,6 +5,43 @@
   font-size: 15px;
 }
 
+.filter-menu-slider-container {
+  width: 100%;
+  overflow: hidden;
+  padding: 3px;
+  margin-left: -3px;
+
+  .filter-menu-slider {
+    width: 970px;
+
+    svg {
+      fill: $blue;
+    }
+
+    .btn.inactive {
+      background-color: $secondary;
+      color: $dark;
+
+      svg {
+        fill: $dark;
+      }
+    }
+  }
+}
+
+.filter-modal {
+  .separator-container {
+    position: relative;
+    width: 100%;
+
+    .separator {
+      width: 435px;
+      position: absolute;
+      right: -24px;
+    }
+  }
+}
+
 .filter-menu-backdrop {
   position: fixed;
   right: 0;

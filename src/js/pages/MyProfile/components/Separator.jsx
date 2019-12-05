@@ -1,10 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
-const Separator = () => (
-    <div className="clearfix mb-4">
+const Separator = ({className}) => (
+    <div className={classnames("clearfix separator-container", {[className]: className})}>
         <span className="separator"/>
     </div>
 );
 
+Separator.propTypes = {
+  className: PropTypes.bool
+};
 
 export default Separator;

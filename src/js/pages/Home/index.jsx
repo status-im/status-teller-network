@@ -122,7 +122,7 @@ class Home extends Component {
                 grid={[25, 25]}
                 bounds={this.state.bigScreen ? {left: -300, right: 300} : {left: -1120, right: 0}}
                 scale={1}>
-                <div className="popular-offers mb-3" data-aos="fade-up">
+                <div className="popular-offers mb-3">
                   {offers.sort(sortByRating).slice(0, 5).map((offer, index) => (
                     <Offer key={`offer-${index}`}
                            withDetail offer={offer}
