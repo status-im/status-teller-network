@@ -21,6 +21,7 @@ import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
 import RoundedIcon from "../../../ui/RoundedIcon";
+import {stringToContact} from "../../../utils/strings";
 
 const ClearAndApplyButtons = ({onClear, onApply, close}) => (
   <div className="mb-2 mt-2 text-center">
@@ -262,22 +263,35 @@ PaymentMethodModal.propTypes = {
   setPaymentMethodFilter: PropTypes.func
 };
 
-const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilter}) => (
+const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilter, offers}) => (
   <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
-    <ModalBody className="pb-4">
+    <ClearButton onClear={() => setContactMethodFilter('')} close={onClose}/>
+    <ModalBody className="pb-4 mt-4">
       <ButtonGroup vertical className="w-100">
-        {Object.keys(DialogOptions).map((dialogOption) => (
-          <Fragment key={'dialogOption-' + dialogOption}>
-            <CheckButton className="mt-2" active={dialogOption === contactMethodFilter}
-                         onClick={(_e) => {
-                           setContactMethodFilter(dialogOption);
-                           onClose();
-                         }}>
-              {dialogOption}
-            </CheckButton>
-            <Separator/>
-          </Fragment>
-        ))}
+        {Object.keys(DialogOptions).map((dialogOption) => {
+          let nbOffersForCommMethod = 0;
+
+          offers.forEach(offer => {
+            if (stringToContact(offer.user.contactData).method === dialogOption) {
+              nbOffersForCommMethod++;
+            }
+          });
+
+          return (<Fragment key={'dialogOption-' + dialogOption}>
+              <p className={classnames("pt-3 pb-3 mb-0 w-100 clickable", {'font-weight-bold': dialogOption === contactMethodFilter})}
+                 onClick={(_e) => {
+                   setContactMethodFilter(dialogOption);
+                   onClose();
+                 }}>
+                {dialogOption}
+                <span className="text-muted float-right">
+                ({nbOffersForCommMethod})
+              </span>
+              </p>
+              <Separator/>
+            </Fragment>
+          );
+        })}
       </ButtonGroup>
     </ModalBody>
   </Modal>
@@ -286,7 +300,8 @@ const ContactMethodModal = ({onClose, contactMethodFilter, setContactMethodFilte
 ContactMethodModal.propTypes = {
   onClose: PropTypes.func,
   contactMethodFilter: PropTypes.string,
-  setContactMethodFilter: PropTypes.func
+  setContactMethodFilter: PropTypes.func,
+  offers: PropTypes.array
 };
 
 class LocationModal extends Component {
@@ -464,7 +479,7 @@ class SorterFilter extends Component {
       <AmountModal onClose={this.closeMenu} amount={this.props.amountFilter} setAmount={this.props.setAmountFilter}/>}
 
       {this.state.contactMethodModalOpen &&
-      <ContactMethodModal onClose={this.closeMenu} contactMethodFilter={this.props.contactMethodFilter} setContactMethodFilter={this.props.setContactMethodFilter}/>}
+      <ContactMethodModal onClose={this.closeMenu} contactMethodFilter={this.props.contactMethodFilter} setContactMethodFilter={this.props.setContactMethodFilter} offers={this.props.offers}/>}
     </Fragment>);
   }
 }
