@@ -7,10 +7,23 @@ $filter-modal-padding: 16px;
   font-size: 15px;
 }
 
-#tokenFilter {
-  .asset-image {
-    margin-bottom: 5px;
-    margin-top: -5px;
+.tokenFilter-container {
+  .crypto-icons {
+    position: absolute;
+    z-index: 900;
+    top: 10px;
+    left: 10px;
+  }
+
+  .rbt-input-main {
+    padding-left: 55px;
+  }
+
+  #tokenFilter {
+    .asset-image {
+      margin-bottom: 5px;
+      margin-top: -5px;
+    }
   }
 }
 

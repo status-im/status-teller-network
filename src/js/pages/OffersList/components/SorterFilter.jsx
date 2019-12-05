@@ -18,6 +18,7 @@ import { ReactComponent as MoneyIcon } from '../../../../images/money-hand.svg';
 import { ReactComponent as CurrencyIcon } from '../../../../images/dollar.svg';
 import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg';
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
+import cryptoIcons from '../../../../images/cryptoIcons.svg';
 
 import './SorterFilter.scss';
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -398,38 +399,41 @@ class SorterFilter extends Component {
 
   render() {
     return (<Fragment>
-      <Typeahead
-        id="tokenFilter"
-        className="filter-modal"
-        options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
-        placeholder={'Search cryptocurrencies'}
-        value={this.props.tokenFilter}
-        onChange={this.props.setTokenFilter}
-        renderMenuItemChildren={(option, props, idx) => {
-          const symbol = getOptionLabel(option, props.labelKey);
-          let nbOffersForToken = 0;
-          this.props.offers.forEach(offer => {
-            if (offer.token.symbol === symbol) {
-              nbOffersForToken++;
-            }
-          });
-          return (
-            <div className="mt-2">
-              <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
-              {this.props.tokens.find(token => token.symbol === symbol).name}
-              <span className="text-muted ml-2 d-inline-block mb-2">
+      <div className="tokenFilter-container position-relative">
+        <img src={cryptoIcons} alt="crypto icons" className="crypto-icons"/>
+        <Typeahead
+          id="tokenFilter"
+          className="filter-modal"
+          options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+          placeholder={'Search cryptocurrencies'}
+          value={this.props.tokenFilter}
+          onChange={this.props.setTokenFilter}
+          renderMenuItemChildren={(option, props, idx) => {
+            const symbol = getOptionLabel(option, props.labelKey);
+            let nbOffersForToken = 0;
+            this.props.offers.forEach(offer => {
+              if (offer.token.symbol === symbol) {
+                nbOffersForToken++;
+              }
+            });
+            return (
+              <div className="mt-2">
+                <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
+                {this.props.tokens.find(token => token.symbol === symbol).name}
+                <span className="text-muted ml-2 d-inline-block mb-2">
               <Highlighter search={props.text}>
                 {symbol}
               </Highlighter>
               </span>
-              <span className="text-muted float-right">
+                <span className="text-muted float-right">
                 ({nbOffersForToken})
               </span>
-              {idx !== this.props.tokens.length - 1 && <Separator/>}
-            </div>
-          );
-        }}
-      />
+                {idx !== this.props.tokens.length - 1 && <Separator/>}
+              </div>
+            );
+          }}
+        />
+      </div>
       <div className="filter-menu-slider-container position-relative">
         <Draggable
           axis="x"
