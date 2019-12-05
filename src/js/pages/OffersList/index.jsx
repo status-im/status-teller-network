@@ -188,7 +188,7 @@ class OffersList extends Component {
                         paymentMethodFilter={this.state.paymentMethodFilter}
                         toggleCommunicationMethod={this.toggleCommunicationMethod}
                         showCommunicationMethod={this.state.showCommunicationMethod}
-                        currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
+                        currencies={CURRENCY_DATA}
                         changeCurrency={this.changeCurrency}
                         selectedCurrency={this.state.currency}
                         amountFilter={Number.parseFloat(this.state.amountFilter)}

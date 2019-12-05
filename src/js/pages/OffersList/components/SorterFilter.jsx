@@ -20,6 +20,7 @@ import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg'
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 
 import './SorterFilter.scss';
+import RoundedIcon from "../../../ui/RoundedIcon";
 
 const ClearAndApplyButtons = ({onClear, onApply, close}) => (
   <div className="mb-2 mt-2 text-center">
@@ -46,11 +47,12 @@ ClearAndApplyButtons.propTypes = {
 
 const ClearButton = ({onClear, close}) => (
     <Button onClick={() => {
+      console.log('ALLO?');
       if (onClear) {
         onClear();
       }
       close();
-    }} className="px-2 py-0 clear-button">Clear</Button>
+    }} className="px-2 py-0 clear-button clickable">Clear selection</Button>
 );
 
 ClearButton.propTypes = {
@@ -85,7 +87,7 @@ SorterModal.propTypes = {
   sortType: PropTypes.number
 };
 
-const CurrencyModal = ({t, onClose, selected, currencies, changeCurrency}) => {
+const CurrencyModal = ({t, onClose, selected, currencies, changeCurrency, offers}) => {
   const defaultSelectedValue = [];
   if (selected) {
     const currency = currencies.find(x => x.id === selected);
@@ -93,16 +95,19 @@ const CurrencyModal = ({t, onClose, selected, currencies, changeCurrency}) => {
   }
   return (
     <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
+      <ClearButton onClear={() => changeCurrency('')} close={onClose}/>
       <ModalBody>
-        <Typeahead className="mb-3 mt-3"
+        <Typeahead className="mb-3 mt-5"
                    id="fiatSelector"
                    onChange={(items) => {
                      if (items.length) {
                        const item = items[0];
                        changeCurrency(item.id);
                      }
+                     onClose();
                    }}
                    options={currencies}
+                   labelKey="id"
                    placeholder={t("fiatSelectorForm.placeholder")}
                    onInputChange={(text) => {
                      const symbol = currencies.find(x => x.label === text);
@@ -113,8 +118,31 @@ const CurrencyModal = ({t, onClose, selected, currencies, changeCurrency}) => {
                    submitFormOnEnter={true}
                    emptyLabel={t("fiatSelectorForm.emptyLabel")}
                    defaultSelected={defaultSelectedValue}
+                   renderMenuItemChildren={(option, _props, idx) => {
+                     const currency = getOptionLabel(option, _props.labelKey);
+                     let nbOffersForCurrency = 0;
+
+                     offers.forEach(offer => {
+                       if (offer.currency === currency) {
+                         nbOffersForCurrency++;
+                       }
+                     });
+
+                     return (<div className="mt-2">
+                       <RoundedIcon bgColor="blue" text={option.symbol} className="d-inline-block mr-3" size="md"/>
+                       <Highlighter search={_props.text}>
+                         {currency}
+                       </Highlighter>
+                       <span className="text-muted ml-2 d-inline-block mb-2">
+                        {option.label}
+                     </span>
+                       <span className="text-muted float-right mt-1">
+                       ({nbOffersForCurrency})
+                     </span>
+                       {idx !== currencies.length - 1 && <Separator/>}
+                     </div>);
+                   }}
         />
-        <ClearAndApplyButtons onClear={() => changeCurrency('')} close={onClose}/>
       </ModalBody>
     </Modal>
   );
@@ -125,7 +153,8 @@ CurrencyModal.propTypes = {
   onClose: PropTypes.func,
   changeCurrency: PropTypes.func,
   currencies: PropTypes.array,
-  selected: PropTypes.string
+  selected: PropTypes.string,
+  offers: PropTypes.array
 };
 
 class AmountModal extends Component {
@@ -421,7 +450,7 @@ class SorterFilter extends Component {
                           setPaymentMethodFilter={this.props.setPaymentMethodFilter}/>}
 
       {this.state.currencyModalOpen &&
-      <CurrencyModal onClose={this.closeMenu} changeCurrency={this.props.changeCurrency}
+      <CurrencyModal onClose={this.closeMenu} changeCurrency={this.props.changeCurrency} offers={this.props.offers}
                      currencies={this.props.currencies} selected={this.props.selectedCurrency} t={this.props.t}/>}
 
       {this.state.amountModalOpen &&

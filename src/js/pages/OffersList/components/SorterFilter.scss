@@ -1,5 +1,7 @@
 @import "../../../../css/variable-overrides";
 
+$filter-modal-padding: 16px;
+
 .filter-icon {
   width: 54px;
   font-size: 15px;
@@ -36,7 +38,7 @@
   }
 }
 
-.filter-modal {
+.modal .modal-dialog.filter-modal {
   position: relative;
 
   .separator-container {
@@ -44,17 +46,22 @@
     width: 100%;
 
     .separator {
-      width: 435px;
+      width: 90%;
       position: absolute;
-      right: -24px;
+      right: -$filter-modal-padding;
     }
   }
 
   .clear-button {
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: $filter-modal-padding;
+    right: $filter-modal-padding;
     border-radius: 40px;
+    z-index: 1000;
+  }
+
+  .modal-content .modal-body {
+    padding: $filter-modal-padding;
   }
 }
 
