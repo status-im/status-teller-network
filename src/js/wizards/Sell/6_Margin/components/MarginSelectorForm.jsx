@@ -45,7 +45,7 @@ class MarginSelectorForm extends Component {
 
         <FormGroup className="mb-0">
           <Row>
-            <Col md={10} sm={9} xs={8}>
+            <Col md={9} sm={9} xs={8}>
               <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={0}
                       onChange={(value) => this.onMarginChange(value)} value={margin}/>
             </Col>
