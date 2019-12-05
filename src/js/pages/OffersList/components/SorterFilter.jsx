@@ -177,11 +177,14 @@ class AmountModal extends Component {
     const {onClose, setAmount} = this.props;
     return (
       <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
+        <ClearButton close={onClose} onClear={() => setAmount(-1)}/>
         <ModalBody>
           <FormGroup className="pt-4">
             <Label for="amountLabel">Amount</Label>
             <input id="amountLabel" className="form-control mb-3" type="text" placeholder="0"
-                   ref={(input) => { this.amountInput = input; }}
+                   ref={(input) => {
+                     this.amountInput = input;
+                   }}
                    autoFocus
                    value={this.state.amount}
                    onChange={this.onChange}
@@ -191,8 +194,12 @@ class AmountModal extends Component {
                        onClose();
                      }
                    }}/>
-
-            <ClearAndApplyButtons close={onClose} onClear={() =>  setAmount(-1)} onApply={() => setAmount(this.state.amount)}/>
+            <div className="text-right">
+              <Button onClick={() => {
+                setAmount(this.state.amount);
+                onClose();
+              }} color="primary">Apply</Button>
+            </div>
           </FormGroup>
         </ModalBody>
       </Modal>
