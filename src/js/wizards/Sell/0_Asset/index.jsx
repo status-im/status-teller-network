@@ -15,6 +15,9 @@ class Asset extends Component {
       selectedAsset: props.seller.asset
     };
     this.validate(props.seller.asset);
+
+    this.props.footer.hide();
+
     this.props.footer.onPageChange(() => {
       this.props.setAsset(this.state.selectedAsset);
     });
@@ -23,12 +26,14 @@ class Asset extends Component {
   componentDidMount() {
     if (this.props.isEip1102Enabled) {
       this.load();
+      this.props.footer.show();
     }
   }
 
   componentDidUpdate(prevProps) {
     if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
       this.load();
+      this.props.footer.show();
     }
   }
 
