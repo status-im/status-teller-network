@@ -79,9 +79,13 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         addOfferStatus: States.success,
-        users: {...state.users, [toChecksumAddress(action.receipt.from)]: {
-          ...Object.assign({}, state.users[toChecksumAddress(action.receipt.from)], action.user)
-        }}
+        users: {
+          ...state.users,
+          [toChecksumAddress(action.receipt.from)]: {
+            ...state.users[toChecksumAddress(action.receipt.from)],
+            ...action.user
+          }
+        }
       };
     }
     case ADD_OFFER_FAILED:
@@ -104,10 +108,13 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         updateUserStatus: States.success,
-        users: {...state.users, [toChecksumAddress(action.receipt.from)]: {
-          ...state.users[toChecksumAddress(action.receipt.from)],
-          ...action.user
-        }}
+        users: {
+          ...state.users,
+          [toChecksumAddress(action.receipt.from)]: {
+            ...state.users[toChecksumAddress(action.receipt.from)],
+            ...action.user
+          }
+        }
       };
     }
     case UPDATE_USER_FAILED:
@@ -115,11 +122,14 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, updateUserStatus: States.failed
       };
     case LOAD_USER_SUCCEEDED:
+      // console.log('LOADED USER', action.address, action.user);
       return {
-        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
-          ...state.users[toChecksumAddress(action.address)],
-          ...action.user
-        }}
+        ...state, users: {
+          ...state.users, [toChecksumAddress(action.address)]: {
+            ...state.users[toChecksumAddress(action.address)],
+            ...action.user
+          }
+        }
       };
     case BUY_LICENSE_SUCCEEDED:
       return {
@@ -144,7 +154,9 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     case LOAD_USER_LOCATION_SUCCEEDED:
       return {
-        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(action.address)]: {
             ...state.users[toChecksumAddress(action.address)],
             coords: action.coords,
             countryCode: action.countryCode
@@ -162,8 +174,10 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case USER_RATING_SUCCEEDED:
-      return  {
-        ...state, users: {...state.users, [toChecksumAddress(action.address)]: {
+      return {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(action.address)]: {
             ...state.users[toChecksumAddress(action.address)],
             downCount: action.downCount,
             upCount: action.upCount,
