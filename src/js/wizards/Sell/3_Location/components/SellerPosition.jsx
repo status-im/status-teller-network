@@ -3,6 +3,7 @@ import {Form, FormGroup, Input, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 class SellerPosition extends Component {
+
   changeLocation(e) {
     this.props.changeLocation(e.target.value);
   }
@@ -16,6 +17,17 @@ class SellerPosition extends Component {
             <Label className="text-small mt-3 mb-0">Location</Label>
             <Input type="text" name="location" id="location" placeholder="Enter location"
                    value={this.props.location || ''} onChange={(e) => this.changeLocation(e)}/>
+
+            <FormGroup check className="mt-3">
+              <Label check>
+                <Input type="checkbox" onClick={(e) => {
+                  if (e.target.checked) {
+                    this.props.changeLocation('');
+                  }
+                }}/>
+                Hide location
+              </Label>
+            </FormGroup>
           </FormGroup>
         </Form>
       </React.Fragment>

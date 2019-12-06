@@ -11,7 +11,7 @@ import metadata from "../../../features/metadata";
 class Location extends Component {
   constructor(props) {
     super(props);
-    const location = props.seller.location || (props.profile && props.profile.location);
+    const location = props.seller.location || (props.profile && props.profile.location) || null;
     this.state = {
       location
     };
@@ -28,7 +28,7 @@ class Location extends Component {
   }
 
   validate(location) {
-    if (location && location.trim() !== "") {
+    if (location !== null && location.trim() !== null) {
       this.props.footer.enableNext();
     } else {
       this.props.footer.disableNext();
