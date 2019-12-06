@@ -10,12 +10,13 @@ import {
   GET_OFFER_PRICE,
   GET_OFFER_PRICE_SUCCEEDED
 } from './constants';
-import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED} from '../escrow/constants';
+import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED, RATE_TRANSACTION_SUCCEEDED} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
 import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
+import {put, select} from "redux-saga/effects";
 
 const DEFAULT_STATE = {
   eip1102Enabled: false,
@@ -187,6 +188,26 @@ function reducer(state = DEFAULT_STATE, action) {
           }
         }
       };
+    case RATE_TRANSACTION_SUCCEEDED: {
+      const user = Object.assign({}, state.users[action.user]);
+      user.voteCount++;
+      if (action.rating > 3) {
+        user.upCount++;
+      } else if (action.rating < 3) {
+        user.downCount++;
+      }
+
+      // Calculate new average from the percentage of votes the original average had vs the new vote
+      user.averageCount = (user.averageCount * ((user.voteCount - 1) / user.voteCount)) + (parseInt(action.rating, 10) / user.voteCount);
+      user.averageCountBase10 = ((user.averageCount * 10) / 5);
+
+      return {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(action.user)]: user
+        }
+      };
+    }
     case RESET_STATE: {
       return Object.assign({}, state, {
         addOfferStatus: States.none,
