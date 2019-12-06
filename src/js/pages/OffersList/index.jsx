@@ -176,6 +176,7 @@ class OffersList extends Component {
         <div>
           <SorterFilter sortTypes={SORT_TYPES}
                         sortType={this.state.sortType}
+                        offers={this.props.offers}
                         tokens={this.props.tokens}
                         clear={this.clearFilters}
                         setTokenFilter={this.setTokenFilter}
@@ -187,7 +188,7 @@ class OffersList extends Component {
                         paymentMethodFilter={this.state.paymentMethodFilter}
                         toggleCommunicationMethod={this.toggleCommunicationMethod}
                         showCommunicationMethod={this.state.showCommunicationMethod}
-                        currencies={CURRENCY_DATA.map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
+                        currencies={CURRENCY_DATA}
                         changeCurrency={this.changeCurrency}
                         selectedCurrency={this.state.currency}
                         amountFilter={Number.parseFloat(this.state.amountFilter)}

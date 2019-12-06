@@ -5,14 +5,29 @@
   height: 40px;
   display: flex;
   margin: auto;
+  line-height: 40px;
+  text-align: center;
 
+  &.md {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+  }
   &.sm {
     width: 24px;
     height: 24px;
+    line-height: 24px;
   }
   &.xs {
     width: 20px;
     height: 20px;
+    line-height: 20px;
+  }
+
+  .text-icon {
+    color: $blue;
+    font-size: 18px;
+    font-weight: 500;
   }
 }
 

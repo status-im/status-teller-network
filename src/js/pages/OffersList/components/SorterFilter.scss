@@ -1,8 +1,35 @@
 @import "../../../../css/variable-overrides";
 
+$filter-modal-padding: 16px;
+
 .filter-icon {
   width: 54px;
   font-size: 15px;
+}
+
+.tokenFilter-container {
+  .crypto-icons {
+    position: absolute;
+    z-index: 900;
+    top: 10px;
+    left: 10px;
+  }
+
+  .rbt-input-main {
+    padding-left: 55px;
+  }
+
+  #tokenFilter {
+    .asset-image {
+      margin-bottom: 5px;
+      margin-top: -5px;
+    }
+
+    .dropdown-item {
+      padding-right: 16px;
+      padding-left: 16px;
+    }
+  }
 }
 
 .filter-menu-slider-container {
@@ -35,10 +62,26 @@
     width: 100%;
 
     .separator {
-      width: 435px;
+      width: 90%;
       position: absolute;
-      right: -24px;
+      right: -$filter-modal-padding;
     }
+  }
+}
+
+.modal .modal-dialog.filter-modal {
+  position: relative;
+
+  .clear-button {
+    position: absolute;
+    top: $filter-modal-padding;
+    right: $filter-modal-padding;
+    border-radius: 40px;
+    z-index: 1000;
+  }
+
+  .modal-content .modal-body {
+    padding: $filter-modal-padding;
   }
 }
 
