@@ -60,7 +60,7 @@ class EditContactList extends Component {
     return (
       <Fragment>
         <h2 className="mb-4">{t('contactForm.contactTitle')}</h2>
-        <Form>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <FormGroup>
             {this.contactMethods.map((method, index) => (
               <CheckButton key={'contact-' + index} inline align="left"
