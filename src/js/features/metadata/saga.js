@@ -146,6 +146,9 @@ export function *loadOffers({address}) {
       releasedEscrows = allReleased.map(e => e.returnValues.escrowId);
     }
 
+    const nbReleasedTradesObject = {};
+    const nbCreatedTradesObject = {};
+
     const offers = yield all(offerIds.map(function *(id) {
       const offer = yield MetadataStore.methods.offer(id).call({from: defaultAccount});
 
@@ -172,14 +175,26 @@ export function *loadOffers({address}) {
         }
       });
 
-      yield put({
-        type: LOAD_USER_TRADE_NUMBER_SUCCEEDED,
-        address: offer.owner,
-        nbReleasedTrades: nbReleasedTrades,
-        nbCreatedTrades: createdTrades.length
-      });
+      if (nbReleasedTradesObject[offer.owner] === undefined) {
+        nbReleasedTradesObject[offer.owner] = 0;
+        nbCreatedTradesObject[offer.owner] = 0;
+
+      }
+      nbReleasedTradesObject[offer.owner] += nbReleasedTrades;
+      nbCreatedTradesObject[offer.owner] += createdTrades.length;
 
       return {...offer, id};
+    }));
+
+
+    // Put nb trades for all users after aggregating them
+    yield all(Object.keys(nbReleasedTradesObject).map(function *(owner) {
+      yield put({
+        type: LOAD_USER_TRADE_NUMBER_SUCCEEDED,
+        address: owner,
+        nbReleasedTrades: nbReleasedTradesObject[owner],
+        nbCreatedTrades: nbCreatedTradesObject[owner]
+      });
     }));
 
     yield put({type: LOAD_OFFERS_SUCCEEDED, offers});

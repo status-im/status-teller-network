@@ -29,17 +29,17 @@ const LandingFooter = () => (
       <Col xs={6} md={3} className="order-2 order-md-1">
         <h5>Status Network</h5>
         <ul>
-          <li><a target="_blank" href="https://status.im">Status</a></li>
-          <li><a target="_blank" href="https://embark.status.im">Embark</a></li>
-          <li><a target="_blank" href="https://keycard.status.im">Keycard</a></li>
-          <li><a target="_blank" href="https://nimbus.status.im">Nimbus</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://status.im">Status</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://embark.status.im">Embark</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://keycard.status.im">Keycard</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://nimbus.status.im">Nimbus</a></li>
         </ul>
       </Col>
 
       <Col xs={6} md={3} className="order-0 order-md-2">
         <p className="text-right home-details mb-1">We are part of</p>
         <p className="text-right">
-          <a target="_blank" href="https://status.im"><img src={statusLogo} alt="Logo"/></a>
+          <a target="_blank" rel="noopener noreferrer" href="https://status.im"><img src={statusLogo} alt="Logo"/></a>
         </p>
       </Col>
     </Row>
