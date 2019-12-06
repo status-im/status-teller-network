@@ -188,10 +188,10 @@ class App extends Component {
 
                 <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade/amount', component: BuyTrade},
-                  {path: '/buy/trade/contact-name', component: BuyContact},
+                  (!this.props.profile || !this.props.profile.username) && {path: '/buy/trade/contact-name', component: BuyContact},
                   {path: '/buy/trade/contact-details', component: BuyContactDetails},
                   {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
-                ]}/>
+                ].filter(x => x)}/>
 
                 <Wizard path="/sell/" steps={[
                   {path: '/sell/asset', component: SellAsset},
