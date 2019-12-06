@@ -1,7 +1,12 @@
+const genericImage = require(`./../../../node_modules/cryptocurrency-icons/svg/color/generic.svg`);
+
 export function getTokenImage(token) {
-  const image = require(`./../../../node_modules/cryptocurrency-icons/svg/color/${token.toLowerCase()}.svg`);
-  if (!image) {
-    return require(`./../../../node_modules/cryptocurrency-icons/svg/color/generic.svg`);
+  if (!token) {
+    return genericImage;
   }
-  return image;
+  try {
+    return require(`./../../../node_modules/cryptocurrency-icons/svg/color/${token.toLowerCase()}.svg`);
+  } catch (_e) {
+    return genericImage;
+  }
 }

@@ -1,6 +1,13 @@
 import {PAYMENT_METHODS} from './constants';
 import {addressCompare, toChecksumAddress} from '../../utils/address';
 
+const emptyToken = {
+  address: "?",
+  decimals: 18,
+  name: "?",
+  symbol: "?"
+};
+
 function enhanceOffer(state, offer) {
   let aboveOrBelow = 'above';
   let margin = offer.margin;
@@ -12,7 +19,7 @@ function enhanceOffer(state, offer) {
     ...offer,
     paymentMethodsForHuman: offer.paymentMethods.map((i) => PAYMENT_METHODS[i]).join(', '),
     rateForHuman: `${margin}% ${aboveOrBelow} CryptoCompare`,
-    token: Object.values(state.network.tokens).find((token) => addressCompare(token.address, offer.asset))
+    token: Object.values(state.network.tokens).find((token) => addressCompare(token.address, offer.asset)) || emptyToken
   };
 }
 
