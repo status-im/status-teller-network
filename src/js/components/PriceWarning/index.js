@@ -24,12 +24,10 @@ const PriceWarning = ({isBuyer = true, escrowStatus = tradeStates.waiting, fiatA
   return <Fragment>
     {escrowStatus === tradeStates.waiting && isBuyer && currentPriceForCurrency &&
       <Fragment>
-       {shouldWarnBuyer && <p className="text-danger mb-0 text-small">The current price for {tokenSymbol} ({limitDecimals(currentPriceForCurrency, 4)} {fiatSymbol}) is {limitDecimals(rateCurrentAndSellPrice, 2)}% below the price for this trade ({limitDecimals(escrowAssetPrice, 4)} {fiatSymbol})</p> }
-       <p className={classnames("text-small", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
-          <Row tag="span">
-            <Col tag="span" xs={1}><RoundedIcon image={shouldWarnBuyer ? infoIconRed : infoIconGray} bgColor={shouldWarnBuyer ? "red": "secondary"} className="float-left" size="sm"/></Col>
-            <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
-          </Row>
+       {shouldWarnBuyer && <p className="text-danger mb-0 text-small">The price for this trade ({limitDecimals(escrowAssetPrice, 4)} {fiatSymbol}) is {limitDecimals(rateCurrentAndBuyerPrice, 2)}% above the current price for {tokenSymbol} ({limitDecimals(currentPriceForCurrency, 4)} {fiatSymbol})</p> }
+        <p className={classnames("text-small", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
+          <RoundedIcon image={shouldWarnBuyer ? infoIconRed : infoIconGray} bbgColor={shouldWarnBuyer ? "red": "secondary"} className="float-left mr-1" size="sm"/>
+          <span className="pt-2">Only continue if you are comfortable with this price</span>
         </p>
       </Fragment> }
 
@@ -38,11 +36,9 @@ const PriceWarning = ({isBuyer = true, escrowStatus = tradeStates.waiting, fiatA
        {shouldWarnSeller && <p className="text-danger text-small mb-0">
         Your trade price for {tokenSymbol} ({limitDecimals(currentOfferPrice, 4)} {fiatSymbol}) is {limitDecimals(Math.abs(rateCurrentAndBuyerPrice), 2)}% below the current price for {tokenSymbol} ({limitDecimals(currentPriceForCurrency, 4)} {fiatSymbol})
         </p>}
-       <p className={classnames("text-small", {"text-danger": shouldWarnSeller, "text-muted": !shouldWarnSeller})}>
-          <Row tag="span">
-            <Col tag="span" xs={1}><RoundedIcon image={shouldWarnSeller ? infoIconRed : infoIconGray} bgColor={shouldWarnBuyer ? "red": "secondary"} className="float-left" size="sm"/></Col>
-            <Col tag="span" x2={11} className="pt-1">Only continue if you are comfortable with this price</Col>
-          </Row>
+        <p className={classnames("text-small", {"text-danger": shouldWarnSeller, "text-muted": !shouldWarnSeller})}>
+          <RoundedIcon image={shouldWarnSeller ? infoIconRed : infoIconGray} bbgColor={shouldWarnSeller ? "red": "secondary"} className="float-left mr-1" size="sm"/>
+          <span className="pt-2">Only continue if you are comfortable with this price</span>
         </p>
      </Fragment> }
    </Fragment>;
