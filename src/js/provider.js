@@ -26,6 +26,8 @@ class Provider {
     this.origProviderSend = (this.origProvider['sendAsync'] || this.origProvider['send']).bind(this.origProvider);
     
     const fSend = (payload, callback) => {
+      if(!payload.params || payload.params.length === 0) return this.origProviderSend(payload, callback);
+
       const params = payload.params[0];
       const operation = params && params.data ? params.data.substring(2, 10) : "0x";
 
