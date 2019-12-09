@@ -39,27 +39,27 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
         {escrow.seller.location}
       </p>
 
-      {isBuyer && <Fragment>
-        <h3 className="mt-4 font-weight-normal">Seller</h3>
-        <p className="mt-2 font-weight-medium mb-1">
-          <Identicon seed={escrow.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
-          {escrow.seller.username}
-        </p>
-        <p className="text-muted text-small addr">
-        {buyerContactObj.method}: {buyerContactObj.method === STATUS ? <Address disableHover address={buyerContactObj.userId} length={6}/> : buyerContactObj.userId }
-        </p>
-      </Fragment>}
+    {isBuyer && <Fragment>
+      <h3 className="mt-4 font-weight-normal">Seller</h3>
+      <p className="mt-2 font-weight-medium mb-1">
+        <Identicon seed={escrow.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
+        {escrow.seller.username}
+      </p>
+      <p className="text-muted text-small addr">
+        {sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address disableHover address={sellerContactObj.userId} length={6}/> : sellerContactObj.userId}
+      </p>
+    </Fragment>}
 
-      {!isBuyer && <Fragment>
-        <h3 className="mt-4 font-weight-normal">Buyer</h3>
-        <p className="mt-2 font-weight-medium mb-1">
-          <Identicon seed={escrow.buyer} className="rounded-circle border mr-2 float-left" scale={5}/>
-          {escrow.buyerInfo.username}
-        </p>
-        <p className="text-muted text-small addr">
-          {sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address disableHover address={sellerContactObj.userId} length={6}/> : sellerContactObj.userId }
-        </p>
-      </Fragment>}
+    {!isBuyer && <Fragment>
+      <h3 className="mt-4 font-weight-normal">Buyer</h3>
+      <p className="mt-2 font-weight-medium mb-1">
+        <Identicon seed={escrow.buyer} className="rounded-circle border mr-2 float-left" scale={5}/>
+        {escrow.buyerInfo.username}
+      </p>
+      <p className="text-muted text-small addr">
+        {buyerContactObj.method}: {buyerContactObj.method === STATUS ? <Address disableHover address={buyerContactObj.userId} length={6}/> : buyerContactObj.userId}
+      </p>
+    </Fragment>}
 
       {escrow.arbitratorInfo && <Fragment>
         <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
