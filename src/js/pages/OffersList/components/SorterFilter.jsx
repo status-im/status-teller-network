@@ -165,10 +165,12 @@ class AmountModal extends Component {
     this.state = {
       amount: props.amount === -1 ? '' : props.amount
     };
+
+    this.amountInput = React.createRef();
   }
 
-  componentDidMount() {
-    this.amountInput.focus();
+  componentDidUpdate() {
+    this.amountInput.current.focus();
   }
 
   onChange = (e) => {
@@ -184,9 +186,7 @@ class AmountModal extends Component {
           <FormGroup className="pt-4">
             <Label for="amountLabel">Amount</Label>
             <input id="amountLabel" className="form-control mb-3" type="text" placeholder="0"
-                   ref={(input) => {
-                     this.amountInput = input;
-                   }}
+                   ref={this.amountInput}
                    autoFocus
                    value={this.state.amount}
                    onChange={this.onChange}
@@ -312,10 +312,12 @@ class LocationModal extends Component {
     this.state = {
       location: props.location || ''
     };
+
+    this.locationInput = React.createRef();
   }
 
-  componentDidMount() {
-    this.locationInput.focus();
+  componentDidUpdate() {
+    this.locationInput.current.focus();
   }
 
   onChange = (e) => {
@@ -329,8 +331,8 @@ class LocationModal extends Component {
       <ModalBody className="mt-3">
         <FormGroup className="text-center pt-4">
           <input className="form-control mb-3" type="text" placeholder="Enter a city, state, etc."
-                 ref={(input) => { this.locationInput = input; }}
                  autoFocus
+                 ref={this.locationInput}
                  value={this.state.location}
                  onChange={this.onChange}
                  onKeyUp={(e) => {
