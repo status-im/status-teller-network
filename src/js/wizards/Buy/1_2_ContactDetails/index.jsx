@@ -36,14 +36,14 @@ class ContactDetails extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.username) {
-      return this.props.wizard.previous();
-    }
     if (this.props.profile && this.props.profile.username) {
       const contactObj = stringToContact(this.props.profile.contactData);
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactUsername: DOMPurify.sanitize(contactObj.userId), contactMethod: DOMPurify.sanitize(contactObj.method)});
       return this.props.wizard.next();
+    } else if (!this.props.username) {
+      return this.props.wizard.previous();
     }
+    
     if (!this.props.isEip1102Enabled) {
       this.props.footer.disableNext();
       this.props.enableEthereum();
