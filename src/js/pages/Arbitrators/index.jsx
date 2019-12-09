@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import { ListGroup, ListGroupItem, Button, Row,  Col } from 'reactstrap';
 import classnames from 'classnames';
 import metadata from '../../features/metadata';
@@ -46,13 +46,19 @@ class Arbitrators extends Component {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
-    if(loading) return <Loading mining={!!txHash} txHash={txHash} />;
+    if (loading && txHash) return <Loading mining txHash={txHash}/>;
 
     return (
     <Fragment>
         <h2 className="mb-4">Arbitrators</h2>
         <p>Here you can see a list of arbitrators that have approved you as a seller and request approval by those that have not.</p>
         <ListGroup>
+          {Object.keys(arbitrators).length === 0 && loading && <p>Loading arbitrators...</p>}
+          {Object.keys(arbitrators).length === 0 && !loading && <Fragment>
+            <p className="mb-0">No arbitrators in the system</p>
+            <p>Become one <Link to="/arbitrator/license">here</Link></p>
+          </Fragment>}
+
         {Object.keys(arbitrators).map((arb, i) => {
           const isUser = addressCompare(address, arb);
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
