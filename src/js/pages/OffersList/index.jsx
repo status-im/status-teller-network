@@ -207,7 +207,7 @@ class OffersList extends Component {
             <Offer key={`offer-${index}`}
                    withDetail offer={offer}
                    prices={this.props.prices} userAddress={this.props.address}
-                   showCommunicationMethod={this.state.showCommunicationMethod}
+                   showCommunicationMethod={true}
                    offerClick={this.offerClick}/>)
           )}
         </div>

@@ -34,33 +34,33 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
   return (<Card className="mb-3 shadow border-0 offer-card clickable" onClick={() => offerClick(offer.id)}>
     <CardBody>
-      <CardTitle className={classnames('seller-name', 'font-weight-bold', {
+      <CardTitle className={classnames('seller-name', {
         'text-black': !isOwner,
         'text-success': isOwner
       })}>
         {offer.user.username}
       </CardTitle>
       <div>
-        {offer.user.countryCode && offer.user.location && <p className="text-black m-0 mt-2 clearfix">
+        {offer.user.countryCode && offer.user.location && <p className="text-black m-0 mt-2 clearfix data-item">
           <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>
           {offer.user.location}
         </p>}
-        <p className="text-black m-0 mt-2 clearfix">
+        <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
         </p>
 
-        {!limitless && <p className="text-black m-0 mt-2 clearfix">
+        {!limitless && <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}
         </p>}
 
-        {limitless && <p className="text-black m-0 mt-2 clearfix">
+        {limitless && <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           No limits
         </p>}
 
-        {showCommunicationMethod && <p className="text-black m-0 mt-2 clearfix">
+        {showCommunicationMethod && <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={chatIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {stringToContact(offer.user.contactData).method}
         </p>}

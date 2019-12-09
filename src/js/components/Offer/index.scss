@@ -7,6 +7,35 @@
 
 .offer-card {
   border-radius: 8px;
+  padding: 16px;
+
+  .card-body {
+    padding: 0;
+  }
+
+  .seller-name {
+    font-weight: 500;
+    font-size: 15px;
+  }
+
+  .data-item {
+    font-size: 14px;
+    font-weight: normal;
+  }
+
+  .card-footer {
+    padding: 0;
+
+    p {
+      font-size: 13px;
+      font-weight: normal;
+
+      span {
+        font-size: 16px;
+        margin: 0 3px;
+      }
+    }
+  }
 }
 
 .flag-icon {
