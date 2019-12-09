@@ -22,7 +22,7 @@ class NotificationForm extends Component {
   render() {
     const {t, disabled, subscribe} = this.props;
 
-    return (<Form className="mt-4">
+    return (<Form className="mt-4" onSubmit={(e) => e.preventDefault()}>
       <FormGroup>
         <Label for="notification-email">Email</Label>
         <Input type="email"

@@ -90,7 +90,7 @@ class OfferTrade extends Component {
     </Col>
     <Col xs="12" className="mt-4">
       <h3>Trade Amount</h3>
-      <Form className="text-center">
+      <Form className="text-center" onSubmit={(e) => e.preventDefault()}>
         <FormGroup>
           <Row>
             <Col xs={12} sm={12}>

@@ -11,7 +11,7 @@ class SellerPosition extends Component {
     return (
       <React.Fragment>
         <h2>What location do you want to display</h2>
-        <Form>
+        <Form onSubmit={(e) => e.preventDefault()}>
           <FormGroup>
             <Label className="text-small mt-3 mb-0">Location</Label>
             <Input type="text" name="location" id="location" placeholder="Enter location"

@@ -32,7 +32,7 @@ class MarginSelectorForm extends Component {
     }
 
     return (
-      <Form ref={c => {
+      <Form onSubmit={(e) => e.preventDefault()} ref={c => {
         this.form = c;
       }}>
         <h2 className="mb-4">{t('sellerMarginContainer.title')}</h2>

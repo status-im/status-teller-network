@@ -34,7 +34,7 @@ class LimitForm extends Component {
     let {/*t, */limitL, limitU, currency} = this.props;
 
     return (
-      <Form ref={c => {
+      <Form onSubmit={(e) => e.preventDefault()} ref={c => {
         this.form = c;
       }}>
         <h2>Do you want to set any limits?</h2>
