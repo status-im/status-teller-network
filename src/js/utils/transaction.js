@@ -8,7 +8,7 @@ export const States = {
 };
 
 export const calculateEscrowPrice = (escrow, prices) => {
-  if (!prices || prices.error) {
+  if (!prices || prices.error || !prices[escrow.token.symbol]) {
     return -1;
   }
   return prices[escrow.token.symbol][escrow.currency] * ((100 + (parseFloat(escrow.margin))) / 100);
