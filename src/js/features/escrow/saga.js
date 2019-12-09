@@ -132,8 +132,19 @@ export function *onCancelEscrow() {
   yield takeEvery(CANCEL_ESCROW, doTransaction.bind(null, CANCEL_ESCROW_PRE_SUCCESS, CANCEL_ESCROW_SUCCEEDED, CANCEL_ESCROW_FAILED));
 }
 
+export function *rate(options) {
+  const {escrowId, ratingSeller} = options;
+  try {
+    const escrow = yield select(state => state.escrow.escrows[escrowId]);
+    yield doTransaction(RATE_TRANSACTION_PRE_SUCCESS, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_FAILED, Object.assign({}, options, {user: ratingSeller ? escrow.offer.owner : escrow.buyer}));
+  } catch (error) {
+    console.error(error);
+    yield put({type: RATE_TRANSACTION_FAILED, error: error.message});
+  }
+}
+
 export function *onRateTx() {
-  yield takeEvery(RATE_TRANSACTION, doTransaction.bind(null, RATE_TRANSACTION_PRE_SUCCESS, RATE_TRANSACTION_SUCCEEDED, RATE_TRANSACTION_FAILED));
+  yield takeEvery(RATE_TRANSACTION, rate);
 }
 
 function *formatEscrows(escrowIds) {
@@ -182,7 +193,7 @@ export function *doLoadEscrows({address}) {
       if(!sellerInfo) {
         sellerInfo = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
       }
-      
+
       let buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
       if(!buyerInfo){
         buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
