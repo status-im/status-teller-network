@@ -14,7 +14,7 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
   const sellerContactObj = stringToContact(escrow.seller.contactData);
   const buyerContactObj = stringToContact(escrow.buyerInfo.contactData);
   const arbitratorContactObj = stringToContact(escrow.arbitratorInfo.contactData);
-  
+
   return <div className="escrowDetails">
       <h2 className="mt-5">Trade Details</h2>
       <h3 className="font-weight-normal mt-4">Trade Amount</h3>
@@ -67,18 +67,18 @@ const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
           <Identicon seed={escrow.arbitrator} className="rounded-circle border mr-2 float-left" scale={5}/>
           {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}
         </p>
-        <p className="text-muted text-small addr">
-        {arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address disableHover address={arbitratorContactObj.userId} length={6}/> : arbitratorContactObj.userId }
-
-          </p>
-        </Fragment>
+        {arbitratorContactObj.method && <p className="text-muted text-small addr">
+          {arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address disableHover address={arbitratorContactObj.userId} length={6}/> : arbitratorContactObj.userId}
+        </p>}
+        {!arbitratorContactObj.method && <p className="text-muted text-small">No contact data for this arbitrator</p>}
+      </Fragment>
       }
 
     <Row className="mt-4">
-    <Col xs="12">
+      <Col xs="12">
       {escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">Expiration time: {moment(escrow.expirationTime * 1000).calendar()}</p>}
 
-      <PriceWarning 
+      <PriceWarning
         currentPrice={(currentPrice && currentPrice[escrow.offer.currency]) || '0.00'}
         escrowStatus={escrow.status}
         fiatAmount={escrow.fiatAmount}

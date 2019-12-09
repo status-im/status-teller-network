@@ -4,7 +4,6 @@ import RoundedIcon from "../../ui/RoundedIcon";
 import infoIconRed from "../../../images/exclamation-circle.png";
 import infoIconGray from "../../../images/small-info.svg";
 import classnames from "classnames";
-import {Col, Row} from "reactstrap";
 import {limitDecimals} from '../../utils/numbers';
 import PropTypes from 'prop-types';
 
