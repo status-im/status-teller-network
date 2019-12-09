@@ -10,6 +10,8 @@ import PriceWarning from '../../../components/PriceWarning';
 import {STATUS} from '../../../constants/contactMethods';
 
 const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
+  if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
+
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
   const sellerContactObj = stringToContact(escrow.seller.contactData);
   const buyerContactObj = stringToContact(escrow.buyerInfo.contactData);
