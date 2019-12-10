@@ -10,7 +10,6 @@ import moment from "moment";
 import escrow from "../../../../features/escrow";
 import RoundedIcon from "../../../../ui/RoundedIcon";
 import ModalDialog from "../../../../components/ModalDialog";
-import Address from "../../../../components/UserInformation/Address";
 import Identicon from "../../../../components/UserInformation/Identicon";
 import infoIcon from "../../../../../images/small-info.svg";
 import upvoteImg from "../../../../../images/upvote.svg";
@@ -18,17 +17,16 @@ import downvoteImg from "../../../../../images/downvote.svg";
 import arbitratorImg from "../../../../../images/arbitrator.svg";
 import disputeImg from "../../../../../images/dispute.svg";
 import questionIcon from "../../../../../images/question-mark.svg";
-import {STATUS} from '../../../../constants/contactMethods';
+import {formatArbitratorName, renderContactData} from '../../../../utils/strings';
 
 import './index.scss';
-import { stringToContact } from '../../../../utils/strings';
 
 class OfferTrade extends Component {
 
   state = {
     displayDialogArbitrator: false,
     displayDisputeDialog: false
-  }
+  };
 
   toggleArbitratorDialog = (e) => {
     e.preventDefault();
@@ -37,7 +35,7 @@ class OfferTrade extends Component {
       displayDisputeDialog: false
     }));
     return false;
-  }
+  };
 
   toggleDisputeDialog = (e) => {
     e.preventDefault();
@@ -45,7 +43,7 @@ class OfferTrade extends Component {
       displayDisputeDialog: !oldState.displayDisputeDialog
     }));
     return false;
-  }
+  };
 
   render() {
     const {
@@ -58,26 +56,21 @@ class OfferTrade extends Component {
     const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
 
-    const sellerContactObj = stringToContact(seller.contactData);
-    const arbitratorContactObj = stringToContact(arbitrator.contactData);
-
-
     return <Fragment>
   <Row noGutters className="offerTrade">
     <Col xs="12">
       <h3 className="mt-4 font-weight-normal">Seller</h3>
       <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
       <p className="font-weight-medium mb-1 name">{seller.username}</p>
-      <p className="text-muted text-small addr mb-0">{sellerContactObj.method}: {sellerContactObj.method === STATUS ? <Address address={sellerContactObj.userId} length={13} disableHover/> : sellerContactObj.userId }</p>
+      {renderContactData(seller.contactData, 'mb-0')}
       <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-2">Trades</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
       <h3 className="mt-4 font-weight-normal">Arbitrator <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
-      <p className="mt-2 font-weight-medium mb-1 overflow-hidden">
+      <div className="mt-2 font-weight-medium mb-1 overflow-hidden">
         <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
-        {arbitrator.username}
-      </p>
-      <p className="text-muted text-small addr">{arbitratorContactObj.method}: {arbitratorContactObj.method === STATUS ? <Address address={arbitratorContactObj.userId} disableHover length={13}/> : arbitratorContactObj.userId }</p>
-
+        {formatArbitratorName(arbitrator, arbitratorAddress)}
+        {renderContactData(arbitrator.contactData)}
+      </div>
 
       <h3 className="font-weight-normal mt-4">Price</h3>
       <p className="mt-2 font-weight-medium mb-1">

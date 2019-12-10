@@ -1,4 +1,7 @@
 import {compactAddress} from "./address";
+import {STATUS} from "../constants/contactMethods";
+import Address from "../components/UserInformation/Address";
+import React from "react";
 
 export const formatArbitratorName = (user, address, noUsernameLabel, index) => {
   if (!user) return `${index >= 0 ? index + 1 + ' - ' : ""}` + address + ' - Loading...';
@@ -16,9 +19,22 @@ export const stringToContact = (contactData) => {
     if(items[0]) retObj.method = items[0];
     if(items[1]) retObj.userId = items[1];
   }
-  
+
   return retObj;
 };
+
+export function renderContactData(contactData, className = '') {
+  const contactObj = stringToContact(contactData);
+
+  if (!contactObj.method) {
+    return <p className={"text-muted text-small " + className}>No contact data for this user</p>;
+  }
+
+  return <p className={"text-muted text-small addr " + className}>
+    {contactObj.method}:&nbsp;
+    {contactObj.method === STATUS ? <Address disableHover address={contactObj.userId} length={6}/> : contactObj.userId}
+  </p>;
+}
 
 export const getContactData = (method, userId) => {
   return method + ':' + userId;

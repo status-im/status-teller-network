@@ -63,7 +63,7 @@ class Escrow extends Component {
     this.setState({displayDialog: show});
     return false;
   }
-  
+
 
   loadData() {
     this.props.getEscrow(this.props.escrowId);
@@ -305,7 +305,7 @@ class Escrow extends Component {
                     />
           </Col>
           <Col xs={3}>
-            <Button className="px-3 float-right" 
+            <Button className="px-3 float-right"
                     color="primary"
                     onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>Copy</Button>
           </Col>
@@ -320,14 +320,6 @@ class Escrow extends Component {
       {(arbitrationDetails && arbitrationDetails.open && addressCompare(arbitrationDetails.openBy, address) && arbitrationDetails.result === ARBITRATION_UNSOLVED) &&
       <CancelDispute trade={escrow} cancelDispute={cancelDispute}/>}
       {(!arbitrationDetails || !arbitrationDetails.open) && <OpenDispute trade={escrow}/>}
-
-      {/*Only show "See all options" button if there is a scroll bar*/}
-      {window.innerHeight < document.getElementById('app-container').offsetHeight &&
-      <div className="see-all-options" onClick={() => window.scrollTo({
-        top: document.body.scrollHeight,
-        left: 0,
-        behavior: 'smooth'
-      })}>See all options ↓</div>}
     </Fragment>);
   }
 }
