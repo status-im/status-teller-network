@@ -5,8 +5,6 @@ import {Alert} from 'reactstrap';
 import Switch from "react-switch";
 import {connect} from "react-redux";
 import emailNotifications from '../../features/emailNotifications';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import NotificationForm from "../../components/NotificationForm";
 
 class NotificationSettings extends Component {
@@ -51,7 +49,6 @@ class NotificationSettings extends Component {
       <h2 className="mb-4 mt-3">{t('notificationSettings.title')}</h2>
       {error && <Alert color="danger" toggle={this.hideError}>Error: {error}</Alert>}
       {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>Success subscribing. Please check your emails to verify your subscription</Alert>}
-      {working && <Fragment>Loading... <FontAwesomeIcon icon={faCircleNotch} spin/></Fragment>}
       <div>
         {t('notificationSettings.emailSwitcher')}
         {typeof this.state.showEmailSection === 'boolean' && <Switch onChange={this.changeNotificationParam}
@@ -64,7 +61,7 @@ class NotificationSettings extends Component {
       </div>
 
       {this.state.showEmailSection && !this.props.isSubscribed &&
-      <NotificationForm disabled={working} subscribe={this.subscribe}/>}
+      <NotificationForm working={working} subscribe={this.subscribe}/>}
     </Fragment>);
   }
 }
