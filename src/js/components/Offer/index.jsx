@@ -23,7 +23,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
-  const limitless = offer.limitL === '0' && offer.limitH === '0';
+  const limitless = !offer.limitL && !offer.limitH;
 
   let currencySymbol = CURRENCY_DATA.find(curr => curr.id === offer.currency);
   if (!currencySymbol) {

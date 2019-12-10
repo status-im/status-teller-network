@@ -76,13 +76,21 @@ function reducer(state = DEFAULT_STATE, action) {
         addOfferTx: action.txHash
       };
     case ADD_OFFER_SUCCEEDED: {
+      const _from = toChecksumAddress(action.receipt.from);
       return {
         ...state,
         addOfferStatus: States.success,
+        offers: {
+          [action.receipt.events.OfferAdded.returnValues.offerId]: {
+            ...formatOffer(action.offer),
+            owner: _from,
+            id: action.receipt.events.OfferAdded.returnValues.offerId
+          }
+        },
         users: {
           ...state.users,
-          [toChecksumAddress(action.receipt.from)]: {
-            ...state.users[toChecksumAddress(action.receipt.from)],
+          [_from]: {
+            ...state.users[_from],
             ...action.user
           }
         }

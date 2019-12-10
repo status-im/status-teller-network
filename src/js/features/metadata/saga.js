@@ -234,8 +234,6 @@ export function *addOffer({user, offer}) {
     offer.arbitrator
   );
   yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend, value: price});
-  yield put({type: LOAD_OFFERS, address: web3.eth.defaultAccount});
-
 }
 
 export function *onAddOffer() {
