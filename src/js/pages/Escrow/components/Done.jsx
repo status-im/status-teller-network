@@ -20,7 +20,7 @@ const Done = ({isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, r
       {isDone && <RoundedIcon size="xs" image={CheckIcon} bgColor="green"/>}
     </Col>
 
-    <Col xs={isActive ? '6' : '11'} sm={isActive ? '8' : '11'}>
+    <Col xs={(isActive || hadDispute) ? '6' : '11'} sm={(isActive || hadDispute) ? '8' : '11'}>
       <p className="m-0 font-weight-bold">
         Done
       </p>
@@ -31,7 +31,7 @@ const Done = ({isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, r
 
       {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
     </Col>
-    {isActive && !hadDispute && <Col xs="5" sm="3">
+    {(isActive || hadDispute) && <Col xs="5" sm="3">
       <div className={classnames("rounded p-2 position-relative bg-white", {'shadow-sm': !tradeWasRated})}>
         {!tradeWasRated && <p className="mb-1 text-small text-black">How did the trade go?</p>}
         <p className="m-0 text-center">
