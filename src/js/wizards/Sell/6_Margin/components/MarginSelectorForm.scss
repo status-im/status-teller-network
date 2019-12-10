@@ -3,6 +3,7 @@ $slider-height: 10px;
 
 .rc-slider {
   .rc-slider-rail {
+    width: 95%;
     height: $slider-height;
     background-color: $secondary;
   }

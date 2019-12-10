@@ -24,7 +24,7 @@ const DEFAULT_STATE = {
   useCustomLimits: true,
   limitL: '',
   limitU: '',
-  margin: 0
+  margin: 1
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -65,7 +65,7 @@ function reducer(state = DEFAULT_STATE, action) {
         username: action.username,
         contactData: action.contactMethod && action.contactUsername ? getContactData(action.contactMethod, action.contactUsername) : ''
       };
-    case SET_LIMITS: 
+    case SET_LIMITS:
       return {
         ...state,
         useCustomLimits: action.useCustomLimits,

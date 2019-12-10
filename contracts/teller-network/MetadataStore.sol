@@ -20,7 +20,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     }
 
     struct Offer {
-        int8 margin;
+        int16 margin;
         uint[] paymentMethods;
         uint limitL;
         uint limitU;
@@ -53,7 +53,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
         uint[] paymentMethods,
         uint limitL,
         uint limitU,
-        int8 margin
+        int16 margin
     );
 
     event OfferRemoved(address owner, uint256 offerId);
@@ -63,7 +63,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
      * @param _arbitrationLicenses Arbitrators licenses contract address
      * @param _burnAddress Address to send slashed offer funds
      */
-    constructor(address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public 
+    constructor(address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public
         Stakable(_burnAddress)
     {
         init(_sellingLicenses, _arbitrationLicenses);
@@ -199,7 +199,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
         uint _nonce
     ) external returns(address payable _user) {
         _user = address(uint160(_getSigner(_username, _contactData, _nonce, _signature)));
-        
+
         require(_nonce == user_nonce[_user], "Invalid nonce");
 
         user_nonce[_user]++;
@@ -251,7 +251,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     * @param _paymentMethods The list of the payment methods the user accept
     * @param _limitL Lower limit accepted
     * @param _limitU Upper limit accepted
-    * @param _margin The margin for the user from 0 to 100
+    * @param _margin The margin for the user
     * @param _arbitrator The arbitrator used by the offer
     */
     function addOffer(
@@ -263,7 +263,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
         uint[] memory _paymentMethods,
         uint _limitL,
         uint _limitU,
-        int8 _margin,
+        int16 _margin,
         address payable _arbitrator
     ) public payable {
         //require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
@@ -271,8 +271,6 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
 
         require(arbitrationLicenses.isAllowed(msg.sender, _arbitrator), "Arbitrator does not allow this transaction");
 
-        require(_margin <= 100, "Margin too high");
-        require(_margin >= -100, "Margin too low");
         require(_limitL <= _limitU, "Invalid limits");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
@@ -338,7 +336,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
     function offer(uint256 _id) external view returns (
         address asset,
         string memory currency,
-        int8 margin,
+        int16 margin,
         uint[] memory paymentMethods,
         uint limitL,
         uint limitH,

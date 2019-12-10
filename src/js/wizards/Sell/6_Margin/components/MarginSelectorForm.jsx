@@ -4,7 +4,7 @@ import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from '
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import {isNumber, required, lowerEqThan, higherThan} from '../../../../validators';
+import {isInteger, required} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
@@ -21,14 +21,21 @@ class MarginSelectorForm extends Component {
 
     margin = parseInt(margin, 10);
     if(isNaN(margin)){
-      margin = 0;
+      margin = '';
     }
-    
+
     let calcPrice = null;
     if (prices && !prices.error) {
       const basePrice = prices[token.symbol][currency];
       const marginPrice = (margin || 0) / 100 * basePrice;
       calcPrice = basePrice + marginPrice;
+    }
+
+    let sliderValue = margin || 0;
+    if (margin > 100) {
+      sliderValue = 100;
+    } else if (margin < -100) {
+      sliderValue = -100;
     }
 
     return (
@@ -46,21 +53,19 @@ class MarginSelectorForm extends Component {
         <FormGroup className="mb-0">
           <Row>
             <Col md={9} sm={9} xs={8}>
-              <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={0}
-                      onChange={(value) => this.onMarginChange(value)} value={margin}/>
+              <Slider className="mb-3 p-4" min={-100} max={100} defaultValue={1}
+                      onChange={(value) => this.onMarginChange(value)} value={sliderValue}/>
             </Col>
-            <Col>
+            <Col md={3} sm={3} xs={4}>
               <InputGroup className="full-width-input margin-input">
                 <Input type="number"
                        name="margin"
                        id="margin"
-                       placeholder="0"
+                       placeholder="1"
                        className="form-control prepend"
                        value={margin}
-                       data-maxvalue={100}
-                       data-minvalue={-100}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isNumber, lowerEqThan, higherThan]}/>
+                       validations={[required, isInteger]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>
@@ -88,7 +93,7 @@ class MarginSelectorForm extends Component {
               <p className="info text-muted">Teller charges {feeMilliPercent / 1000}% of each transaction</p>
             </Col>
           </Row>}
-          
+
           <Row noGutters className="mt-1">
             <Col>
               <RoundedIcon image={infoIcon} bgColor="secondary" size="sm" className="mr-2 float-left"/>
@@ -96,8 +101,8 @@ class MarginSelectorForm extends Component {
             </Col>
           </Row>
         </div>
-      
-      
+
+
       </Form>
     );
   }
