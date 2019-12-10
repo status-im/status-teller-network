@@ -1,11 +1,9 @@
-import React, {Component, Fragment} from "react";
+import React, {Component} from "react";
 import {withNamespaces} from "react-i18next";
 import PropTypes from "prop-types";
 import {Alert, Button} from 'reactstrap';
 import {connect} from "react-redux";
 import emailNotifications from '../../features/emailNotifications';
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
 import NotificationForm from "../../components/NotificationForm";
 import RoundedIcon from "../../ui/RoundedIcon";
 import bellIcon from "../../../images/bell.svg";
@@ -63,9 +61,8 @@ class SubscribeToEmails extends Component {
 
       {error && <Alert color="danger" toggle={this.hideError}>Error: {error}</Alert>}
       {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>{t('emailNotifications.success')}</Alert>}
-      {working && <Fragment>Loading... <FontAwesomeIcon icon={faCircleNotch} spin/></Fragment>}
 
-      {!subscribeSuccess && !isSubscribed && <NotificationForm disabled={working} subscribe={this.subscribe}/>}
+      {!subscribeSuccess && !isSubscribed && <NotificationForm working={working} subscribe={this.subscribe}/>}
       <div className="text-center">
         {!subscribeSuccess && !isSubscribed && <Button color="secondary" className="mt-2" onClick={this.refuseNotifications}>Skip</Button>}
         {(subscribeSuccess || isSubscribed) && <Button color="primary" onClick={this.moveToNextPage}>Ok</Button>}

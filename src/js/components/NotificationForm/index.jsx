@@ -5,6 +5,7 @@ import Form from "react-validation/build/form";
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {withNamespaces} from "react-i18next";
+import LoadingButton from "../../ui/LoadingButton";
 
 class NotificationForm extends Component {
   state = {
@@ -20,7 +21,7 @@ class NotificationForm extends Component {
   };
 
   render() {
-    const {t, disabled, subscribe} = this.props;
+    const {t, working, subscribe} = this.props;
 
     return (<Form className="mt-4" onSubmit={(e) => e.preventDefault()}>
       <FormGroup>
@@ -35,9 +36,11 @@ class NotificationForm extends Component {
                validations={[required, isEmail]}/>
       </FormGroup>
       <div className="text-center">
-        <Button color="primary" onClick={() => subscribe(this.state.email)} disabled={disabled || !this.state.emailValid}>
+        {!working && <Button color="primary" onClick={() => subscribe(this.state.email)} disabled={!this.state.emailValid}>
           {t('notificationSettings.saveButton')}
-        </Button>
+        </Button>}
+
+        {working && <LoadingButton/>}
       </div>
     </Form>);
   }
@@ -45,7 +48,7 @@ class NotificationForm extends Component {
 
 NotificationForm.propTypes = {
   t: PropTypes.func,
-  disabled: PropTypes.bool,
+  working: PropTypes.bool,
   subscribe: PropTypes.func
 };
 
