@@ -74,10 +74,7 @@ class Offers extends Component {
           <Row>
             <dl className="col-12">
               <dt>Arbitrator</dt>
-              {offer.arbitrator === zeroAddress && <dd>
-                <NoArbitratorWarning arbitrator={offer.arbitrator} label="Arbitrator not available. Offer will not appear in the offer list" />
-              </dd>}
-              {offer.arbitrator !== zeroAddress && <dd>{offer.arbitratorData.username} ({offer.arbitrator})</dd> }
+              <dd>{offer.arbitratorData ? offer.arbitratorData.username : 'No Username'} ({offer.arbitrator})</dd>
             </dl>
           </Row>
         </CardBody>
