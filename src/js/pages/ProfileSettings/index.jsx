@@ -5,10 +5,12 @@ import ProfileButton from "../MyProfile/components/ProfileButton";
 import iconChat from "../../../images/read-chat.svg";
 import iconBell from "../../../images/bell.svg";
 import iconSettings from "../../../images/settings.svg";
+import { ReactComponent as iconFlag } from "../../../images/flag.svg";
 
 const ProfileSettings = ({t}) => (<Fragment>
   <h2 className="mb-4 mt-3">{t('profileSettings.title')}</h2>
   <ProfileButton linkTo="/profile/settings/contact" image={iconChat} title="Contact info"/>
+  <ProfileButton linkTo="/profile/settings/location" imageComponent={iconFlag} title="Location"/>
   <ProfileButton linkTo="/profile/settings/notifications" image={iconBell} title="Notifications"/>
   <ProfileButton linkTo="/profile/settings/cache" image={iconSettings} title="Cache"/>
 </Fragment>);

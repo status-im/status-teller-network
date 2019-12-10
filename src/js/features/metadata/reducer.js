@@ -16,7 +16,6 @@ import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
-import {put, select} from "redux-saga/effects";
 
 const DEFAULT_STATE = {
   eip1102Enabled: false,
