@@ -41,7 +41,6 @@ function reducer(state = DEFAULT_STATE, action) {
     case SUBSCRIBE_EMAIL_SUCCESS:
       return {
         ...state, ...{
-          isSubscribed: true,
           working: false,
           email: action.email,
           error: '',
