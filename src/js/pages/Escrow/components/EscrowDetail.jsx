@@ -8,6 +8,8 @@ import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import PriceWarning from '../../../components/PriceWarning';
 
 const EscrowDetail = ({escrow, currentPrice, isBuyer}) => {
+  if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
+
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
 
   return <div className="escrowDetails">
