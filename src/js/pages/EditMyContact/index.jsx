@@ -21,7 +21,7 @@ import {STATUS} from '../../constants/contactMethods';
 class EditMyContact extends Component {
   constructor(props) {
     super(props);
-    
+
     const profile = props.profile;
     const contactObject = stringToContact(profile && profile.contactData);
 
@@ -31,18 +31,19 @@ class EditMyContact extends Component {
       updateDisabled: profile ? this.isUpdateDisabled(profile.username, profile.contactData, contactObject.method || STATUS) : true,
       contactMethod: profile ? contactObject.method : STATUS
     };
-  }
-
-  componentDidMount() {
-    this.props.loadProfile(this.props.address);
+    if (!this.props.profile) {
+      this.props.loadProfile(this.props.address);
+    }
   }
 
   componentDidUpdate(prevProps) {
-    if(!prevProps.profile && this.props.profile){
+    if (!prevProps.profile && this.props.profile) {
+      const contactObject = stringToContact(this.props.profile && this.props.profile.contactData);
       this.setState({
         username: this.props.profile.username || '',
-        statusContactCode: this.props.profile.statusContactCode || '',
-        updateDisabled: this.isUpdateDisabled(this.props.profile.username, this.props.profile.statusContactCode)
+        statusContactCode: this.props.profile ? contactObject.userId || '' : '',
+        updateDisabled: this.props.profile ? this.isUpdateDisabled(this.props.profile.username, this.props.profile.contactData, contactObject.method || STATUS) : true,
+        contactMethod: this.props.profile ? contactObject.method : STATUS
       });
     }
 
