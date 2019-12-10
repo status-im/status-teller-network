@@ -98,12 +98,14 @@ class MyProfile extends Component {
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.address} username={profile.username}/>
         <ProfileButton linkTo="/profile/trades" image={iconTrades} title="My trades" subtitle={`${activeTrades} active`} />
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title="My offers" subtitle={`${activeOffers} active`} />
-        <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} active`} />
+        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title="My arbitrators" subtitle="Request arbitrator approvals" />
         <Separator />
+        {profile.isArbitrator && <p className="text-muted mt-4">Arbitrator</p>}
         {!profile.isArbitrator && <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title="Become an arbitrator" subtitle="Make tokens by judging disputes" />}
-        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title="Manage arbitrators" subtitle="Some explanation text here" />
-        { profile.isArbitrator && <ProfileButton linkTo="/sellers" image={iconDisputes} title="Manage sellers" subtitle={`${pendingRequests} pending requests`} />}
-
+        {profile.isArbitrator && <Fragment>
+          <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} disputes to resolve`} />
+          <ProfileButton linkTo="/sellers" image={iconDisputes} title="Arbitrator settings" subtitle={`${pendingRequests} pending requests`} />
+        </Fragment> }
         <Separator />
         <ProfileButton linkTo="/profile/settings" image={iconSettings} title="Profile settings"/>
       </Fragment>
