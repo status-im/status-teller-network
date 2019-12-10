@@ -72,10 +72,10 @@ class ArbitrationLicense extends Component {
     }
 
     if (!this.props.sntToken) {
-      return <ErrorInformation sntTokenError retry={this.buyLicense}/>;
+      return <ErrorInformation sntTokenError retry={() => window.location.reload()}/>;
     }
 
-    if (this.props.isLoading) {
+    if (this.props.isLoading && this.props.txHash) {
       return <Loading mining txHash={this.props.txHash}/>;
     }
 
