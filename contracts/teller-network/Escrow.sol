@@ -355,11 +355,16 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @dev Once message is signed, pass it as _signature of pay(uint256,bytes)
      */
     function paySignHash(uint _escrowId) public view returns(bytes32){
+        uint256 cid;
+        assembly { 
+		    cid := chainid()
+		}
         return keccak256(
             abi.encodePacked(
                 address(this),
                 "pay(uint256)",
-                _escrowId
+                _escrowId,
+                cid
             )
         );
     }
@@ -640,12 +645,17 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
      * @dev Once message is signed, pass it as _signature of openCase(uint256,bytes)
      */
     function openCaseSignHash(uint _escrowId, uint8 _motive) public view returns(bytes32){
+        uint256 cid;
+        assembly { 
+		    cid := chainid()
+		}
         return keccak256(
             abi.encodePacked(
                 address(this),
-                "openCase(uint256)",
+                "openCase(uint256,uint8)",
                 _escrowId,
-                _motive
+                _motive,
+                cid
             )
         );
     }
