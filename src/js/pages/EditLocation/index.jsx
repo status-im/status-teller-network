@@ -11,9 +11,6 @@ import metadata from "../../features/metadata";
 import {Button} from "reactstrap";
 import Loading from "../../components/Loading";
 import ErrorInformation from "../../components/ErrorInformation";
-import EditContact from "../../components/EditContact";
-import EditContactList from "../../components/EditContact/ContactList";
-import UpdateButton from "../EditMyContact/components/UpdateButton";
 
 const REDIRECT_PATH = '/profile';
 
