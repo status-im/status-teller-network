@@ -47,7 +47,7 @@ config({
       args: ["$SNT"]
     },
     */
-   
+
     MetadataStore: {
       args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
     }
@@ -64,9 +64,9 @@ contract("MetadataStore", function () {
     await SNT.methods.generateTokens(accounts[9], 1000).send();
 
     const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
-    
+
     await SNT.methods.approveAndCall(ArbitrationLicense.options.address, 10, encodedCall).send({from: accounts[9]});
-    
+
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: accounts[9]});
 
     hash = await MetadataStore.methods.getDataHash("Iuri", CONTACT_DATA).call();
@@ -76,12 +76,12 @@ contract("MetadataStore", function () {
   it("should allow to add new user and offer", async function () {
     const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
     await MetadataStore.methods.addOffer(SNT.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send({value: amountToStake});
-    
+
     const offersSize = await MetadataStore.methods.offersSize().call();
     assert.strictEqual(offersSize, '1');
-    
+
     const userInfo = await MetadataStore.methods.users(accounts[0]).call();
-    assert.strictEqual(userInfo.username, "Iuri");    
+    assert.strictEqual(userInfo.username, "Iuri");
   });
 
   it("should allow to add new offer only when already a user", async function () {
@@ -94,14 +94,12 @@ contract("MetadataStore", function () {
     assert.strictEqual(offerIds.length, 2);
   });
 
-  it("should not allow to add new offer when margin is more than 100", async function () {
-    try {
+  it("should allow to add new offer when margin is more than 100", async function () {
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       await MetadataStore.methods.addOffer(SNT.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 101, accounts[9]).send({value: amountToStake});
-      assert.fail('should have reverted before');
-    } catch (error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Margin too high");
-    }
+
+      const offerIds = await MetadataStore.methods.getOfferIds(accounts[0]).call();
+      assert.strictEqual(offerIds.length, 3);
   });
 
   it("should allow to update a user", async function () {

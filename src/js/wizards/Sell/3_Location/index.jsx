@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import DOMPurify from 'dompurify';
 
-import SellerPosition from './components/SellerPosition';
+import SellerPosition from '../../../components/EditLocation/SellerPosition';
 import newSeller from "../../../features/newSeller";
 import metadata from "../../../features/metadata";
 

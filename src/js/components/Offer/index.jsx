@@ -60,7 +60,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
           No limits
         </p>}
 
-        {showCommunicationMethod && <p className="text-black m-0 mt-2 clearfix data-item">
+        {showCommunicationMethod && <p className="text-black mb-3 mt-2 clearfix data-item">
           <RoundedIcon image={chatIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
           {stringToContact(offer.user.contactData).method}
         </p>}
