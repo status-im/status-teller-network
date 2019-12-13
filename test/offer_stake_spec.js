@@ -200,7 +200,7 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -241,7 +241,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -274,7 +274,7 @@ contract("Escrow", function() {
 
     it("losing a dispute twice shoud not fail", async() => {
       // Create Escrow
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
@@ -307,7 +307,7 @@ contract("Escrow", function() {
       hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 

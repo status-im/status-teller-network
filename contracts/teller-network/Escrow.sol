@@ -29,7 +29,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
     event Funded(uint indexed escrowId, address indexed buyer, uint expirationTime, uint amount);
     event Paid(uint indexed escrowId, address indexed seller);
-    event Released(uint indexed escrowId, address indexed seller, address indexed buyer, bool isDispute);
+    event Released(uint indexed escrowId, address indexed seller, address indexed buyer, address destination, bool isDispute);
     event Canceled(uint indexed escrowId, address indexed seller, address indexed buyer, bool isDispute);
     
     event Rating(uint indexed offerId, address indexed participant, uint indexed escrowId, uint rating, bool ratingSeller);
@@ -127,6 +127,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     /**
      * @dev Escrow creation logic. Requires contract to be unpaused
      * @param _buyer Buyer Address
+     * @param _destination Address that will receive the crypto
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
@@ -134,6 +135,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      */
     function _createTransaction(
         address payable _buyer,
+        address payable _destination,
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount
@@ -159,6 +161,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         trx.token = token;
         trx.buyer = _buyer;
         trx.seller = seller;
+        trx.destination = _destination;
         trx.arbitrator = arbitrator;
         trx.tokenAmount = _tokenAmount;
         trx.fiatAmount = _fiatAmount;
@@ -176,6 +179,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
+     * @param _destination Address that will receive the crypto
      * @param _contactData Contact Data   ContactType:UserId
      * @param _location The location on earth
      * @param _username The username of the user
@@ -186,12 +190,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
+        address payable _destination,
         string memory _contactData,
         string memory _location,
         string memory _username
     ) public returns(uint escrowId) {
         metadataStore.addOrUpdateUser(msg.sender, _contactData, _location, _username);
-        escrowId = _createTransaction(msg.sender, _offerId, _tokenAmount, _fiatAmount);
+        escrowId = _createTransaction(msg.sender, _destination, _offerId, _tokenAmount, _fiatAmount);
     }
 
     /**
@@ -199,6 +204,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
+     * @param _destination Address that will receive the crypto
      * @param _contactData Contact Data   ContactType:UserId
      * @param _username The username of the user
      * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
@@ -211,6 +217,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
+        address payable _destination,
         string memory _contactData,
         string memory _location,
         string memory _username,
@@ -218,7 +225,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         bytes memory _signature
     ) public returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_signature, _contactData, _location, _username, _nonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
+        escrowId = _createTransaction(_buyer, _destination, _offerId, _tokenAmount, _fiatAmount);
     }
 
    /**
@@ -228,6 +235,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _offerId Offer
      * @param _tokenAmount Amount buyer is willing to trade
      * @param _fiatAmount Indicates how much FIAT will the user pay for the tokenAmount
+     * @param _destination Address that will receive the crypto
      * @param _contactData Contact Data   ContactType:UserId
      * @param _location The location on earth
      * @param _username The username of the user
@@ -240,6 +248,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
+        address payable _destination,
         string calldata _contactData,
         string calldata _location,
         string calldata _username
@@ -247,7 +256,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         assert(msg.sender == relayer);
 
         metadataStore.addOrUpdateUser(_sender, _contactData, _location, _username);
-        escrowId = _createTransaction(_sender, _offerId, _tokenAmount, _fiatAmount);
+        escrowId = _createTransaction(_sender, _destination,  _offerId, _tokenAmount, _fiatAmount);
     }
 
     /**
@@ -310,7 +319,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         bytes memory _bSignature
     ) public payable returns(uint escrowId) {
         address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bContactData, _bLocation, _bUsername, _bNonce);
-        escrowId = _createTransaction(_buyer, _offerId, _tokenAmount, _fiatAmount);
+        escrowId = _createTransaction(_buyer, _buyer, _offerId, _tokenAmount, _fiatAmount);
         _fund(msg.sender, escrowId);
     }
 
@@ -396,7 +405,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         address token = _trx.token;
         if(token == address(0)){
-            (bool success, ) = _trx.buyer.call.value(_trx.tokenAmount)("");
+            (bool success, ) = _trx.destination.call.value(_trx.tokenAmount)("");
             require(success, "Transfer failed.");
         } else {
             require(_safeTransfer(ERC20Token(token), _trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
@@ -404,7 +413,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
 
-        emit Released(_escrowId, _trx.seller, _trx.buyer, _isDispute);
+        emit Released(_escrowId, _trx.seller, _trx.buyer, _trx.destination, _isDispute);
     }
 
     /**

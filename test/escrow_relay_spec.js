@@ -114,7 +114,7 @@ contract("Escrow Relay", function() {
   });
 
   it("Can create an escrow", async () => {
-    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
+    receipt = await EscrowRelay.methods.createEscrow(ethOfferId, 123, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
     escrowId = receipt.events.Created.returnValues.escrowId;
   });
 

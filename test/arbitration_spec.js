@@ -112,7 +112,7 @@ contract("Escrow", function() {
   describe("Arbitrations", async() => {
     beforeEach(async() => {
       // Create
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund
@@ -143,7 +143,7 @@ contract("Escrow", function() {
       let messageToSign, signature;
 
       // Create
-      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
+      receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
       // Fund

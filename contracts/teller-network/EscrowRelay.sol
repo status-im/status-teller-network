@@ -104,6 +104,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
     uint _offerId,
     uint _tokenAmount,
     uint _fiatAmount,
+    address payable _destination,
     string memory _contactData,
     string memory _location,
     string memory _username
@@ -115,6 +116,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
          _offerId,
          _tokenAmount,
          _fiatAmount,
+         _destination,
          _contactData,
          _location,
          _username

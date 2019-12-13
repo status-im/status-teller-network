@@ -264,7 +264,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
       gas = await creation.estimateGas({from: creatorAddress});
       receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
 
@@ -297,7 +297,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.MetadataStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
+      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
       gas = await creation.estimateGas({from: creatorAddress});
       receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
 
