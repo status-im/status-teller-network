@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from 'reactstrap';
 import PropTypes from "prop-types";
 
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {Link} from "react-router-dom";
 
 const OpenDappBtn = ({t, loading, size, text, aos}) => (
@@ -19,4 +19,4 @@ OpenDappBtn.propTypes = {
   aos: PropTypes.string
 };
 
-export default withNamespaces()(OpenDappBtn);
+export default withTranslation()(OpenDappBtn);

@@ -14,7 +14,7 @@ import ErrorInformation from "../../../components/ErrorInformation";
 import Success from "../7_Limits/components/Success";
 import SellSummary from "./components/SellSummary";
 import {Alert} from "reactstrap";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import prices from "../../../features/prices";
 import FinalModal from './components/FinalModal';
 import emailNotifications from "../../../features/emailNotifications";
@@ -167,4 +167,4 @@ export default connect(
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
     setRedirectTarget: emailNotifications.actions.setRedirectTarget
   }
-)(withRouter(withNamespaces()(Summary)));
+)(withRouter(withTranslation()(Summary)));

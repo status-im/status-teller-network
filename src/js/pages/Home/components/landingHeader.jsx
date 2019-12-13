@@ -2,7 +2,6 @@ import React from 'react';
 import {Link} from "react-router-dom";
 import {Navbar, Nav, NavItem} from 'reactstrap';
 import PropTypes from "prop-types";
-import {withNamespaces} from "react-i18next";
 
 import logo from "../../../../images/teller-logo-icon.svg";
 import logoText from "../../../../images/teller-logo-text.svg";
@@ -24,8 +23,7 @@ const LandingHeader = ({loading}) => (
 );
 
 LandingHeader.propTypes = {
-  t: PropTypes.func,
   loading: PropTypes.bool
 };
 
-export default withNamespaces()(LandingHeader);
+export default LandingHeader;

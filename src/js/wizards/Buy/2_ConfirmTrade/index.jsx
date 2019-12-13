@@ -14,7 +14,7 @@ import Address from "../../../components/UserInformation/Address";
 import {limitDecimals} from '../../../utils/numbers';
 import {Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import { formatArbitratorName } from '../../../utils/strings';
 import PriceWarning from '../../../components/PriceWarning';
 
@@ -191,4 +191,4 @@ export default connect(
     resetCreateStatus: escrow.actions.resetCreateStatus,
     resetNewBuy: newBuy.actions.resetNewBuy
   }
-)(withRouter(withNamespaces()(ConfirmTrade)));
+)(withRouter(withTranslation()(ConfirmTrade)));

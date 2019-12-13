@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Card} from 'reactstrap';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import Dispute from './Dispute';
 import classnames from 'classnames';
 
@@ -41,4 +41,4 @@ Disputes.propTypes = {
   open: PropTypes.bool
 };
 
-export default withNamespaces()(Disputes);
+export default withTranslation()(Disputes);

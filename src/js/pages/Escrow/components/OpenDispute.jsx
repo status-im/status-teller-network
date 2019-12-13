@@ -6,8 +6,9 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import {Link} from "react-router-dom";
 import {zeroAddress} from '../../../utils/address';
+import {withTranslation} from "react-i18next";
 
-const OpenDispute = ({trade}) => {
+const OpenDispute = ({t, trade}) => {
   const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid && trade.arbitrator !== zeroAddress;
   return shouldDisplay && (
     <Row className="mt-4 text-danger" tag={Link} to={"/openCase/" + trade.escrowId}>
@@ -15,15 +16,16 @@ const OpenDispute = ({trade}) => {
         <RoundedIcon image={exclamationCircle} bgColor="red"/>
       </Col>
       <Col xs="10" className="my-auto">
-        <p className="m-0 font-weight-normal">Open dispute</p>
-        <p className="m-0 text-muted">Having problems?</p>
+        <p className="m-0 font-weight-normal">{t('escrow.openDispute.open')}</p>
+        <p className="m-0 text-muted">{t('escrow.openDispute.havingProblem')}</p>
       </Col>
     </Row>
   );
 };
 
 OpenDispute.propTypes = {
+  t: PropTypes.func,
   trade: PropTypes.object
 };
 
-export default OpenDispute;
+export default withTranslation()(OpenDispute);

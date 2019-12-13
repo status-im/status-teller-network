@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import {Alert, Button} from 'reactstrap';
 import {connect} from "react-redux";
@@ -59,12 +59,15 @@ class SubscribeToEmails extends Component {
         </p>
       </div>
 
-      {error && <Alert color="danger" toggle={this.hideError}>Error: {error}</Alert>}
+      {error && <Alert color="danger" toggle={this.hideError}>{t('general.error')}: {error}</Alert>}
       {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>{t('emailNotifications.success')}</Alert>}
 
       {!subscribeSuccess && !isSubscribed && <NotificationForm working={working} subscribe={this.subscribe}/>}
       <div className="text-center">
-        {!subscribeSuccess && !isSubscribed && <Button color="secondary" className="mt-2" onClick={this.refuseNotifications}>Skip</Button>}
+        {!subscribeSuccess && !isSubscribed &&
+        <Button color="secondary" className="mt-2" onClick={this.refuseNotifications}>
+          {t('emailNotifications.skip')}
+        </Button>}
         {(subscribeSuccess || isSubscribed) && <Button color="primary" onClick={this.moveToNextPage}>Ok</Button>}
       </div>
     </div>;
@@ -106,4 +109,4 @@ export default connect(
     hideSuccess: emailNotifications.actions.hideSuccess,
     refuseEmailNotifications: emailNotifications.actions.refuseEmailNotifications
   }
-)(withRouter(withNamespaces()(SubscribeToEmails)));
+)(withRouter(withTranslation()(SubscribeToEmails)));

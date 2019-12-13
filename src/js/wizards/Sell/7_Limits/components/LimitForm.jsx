@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Col, Row, Label} from 'reactstrap';
 import Input from 'react-validation/build/input';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import Form from 'react-validation/build/form';
 import 'rc-slider/assets/index.css';
 import classnames from 'classnames';
@@ -116,4 +116,4 @@ LimitForm.propTypes = {
   currency: PropTypes.string
 };
 
-export default withNamespaces()(LimitForm);
+export default withTranslation()(LimitForm);

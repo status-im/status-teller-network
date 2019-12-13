@@ -7,12 +7,94 @@
     "welcome1": "Buy and sell",
     "welcome2": "cryptocurrencies near you",
     "details": "Teller is a secure and simple marketplace to buy and sell cryptocurrencies with people near you.",
-    "loadingData": "Loading data"
+    "loadingData": "Loading data",
+    "securityTitle": "Secure & Private",
+    "securityDetails": "Security is our top priority – connect, chat, and transact with peers using secure technology.",
+    "peerToPeerTitle": "Peer to Peer",
+    "peerToPeerDetails": "You own your funds, you manage your transactions – no unnecessary middle men.",
+    "worldwideTitle": "Worldwide",
+    "worldwideDetails": "Obtain and transact in whatever currency you choose no matter where you are in the world.",
+    "permissionlessTitle": "Permissionless",
+    "permissionlessDetails": "Join anonymously and begin transacting instantly - with anyone and everyone.",
+    "mostPopularOffersTitle": "Most popular offers",
+    "mostPopularOffersDetails": "Choose from a growing number of sellers",
+    "howTradeWorksTitle": "How does the trade work?",
+    "howTradeWorksDetails": "Teller offers a decentralized, safe and private solution.",
+    "mainnetWarningTitle": "Warning: You are on Ethereum's mainnet",
+    "mainnetWarningDetails1": "This is a short disclaimer to warn you that the contracts used in this Dapp are not audited yet.",
+    "mainnetWarningDetails2": "Make sure to keep that in mind before transacting meaningful amounts of money.",
+    "mainnetWarningDetails3": "Thank you for using Teller",
+    "footer": {
+      "documentation": "Documentation",
+      "gettingStarted": "Getting Started",
+      "weArePartOf": "We are part of",
+      "privacyPolicy": "Privacy Policy",
+      "allRightReserved": "All rights reserved"
+    }
+  },
+  "general": {
+    "buyer": "Buyer",
+    "seller": "Seller",
+    "smallCaseBuyer": "buyer",
+    "smallCaseSeller": "seller",
+    "arbitrator": "Arbitrator",
+    "cancel": "Cancel",
+    "you": "You",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading...",
+    "youSure": "Are you sure?",
+    "error": "Error",
+    "send": "Send"
+  },
+  "header": {
+    "buy": "Buy",
+    "sell": "Sell"
+  },
+  "app": {
+    "priceError": "Error while fetching prices. Opening a trade will not be possible until the issue is resolved.",
+    "confirmTrade": "Confirm the trade",
+    "goToSummary": "Go to summary",
+    "finish": "Finish"
   },
   "ethereumEnable": {
     "createOffer": "Connect wallet in order to see your crypto assets",
     "buyContact": "Please give access to your address before you can  sign",
     "profile": "Please give access to your address before you can view your profile"
+  },
+  "profile": {
+    "myTrades": "My trades",
+    "nbActive": "{{nb}} active",
+    "myOffers": "My offers",
+    "myArbitrators": "My arbitrators",
+    "requestApproval": "Request arbitrator approvals",
+    "arbitrator": "Arbitrator",
+    "becomeArbitrator": "Become an arbitrator",
+    "makeTokensByJudging": "Make tokens by judging disputes",
+    "disputes": "Disputes",
+    "disputesToResolve": "{{nbDisputes}} disputes to resolve",
+    "arbitratorSettings": "Arbitrator settings",
+    "pendingRequests": "{{nbRequests}} pending requests",
+    "profileSettings": "Profile settings"
+  },
+  "sellerApproval": {
+    "title": "Seller Management",
+    "onlyForArbis": "This feature is only available to arbitrators",
+    "acceptAll": "Accept all sellers",
+    "settingSwitchToOn": "Setting this switch to \"On\" will make it so that all sellers can choose you as an arbitrator",
+    "ableToBlacklist": "If you activate it, you will still be able to blacklist sellers individually",
+    "requestArbi": "Requests for arbitrator",
+    "noRequests": "No requests",
+    "blacklistSellers": "Blacklist sellers",
+    "blacklistExplanation": "Even though you accept every seller, you can blacklist some sellers if you suspect them to be malicious",
+    "blacklisted": "Blacklisted",
+    "accept": "Accept",
+    "reject": "Reject",
+    "blacklist": "Blacklist",
+    "unblacklist": "Un-Blacklist",
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "rejected": "Rejected"
   },
   "createEscrowFrom": {
     "title": "Create an Escrow",
@@ -93,7 +175,13 @@
     "buy": "Buy license",
     "alreadyOwner": "You already own a license",
     "noRating": "No rating available yet",
-    "buying": "Buying License"
+    "buying": "Buying License",
+    "onceArbi": "Once you have your license, you can make tokens by judging disputes",
+    "onceSeller": "Once you are a seller you will be able to create offers",
+    "becomeArbi": "Become an arbitrator",
+    "becomeSeller": "Become a seller",
+    "noArbiLicense": "You don't have an arbitrator license",
+    "noSellerLicense": "You don't have a seller license"
   },
   "disputes": {
     "noRecords": "No records available yet",
@@ -102,6 +190,7 @@
   },
   "map": {
     "loading": "Loading...",
+    "searchPlaceholder": "Enter a city or ZIP code",
     "denied": "You denied access to your position. We do not store that information, it is only to position you the following map."
   },
   "price": {
@@ -144,7 +233,12 @@
     "find": "Find offer",
     "noActiveTrades": "No active trades at the moment",
     "noPastTrades": "No past trades",
-    "noFilteredTrades": "No trades with that filter"
+    "noFilteredTrades": "No trades with that filter",
+    "mining": "Mining",
+    "actionNeeded": "Action needed",
+    "at": "at",
+    "activeTrades": "Active trades",
+    "pastTrade": "Past trades"
   },
   "offers": {
     "active": "Active offers",
@@ -157,11 +251,30 @@
     "paymentMethods": "Payment methods",
     "location": "Location",
     "rate": "Rate",
-    "locationLoading": "Calculating location distance..."
+    "locationLoading": "Calculating location distance...",
+    "noUsername": "No Username",
+    "deleteOffer": "Delete offer",
+    "hiddenOffers": "Other assets are hidden until you have ETH in your wallet"
   },
   "offer": {
     "noArbitrator": "This offer does not have an arbitrator assigned",
-    "isArbitrator": "You are an arbitrator on this offer"
+    "isArbitrator": "You are an arbitrator on this offer",
+    "buyFor": "Buy for {{price}} {{currency}}",
+    "disabledBecauseArbi": "Offer disabled because you are the seller or the arbitrator",
+    "disabledBecausePrice": "Offer disabled because we failed to fetch the token prices. Check back later."
+  },
+  "filter": {
+    "clearSelection": "Clear selection",
+    "apply": "Apply",
+    "amount": "Amount",
+    "popular": "Popular",
+    "allMethods": "All payment methods (A-Z)",
+    "locationPlaceholder": "Enter a city, state, etc.",
+    "searchCryptos": "Search cryptocurrencies",
+    "location": "Location",
+    "paymentMethod": "Payment method",
+    "currency": "Currency",
+    "contactMethod": "Contact method"
   },
   "signatureForm": {
     "paying": "Paying using Signature..."
@@ -183,7 +296,14 @@
     "yourNameTitle": "Set your teller nickname",
     "yourNameLabel": "Teller nickname",
     "contactTitle": "Choose contact method",
-    "statusKeyLabel": "Status chat key"
+    "statusKeyLabel": "Status chat key",
+    "statusPlaceholder": "Status contact code or Status ENS name",
+    "contactDetailsWarning": "Contact details will be written on the blockchain",
+    "resolveENS": "Resolve ENS name",
+    "autofill": "Autofill",
+    "nicknamePlaceholder": "Set nickname",
+    "consider": "Consider which method you choose as buyers and arbitrators will contact you using it",
+    "recommendedPlatform": "<0>Status</0> is the recommended chat platform"
   },
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",
@@ -202,15 +322,29 @@
     "button": "Sign & Save changes"
   },
   "profileSettings": {
-    "title": "Profile settings"
+    "title": "Profile settings",
+    "contactInfo": "Contact info",
+    "location": "Location",
+    "notifications": "Notifications",
+    "cache": "Cache",
+    "cacheSettings": {
+      "title": "Cache settings",
+      "pressToReset": "Press this button to reset your local cache.",
+      "willDelete": "This will delete your current cache and up to date data will be loaded.",
+      "noPermanentLoss": "None of your data will be permanently lost",
+      "resetCache": "Reset cache"
+    }
   },
   "notificationSettings": {
     "title": "Notifications",
     "emailSwitcher": "Email notifications",
-    "saveButton": "Subscribe"
+    "saveButton": "Subscribe",
+    "success": "Success subscribing. Please check your emails to verify your subscription"
   },
   "validateEmail": {
-    "title": "Validating your email address"
+    "title": "Validating your email address",
+    "noToken": "No token specified in the URL. Make sure you paste the whole URL from the email you received",
+    "success": "You email address was verified successfully"
   },
   "loading": {
     "mining": "Waiting for the confirmation from miners",
@@ -246,18 +380,178 @@
   "arbitration": {
     "title": "Become an arbitrator",
     "stake1": "Stake {{price}} SNT",
-    "stake2": "for arbitrator license"
+    "noArbitrationLabel": "No arbitrator found. Disputes cannot be opened",
+    "stake2": "for arbitrator license",
+    "ownDispute": "You cannot arbitrate your own disputes",
+    "notYours": "You are not the arbitrator of this dispute",
+    "yourDecision": "Your decision",
+    "goesTo": "{{tokenAmount}} {{tokenSymbol}} goes to:",
+    "resolve": "Resolve dispute",
+    "disputeDetails": "Dispute Details <1>{{status}}</1>",
+    "disputeResolved": "Dispute resolved",
+    "participants": "Trade participants",
+    "makeDecision": "Make Decision",
+    "youSure": "Are you sure?",
+    "winner": "Winner:",
+    "status": {
+      "open": "open",
+      "resolved": "resolved",
+      "undetermined": "undetermined"
+    },
+    "motive": {
+      "unresponsiveBuyer": "Buyer is unresponsive/inactive after transaction is marked as paid",
+      "unresponsiveSeller": "Seller is unresponsive/inactive after transaction is marked as paid",
+      "paymentBuyer": "Buyer made attempt to pay but there are issues with the payment",
+      "paymentSeller": "Seller states something is wrong with payment and refuses to release",
+      "other": "Other reasons"
+    }
+  },
+  "arbitrators": {
+    "title": "Arbitrators",
+    "arbitratorsList": "Here you can see a list of arbitrators that have approved you as a seller and request approval by those that have not.",
+    "loading": "Loading arbitrators...",
+    "noArbis": "No arbitrators in the system",
+    "becomeArbi": "Become one <1>here</1>",
+    "request": "Request",
+    "available": "Available",
+    "cancelRequest": "Cancel request",
+    "retryIn": "Retry in {{date}}"
   },
   "cancelEscrow": {
     "expire": "Once funded, an escrow can only be canceled by you after it expires (in <1>{{amountTime}}</1>)"
   },
+  "escrow": {
+    "general": {
+      "sellersTurn": "Seller's turn",
+      "buyersTurn": "Buyer's turn",
+      "yourTurn": "It's your turn",
+      "noActionNeeded": "No action needed"
+    },
+    "page": {
+      "emailNotif": "Email notifications",
+      "getNotifs": "Get notifications on important trade events",
+      "tradeInDispute": "This trade is in dispute",
+      "arbiRuledAgainst": "Arbitrator ruled in your opponent’s favor",
+      "arbiRuledFor": "Arbitrator ruled in your favor",
+      "tradeWasCanceled": "This trade was canceled",
+      "copy": "Copy",
+      "notStatusUser": "Not a Status user?",
+      "getStatusNow": "Get Status now!"
+    },
+    "approve": {
+      "authorize": "You authorize the contract to transfer {{amount}} {{tokenSymbol}} on your behalf. This can only occur when you approve a transaction to authorize the transfer",
+      "reset": "Reset {{tokenSymbol}} token Allowance",
+      "approveToken": "Approve {{tokenSymbol}} token",
+      "shouldReset": "Your {{tokenSymbol}} allowance for this contract ({{allowance}} {{tokenSymbol}}) is less than the required ({{requiredToken}} {{tokenSymbol}}). Reset your {{tokenSymbol}} allowance before approving the required amount",
+      "resetAllowance": "Reset allowance",
+      "approve": "Approve"
+    },
+    "cancel": {
+      "cancelDispute": "Cancel Dispute",
+      "youSure": "Are you sure?",
+      "cancelTrade": "Cancel trade",
+      "cancelAndWithdraw": "Cancel trade and withdraw funds back",
+      "changedMind": "Changed your mind?",
+      "buyerNotResponding": "Buyer is not responding?",
+      "availableIn": "Available in:",
+      "canBeCanceledIn": "Escrow can be canceled in {{date}}",
+      "onlyETH": "Only ETH and SNT transactions can be canceled when you don't have enough balance in your wallet",
+      "cancelEscrow": "Cancel Escrow"
+    },
+    "done": {
+      "done": "Done",
+      "finishedWhen": "Trade is finished once every step above is complete",
+      "isComplete": "Trade is complete",
+      "howDidItGo": "How did the trade go?"
+    },
+    "detail": {
+      "title": "Trade Details",
+      "amount": "Trade Amount",
+      "for": "for",
+      "price": "Price",
+      "paymentMethods": "Payment Method",
+      "location": "Trade Location",
+      "expirationTime": "Expiration time:"
+    },
+    "funding": {
+      "fundingEscrow": "Funding an escrow",
+      "waitingForSeller": "Waiting for the seller to fund an escrow",
+      "needToFund": "You need to fund an escrow. The buyer is waiting for you",
+      "fundingDetails": "Funding {{tokenAmount}} {{tokenSymbol}} + our fee of {{feePercent}} % ({{feeAmount}} {{tokenSymbol}})",
+      "notEnoughBalance": "Not enough balance",
+      "tokensFunded": "Tokens funded in the escrow",
+      "approveTransfer": "Approve transfer",
+      "fundEscrow": "Fund escrow →",
+      "youNeedToApprove": "You need to approve the transfer of tokens first to allow our contract to transfer the tokens on your behalf.",
+      "doNotWorry": "Do not worry, the approval is only for the amount in this escrow."
+    },
+    "waiting": {
+      "title": "Waiting for the confirmations from the miners"
+    },
+    "openChat": {
+      "chatWith": "Chat with {{person}}"
+    },
+    "openDispute": {
+      "open": "Open dispute",
+      "havingProblem": "Having problems?",
+      "success": "Your dispute was successfully open",
+      "followProgress": "Follow the progress of your dispute in the profile.",
+      "describeDetails": "Describe the details of your trade",
+      "unresponsive": "Unresponsive",
+      "sellerUnresponsive": "You have made the payment, but the seller is unresponsive",
+      "buyerUnresponsive": "The buyer has marked trade as paid, but is unresponsive and inactive",
+      "paymentIssue": "Payment issue",
+      "sellerPayment": "You have made the payment, the seller is responsive but states that something is wrong with the payment process and refuses to release",
+      "buyerPayment": "The buyer is active, has made an attempt to pay, but there are issues with the payment",
+      "other": "Other",
+      "otherReason": "Any other reason",
+      "durationProcess": "The process of resolving your dispute could take up to 5 days."
+    },
+    "profile": {
+      "title": "{{person}} profile"
+    },
+    "release": {
+      "confirmPayment": "Confirm payment & Release funds",
+      "sellerWillRelease": "Seller will release funds from the escrow to your wallet",
+      "paymentDone": "Payment done by the buyer. Check that you received it and release the funds",
+      "waitForBuyerToSend": "Wait for the buyer to send you the money, then you can release",
+      "paymentHasBeenConfirmed": "Payment has been confirmed and money released",
+      "releaseFunds": "Release funds →"
+    },
+    "sendMoney": {
+      "transferMoney": "Transfer money",
+      "pleaseSend": "Please send <1>{{fiatAmount}} {{fiatSymbol}}</1> to the seller through the decided payment method",
+      "buyerWillSend": "Buyer will send money to you",
+      "moneyTransferred": "Money transferred",
+      "markAsReceived": "Mark as received",
+      "markAsPaid": "Mark as paid →"
+    }
+  },
   "notifications": {
     "youWillBeAsked": "You will be asked for your permission to send notifications",
+    "newTrade": "New trade created",
+    "newTradeDesc": "For Offer {{offerId}}: {{tokenSymbol}} → {{currency}}",
+    "tradeChanged": "Trade status changed",
+    "tradeChangedDesc": "Trade #{{escrowId}} is now {{status}}",
     "onlyToInform": "Those notifications are only to inform you of changes to your trades and offers"
   },
   "emailNotifications": {
     "notifOnTrades": "Get notifications on new trades and important trade events.",
     "youCanChange": "This is optional. You can always change this setting in the Notification Settings in your Profile.",
-    "success": "Success subscribing. Please check your emails to verify your subscription"
+    "success": "Success subscribing. Please check your emails to verify your subscription",
+    "skip": "Skip"
+  },
+  "connectWallet": {
+    "title": "Connect your wallet to teller",
+    "connect": "Connect wallet"
+  },
+  "priceWarning": {
+    "aboveWarning": "The price for this trade ({{price}} {{fiatSymbol}}) is {{margin}}% above the current price for {{tokenSymbol}} ({{currentPrice}} {{fiatSymbol}})",
+    "belowWarning": "The price for this trade ({{price}} {{fiatSymbol}}) is {{margin}}% below the current price for {{tokenSymbol}} ({{currentPrice}} {{fiatSymbol}})",
+    "onlyContinueIf": "Only continue if you are comfortable with this price"
+  },
+  "userInfo": {
+    "nbReleasedTrades": "{{nbReleasedTrades}} <2>trade</2>",
+    "nbReleasedTrades_plural": "{{nbReleasedTrades}} <2>trades</2>"
   }
 }

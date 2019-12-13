@@ -4,7 +4,7 @@ import {isEmail, required} from "../../validators";
 import Form from "react-validation/build/form";
 import React, {Component} from "react";
 import PropTypes from "prop-types";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import LoadingButton from "../../ui/LoadingButton";
 
 class NotificationForm extends Component {
@@ -52,4 +52,4 @@ NotificationForm.propTypes = {
   subscribe: PropTypes.func
 };
 
-export default withNamespaces()(NotificationForm);
+export default withTranslation()(NotificationForm);

@@ -12,7 +12,7 @@ import Balance from './components/Balance';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
 import metadata from "../../features/metadata";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 
 const LICENSE_TOKEN_SYMBOL = 'SNT';
 
@@ -148,4 +148,4 @@ export default connect(
     updateBalance: network.actions.updateBalance,
     enableEthereum: metadata.actions.enableEthereum
   }
-)(withRouter(withNamespaces()(License)));
+)(withRouter(withTranslation()(License)));

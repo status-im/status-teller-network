@@ -41,6 +41,7 @@ import emailNotifications from "../../features/emailNotifications";
 import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
+import {withTranslation} from "react-i18next";
 
 const {toBN} = web3.utils;
 
@@ -133,7 +134,7 @@ class Escrow extends Component {
   };
 
   render() {
-    let {escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
+    let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash} = this.props;
 
@@ -204,8 +205,8 @@ class Escrow extends Component {
         <img alt="close" src={closeIcon} className="close-email-notification-box clickable" width={25} height={25}
              onClick={() => this.setState({hideNotifBox: true})}/>
         <RoundedIcon image={bellIcon} bgColor="blue" className="float-left mr-3"/>
-        <p className="font-weight-medium mb-0">Email notifications</p>
-        <p className="text-muted mb-0 text-small">Get notifications on important trade events</p>
+        <p className="font-weight-medium mb-0">{t('escrow.page.emailNotif')}</p>
+        <p className="text-muted mb-0 text-small">{t('escrow.page.getNotifs')}</p>
       </div>}
 
       {arbitrationDetails.open && <Row className="mt-4">
@@ -213,7 +214,7 @@ class Escrow extends Component {
           <RoundedIcon image={exclamationCircle} bgColor="red"/>
         </Col>
         <Col xs="10 my-auto text-danger">
-          <p className="m-0">This trade is in dispute</p>
+          <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
         </Col>
       </Row>}
 
@@ -224,7 +225,7 @@ class Escrow extends Component {
           <RoundedIcon image={exclamationCircle} bgColor="red"/>
         </Col>
         <Col xs="10 my-auto text-danger">
-          <p className="m-0">Arbitrator ruled in your opponent’s favor</p>
+          <p className="m-0">{t('escrow.page.arbiRuledAgainst')}</p>
         </Col>
       </Row>}
 
@@ -235,7 +236,7 @@ class Escrow extends Component {
           <RoundedIcon image={checkCircle} className="disputeSuccess" />
         </Col>
         <Col xs="10 my-auto text-success">
-          <p className="m-0">Arbitrator ruled in your favor</p>
+          <p className="m-0">{t('escrow.page.arbiRuledFor')}</p>
         </Col>
       </Row>}
 
@@ -244,7 +245,7 @@ class Escrow extends Component {
         <RoundedIcon image={canceledIcon} bgColor="red"/>
       </Col>
       <Col xs="10 my-auto text-danger">
-        <p className="m-0">This trade was canceled</p>
+        <p className="m-0">{t('escrow.page.tradeWasCanceled')}</p>
       </Col>
       </Row>}
 
@@ -294,8 +295,10 @@ class Escrow extends Component {
                 withBuyer={!isBuyer} />
       <ModalDialog display={this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
         <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
-        {!isBuyer && <Fragment>{escrow.buyerInfo.username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(escrow.buyerInfo.contactData).method]}</span></Fragment>}
-        {isBuyer && <Fragment>{escrow.seller.username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(escrow.seller.contactData).method]}</span></Fragment>}
+        {!isBuyer && <Fragment>{escrow.buyerInfo.username}&apos;s <span
+          className="text-muted">{ContactMethods[stringToContact(escrow.buyerInfo.contactData).method]}</span></Fragment>}
+        {isBuyer && <Fragment>{escrow.seller.username}&apos;s <span
+          className="text-muted">{ContactMethods[stringToContact(escrow.seller.contactData).method]}</span></Fragment>}
         <Row noGutters className="mt-4">
           <Col xs={9}>
             <Input type="text"
@@ -307,11 +310,13 @@ class Escrow extends Component {
           <Col xs={3}>
             <Button className="px-3 float-right"
                     color="primary"
-                    onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>Copy</Button>
+                    onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>
+              {t('escrow.page.copy')}
+            </Button>
           </Col>
         </Row>
         {!isStatus && ((isBuyer && escrow.seller.contactData.startsWith("Status")) || (!isBuyer && escrow.buyerInfo.contactData.startsWith("Status"))) && <p className="text-center text-muted mt-3">
-          <span>Not a Status user?</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">Get Status now!</a>
+          <span>{t('escrow.page.notStatusUser')}</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">{t('escrow.page.getStatusNow')}</a>
         </p>}
       </ModalDialog>
       <Profile withBuyer={!isBuyer} address={isBuyer ? escrow.offer.owner : escrow.buyer}/>
@@ -325,6 +330,7 @@ class Escrow extends Component {
 }
 
 Escrow.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
   escrow: PropTypes.object,
@@ -424,4 +430,4 @@ export default connect(
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
     setRedirectTarget: emailNotifications.actions.setRedirectTarget
   }
-)(withRouter(Escrow));
+)(withRouter(withTranslation()(Escrow)));

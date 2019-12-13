@@ -24,7 +24,6 @@ import EditLocation from '../pages/EditLocation';
 import License from '../pages/License';
 import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
-import OffersMap from '../pages/OffersMap';
 import CacheSettings from '../pages/Settings';
 import NotificationManager from '../components/NotificationManager';
 
@@ -61,6 +60,7 @@ import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
 import escrow from '../features/escrow';
+import {withTranslation} from "react-i18next";
 
 const PRICE_FETCH_INTERVAL = 60000;
 
@@ -137,6 +137,7 @@ class App extends Component {
   };
 
   render() {
+    const t = this.props.t;
     if (this.props.error) {
       console.error(this.props.error);
       return <ErrorInformation provider/>;
@@ -158,7 +159,7 @@ class App extends Component {
             <Header />
             <div className={(this.state.isHome ? 'home-body-content ' : 'app-body-content ') + "body-content"}>
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
-                Error while fetching prices. Opening a trade will not be possible until the issue is resolved.
+                {t('app.priceError')}
               </Alert>}
               <Switch>
                 <Route exact path="/" component={Home}/>
@@ -186,13 +187,12 @@ class App extends Component {
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
                 <Route exact path="/buy" component={OffersList}/>
-                <Route exact path="/offers/map" component={OffersMap}/>
 
                 <Wizard path="/buy/trade" steps={[
                   {path: '/buy/trade/amount', component: BuyTrade},
                   (!this.props.profile || !this.props.profile.username) && {path: '/buy/trade/contact-name', component: BuyContact},
                   {path: '/buy/trade/contact-details', component: BuyContactDetails},
-                  {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: 'Confirm the trade'}
+                  {path: '/buy/trade/confirm', component: BuyConfirmTrade, nextLabel: t('app.confirmTrade')}
                 ].filter(x => x)}/>
 
                 <Wizard path="/sell/" steps={[
@@ -204,8 +204,8 @@ class App extends Component {
                   (!this.props.profile || !this.props.profile.contactData) && {path: '/sell/contact-details', component: SellContactDetails},
                   {path: '/sell/arbitrator', component: SellArbitrator},
                   {path: '/sell/margin', component: SellMargin},
-                  {path: '/sell/limits', component: SellLimits, nextLabel: 'Go to summary'},
-                  {path: '/sell/summary', component: SellSummary, nextLabel: 'Finish'}
+                  {path: '/sell/limits', component: SellLimits, nextLabel: t('app.goToSummary')},
+                  {path: '/sell/summary', component: SellSummary, nextLabel: t('app.finish')}
                 ].filter(x => x)}/>
 
                 <Route component={fourOFour}/>
@@ -219,6 +219,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  t: PropTypes.func,
   init: PropTypes.func,
   error: PropTypes.string,
   priceError: PropTypes.string,
@@ -268,4 +269,4 @@ export default connect(
     watchEscrowCreations: escrow.actions.watchEscrowCreations,
     loadOffers: metadata.actions.loadOffers
   }
-)(App);
+)(withTranslation()(App));

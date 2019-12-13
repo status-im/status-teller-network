@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {Row, Col, ModalHeader, ModalBody, Modal} from 'reactstrap';
-import { withNamespaces } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
@@ -97,23 +97,23 @@ class Home extends Component {
         </div>
 
         <Row className="mt-4 mb-3">
-          <IconGroup src={secureIcon} title="Secure & Private" aos="fade-right">
-            Security is our top priority – connect, chat, and transact with peers using secure technology.
+          <IconGroup src={secureIcon} title={t('home.securityTitle')} aos="fade-right">
+            {t('home.securityDetails')}
           </IconGroup>
-          <IconGroup src={peerIcon} title="Peer to Peer" aos="fade-left">
-            You own your funds, you manage your transactions – no unnecessary middle men.
+          <IconGroup src={peerIcon} title={t('home.peerToPeerTitle')} aos="fade-left">
+            {t('home.peerToPeerDetails')}
           </IconGroup>
-          <IconGroup src={worldwideIcon} title="Worldwide" aos="fade-right">
-            Obtain and transact in whatever currency you choose no matter where you are in the world.
+          <IconGroup src={worldwideIcon} title={t('home.worldwideTitle')} aos="fade-right">
+            {t('home.worldwideDetails')}
           </IconGroup>
-          <IconGroup src={permissionlessIcon} title="Permissionless" className="mb-2" aos="fade-left">
-            Join anonymously and begin transacting instantly - with anyone and everyone.
+          <IconGroup src={permissionlessIcon} title={t('home.permissionlessTitle')} className="mb-2" aos="fade-left">
+            {t('home.permissionlessDetails')}
           </IconGroup>
 
           {offers.length > 0 &&
-          <IconGroup src={mostPopularIcon} title="Most popular offers" className="mt-5 mb-2" fullSize aos="fade-up">
+          <IconGroup src={mostPopularIcon} title={t('home.mostPopularOffersTitle')} className="mt-5 mb-2" fullSize aos="fade-up">
             <Fragment>
-              <p data-aos="fade-up">Choose from a growing number of sellers</p>
+              <p data-aos="fade-up">{t('home.mostPopularOffersDetails')}</p>
               <Draggable
                 axis="x"
                 handle=".popular-offers"
@@ -135,8 +135,8 @@ class Home extends Component {
             </Fragment>
           </IconGroup>}
 
-          <IconGroup src={tradeIcon} title="How does the trade work?" fullSize className="mt-5" aos="fade-up">
-            <p data-aos="fade-up">Teller offers a decentralized, safe and private solution.</p>
+          <IconGroup src={tradeIcon} title={t('home.howTradeWorksTitle')} fullSize className="mt-5" aos="fade-up">
+            <p data-aos="fade-up">{t('home.howTradeWorksDetails')}</p>
             <img alt="trade example" src={escrowExample} className="mx-auto mt-2 mb-5 d-block" data-aos="fade-up"/>
             <OpenDappBtn loading={loading} data-aos="fade-up"/>
           </IconGroup>
@@ -144,15 +144,16 @@ class Home extends Component {
 
         <LandingFooter/>
 
-        {<Modal isOpen={networkId === 1 &&  !mainnetWarningShowed && this.state.warningModalOpened} toggle={this.toggleWarningModal}>
+        {<Modal isOpen={networkId === 1 && !mainnetWarningShowed && this.state.warningModalOpened}
+                toggle={this.toggleWarningModal}>
           <ModalHeader toggle={this.toggleWarningModal}>
             <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2"/>
-          Warning: You are on Ethereum&apos;s mainnet
+            {t('home.mainnetWarningTitle')}
           </ModalHeader>
           <ModalBody>
-            <p>This is a short disclaimer to warn you that the contracts used in this Dapp are not audited yet.</p>
-            <p>Make sure to keep that in mind before transacting meaningful amounts of money.</p>
-            <p>Thank you for using Teller</p>
+            <p>{t('home.mainnetWarningDetails1')}</p>
+            <p>{t('home.mainnetWarningDetails2')}</p>
+            <p>{t('home.mainnetWarningDetails3')}</p>
           </ModalBody>
         </Modal>}
       </div>
@@ -204,4 +205,4 @@ export default connect(
     resetNewBuy: newBuy.actions.resetNewBuy,
     setMainnetWarningShowed: metadata.actions.setMainnetWarningShowed
   }
-)(withNamespaces()(withRouter(Home)));
+)(withTranslation()(withRouter(Home)));

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {compose, withProps} from "recompose";
 import {GoogleMap, Marker, withGoogleMap, withScriptjs} from "react-google-maps";
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 import {API_KEY} from '../../services/googleMap';
 
@@ -81,7 +81,7 @@ export class Map extends Component {
   };
 
   render() {
-    let {goToProfile, markerOnly, markers, error} = this.props;
+    let {t, goToProfile, markerOnly, markers, error} = this.props;
     let {center, activeMarkers} = this.state;
 
     if (error) {
@@ -105,7 +105,7 @@ export class Map extends Component {
           }}
           controlPosition={google.maps.ControlPosition.BOTTOM_LEFT}
         >
-          <SearchBar className="map-search-form" placeholder="Enter a city or ZIP code"/>
+          <SearchBar className="map-search-form" placeholder={t('map.searchPlaceholder')}/>
         </SearchBox>}
         {markers && markers.map(marker => {
           return (<Marker
@@ -142,5 +142,5 @@ export default compose(
   }),
   withScriptjs,
   withGoogleMap
-)(withNamespaces()(Map));
+)(withTranslation()(Map));
 

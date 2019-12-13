@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import classnames from 'classnames';
 
 import SNTIcon from '../../../../../node_modules/cryptocurrency-icons/svg/color/snt.svg';
@@ -15,7 +15,7 @@ class YourSNTBalance extends Component {
           <span className={classnames("h3", "font-weight-normal", {'text-danger': this.props.disabled})}>
             <img src={SNTIcon} alt="SNT icon" className="mr-2"/>
             {(this.props.value || this.props.value === 0) && <Fragment>{this.props.value} SNT</Fragment>}
-            {!this.props.value && this.props.value !== 0 && 'Loading...'}
+            {!this.props.value && this.props.value !== 0 && t('general.loading')}
           </span>
         </p>
       </Fragment>
@@ -29,4 +29,4 @@ YourSNTBalance.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default withNamespaces()(YourSNTBalance);
+export default withTranslation()(YourSNTBalance);

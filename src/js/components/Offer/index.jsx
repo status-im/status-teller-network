@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import {addressCompare, zeroAddress} from '../../utils/address';
 import NoArbitratorWarning from "../../components/NoArbitratorWarning";
 import {PAYMENT_METHODS} from '../../features/metadata/constants';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import limitIcon from '../../../images/limits.svg';
 import bankIcon from '../../../images/bank.svg';
 import chatIcon from '../../../images/read-chat.svg';
@@ -104,4 +104,4 @@ Offer.propTypes = {
   offerClick: PropTypes.func
 };
 
-export default withNamespaces()(Offer);
+export default withTranslation()(Offer);

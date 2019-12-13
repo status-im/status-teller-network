@@ -2,27 +2,31 @@ import React from 'react';
 import {Button} from 'reactstrap';
 import {Link} from "react-router-dom";
 import PropTypes from 'prop-types';
+import {withTranslation} from "react-i18next";
 
-const NoLicense = ({arbitratorPage}) => (
-<div className="no-license mt-5 px-3">
-    {arbitratorPage && <h3>You don&apos;t have an arbitrator license </h3>}
-    {!arbitratorPage && <h3>You don&apos;t have a seller license </h3>}
-    {arbitratorPage && <p className="text-muted">Once you are approved as an arbitrator you can make tokens by judging disputes.</p> }
-    {!arbitratorPage && <p className="text-muted">Once you are a seller you will be able to create offers</p> }
+const NoLicense = ({t, arbitratorPage}) => (
+  <div className="no-license mt-5 px-3">
+    <h3>
+      {arbitratorPage && t('license.noArbiLicense')}
+      {!arbitratorPage && t('license.noSellerLicense')}
+    </h3>
+    {arbitratorPage &&
+    <p className="text-muted">{t('license.onceArbi')}</p>}
+    {!arbitratorPage && <p className="text-muted">{t('license.onceSeller')}</p>}
     <p className="mt-5 text-center">
-        {arbitratorPage && <Button color="primary" tag={Link} to="/arbitrator/license">Become an arbitrator</Button> }
-        {!arbitratorPage && <Button color="primary" tag={Link} to="/license">Become a seller</Button> }
+      {arbitratorPage && <Button color="primary" tag={Link} to="/arbitrator/license">{t('license.becomeArbi')}</Button>}
+      {!arbitratorPage && <Button color="primary" tag={Link} to="/license">{t('license.becomeSeller')}</Button>}
     </p>
-</div>
+  </div>
 );
 
 NoLicense.defaultProps = {
-    arbitratorPage: false
+  arbitratorPage: false
 };
 
 NoLicense.propTypes = {
-    arbitratorPage: PropTypes.bool
-  };
+  t: PropTypes.func,
+  arbitratorPage: PropTypes.bool
+};
 
-
-export default NoLicense;
+export default withTranslation()(NoLicense);

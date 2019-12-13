@@ -6,8 +6,15 @@ import classnames from 'classnames';
 
 const RatingIcon = ({isPositiveRating, onClick, isRated, size, className}) => (
   <Fragment>
-    {isPositiveRating && <FontAwesomeIcon size={size} className={classnames(className, {"text-warning": !onClick && !isRated, "text-success": onClick || isRated})} icon={faThumbsUp} onClick={onClick} />}
-    {!isPositiveRating && <FontAwesomeIcon size={size} className={classnames(className, {"text-warning": !onClick && !isRated, "text-danger": onClick || isRated})} icon={faThumbsDown} onClick={onClick} />}
+    {isPositiveRating && <FontAwesomeIcon size={size} className={classnames(className, {
+      "text-warning": !onClick && !isRated,
+      "text-success": onClick || isRated
+    })} icon={faThumbsUp} onClick={onClick}/>}
+
+    {!isPositiveRating && <FontAwesomeIcon size={size} className={classnames(className, {
+      "text-warning": !onClick && !isRated,
+      "text-danger": onClick || isRated
+    })} icon={faThumbsDown} onClick={onClick}/>}
   </Fragment>
 );
 

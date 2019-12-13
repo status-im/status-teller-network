@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Card, CardHeader, CardBody, Button} from 'reactstrap';
 import { Link } from "react-router-dom";
-import { withNamespaces } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
-import {zeroAddress} from '../../../utils/address';
-import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
 import classnames from 'classnames';
 import iconDelete from '../../../../images/delete.svg';
 
@@ -74,7 +72,7 @@ class Offers extends Component {
           <Row>
             <dl className="col-12">
               <dt>Arbitrator</dt>
-              <dd>{offer.arbitratorData ? offer.arbitratorData.username : 'No Username'} ({offer.arbitrator})</dd>
+              <dd>{offer.arbitratorData ? offer.arbitratorData.username : t('offers.noUsername')} ({offer.arbitrator})</dd>
             </dl>
           </Row>
         </CardBody>
@@ -109,7 +107,10 @@ class Offers extends Component {
           <h3 className="d-inline-block">{t('offers.past')}</h3>
         </div>
         {inactiveOffers.length === 0 ? this.renderEmpty() : this.renderOffers(inactiveOffers, false)}
-        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.deleteOffer} onCancel={this.displayDialog(false)} title="Delete offer" content="Are you sure?" cancelText="No" />
+        <ConfirmDialog display={this.state.displayDialog} onConfirm={this.deleteOffer}
+                       onCancel={this.displayDialog(false)} title={t('offers.deleteOffer')}
+                       content={t('general.youSure')}
+                       cancelText={t('general.no')}/>
       </div>
     );
   }
@@ -122,4 +123,4 @@ Offers.propTypes = {
   deleteOffer: PropTypes.func
 };
 
-export default withNamespaces()(Offers);
+export default withTranslation()(Offers);

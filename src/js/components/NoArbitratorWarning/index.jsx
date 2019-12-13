@@ -3,21 +3,19 @@ import PropTypes from 'prop-types';
 import {zeroAddress} from '../../utils/address';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationTriangle} from "@fortawesome/free-solid-svg-icons";
+import {withTranslation} from "react-i18next";
 
-const NoArbitratorWarning = ({arbitrator, label}) => <Fragment>
+const NoArbitratorWarning = ({t, arbitrator, label}) => <Fragment>
     {arbitrator === zeroAddress && <span className="text-danger text-small pl-2">
     <FontAwesomeIcon className="mr-2" icon={faExclamationTriangle} size="sm"/>
-    {label}
+    {label || t('arbitration.noArbitrationLabel')}
   </span>}
 </Fragment>;
 
-NoArbitratorWarning.defaultProps = {
-  label: "No arbitrator found. Disputes cannot be opened"
-};
-
 NoArbitratorWarning.propTypes = {
+  t: PropTypes.func,
   arbitrator: PropTypes.string,
   label: PropTypes.string
 };
 
-export default NoArbitratorWarning;
+export default withTranslation()(NoArbitratorWarning);

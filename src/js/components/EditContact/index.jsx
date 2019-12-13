@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {FormGroup, Label} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import PropTypes from 'prop-types';
 import {required} from "./validators";
 
@@ -18,7 +18,7 @@ class EditContact extends Component {
             <Input type="text"
                    name="nickname"
                    id="nickname"
-                   placeholder="Set nickname"
+                   placeholder={t('contactForm.nicknamePlaceholder')}
                    value={username}
                    className="form-control"
                    onChange={(e) => this.props.changeUsername(e.target.value)}
@@ -36,4 +36,4 @@ EditContact.propTypes = {
   username: PropTypes.string
 };
 
-export default withNamespaces()(EditContact);
+export default withTranslation()(EditContact);

@@ -6,9 +6,10 @@ import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
 import UserCheck from "../../../../images/user-check.svg";
 import CheckIcon from "../../../../images/check.svg";
+import {withTranslation} from "react-i18next";
 
 // eslint-disable-next-line complexity
-const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid, disabled}) => (
+const ReleaseFunds = ({t, isBuyer, isActive, isDone, action, isPaid, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={UserCheck} bgColor={isActive ? "primary" : "grey"}/>}
@@ -18,35 +19,35 @@ const ReleaseFunds = ({isBuyer, isActive, isDone, action, isPaid, disabled}) => 
 
     <Col xs={isActive ? '7' : '9'} sm={isActive ? '8' : '9'} md={isActive ? '9' : '9'}>
       <p className={classnames("m-0 font-weight-bold", {'text-primary': isActive, 'text-black': !isActive})}>
-        Confirm payment & Release funds
+        {t('escrow.release.confirmPayment')}
       </p>
 
       {!isDone && <Fragment>
         <p className="m-0 text-muted text-small">
-          {isBuyer && 'Seller will release funds from the escrow to your wallet'}
-          {!isBuyer && isPaid && 'Payment done by the buyer. Check that you received it and release the funds'}
-          {!isBuyer && !isPaid && 'Wait for the buyer to send you the money, then you can release'}
+          {isBuyer && t('escrow.release.sellerWillRelease')}
+          {!isBuyer && isPaid && t('escrow.release.paymentDone')}
+          {!isBuyer && !isPaid && t('escrow.release.waitForBuyerToSend')}
         </p>
       </Fragment>}
 
-      {isDone && <p className="m-0 text-muted text-small">Payment has been confirmed and money released.</p>}
+      {isDone && <p className="m-0 text-muted text-small">{t('escrow.release.paymentHasBeenConfirmed')}</p>}
     </Col>
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
-      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? 'Seller' : 'You'}</p>}
+      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? t('general.seller') : t('general.you')}</p>}
 
       {isActive && isBuyer && <div className="bg-dark rounded p-2 position-relative">
         <span className="bubble-triangle bg-dark"/>
-        <p className="text-white text-small font-weight-bold m-0">Seller&apos;s turn</p>
-        <p className="text-white text-mini m-0">No action needed</p>
+        <p className="text-white text-small font-weight-bold m-0">{t('escrow.general.sellersTurn')}</p>
+        <p className="text-white text-mini m-0">{t('escrow.general.noActionNeeded')}</p>
       </div>}
 
       {isActive && !isBuyer && <div className="bg-primary rounded p-2 position-relative">
         <span className="bubble-triangle bg-primary"/>
-        <p className="text-white mb-1 text-small">It&apos;s your turn</p>
+        <p className="text-white mb-1 text-small">{t('escrow.general.yourTurn')}</p>
         <p className="m-0 text-center">
           <Button onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
-            Release funds →
+            {t('escrow.release.releaseFunds')}
           </Button>
         </p>
       </div>}
@@ -62,6 +63,7 @@ ReleaseFunds.defaultProps = {
 };
 
 ReleaseFunds.propTypes = {
+  t: PropTypes.func,
   isBuyer: PropTypes.bool,
   isActive: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -70,4 +72,4 @@ ReleaseFunds.propTypes = {
   action: PropTypes.func
 };
 
-export default ReleaseFunds;
+export default withTranslation()(ReleaseFunds);

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Row, Col, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 class LicenseBuy extends Component {
   render() {
@@ -22,4 +22,4 @@ LicenseBuy.propTypes = {
   disabled: PropTypes.bool
 };
 
-export default withNamespaces()(LicenseBuy);
+export default withTranslation()(LicenseBuy);

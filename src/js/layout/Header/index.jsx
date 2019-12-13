@@ -3,6 +3,7 @@ import {Link, withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {Navbar, NavbarBrand, Nav, NavLink, NavItem, Button, Row, Col} from 'reactstrap';
 import classnames from 'classnames';
+import {withTranslation} from "react-i18next";
 
 import logoWhite from "../../../images/teller-logo-white.svg";
 import iconProfile from "../../../images/profile.svg";
@@ -10,7 +11,7 @@ import iconCloseProfile from "../../../images/close_profile.svg";
 
 import "./index.scss";
 
-const Header = ({location, history}) => {
+const Header = ({t, location, history}) => {
   if (location.pathname === '/') {
     // Not this header on the landing page
     return null;
@@ -30,8 +31,12 @@ const Header = ({location, history}) => {
 
           <Col xs={10}>
             {!isProfile && <Nav className="header-nav-btns">
-              <Button tag={Link} to="/buy" size="sm" className={classnames("mr-3", {active: location.pathname === '/buy'})}>Buy</Button>
-              <Button tag={Link} to="/sell" size="sm" className={classnames({active: location.pathname.indexOf('/sell') > -1})}>Sell</Button>
+              <Button tag={Link} to="/buy" size="sm" className={classnames("mr-3", {active: location.pathname === '/buy'})}>
+                {t('header.buy')}
+              </Button>
+              <Button tag={Link} to="/sell" size="sm" className={classnames({active: location.pathname.indexOf('/sell/') > -1})}>
+                {t('header.sell')}
+              </Button>
             </Nav>}
           </Col>
 
@@ -62,8 +67,9 @@ const Header = ({location, history}) => {
 };
 
 Header.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object
 };
 
-export default withRouter(Header);
+export default withRouter(withTranslation()(Header));

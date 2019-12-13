@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from 'reactstrap';
 import Input from 'react-validation/build/input';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import Form from 'react-validation/build/form';
 import {isInteger, required} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
@@ -121,4 +121,4 @@ MarginSelectorForm.propTypes = {
   marginChange: PropTypes.func
 };
 
-export default withNamespaces()(MarginSelectorForm);
+export default withTranslation()(MarginSelectorForm);

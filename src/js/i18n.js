@@ -1,11 +1,11 @@
 import i18n from "i18next";
-import { reactI18nextModule } from "react-i18next";
+import { initReactI18next } from "react-i18next";
 import LngDetector from "i18next-browser-languagedetector";
 
 import translationEn from './locales/en.json';
 
 i18n
-  .use(reactI18nextModule)
+  .use(initReactI18next)
   .use(LngDetector)
   .init({
     resources: {

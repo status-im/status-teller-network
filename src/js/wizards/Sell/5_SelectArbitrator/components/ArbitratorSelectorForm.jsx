@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
-import {withNamespaces, Trans} from 'react-i18next';
+import {withTranslation, Trans} from 'react-i18next';
 import {compactAddress} from '../../../../utils/address';
 import {Link} from "react-router-dom";
 import {formatArbitratorName} from '../../../../utils/strings';
@@ -67,4 +67,4 @@ ArbitratorSelectorForm.propTypes = {
   changeArbitrator: PropTypes.func
 };
 
-export default withNamespaces()(ArbitratorSelectorForm);
+export default withTranslation()(ArbitratorSelectorForm);

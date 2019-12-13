@@ -23,7 +23,7 @@ import iconBecomeArbitrator from '../../../images/arbitrator.svg';
 import iconSettings from '../../../images/settings.svg';
 
 import "./index.scss";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -80,7 +80,7 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {profile, address, requests, trades, enableEthereum} = this.props;
+    const {t, profile, address, requests, trades, enableEthereum} = this.props;
 
     if (!this.props.isEip1102Enabled) {
       return <ConnectWallet enableEthereum={enableEthereum} />;
@@ -95,19 +95,27 @@ class MyProfile extends Component {
 
     return (
       <Fragment>
-        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation} identiconSeed={profile.address} username={profile.username}/>
-        <ProfileButton linkTo="/profile/trades" image={iconTrades} title="My trades" subtitle={`${activeTrades} active`} />
-        <ProfileButton linkTo="/profile/offers" image={iconOffers} title="My offers" subtitle={`${activeOffers} active`} />
-        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title="My arbitrators" subtitle="Request arbitrator approvals" />
-        <Separator />
-        {profile.isArbitrator && <p className="text-muted mt-4">Arbitrator</p>}
-        {!profile.isArbitrator && <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title="Become an arbitrator" subtitle="Make tokens by judging disputes" />}
+        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation}
+                         identiconSeed={profile.address} username={profile.username}/>
+        <ProfileButton linkTo="/profile/trades" image={iconTrades} title={t('profile.myTrades')}
+                       subtitle={t('profile.nbActive', {nb: activeTrades})}/>
+        <ProfileButton linkTo="/profile/offers" image={iconOffers} title={t('profile.myOffers')}
+                       subtitle={t('profile.nbActive', {nb: activeOffers})}/>
+        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title={t('profile.myArbitrators')}
+                       subtitle={t('profile.requestApproval')}/>
+        <Separator/>
+        {profile.isArbitrator && <p className="text-muted mt-4">{t('profile.arbitrator')}</p>}
+        {!profile.isArbitrator &&
+        <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title={t('profile.becomeArbitrator')}
+                       subtitle={t('profile.makeTokensByJudging')}/>}
         {profile.isArbitrator && <Fragment>
-          <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title="Disputes" subtitle={`${openDisputes.length} disputes to resolve`} />
-          <ProfileButton linkTo="/sellers" image={iconDisputes} title="Arbitrator settings" subtitle={`${pendingRequests} pending requests`} />
-        </Fragment> }
-        <Separator />
-        <ProfileButton linkTo="/profile/settings" image={iconSettings} title="Profile settings"/>
+          <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title={t('profile.disputes')}
+                         subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}/>
+          <ProfileButton linkTo="/sellers" image={iconDisputes} title={t('profile.arbitratorSettings')}
+                         subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
+        </Fragment>}
+        <Separator/>
+        <ProfileButton linkTo="/profile/settings" image={iconSettings} title={t('profile.profileSettings')}/>
       </Fragment>
     );
   }
@@ -154,4 +162,4 @@ export default connect(
     watchEscrow: escrow.actions.watchEscrow,
     getArbitratorRequests: arbitration.actions.getArbitratorRequests,
     enableEthereum: metadata.actions.enableEthereum
-  })(withRouter(withNamespaces()(MyProfile)));
+  })(withRouter(withTranslation()(MyProfile)));
