@@ -62,7 +62,7 @@ import metadata from '../features/metadata';
 import escrow from '../features/escrow';
 import {withTranslation} from "react-i18next";
 
-const PRICE_FETCH_INTERVAL = 60000;
+const PRICE_FETCH_INTERVAL = 61000;
 
 class App extends Component {
   constructor(props) {
@@ -223,7 +223,6 @@ App.propTypes = {
   init: PropTypes.func,
   error: PropTypes.string,
   priceError: PropTypes.string,
-  fetchPrices: PropTypes.func,
   fetchExchangeRates: PropTypes.func,
   getGasPrice: PropTypes.func,
   isReady: PropTypes.bool,
@@ -259,7 +258,6 @@ export default connect(
   mapStateToProps,
   {
     checkAccountChange: metadata.actions.checkAccountChange,
-    fetchPrices: prices.actions.fetchPrices,
     fetchExchangeRates: prices.actions.fetchExchangeRates,
     getGasPrice: network.actions.getGasPrice,
     init: network.actions.init,

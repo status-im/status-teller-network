@@ -1,12 +1,12 @@
-import { FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED } from './constants';
+import { FETCH_PRICES_SUCCEEDED, FETCH_PRICES_FAILED, SAVE_COIN_GECKO_IDS } from './constants';
 import {PURGE_STATE} from '../network/constants';
+import merge from "merge";
 
 function reducer(state = {}, action) {
   switch (action.type) {
     case FETCH_PRICES_SUCCEEDED:
       return {
-        ...state,
-        ...action.data,
+        ...merge.recursive(true, state, action.data),
         error: null
       };
     case FETCH_PRICES_FAILED:
@@ -14,7 +14,11 @@ function reducer(state = {}, action) {
         ...state,
         ...{error: action.error}
       };
-
+    case SAVE_COIN_GECKO_IDS:
+      return {
+        ...state,
+        coinGeckoIds: action.coinGeckoIds
+      };
     case PURGE_STATE:
       return {};
     default:
@@ -23,7 +27,3 @@ function reducer(state = {}, action) {
 }
 
 export default reducer;
-
-export const getEthUsdPrice = state => state.prices.ETH && state.prices.ETH.USD;
-export const getSntUsdPrice = state => state.prices.SNT && state.prices.SNT.USD;
-export const hasPricesError = state => !!state.prices.error;

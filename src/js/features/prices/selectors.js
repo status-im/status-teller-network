@@ -11,4 +11,6 @@ export const hasPrices = state => {
   return state.prices.ETH !== undefined;
 };
 
+export const getGeckoIds = state => state.prices.coinGeckoIds;
+
 export const error = state => state.prices.error;
