@@ -7,8 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
-import {zeroAddress} from '../../../utils/address';
-import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
 import classnames from 'classnames';
 import iconDelete from '../../../../images/delete.svg';
 

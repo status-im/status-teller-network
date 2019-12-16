@@ -26,7 +26,7 @@ class Contact extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.seller.location) {
+    if (!this.props.seller.location && this.props.seller.location !== '') {
       return this.props.wizard.previous();
     }
 

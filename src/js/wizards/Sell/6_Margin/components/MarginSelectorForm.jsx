@@ -4,7 +4,7 @@ import {FormGroup, InputGroup, InputGroupAddon, InputGroupText, Col, Row} from '
 import Input from 'react-validation/build/input';
 import {withNamespaces} from 'react-i18next';
 import Form from 'react-validation/build/form';
-import {isInteger, required} from '../../../../validators';
+import {isInteger, required, lowerThan, higherEqThan} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
 import 'rc-slider/assets/index.css';
 import './MarginSelectorForm.scss';
@@ -34,8 +34,8 @@ class MarginSelectorForm extends Component {
     let sliderValue = margin || 0;
     if (margin > 100) {
       sliderValue = 100;
-    } else if (margin < -100) {
-      sliderValue = -100;
+    } else if (margin < -99) {
+      sliderValue = -99;
     }
 
     return (
@@ -53,7 +53,7 @@ class MarginSelectorForm extends Component {
         <FormGroup className="mb-0">
           <Row>
             <Col md={9} sm={9} xs={8}>
-              <Slider className="mb-3 p-4" min={-100} max={100} defaultValue={1}
+              <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={1}
                       onChange={(value) => this.onMarginChange(value)} value={sliderValue}/>
             </Col>
             <Col md={3} sm={3} xs={4}>
@@ -65,7 +65,9 @@ class MarginSelectorForm extends Component {
                        className="form-control prepend"
                        value={margin}
                        onChange={(e) => this.onMarginChange(e.target.value)}
-                       validations={[required, isInteger]}/>
+                       data-maxvalue={32767}
+                       data-minvalue={-99}
+                       validations={[required, isInteger, lowerThan, higherEqThan]}/>
                 <InputGroupAddon addonType="append"><InputGroupText>%</InputGroupText></InputGroupAddon>
               </InputGroup>
             </Col>
