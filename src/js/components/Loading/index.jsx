@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import TxHash from '../../ui/TxHash';
 
 import "./index.scss";
@@ -29,4 +29,4 @@ Loading.propTypes = {
   txHash: PropTypes.string
 };
 
-export default withNamespaces()(Loading);
+export default withTranslation()(Loading);

@@ -7,9 +7,10 @@ import {States} from '../../../utils/transaction';
 import CheckIcon from "../../../../images/check.svg";
 import RatingIcon from "../../../ui/RatingIcon";
 import classnames from 'classnames';
+import {withTranslation} from "react-i18next";
 
 // eslint-disable-next-line complexity
-const Done = ({isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => {
+const Done = ({t, isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => {
   const rating = trade ? parseInt(isBuyer ? trade.sellerRating : trade.buyerRating, 10) : 0;
   const tradeWasRated = trade && rating !== 0;
 
@@ -22,18 +23,22 @@ const Done = ({isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, r
 
     <Col xs={(isActive || hadDispute) ? '6' : '11'} sm={(isActive || hadDispute) ? '8' : '11'}>
       <p className="m-0 font-weight-bold">
-        Done
+        {t('escrow.done.done')}
       </p>
 
       {!isDone && <p className="m-0 text-muted text-small">
-        Trade is finished once every step above is complete
+        {t('escrow.done.finishedWhen')}
       </p>}
 
-      {isDone && <p className="m-0 text-muted text-small">Trade is complete</p>}
+      {isDone && <p className="m-0 text-muted text-small">
+        {t('escrow.done.isComplete')}
+      </p>}
     </Col>
     {(isActive || hadDispute) && <Col xs="5" sm="3">
       <div className={classnames("rounded p-2 position-relative bg-white", {'shadow-sm': !tradeWasRated})}>
-        {!tradeWasRated && <p className="mb-1 text-small text-black">How did the trade go?</p>}
+        {!tradeWasRated && <p className="mb-1 text-small text-black">
+          {t('escrow.done.howDidItGo')}
+        </p>}
         <p className="m-0 text-center">
           {tradeWasRated &&
           <span
@@ -71,6 +76,7 @@ Done.defaultProps = {
 };
 
 Done.propTypes = {
+  t: PropTypes.func,
   hadDispute: PropTypes.bool,
   isDone: PropTypes.bool,
   isActive: PropTypes.bool,
@@ -81,4 +87,4 @@ Done.propTypes = {
   rateBuyerStatus: PropTypes.string
 };
 
-export default Done;
+export default withTranslation()(Done);

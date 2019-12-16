@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {withRouter, Link} from "react-router-dom";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {Button} from 'reactstrap';
 
 import errorImage from '../../../images/error.png';
@@ -28,4 +28,4 @@ fourOFour.propTypes = {
   history: PropTypes.object
 };
 
-export default withRouter(withNamespaces()(fourOFour));
+export default withRouter(withTranslation()(fourOFour));

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircleNotch} from "@fortawesome/free-solid-svg-icons";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 
 import one from "../../../../images/escrow/01.png";
 import two from "../../../../images/escrow/02.png";
@@ -26,7 +26,7 @@ const Mining = ({txHash, number, t}) => {
     <span className="bg-dark text-white p-3 rounded-circle">
       <img src={image} alt="three"/>
     </span>
-      <h2 className="mt-4">Waiting for the confirmations from the miners</h2>
+      <h2 className="mt-4">{t('escrow.waiting.title')}</h2>
       <FontAwesomeIcon icon={faCircleNotch} size="5x" spin/>
       {txHash && <p className="text-muted mb-0 mt-3 text-break">{t('transaction.hash')}: <TxHash value={txHash}/></p>}
     </div>);
@@ -38,4 +38,4 @@ Mining.propTypes = {
   t: PropTypes.func
 };
 
-export default withNamespaces()(Mining);
+export default withTranslation()(Mining);

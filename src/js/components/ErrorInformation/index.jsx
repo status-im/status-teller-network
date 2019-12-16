@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {Button} from 'reactstrap';
 
 import errorImage from '../../../images/error.png';
@@ -47,4 +47,4 @@ ErrorInformation.propTypes = {
   cancel: PropTypes.func
 };
 
-export default withNamespaces()(ErrorInformation);
+export default withTranslation()(ErrorInformation);

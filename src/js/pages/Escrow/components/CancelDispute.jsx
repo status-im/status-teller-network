@@ -6,6 +6,7 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import CancelIcon from "../../../../images/close.svg";
 import classnames from 'classnames';
+import {withTranslation} from "react-i18next";
 
 class CancelDispute extends Component {
 
@@ -24,7 +25,8 @@ class CancelDispute extends Component {
     this.displayDialog(false)();
   };
 
-  render(){
+  render() {
+    const t = this.props.t;
     return <Fragment>
       <div onClick={this.displayDialog(true)} className="clickable">
         <Row className={classnames("mt-4 text-primary")}>
@@ -32,20 +34,24 @@ class CancelDispute extends Component {
             <RoundedIcon image={CancelIcon} bgColor="red"/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <h6 className="m-0 font-weight-normal text-danger">Cancel Dispute</h6>
+            <h6 className="m-0 font-weight-normal text-danger">{t('escrow.cancel.cancelDispute')}</h6>
           </Col>
         </Row>
 
       </div>
-      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelDispute} onCancel={this.displayDialog(false)} title="Cancel Dispute" content="Are you sure?" cancelText="No" />
+      <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelDispute}
+                     onCancel={this.displayDialog(false)} title={t('escrow.cancel.cancelDispute')}
+                     content={t('escrow.cancel.youSure')}
+                     cancelText={t('general.no')}/>
     </Fragment>;
   }
 }
 
 CancelDispute.propTypes = {
+  t: PropTypes.func,
   cancelDispute: PropTypes.func,
   trade: PropTypes.object,
   isBuyer: PropTypes.bool
 };
 
-export default CancelDispute;
+export default withTranslation()(CancelDispute);

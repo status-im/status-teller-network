@@ -9,7 +9,7 @@ const Separator = ({className}) => (
 );
 
 Separator.propTypes = {
-  className: PropTypes.bool
+  className: PropTypes.string
 };
 
 export default Separator;

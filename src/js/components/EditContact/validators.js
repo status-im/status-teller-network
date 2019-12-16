@@ -1,6 +1,6 @@
 import React from 'react';
 import {FormFeedback} from "reactstrap";
-import {NamespacesConsumer} from 'react-i18next';
+import {Translation} from 'react-i18next';
 
 export const contactCodeRegExp = /^0x[0-9a-fA-F]{130}$/;
 
@@ -36,17 +36,17 @@ export const isContactCode = (value, props) => {
     return;
   }
   if (!(validENS(value) || (value.startsWith("0x") && contactCodeRegExp.test(value)))){
-    return <NamespacesConsumer>
+    return <Translation>
       {t => <FormFeedback className="d-block">{t('validators.isContactCode')}</FormFeedback>}
-      </NamespacesConsumer>;
+      </Translation>;
   }
 };
 
 export const required = (value) => {
   if (!value.toString().trim().length) {
-    return <NamespacesConsumer>
+    return <Translation>
       {t => <FormFeedback className="d-block">{t('validators.required')}</FormFeedback>}
-    </NamespacesConsumer>;
+    </Translation>;
   }
 };
 

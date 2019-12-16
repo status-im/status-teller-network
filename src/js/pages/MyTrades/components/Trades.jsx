@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Card, Row, Col, CardBody, CardFooter} from 'reactstrap';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
 import {truncateTwo} from '../../../utils/numbers';
@@ -18,81 +18,74 @@ import {PAYMENT_METHODS} from "../../../features/metadata/constants";
 
 import UserInfoRow from "../../../components/UserInfoRow";
 
-// eslint-disable-next-line complexity
-const getTradeStyle = (trade, isBuyer) => {
-  if (trade.mining) {
-    return {text: 'Mining', className: 'bg-info'};
-  }
-  if (trade.arbitration) {
-    if (trade.arbitration.open) {
-      trade.status = tradeStates.arbitration_open;
-    } else {
-      if (trade.arbitration.result !== '0') {
-        trade.status = tradeStates.arbitration_closed;
-      }
-    }
-  }
-  const tradeStyle = {text: tradeStatesFormatted[trade.status]};
-
-  const actionNeeded = 'Action needed';
-  const sellersTurn = "Seller's turn";
-  const buyersTurn = "Buyer's turn";
-
-  switch (trade.status) {
-    case tradeStates.waiting:
-      tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
-      tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
-      break;
-    case tradeStates.funded:
-      tradeStyle.className = isBuyer ? 'bg-warning' : 'bg-dark';
-      tradeStyle.text = isBuyer ? actionNeeded : buyersTurn;
-      break;
-    case tradeStates.paid:
-      tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
-      tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
-      break;
-    case tradeStates.released:
-      tradeStyle.className = 'bg-success';
-      break;
-    case tradeStates.canceled:
-      tradeStyle.className = 'bg-danger';
-      break;
-    case tradeStates.expired:
-      tradeStyle.className = 'bg-secondary text-black';
-      break;
-    case tradeStates.arbitration_open: tradeStyle.className = 'bg-warning'; break;
-    case tradeStates.arbitration_closed: {
-      let className;
-      if (trade.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER) {
-        className = isBuyer ? 'bg-success' : 'bg-danger';
-      } else if (trade.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER) {
-        className = !isBuyer ? 'bg-success' : 'bg-danger';
-      } else {
-        className = 'bg-primary';
-      }
-      tradeStyle.className = className; break;
-    }
-    default: tradeStyle.className = 'bg-secondary text-black'; break;
-  }
-  return tradeStyle;
-};
-
 class Trades extends Component {
   state = {
     filteredState: '',
     showFilters: false
   };
 
-  filterState(stateName) {
-    if (stateName === '') {
-      return this.setState({filteredState: ''});
+  // eslint-disable-next-line complexity
+  getTradeStyle(trade, isBuyer) {
+    const t = this.props.t;
+    if (trade.mining) {
+      return {text: t('trades.mining'), className: 'bg-info'};
     }
-    const stateIndex = Object.values(tradeStatesFormatted).findIndex(tradeState => tradeState === stateName);
-    const filteredState = stateIndex === -1 ? '' : Object.keys(tradeStatesFormatted)[stateIndex];
-    this.setState({filteredState});
+    if (trade.arbitration) {
+      if (trade.arbitration.open) {
+        trade.status = tradeStates.arbitration_open;
+      } else {
+        if (trade.arbitration.result !== '0') {
+          trade.status = tradeStates.arbitration_closed;
+        }
+      }
+    }
+    const tradeStyle = {text: tradeStatesFormatted[trade.status]};
+
+    const actionNeeded = t('trades.actionNeeded');
+    const sellersTurn = t('escrow.general.sellersTurn');
+    const buyersTurn = t('escrow.general.buyersTurn');
+
+    switch (trade.status) {
+      case tradeStates.waiting:
+        tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
+        tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
+        break;
+      case tradeStates.funded:
+        tradeStyle.className = isBuyer ? 'bg-warning' : 'bg-dark';
+        tradeStyle.text = isBuyer ? actionNeeded : buyersTurn;
+        break;
+      case tradeStates.paid:
+        tradeStyle.className = isBuyer ? 'bg-dark' : 'bg-warning';
+        tradeStyle.text = isBuyer ? sellersTurn : actionNeeded;
+        break;
+      case tradeStates.released:
+        tradeStyle.className = 'bg-success';
+        break;
+      case tradeStates.canceled:
+        tradeStyle.className = 'bg-danger';
+        break;
+      case tradeStates.expired:
+        tradeStyle.className = 'bg-secondary text-black';
+        break;
+      case tradeStates.arbitration_open: tradeStyle.className = 'bg-warning'; break;
+      case tradeStates.arbitration_closed: {
+        let className;
+        if (trade.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER) {
+          className = isBuyer ? 'bg-success' : 'bg-danger';
+        } else if (trade.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER) {
+          className = !isBuyer ? 'bg-success' : 'bg-danger';
+        } else {
+          className = 'bg-primary';
+        }
+        tradeStyle.className = className; break;
+      }
+      default: tradeStyle.className = 'bg-secondary text-black'; break;
+    }
+    return tradeStyle;
   }
 
   renderTrades() {
+    const t = this.props.t;
     return (
       <Fragment>
         <div className="profile-trades-list border-0 pt-0">
@@ -103,7 +96,7 @@ class Trades extends Component {
               }
 
               const isBuyer = addressCompare(trade.buyer, this.props.address);
-              const tradeStyle = getTradeStyle(trade, isBuyer);
+              const tradeStyle = this.getTradeStyle(trade, isBuyer);
 
               return (<Card key={index} className={classnames("clickable mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
@@ -128,7 +121,7 @@ class Trades extends Component {
                   <p className="m-0 border-top pt-2">
                     Buy <span className="text-black"><img
                     src={getTokenImage(trade.token.symbol)}
-                    alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> at <span
+                    alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> ${t('trades.at')} <span
                     className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(trade, this.props.prices))} {trade.currency}</span>
                   </p>
                 </CardFooter>
@@ -137,7 +130,7 @@ class Trades extends Component {
             if (trades.every(trade => trade === null)) {
               return (
                 <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
-                  <Col className="align-self-center pt-3 pb-3 text-center text-muted">{this.props.t('trades.noFilteredTrades')}</Col>
+                  <Col className="align-self-center pt-3 pb-3 text-center text-muted">{t('trades.noFilteredTrades')}</Col>
                 </Row>
               );
             }
@@ -180,4 +173,4 @@ Trades.propTypes = {
   active: PropTypes.bool
 };
 
-export default withNamespaces()(Trades);
+export default withTranslation()(Trades);

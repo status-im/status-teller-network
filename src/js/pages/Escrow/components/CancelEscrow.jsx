@@ -2,7 +2,7 @@
 import React, {Fragment, Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import escrow from '../../../features/escrow';
 import ConfirmDialog from "../../../components/ConfirmDialog";
@@ -35,8 +35,9 @@ class CancelEscrow extends Component {
     this.displayDialog(false)();
   };
 
+// eslint-disable-next-line complexity
   render(){
-    const {trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETHorSNT} = this.props;
+    const {t, trade, isBuyer, notEnoughETH, canRelay, lastActivity, isETHorSNT} = this.props;
     const shouldDisplay = trade.status === escrow.helpers.tradeStates.waiting || trade.status === escrow.helpers.tradeStates.funded;
     const relayFutureDate = escrow.helpers.nextRelayDate(lastActivity);
 
@@ -56,27 +57,31 @@ class CancelEscrow extends Component {
             <RoundedIcon image={!disabled ? CancelIcon : CancelIconGray} bgColor={disabled ? "secondary" : "red"}/>
           </Col>
           <Col xs="10" className="my-auto ">
-            <p className={classnames("m-0 font-weight-normal",{'text-danger': !disabled, 'text-muted': disabled})}>
-              { (isBuyer || (!isBuyer &&  trade.status === escrow.helpers.tradeStates.waiting)) && 'Cancel trade' } 
-              { !isBuyer &&  trade.status === escrow.helpers.tradeStates.funded && 'Cancel trade and withdraw funds back' }
+            <p className={classnames("m-0 font-weight-normal", {'text-danger': !disabled, 'text-muted': disabled})}>
+              {(isBuyer || (!isBuyer && trade.status === escrow.helpers.tradeStates.waiting)) && t('escrow.cancel.cancelTrade')}
+              {!isBuyer && trade.status === escrow.helpers.tradeStates.funded && t('escrow.cancel.cancelAndWithdraw')}
             </p>
             <p className="m-0 text-muted">
-            { ((isBuyer && !disabled )|| (!isBuyer &&  trade.status === escrow.helpers.tradeStates.waiting)) && 'Changed your mind?' }
-            { !isBuyer &&  trade.status === escrow.helpers.tradeStates.funded && !disabled && 'Buyer is not responding?'}
-            { !isBuyer && trade.status === escrow.helpers.tradeStates.funded && disabled && <Fragment>
-                {(function () {
+              {((isBuyer && !disabled) || (!isBuyer && trade.status === escrow.helpers.tradeStates.waiting)) && t('escrow.cancel.changedMind')}
+              {!isBuyer && trade.status === escrow.helpers.tradeStates.funded && !disabled && t('escrow.cancel.buyerNotResponding')}
+              {!isBuyer && trade.status === escrow.helpers.tradeStates.funded && disabled && <Fragment>
+                {(function() {
                   // This a weird and impromptu function, but it's a simple way to only generate a variable in the jsx render
                   const amountTime = moment(new Date(trade.expirationTime * 1000)).toNow(true);
-                  return 'Available in:' + amountTime;
+                  return t('escrow.cancel.availableIn') + amountTime;
                 }())}
-            </Fragment>}
-            { disabled && isBuyer && isETHorSNT && 'Escrow can be canceled in ' + moment(relayFutureDate).toNow(true) }
-            { disabled && isBuyer && !isETHorSNT && 'Only ETH and SNT transactions can be canceled when you don&quot;t have enough balance in your wallet' }
+              </Fragment>}
+              {disabled && isBuyer && isETHorSNT && t('escrow.cancel.canBeCanceledIn', {date: moment(relayFutureDate).toNow(true)})}
+              {disabled && isBuyer && !isETHorSNT && t('escrow.cancel.onlyETH')}
             </p>
           </Col>
         </Row>
       </div>
-      { !disabled && <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow} onCancel={this.displayDialog(false)} title="Cancel Escrow" content="Are you sure?" cancelText="No" /> }
+      {!disabled && <ConfirmDialog display={this.state.displayDialog} onConfirm={this.cancelEscrow}
+                                   onCancel={this.displayDialog(false)}
+                                   title={t('escrow.cancel.cancelEscrow')}
+                                   content={t('escrow.cancel.youSure')}
+                                   cancelText={t('general.no')}/>}
     </Fragment>;
   }
 }
@@ -98,5 +103,5 @@ CancelEscrow.propTypes = {
   isETHorSNT: PropTypes.bool
 };
 
-export default withNamespaces()(CancelEscrow);
+export default withTranslation()(CancelEscrow);
 

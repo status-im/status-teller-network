@@ -6,7 +6,7 @@ import newBuy from "../../../features/newBuy";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
 import DOMPurify from 'dompurify';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {Alert} from "reactstrap";
 
 class Contact extends Component {
@@ -95,4 +95,4 @@ export default connect(
     setContactInfo: newBuy.actions.setContactInfo,
     enableEthereum: metadata.actions.enableEthereum
   }
-  )(withNamespaces()(Contact));
+  )(withTranslation()(Contact));

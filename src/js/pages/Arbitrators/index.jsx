@@ -12,6 +12,7 @@ import ErrorInformation from '../../components/ErrorInformation';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { formatArbitratorName } from '../../utils/strings';
+import {Trans, withTranslation} from "react-i18next";
 
 class Arbitrators extends Component {
   constructor(props) {
@@ -41,7 +42,7 @@ class Arbitrators extends Component {
   };
 
   render(){
-    const {arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions} = this.props;
+    const {t, arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
@@ -50,13 +51,17 @@ class Arbitrators extends Component {
 
     return (
     <Fragment>
-        <h2 className="mb-4">Arbitrators</h2>
-        <p>Here you can see a list of arbitrators that have approved you as a seller and request approval by those that have not.</p>
+        <h2 className="mb-4">{t('arbitrators.title')}</h2>
+        <p>{t('arbitrators.arbitratorsList')}</p>
         <ListGroup>
-          {Object.keys(arbitrators).length === 0 && loading && <p>Loading arbitrators...</p>}
+          {Object.keys(arbitrators).length === 0 && loading && <p>{t('arbitrators.loading')}</p>}
           {Object.keys(arbitrators).length === 0 && !loading && <Fragment>
-            <p className="mb-0">No arbitrators in the system</p>
-            <p>Become one <Link to="/arbitrator/license">here</Link></p>
+            <p className="mb-0">{t('arbitrators.noArbis')}</p>
+            <p>
+              <Trans i18nKey="arbitrators.becomeArbi">
+                Become one <Link to="/arbitrator/license">here</Link>
+              </Trans>
+            </p>
           </Fragment>}
 
         {Object.keys(arbitrators).map((arb, i) => {
@@ -64,7 +69,7 @@ class Arbitrators extends Component {
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
 
-          const text = formatArbitratorName(users[arb], arb) + (isUser ? " (You)" : "");
+          const text = formatArbitratorName(users[arb], arb) + (isUser ? ` (${t('general.you')})` : "");
 
           return <ListGroupItem key={i}>
             <Row>
@@ -74,10 +79,19 @@ class Arbitrators extends Component {
                 <span className={classnames("font-weight-bold", {'text-success': isUser})}>{text}</span>
               </Col>
               <Col xs="12" sm="3" className="text-center">
-                { !isUser && !arbitrators[arb].isAllowed && [arbitration.constants.NONE, arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>Request</Button> }
-                { arbitrators[arb].isAllowed && !isUser && <span className="text-success">Available</span> }
-                { !isUser && arbitrators[arb].request.status === arbitration.constants.AWAIT && <Button onClick={this.cancelRequest(arb)}>Cancel request</Button> }
-                { !isUser && [arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && isDisabled && <span className="text-small text-muted">Retry in {moment(enableDate * 1000).toNow(true)}</span>}
+                {!isUser && !arbitrators[arb].isAllowed && [arbitration.constants.NONE, arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 &&
+                <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>{t('arbitrators.request')}</Button>}
+
+                {arbitrators[arb].isAllowed && !isUser &&
+                <span className="text-success">{t('arbitrators.available')}</span>}
+
+                {!isUser && arbitrators[arb].request.status === arbitration.constants.AWAIT &&
+                <Button onClick={this.cancelRequest(arb)}>{t('arbitrators.cancelRequest')}</Button>}
+
+                {!isUser && [arbitration.constants.REJECTED, arbitration.constants.CLOSED].indexOf(arbitrators[arb].request.status) > -1 && isDisabled &&
+                <span className="text-small text-muted">
+                  {t('arbitrators.retryIn', {date: moment(enableDate * 1000).toNow(true)})}
+                </span>}
               </Col>
             </Row>
           </ListGroupItem>;
@@ -89,6 +103,7 @@ class Arbitrators extends Component {
 }
 
 Arbitrators.propTypes = {
+  t: PropTypes.func,
   arbitrators: PropTypes.object,
   users: PropTypes.object,
   address: PropTypes.string,
@@ -123,4 +138,4 @@ export default connect(
     requestArbitrator: arbitration.actions.requestArbitrator,
     cancelArbitratorsActions: arbitration.actions.cancelArbitratorActions,
     cancelArbitratorRequest: arbitration.actions.cancelArbitratorRequest
-  })(withRouter(Arbitrators));
+  })(withRouter(withTranslation()(Arbitrators)));

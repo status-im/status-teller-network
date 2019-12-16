@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 import "./Info.scss";
 
@@ -33,4 +33,4 @@ LicenseInfo.propTypes = {
   ])
 };
 
-export default withNamespaces()(LicenseInfo);
+export default withTranslation()(LicenseInfo);

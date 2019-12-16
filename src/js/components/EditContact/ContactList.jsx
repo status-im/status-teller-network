@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {FormGroup, Button, Label, Row, Col} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import {withNamespaces} from "react-i18next";
+import {Trans, withTranslation} from "react-i18next";
 import PropTypes from 'prop-types';
 import {required, isContactCode, validENS} from "./validators";
 import CheckButton from "../../ui/CheckButton";
@@ -18,7 +18,7 @@ class EditContactList extends Component {
   constructor(props) {
     super(props);
     this.contactMethods = [
-      {name: STATUS, label: props.t('contactForm.statusKeyLabel'), placeholder: 'Status contact code or Status ENS name'},
+      {name: STATUS, label: props.t('contactForm.statusKeyLabel'), placeholder: props.t('contactForm.statusPlaceholder')},
       {name: 'Telegram', label: 'Telegram ID', placeholder: 'eg. @Vitalik94'},
       {name: 'Line', label: 'User ID', placeholder: 'eg. @Vitalik94'},
       {name: 'KakaoTalk', label: 'KakaoTalk ID', placeholder: 'eg. Vitalik94'},
@@ -88,13 +88,13 @@ class EditContactList extends Component {
               </Col>
               {isStatus && <Col xs={3}>
                 <Button className="px-3 float-right" color="primary"
-                        onClick={(_e) => this.props.getContactCode()}>Autofill</Button>
+                        onClick={(_e) => this.props.getContactCode()}>{t('contactForm.autofill')}</Button>
               </Col>}
             </Row>
           </FormGroup>
           {contactMethod === STATUS && this.isENSName(contactCode) && <p className="text-center">
             <Button color="primary" onClick={(_e) => this.props.resolveENSName(contactCode)}>
-              Resolve ENS name
+              {t('contactForm.resolveENS')}
             </Button>
           </p>}
         </Form>
@@ -103,19 +103,23 @@ class EditContactList extends Component {
           <Row noGutters>
             <Col>
               <RoundedIcon image={checkCircleImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted"><a href="https://status.im">Status</a> is the recommended chat platform</p>
+              <p className="info text-muted">
+                <Trans i18nKey="contactForm.recommendedPlatform">
+                  <a href="https://status.im">Status</a> is the recommended chat platform
+                </Trans>
+              </p>
             </Col>
           </Row>
           <Row noGutters className="mt-1">
             <Col>
               <RoundedIcon image={infoImageRed} bgColor="red" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted">Contact details will be written on the blockchain</p>
+              <p className="info text-muted">{t('contactForm.contactDetailsWarning')}</p>
             </Col>
           </Row>
           <Row noGutters className="mt-1">
             <Col>
               <RoundedIcon image={infoImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted">Consider which method you choose as buyers and arbitrators will contact you using it</p>
+              <p className="info text-muted">{t('contactForm.consider')}</p>
             </Col>
           </Row>
         </div>
@@ -136,4 +140,4 @@ EditContactList.propTypes = {
   ensError: PropTypes.string
 };
 
-export default withNamespaces()(EditContactList);
+export default withTranslation()(EditContactList);

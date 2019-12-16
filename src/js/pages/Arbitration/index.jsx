@@ -25,18 +25,7 @@ import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVE
 
 import './index.scss';
 import classnames from "classnames";
-
-const getArbitrationStatus = status => {
-  switch(status){
-    case ARBITRATION_UNSOLVED:
-      return "open";
-    case ARBITRATION_SOLVED_BUYER:
-    case ARBITRATION_SOLVED_SELLER:
-      return "resolved";
-    default:
-      return "undetermined";
-  }
-};
+import {Trans, withTranslation} from "react-i18next";
 
 class Arbitration extends Component {
   constructor(props){
@@ -98,21 +87,54 @@ class Arbitration extends Component {
   renderAccountInfo(address, userInfo, isBuyer) {
     return (<Fragment>
       <span className="text-center float-left mr-3">
-                      <Identicon seed={address} className="rounded-circle border" scale={5}/>
-                      <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer})}>{isBuyer ? 'Buyer' : 'Seller'}</span>
-                    </span>
+        <Identicon seed={address} className="rounded-circle border" scale={5}/>
+        <span className={classnames("icon-badge", {
+          'seller-text': !isBuyer,
+          'buyer-text': isBuyer
+        })}>{isBuyer ? this.props.t('general.buyer') : this.props.t('general.seller')}</span>
+      </span>
       <span className="d-inline-block pt-2">{userInfo.username}</span>
     </Fragment>);
   }
 
+
+  getArbitrationStatus(status) {
+    switch(status){
+      case ARBITRATION_UNSOLVED:
+        return this.props.t('arbitration.status.open');
+      case ARBITRATION_SOLVED_BUYER:
+      case ARBITRATION_SOLVED_SELLER:
+        return this.props.t('arbitration.status.resolved');
+      default:
+        return this.props.t('arbitration.status.undetermined');
+    }
+  }
+
+  getMotiveTxt(escrow, openedByBuyer) {
+    switch (escrow.arbitration.motive) {
+      case UNRESPONSIVE:
+        return openedByBuyer ? this.props.t('arbitration.motive.unresponsiveSeller') : this.props.t('arbitration.motive.unresponsiveBuyer');
+      case PAYMENT:
+        if (openedByBuyer) return this.props.t('arbitration.motive.paymentSeller');
+        return this.props.t('arbitration.motive.paymentBuyer');
+      case OTHER:
+        return this.props.t('arbitration.motive.other');
+      default:
+        return escrow.arbitration.motive;
+    }
+  }
+
   renderModal() {
-    const {escrow, buyerInfo, sellerInfo} = this.props;
+    const {t, escrow, buyerInfo, sellerInfo} = this.props;
     const {displayUsers, selectedUser} = this.state;
 
     return (<Modal isOpen={displayUsers} toggle={this.handleClose} backdrop={true} className="arbitrationDialog">
       <ModalBody>
-        <h2 className="text-center">Your decision</h2>
-        <p className="text-center">{escrow.tokenAmount} {escrow.token.symbol} goes to:</p>
+        <h2 className="text-center">{t('arbitration.yourDecision')}</h2>
+        <p className="text-center">{t('arbitration.goesTo', {
+          tokenAmount: escrow.tokenAmount,
+          tokenSymbol: escrow.token.symbol
+        })}</p>
         <ButtonGroup vertical className="w-100">
           <CheckButton active={addressCompare(selectedUser, escrow.buyer)} size="l"
                        onClick={this.selectUser(escrow.buyer)}>
@@ -124,66 +146,89 @@ class Arbitration extends Component {
           </CheckButton>
         </ButtonGroup>
         <p className="text-center">
-          <Button color="primary" onClick={this.displayDialog(true)} disabled={selectedUser === null}>Resolve
-            dispute</Button>
+          <Button color="primary" onClick={this.displayDialog(true)} disabled={selectedUser === null}>
+            {t('arbitration.resolve')}
+          </Button>
         </p>
       </ModalBody>
       <ModalFooter>
-        <Button onClick={this.handleClose}>Cancel</Button>
+        <Button onClick={this.handleClose}>{t('general.cancel')}</Button>
       </ModalFooter>
     </Modal>);
   }
 
   render() {
-    const {escrow, address, loading, buyerInfo, sellerInfo} = this.props;
+    const {t, escrow, address, loading, buyerInfo, sellerInfo} = this.props;
 
-    if(!escrow || !buyerInfo || !sellerInfo){
+    if (!escrow || !buyerInfo || !sellerInfo) {
       return <Loading/>;
     }
 
-    if(addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) return <ErrorInformation message="You cannot arbitrate your own disputes"/>;
-    if(!addressCompare(escrow.arbitrator, address)) return <ErrorInformation message="You are not the arbitrator of this dispute"/>;
+    if (addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) {
+      return <ErrorInformation message={t('arbitration.ownDispute')}/>;
+    }
+    if (!addressCompare(escrow.arbitrator, address)) {
+      return <ErrorInformation message={t('arbitration.notYours')}/>;
+    }
 
-    if(loading) return <Loading mining={true} />;
+    if (loading) {
+      return <Loading mining={true}/>;
+    }
 
-    const status = getArbitrationStatus(escrow.arbitration.result);
+    const status = this.getArbitrationStatus(escrow.arbitration.result);
     const openedByBuyer = addressCompare(escrow.arbitration.openBy, escrow.buyer);
     return (
       <div className="escrow">
-        <h2>Dispute Details <span className={"arbitrationStatus " + status}>{status}</span></h2>
+        <h2>
+          <Trans i18nKey="arbitration.disputeDetails" values={{status}}>
+            Dispute Details <span className={"arbitrationStatus " + status}>{{status}}</span>
+          </Trans>
+        </h2>
 
         {escrow.arbitration.result.toString() !== ARBITRATION_UNSOLVED && <Fragment>
-          <h3>Dispute resolved</h3>
-          <p><span className="font-weight-bold">Winner:</span> {escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER ? 'Buyer' : 'Seller'}</p>
+          <h3>{t('arbitration.disputeResolved')}</h3>
+          <p>
+            <span className="font-weight-bold">{t('arbitration.winner')}</span>&nbsp;
+            {escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER ? t('general:buyer') : t('general:seller')}
+          </p>
         </Fragment>}
 
-        <p className="arbitrationMotive mt-3 mb-0">{getMotiveTxt(escrow, openedByBuyer)}</p>
-        <span className="triangle"><img src={bubbleTriangle} alt="buble-triangle"/></span>
+        <p className="arbitrationMotive mt-3 mb-0">{this.getMotiveTxt(escrow, openedByBuyer)}</p>
+        <span className="triangle"><img src={bubbleTriangle} alt="bubble-triangle"/></span>
         <TradeParticipant address={escrow.arbitration.openBy}
                           profile={openedByBuyer ? buyerInfo : sellerInfo} isBuyer={openedByBuyer}/>
 
         <EscrowDetail escrow={escrow}/>
 
-        <h3 className="mt-4">Trade participants</h3>
-        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true} winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER}/>
-        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false} winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER}/>
+        <h3 className="mt-4">{t('arbitration.participants')}</h3>
+        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true}
+                          winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER}/>
+        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false}
+                          winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER}/>
 
-        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode} isBuyer={true}/>
-        <ContactUser username={sellerInfo.username} seed={escrow.seller} statusContactCode={sellerInfo.statusContactCode} isBuyer={false}/>
+        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode}
+                     isBuyer={true}/>
+        <ContactUser username={sellerInfo.username} seed={escrow.seller}
+                     statusContactCode={sellerInfo.statusContactCode} isBuyer={false}/>
 
         {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
           <Fragment>
             <Row className="mt-4">
               <Col xs={3} />
               <Col xs={6}>
-                <Button color="primary" block onClick={this.openSolveDisputeDialog}>Make Decision</Button>
+                <Button color="primary" block onClick={this.openSolveDisputeDialog}>
+                  {t('arbitration.makeDecision')}
+                </Button>
               </Col>
               <Col xs={3} />
             </Row>
 
             {this.renderModal()}
 
-            <ConfirmDialog display={this.state.displayDialog} onConfirm={this.resolveDispute} onCancel={this.displayDialog(false)} title="Resolve dispute" content="Are you sure?" cancelText="No" />
+            <ConfirmDialog display={this.state.displayDialog} onConfirm={this.resolveDispute}
+                           onCancel={this.displayDialog(false)} title={t('arbitration.resolve')}
+                           content={t('arbitration.youSure')}
+                           cancelText={t('general.no')}/>
           </Fragment>
         )}
       </div>
@@ -192,6 +237,7 @@ class Arbitration extends Component {
 }
 
 Arbitration.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   sellerInfo: PropTypes.object,
   buyerInfo: PropTypes.object,
@@ -224,20 +270,4 @@ export default connect(
     resolveDispute: arbitration.actions.resolveDispute,
     getProfile: metadata.actions.loadUserOnly
   }
-)(withRouter(Arbitration));
-
-
-function getMotiveTxt(escrow, openedByBuyer) {
-  switch (escrow.arbitration.motive) {
-    case UNRESPONSIVE:
-      return `${openedByBuyer ? "Seller" : "Buyer"} is unresponsive/inactive after transaction is marked as paid`;
-    case PAYMENT:
-      if (openedByBuyer) return 'Seller states something is wrong with payment and refuses to release';
-      return 'Buyer made attempt to pay but there are issues with the payment';
-    case OTHER:
-      return 'Other reasons';
-    default:
-      return escrow.arbitration.motive;
-  }
-}
-
+)(withRouter(withTranslation()(Arbitration)));

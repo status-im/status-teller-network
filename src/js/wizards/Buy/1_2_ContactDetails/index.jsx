@@ -1,7 +1,7 @@
 /*global web3*/
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
 import {connect} from "react-redux";
@@ -43,7 +43,7 @@ class ContactDetails extends Component {
     } else if (!this.props.username) {
       return this.props.wizard.previous();
     }
-    
+
     if (!this.props.isEip1102Enabled) {
       this.props.footer.disableNext();
       this.props.enableEthereum();
@@ -145,4 +145,4 @@ export default connect(
     resolveENSName: network.actions.resolveENSName,
     enableEthereum: metadata.actions.enableEthereum
   }
-  )(withNamespaces()(ContactDetails));
+  )(withTranslation()(ContactDetails));

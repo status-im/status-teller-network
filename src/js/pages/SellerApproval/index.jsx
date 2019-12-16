@@ -12,6 +12,7 @@ import Switch from "react-switch";
 import SellerApprovalItem from "./SellerApprovalItem";
 
 import './index.scss';
+import {withTranslation} from "react-i18next";
 
 class SellerApproval extends Component {
 
@@ -65,32 +66,30 @@ class SellerApproval extends Component {
   }
 
   render(){
-    const {loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users, sellers, blacklistedSellers} = this.props;
+    const {t, loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users, sellers, blacklistedSellers} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
     if(!profile.isArbitrator) {
-      return <ErrorInformation message={"This feature is only available to arbitrators"}/>;
+      return <ErrorInformation message={t('sellerApproval.onlyForArbis')}/>;
     }
 
     if(loading || (!sellers && acceptsEveryone)) return <Loading mining={true} txHash={txHash} />;
 
     return (
       <Fragment>
-        <h2 className="mb-4">Seller Management</h2>
-        <h3 className="mb-2">Accept all sellers</h3>
+        <h2 className="mb-4">{t('sellerApproval.title')}</h2>
+        <h3 className="mb-2">{t('sellerApproval.acceptAll')}</h3>
         <div>Off <Switch onChange={this.onToggleCheckbox} checked={acceptsEveryone} className="accept-all-switch"
                          onColor="#44D058"/> On
         </div>
 
         {!acceptsEveryone && <Fragment>
-          <p className="mt-2 mb-0 text-muted">Setting this switch to &quot;On&quot; will make it so that all sellers can
-            choose you as an arbitrator</p>
-          <p className="mt-0 text-muted">If you activate it, you will still be able to blacklist sellers
-            individually</p>
-          <h3 className="mb-2 mt-5">Requests for arbitrator</h3>
-          {requests.length === 0 && <p>No requests</p>}
+          <p className="mt-2 mb-0 text-muted">{t('sellerApproval.settingSwitchToOn')}</p>
+          <p className="mt-0 text-muted">{t('sellerApproval.ableToBlacklist')}</p>
+          <h3 className="mb-2 mt-5">{t('sellerApproval.requestArbi')}</h3>
+          {requests.length === 0 && <p>{t('sellerApproval.noRequests')}</p>}
           {requests.map((request, i) => (
             <SellerApprovalItem key={'approval-' + i} status={request.status} address={request.seller}
                                 user={users[request.seller]} acceptRequest={() => this.acceptRequest(request.id)}
@@ -100,13 +99,12 @@ class SellerApproval extends Component {
 
         {acceptsEveryone &&
         <Fragment>
-          <h3 className="mb-2 mt-5">Blacklist sellers</h3>
-          <p className="text-muted">Even though you accept every seller, you can blacklist some sellers if you suspect
-            them to be malicious</p>
+          <h3 className="mb-2 mt-5">{t('sellerApproval.blacklistSellers')}</h3>
+          <p className="text-muted">{t('sellerApproval.blacklistExplanation')}</p>
           {sellers.map((seller, i) => {
             const isBlacklisted = blacklistedSellers.includes(seller.address);
 
-            return <SellerApprovalItem key={'approval-' + i} status={isBlacklisted ? 'Blacklisted' : ''}
+            return <SellerApprovalItem key={'approval-' + i} status={isBlacklisted ? t('sellerApproval.blacklisted') : ''}
                                        address={seller.address}
                                        user={users[seller.address]} blacklist={(e) => this.blacklist(e, seller.address)}
                                        unBlacklist={(e) => this.unBlacklist(e, seller.address)}/>;
@@ -118,6 +116,7 @@ class SellerApproval extends Component {
 }
 
 SellerApproval.propTypes = {
+  t: PropTypes.func,
   address: PropTypes.string,
   loading: PropTypes.bool,
   error: PropTypes.string,
@@ -173,4 +172,4 @@ export default connect(
     blacklistSeller: arbitration.actions.blacklistSeller,
     unBlacklistSeller: arbitration.actions.unBlacklistSeller,
     getBlacklistedSellers: arbitration.actions.getBlacklistedSellers
-  })(withRouter(SellerApproval));
+  })(withRouter(withTranslation()(SellerApproval)));

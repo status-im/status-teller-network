@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import {Alert} from 'reactstrap';
 import Switch from "react-switch";
@@ -20,7 +20,6 @@ class NotificationSettings extends Component {
     if (prevProps.isSubscribed !== this.props.isSubscribed) {
       this.setState({showEmailSection: this.props.isSubscribed});
     }
-    // TODO find a way to retrieve the email
   }
 
   changeNotificationParam = (checked) => {
@@ -47,8 +46,8 @@ class NotificationSettings extends Component {
 
     return (<Fragment>
       <h2 className="mb-4 mt-3">{t('notificationSettings.title')}</h2>
-      {error && <Alert color="danger" toggle={this.hideError}>Error: {error}</Alert>}
-      {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>Success subscribing. Please check your emails to verify your subscription</Alert>}
+      {error && <Alert color="danger" toggle={this.hideError}>{t('general.error')}: {error}</Alert>}
+      {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>{t('notificationSettings.success')}</Alert>}
       <div>
         {t('notificationSettings.emailSwitcher')}
         {typeof this.state.showEmailSection === 'boolean' && <Switch onChange={this.changeNotificationParam}
@@ -57,7 +56,7 @@ class NotificationSettings extends Component {
                 onColor="#18B6FF"
                 uncheckedIcon={false}
                 checkedIcon={false}/>}
-        {typeof this.state.showEmailSection !== 'boolean' && <p className="float-right">Loading...</p>}
+        {typeof this.state.showEmailSection !== 'boolean' && <p className="float-right">{t('general.loading')}</p>}
       </div>
 
       {this.state.showEmailSection && !this.props.isSubscribed &&
@@ -99,4 +98,4 @@ export default connect(
     hideError: emailNotifications.actions.hideError,
     hideSuccess: emailNotifications.actions.hideSuccess
   }
-)(withNamespaces()(NotificationSettings));
+)(withTranslation()(NotificationSettings));

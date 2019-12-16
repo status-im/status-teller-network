@@ -2,20 +2,30 @@
 import React from 'react';
 import {Row, Col, Button} from "reactstrap";
 import PropTypes from 'prop-types';
+import {withTranslation} from "react-i18next";
 
-const ApproveTokenFunds = ({token, requiredToken, tokenAllowance, shouldResetToken, handleApprove, handleReset}) => <div>
+const ApproveTokenFunds = ({t, token, requiredToken, tokenAllowance, shouldResetToken, handleApprove, handleReset}) => <div>
   <Row>
     <Col>
-      <h4>{shouldResetToken ? 'Reset ' + token.symbol + ' token Allowance' : 'Approve  ' + token.symbol + ' token'}</h4>
-      {!shouldResetToken && <p>You authorize the contract to transfer {web3.utils.fromWei(requiredToken, "ether")} {token.symbol} on your behalf. This can only occur when you approve a transation to authorize the transfer</p>}
-      {shouldResetToken && <p>Your {token.symbol} allowance for this contract ({web3.utils.fromWei(tokenAllowance, "ether")} {token.symbol}) is less than the required ({web3.utils.fromWei(requiredToken, "ether")} {token.symbol}). Reset your {token.symbol} allowance before approving the required amount</p>}
+      <h4>{shouldResetToken ? t('escrow.approve.reset', {tokenSymbol: token.symbol}) : t('escrow.approve.approveToken', {tokenSymbol: token.symbol})}</h4>
+      {!shouldResetToken &&
+      <p>
+        {t('escrow.approve.authorize', {amount: web3.utils.fromWei(requiredToken, "ether"), tokenSymbol: token.symbol})}
+      </p>}
+      {shouldResetToken && <p>
+        {t('escrow.approve.shouldReset', {
+          tokenSymbol: token.symbol,
+          allowance: web3.utils.fromWei(tokenAllowance, "ether"),
+          requiredToken: web3.utils.fromWei(requiredToken, "ether")
+        })}
+      </p>}
     </Col>
   </Row>
   <Row className="mt-4">
   <Col xs={3} />
   <Col xs={6}>
-    {shouldResetToken && <Button color="primary" block onClick={handleReset}>Reset allowance</Button>}
-    {!shouldResetToken && <Button color="primary" block onClick={handleApprove}>Approve</Button>}
+    {shouldResetToken && <Button color="primary" block onClick={handleReset}>{t('escrow.approve.resetAllowance')}</Button>}
+    {!shouldResetToken && <Button color="primary" block onClick={handleApprove}>{t('escrow.approve.approve')}</Button>}
 
   </Col>
   <Col xs={3} />
@@ -23,6 +33,7 @@ const ApproveTokenFunds = ({token, requiredToken, tokenAllowance, shouldResetTok
 </div>;
 
 ApproveTokenFunds.propTypes = {
+  t: PropTypes.func,
   token: PropTypes.object,
   requiredToken: PropTypes.string,
   tokenAllowance: PropTypes.string,
@@ -31,4 +42,4 @@ ApproveTokenFunds.propTypes = {
   handleReset: PropTypes.func
 };
 
-export default ApproveTokenFunds;
+export default withTranslation()(ApproveTokenFunds);

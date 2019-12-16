@@ -200,6 +200,12 @@ $input-icon-height: 20px;
           font-size: 17px;
           font-weight: bold;
         }
+
+        .close {
+          position: absolute;
+          top: 13px;
+          right: 16px;
+        }
       }
 
       .modal-body {

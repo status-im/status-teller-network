@@ -12,7 +12,7 @@ import SorterFilter from './components/SorterFilter';
 import Loading from '../../components/Loading';
 import {sortByRating, sortByMargin} from '../../utils/sorters';
 import './index.scss';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {addressCompare, zeroAddress} from "../../utils/address";
 import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 import newBuy from "../../features/newBuy";
@@ -197,7 +197,7 @@ class OffersList extends Component {
                         setContactMethodFilter={this.setContactMethodFilter}/>
         </div>
 
-        {notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+        {notEnoughETH && <p>{this.props.t('offers.hiddenOffers')}</p>}
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 
@@ -247,4 +247,4 @@ export default connect(
     resetNewBuy: newBuy.actions.resetNewBuy,
     updateBalance: network.actions.updateBalance,
     setOfferId: newBuy.actions.setOfferId
-  })(withNamespaces()(withRouter(OffersList)));
+  })(withTranslation()(withRouter(OffersList)));

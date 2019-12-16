@@ -6,7 +6,7 @@ import {getTokenImage} from '../../../../utils/images';
 import {formatBalance} from '../../../../utils/numbers';
 import {addressCompare} from '../../../../utils/address';
 import noCryptoImg from "../../../../../images/no-crypto.png";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 
 import './SellerAssets.scss';
 
@@ -61,4 +61,4 @@ SellerAssets.propTypes = {
 };
 
 
-export default withNamespaces()(SellerAssets);
+export default withTranslation()(SellerAssets);

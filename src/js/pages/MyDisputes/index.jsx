@@ -29,8 +29,8 @@ class MyDisputes extends Component {
     this.props.getDisputedEscrows();
   }
 
-  componentDidUpdate(){
-    if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.contactData){
+  componentDidUpdate() {
+    if (this.props.profile && this.props.profile.isArbitrator && !this.props.profile.contactData) {
       return this.props.history.push("/profile/settings/contact");
     }
   }
@@ -38,10 +38,10 @@ class MyDisputes extends Component {
 
   render() {
     const {profile, address} = this.props;
-    if(!profile) return <Loading page={true} />;
+    if (!profile) return <Loading page={true}/>;
 
-    if (!profile.isArbitrator){
-      return <NoLicense arbitratorPage />;
+    if (!profile.isArbitrator) {
+      return <NoLicense arbitratorPage/>;
     }
 
     return (

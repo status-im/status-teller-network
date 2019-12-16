@@ -5,25 +5,26 @@ import classnames from "classnames";
 
 import arbitration from "../../features/arbitration";
 import UserInfoRow from "../../components/UserInfoRow";
+import {withTranslation} from "react-i18next";
 
-const requestStatus = {
-  [arbitration.constants.AWAIT]: "Pending",
-  [arbitration.constants.ACCEPTED]: "Accepted",
-  [arbitration.constants.REJECTED]: "Rejected"
-};
-const BLACKLISTED_STATUS = 'Blacklisted';
+const SellerApprovalItem = ({t, address, status, user = {}, acceptRequest, rejectRequest, blacklist, unBlacklist}) => {
+  const requestStatus = {
+    [arbitration.constants.AWAIT]: t('sellerApproval.pending'),
+    [arbitration.constants.ACCEPTED]: t('sellerApproval.accepted'),
+    [arbitration.constants.REJECTED]: t('sellerApproval.rejected')
+  };
+  const BLACKLISTED_STATUS = t('sellerApproval.blacklisted');
 
-const SellerApprovalItem = ({address, status, user = {}, acceptRequest, rejectRequest, blacklist, unBlacklist}) => {
   return <UserInfoRow address={address} user={user} lastCol={<Fragment>
     {status === arbitration.constants.AWAIT && !blacklist &&
-    <Button color="link" onClick={acceptRequest} className="m-0 p-0">Accept</Button>}
+    <Button color="link" onClick={acceptRequest} className="m-0 p-0">{t('sellerApproval.accept')}</Button>}
     {(status === arbitration.constants.AWAIT || status === arbitration.constants.ACCEPTED) && !blacklist &&
-    <Button color="link" onClick={rejectRequest} className="m-0 p-0 text-danger">Reject</Button>}
+    <Button color="link" onClick={rejectRequest} className="m-0 p-0 text-danger">{t('sellerApproval.reject')}</Button>}
 
     {blacklist && status !== BLACKLISTED_STATUS &&
-    <Button color="link" onClick={blacklist} className="m-0 p-0 text-danger">Blacklist</Button>}
+    <Button color="link" onClick={blacklist} className="m-0 p-0 text-danger">{t('sellerApproval.blacklist')}</Button>}
     {unBlacklist && status === BLACKLISTED_STATUS &&
-    <Button color="link" onClick={unBlacklist} className="m-0 p-0 text-black">Un-Blacklist</Button>}
+    <Button color="link" onClick={unBlacklist} className="m-0 p-0 text-black">{t('sellerApproval.unblacklist')}</Button>}
 
     <p className={classnames('text-small', {
       'text-success': status === arbitration.constants.ACCEPTED,
@@ -36,6 +37,7 @@ const SellerApprovalItem = ({address, status, user = {}, acceptRequest, rejectRe
 };
 
 SellerApprovalItem.propTypes = {
+  t: PropTypes.func,
   address: PropTypes.string,
   status: PropTypes.string,
   user: PropTypes.object,
@@ -45,4 +47,4 @@ SellerApprovalItem.propTypes = {
   unBlacklist: PropTypes.func
 };
 
-export default SellerApprovalItem;
+export default withTranslation()(SellerApprovalItem);

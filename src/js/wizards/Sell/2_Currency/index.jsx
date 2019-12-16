@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import {connect} from 'react-redux';
 import prices from '../../../features/prices';
 import FiatSelectorForm from "./components/FiatSelectorForm";
@@ -76,4 +76,4 @@ export default connect(
   {
     setCurrency: newSeller.actions.setCurrency
   }
-)(withNamespaces()(Currency));
+)(withTranslation()(Currency));

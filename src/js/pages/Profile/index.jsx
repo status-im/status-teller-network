@@ -18,6 +18,7 @@ import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transacti
 
 import './index.scss';
 import Loading from "../../components/Loading";
+import {withTranslation} from "react-i18next";
 
 class Profile extends Component {
   componentDidMount() {
@@ -36,7 +37,7 @@ class Profile extends Component {
   };
 
   render() {
-    const {profile, prices, address} = this.props;
+    const {t, profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
 
     const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
@@ -60,7 +61,7 @@ class Profile extends Component {
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
-            { notEnoughETH && <p>Other assets are hidden until you have ETH in your wallet</p>}
+            { notEnoughETH && <p>{t('offers.hiddenOffers')}</p>}
           </Col>
         </Row>}
       </div>
@@ -69,6 +70,7 @@ class Profile extends Component {
 }
 
 Profile.propTypes = {
+  t: PropTypes.func,
   match: PropTypes.object,
   load: PropTypes.func,
   history: PropTypes.object,
@@ -100,4 +102,4 @@ export default connect(
     load: metadata.actions.load,
     updateBalance: network.actions.updateBalance
   }
-)(withRouter(Profile));
+)(withRouter(withTranslation()(Profile)));

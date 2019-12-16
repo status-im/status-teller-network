@@ -4,6 +4,7 @@ import {Button} from "reactstrap";
 import network from '../../features/network';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
+import {withTranslation} from "react-i18next";
 
 
 class Settings extends Component {
@@ -15,17 +16,19 @@ class Settings extends Component {
   };
 
   render() {
+    const t = this.props.t;
     return (<Fragment>
-      <h2 className="mt-3">Cache settings</h2>
-      <p>Press this button to reset your local cache.</p>
-      <p>This delete your current cache and up to date data will be loaded.</p>
-      <p>None of your data will be permanently lost</p>
-      <Button color="secondary" onClick={this.clearCache}>Reset cache</Button>
+      <h2 className="mt-3">{t('profileSettings.cacheSettings.title')}</h2>
+      <p>{t('profileSettings.cacheSettings.pressToReset')}</p>
+      <p>{t('profileSettings.cacheSettings.willDelete')}</p>
+      <p>{t('profileSettings.cacheSettings.noPermanentLoss')}</p>
+      <Button color="secondary" onClick={this.clearCache}>{t('profileSettings.cacheSettings.resetCache')}</Button>
     </Fragment>);
   }
 }
 
 Settings.propTypes = {
+  t: PropTypes.func,
   clearCache: PropTypes.func,
   history: PropTypes.object
 };
@@ -35,4 +38,4 @@ export default connect(
   {
     clearCache: network.actions.clearCache
   }
-)(withRouter(Settings));
+)(withRouter(withTranslation()(Settings)));

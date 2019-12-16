@@ -2,7 +2,7 @@ import React from 'react';
 import {Col} from 'reactstrap';
 import PropTypes from "prop-types";
 
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 
 const IconGroup = ({src, title, children, fullSize, className, aos}) => (
   <Col className={'icon-group text-center mt-5 ' + className} xs={12} md={fullSize ? 12 : 6}>
@@ -24,4 +24,4 @@ IconGroup.propTypes = {
   aos: PropTypes.string
 };
 
-export default withNamespaces()(IconGroup);
+export default withTranslation()(IconGroup);

@@ -6,8 +6,9 @@ import {getTokenImage} from '../../../utils/images';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import classnames from 'classnames';
 import NoArbitratorWarning from "../../../components/NoArbitratorWarning";
+import {withTranslation} from "react-i18next";
 
-const Offer = ({offer, prices, onClick, disabled}) => {
+const Offer = ({t, offer, prices, onClick, disabled}) => {
   const isDisabled = disabled || !prices || prices.error;
   return (
     <Row className="border py-2 mx-0 my-2 rounded">
@@ -15,14 +16,16 @@ const Offer = ({offer, prices, onClick, disabled}) => {
         <p className="font-weight-bold"><img src={getTokenImage(offer.token.symbol)} alt="asset icon" className="mr-2"/>{offer.token.symbol}</p>
       </Col>
       <Col xs="8" className="v-align-center text-right">
-        <Button color={disabled ? "secondary" : "primary" } className={classnames('p-2', {disabled: isDisabled, 'not-clickable': isDisabled})} onClick={isDisabled ? null : onClick} id={`buy-btn-${offer.id}`}>
-          Buy for {truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}
+        <Button color={disabled ? "secondary" : "primary"}
+                className={classnames('p-2', {disabled: isDisabled, 'not-clickable': isDisabled})}
+                onClick={isDisabled ? null : onClick} id={`buy-btn-${offer.id}`}>
+          {t('offer.buyFor', {price:truncateTwo(calculateEscrowPrice(offer, prices)), currency: offer.currency})}
         </Button>
         {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
-          Offer disabled because you are the seller or the arbitrator
+          {t('offer.disabledBecauseArbi')}
         </UncontrolledTooltip>}
         {(!prices || prices.error) && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
-          Offer disabled because we failed to fetch the token prices. Check back later.
+          {t('offer.disabledBecausePrice')}
         </UncontrolledTooltip>}
       </Col>
 
@@ -36,10 +39,11 @@ Offer.defaultProps = {
 };
 
 Offer.propTypes = {
+  t: PropTypes.func,
   offer: PropTypes.object,
   onClick: PropTypes.func,
   prices: PropTypes.object,
   disabled: PropTypes.bool
 };
 
-export default Offer;
+export default withTranslation()(Offer);

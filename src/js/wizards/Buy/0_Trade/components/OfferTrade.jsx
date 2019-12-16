@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import {Row, Col, FormGroup, UncontrolledTooltip, FormFeedback} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
@@ -182,4 +182,4 @@ OfferTrade.propTypes = {
   arbitratorContactData: PropTypes.string
 };
 
-export default withNamespaces()(OfferTrade);
+export default withTranslation()(OfferTrade);

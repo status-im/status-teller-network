@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 
 class FiatSelectorForm extends Component {
   onInputChange = (text) => {
@@ -55,4 +55,4 @@ FiatSelectorForm.propTypes = {
   changeCurrency: PropTypes.func
 };
 
-export default withNamespaces()(FiatSelectorForm);
+export default withTranslation()(FiatSelectorForm);

@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from "react";
-import {withNamespaces} from "react-i18next";
+import {withTranslation} from "react-i18next";
 import PropTypes from "prop-types";
 import {Alert} from 'reactstrap';
 import {connect} from "react-redux";
@@ -14,7 +14,7 @@ class ValidateEmail extends Component {
 
   componentDidMount() {
     if (!this.props.match || !this.props.match.params || !this.props.match.params.token) {
-      return this.setState({error: 'No token specified in the URL. Make sure you paste the whole URL from the email you received'});
+      return this.setState({error: this.props.t('validateEmail.noToken')});
     }
     this.props.validateEmail(this.props.match.params.token);
   }
@@ -29,8 +29,8 @@ class ValidateEmail extends Component {
     return (<Fragment>
       <h2 className="mb-4 mt-3">{t('validateEmail.title')}</h2>
       {error && <Alert color="danger" toggle={this.hideError}>Error: {error}</Alert>}
-      {working && <Fragment>Loading... <FontAwesomeIcon icon={faCircleNotch} spin/></Fragment>}
-      {verifySuccess && <Alert color="success">You email address was verified successfully</Alert>}
+      {working && <Fragment>{t('general.loading')} <FontAwesomeIcon icon={faCircleNotch} spin/></Fragment>}
+      {verifySuccess && <Alert color="success">{t('validateEmail.success')}</Alert>}
     </Fragment>);
   }
 }
@@ -59,4 +59,4 @@ export default connect(
     validateEmail: emailNotifications.actions.verifyEmail,
     hideError: emailNotifications.actions.hideError
   }
-)(withNamespaces()(ValidateEmail));
+)(withTranslation()(ValidateEmail));

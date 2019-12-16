@@ -6,9 +6,10 @@ import classnames from 'classnames';
 import ArrowDown from "../../../../images/down-arrow.svg";
 import TransferIcon from "../../../../images/transfer.svg";
 import CheckIcon from "../../../../images/check.svg";
+import {Trans, withTranslation} from "react-i18next";
 
 // eslint-disable-next-line complexity
-const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol, disabled}) => (
+const SendMoney = ({t, isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol, disabled}) => (
   <Row className="mt-4">
     <Col xs="1">
       {!isDone && <RoundedIcon size="xs" image={TransferIcon} bgColor={isActive ? "primary" : "grey"}/>}
@@ -18,40 +19,40 @@ const SendMoney = ({isBuyer, isActive, isDone, action, fiatAmount, fiatSymbol, d
 
     <Col xs={isActive ? '7' : '9'} sm={isActive ? '8' : '9'} md={isActive ? '9' : '9'}>
       <p className={classnames("m-0 font-weight-bold", {'text-primary': isActive, 'text-black': !isActive})}>
-        Transfer money
+        {t('escrow.sendMoney.transferMoney')}
       </p>
 
       {!isDone && <Fragment>
         <p className="m-0 text-muted text-small">
-          {isBuyer && <Fragment>
-            Please send <span className="font-weight-bold">{fiatAmount} {fiatSymbol}</span> to the seller through the decided payment method
-          </Fragment>}
-          {!isBuyer && 'Buyer will send money to you'}
+          {isBuyer && <Trans i18nKey="escrow.sendMoney.pleaseSend" values={{fiatAmount, fiatSymbol}}>
+              Please send <span className="font-weight-bold">{{fiatAmount}} {{fiatSymbol}}</span> to the seller through the decided payment method
+            </Trans>}
+          {!isBuyer && t('escrow.sendMoney.buyerWillSend')}
         </p>
       </Fragment>}
 
-      {isDone && <p className="m-0 text-muted text-small">Money transferred</p>}
+      {isDone && <p className="m-0 text-muted text-small">{t('escrow.sendMoney.moneyTransferred')}</p>}
     </Col>
 
     <Col xs={isActive ? '4' : '2'} sm={isActive ? '3' : '2'} md={isActive ? '2' : '2'}>
-      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? 'You' : 'Buyer'}</p>}
+      {!isDone && !isActive && <p className="text-muted text-small">{isBuyer ? t('general.you') : t('general.buyer')}</p>}
 
       {isActive && !isBuyer && <div className="bg-dark rounded p-2 position-relative">
         <span className="bubble-triangle bg-dark"/>
-        <p className="text-white text-small font-weight-bold m-0">Buyer&apos;s turn</p>
+        <p className="text-white text-small font-weight-bold m-0">{t('escrow.general.buyersTurn')}</p>
         <p className="m-0 text-center">
           <Button onClick={action} className="p-2 text-dark text-small rounded mt-1">
-            Mark as received
+            {t('escrow.sendMoney.markAsReceived')}
           </Button>
         </p>
       </div>}
 
       {isActive && isBuyer && <div className="bg-primary rounded p-2 position-relative">
         <span className="bubble-triangle bg-primary"/>
-        <p className="text-white mb-1 text-small">It&apos;s your turn</p>
+        <p className="text-white mb-1 text-small">{t('escrow.general.yourTurn')}</p>
         <p className="m-0 text-center">
           <Button onClick={action} className="p-2 text-primary text-small rounded" disabled={disabled}>
-            Mark as paid →
+            {t('escrow.sendMoney.markAsPaid')}
           </Button>
         </p>
       </div>}
@@ -66,6 +67,7 @@ SendMoney.defaultProps = {
 };
 
 SendMoney.propTypes = {
+  t: PropTypes.func,
   isBuyer: PropTypes.bool,
   isActive: PropTypes.bool,
   isDone: PropTypes.bool,
@@ -75,4 +77,4 @@ SendMoney.propTypes = {
   fiatSymbol: PropTypes.string
 };
 
-export default SendMoney;
+export default withTranslation()(SendMoney);

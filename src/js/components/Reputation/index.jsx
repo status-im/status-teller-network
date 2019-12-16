@@ -1,7 +1,7 @@
 /* eslint-disable no-confusing-arrow */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withNamespaces} from 'react-i18next';
+import {withTranslation} from 'react-i18next';
 import classnames from "classnames";
 
 import RatingIcon from "../../ui/RatingIcon";
@@ -62,4 +62,4 @@ Reputation.propTypes = {
   reputation: PropTypes.object
 };
 
-export default withNamespaces()(Reputation);
+export default withTranslation()(Reputation);

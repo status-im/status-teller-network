@@ -14,6 +14,7 @@ import { zeroAddress } from '../../utils/address';
 import Loading from "../../components/Loading";
 import events from "../../features/events";
 import prices from "../../features/prices";
+import {withTranslation} from "react-i18next";
 
 const NULL_PROFILE = {
   address: zeroAddress,
@@ -59,7 +60,7 @@ class MyTrades extends Component {
   };
 
   render() {
-    const {profile} = this.props;
+    const {t, profile} = this.props;
 
     if(!profile) return <Loading page={true} />;
 
@@ -72,15 +73,16 @@ class MyTrades extends Component {
     });
 
     return <Fragment>
-        <h3 className="d-inline-block">Active trades</h3>
+        <h3 className="d-inline-block">{t('trades.activeTrades')}</h3>
         <Trades trades={trades} active address={this.props.address} tradeClick={this.tradeClick} prices={this.props.prices}/>
-        <h3 className="d-inline-block">Past trades</h3>
+        <h3 className="d-inline-block">{t('trades.pastTrade')}</h3>
         <Trades trades={trades} address={this.props.address} tradeClick={this.tradeClick} prices={this.props.prices}/>
       </Fragment>;
   }
 }
 
 MyTrades.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   address: PropTypes.string,
   profile: PropTypes.object,
@@ -112,4 +114,4 @@ export default connect(
     loadProfile: metadata.actions.load,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     watchEscrow: escrow.actions.watchEscrow
-})(withRouter(MyTrades));
+})(withRouter(withTranslation()(MyTrades)));
