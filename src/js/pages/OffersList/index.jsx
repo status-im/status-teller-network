@@ -64,7 +64,7 @@ class OffersList extends Component {
     if (this.state.paymentMethodFilter === paymentMethodFilter) {
       paymentMethodFilter = -1;
     }
-    this.setState({paymentMethodFilter});
+    this.setState({paymentMethodFilter: parseInt(paymentMethodFilter, 10)});
   };
 
   setTokenFilter = (selected) => {
@@ -147,7 +147,7 @@ class OffersList extends Component {
       filteredOffers = filteredOffers.filter(offer => addressCompare(offer.asset, this.state.tokenFilter));
     }
     if (this.state.paymentMethodFilter !== -1) {
-      filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(parseInt(this.state.paymentMethodFilter, 10)));
+      filteredOffers = filteredOffers.filter(offer => offer.paymentMethods.includes(this.state.paymentMethodFilter));
     }
     if (this.state.contactMethodFilter !== '') {
       filteredOffers = filteredOffers.filter(offer => stringToContact(offer.user.contactData).method === this.state.contactMethodFilter);
@@ -208,6 +208,7 @@ class OffersList extends Component {
                    withDetail offer={offer}
                    prices={this.props.prices} userAddress={this.props.address}
                    showCommunicationMethod={true}
+                   paymentMethodFilter={this.state.paymentMethodFilter}
                    offerClick={this.offerClick}/>)
           )}
         </div>
