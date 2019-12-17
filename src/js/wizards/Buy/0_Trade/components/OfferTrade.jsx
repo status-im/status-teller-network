@@ -121,7 +121,7 @@ class OfferTrade extends Component {
             max: limitDecimals(maxToken),
             symbol: asset
           }}>
-          Limits: 0 Token to <span id="max-token">N Token</span>
+            Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
           </Trans>
         <UncontrolledTooltip placement="right" target="max-token">
           {t('buyer.offerTrade.sellerBalance')}
@@ -136,7 +136,7 @@ class OfferTrade extends Component {
                 max: limitDecimals(maxFiat),
                 symbol: currency.id
               }}>
-              Limits: 0 USD to <span id="max-token">N USD</span>
+              Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
               </Trans>
             </p>  
           </Fragment>
