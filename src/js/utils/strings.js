@@ -1,7 +1,7 @@
 import {compactAddress} from "./address";
 import {STATUS} from "../constants/contactMethods";
 import Address from "../components/UserInformation/Address";
-import React from "react";
+import React, {Fragment} from "react";
 
 export const formatArbitratorName = (user, address, noUsernameLabel, index) => {
   if (!user) return `${index >= 0 ? index + 1 + ' - ' : ""}` + address + ' - Loading...';
@@ -34,6 +34,22 @@ export function renderContactData(contactData, className = '') {
     {contactObj.method}:&nbsp;
     {contactObj.method === STATUS ? <Address disableHover address={contactObj.userId} length={6}/> : contactObj.userId}
   </p>;
+}
+
+export function renderContactDetails(t, contactData, address, className = '') {
+  const contactObj = stringToContact(contactData);
+
+  return (
+    <Fragment>
+      {!contactObj.method && <p className={"text-muted text-small " + className}>{t('general.noContactMethodAvailable')}</p>}
+      {contactObj.method && <p className={"text-muted text-small addr " + className}>
+        {t('general.contactMethod')}: {contactObj.method}
+      </p>}
+      <p className="text-muted text-small addr mb-0">
+      {t('general.address')}: <Address disableHover address={address} length={6}/>
+      </p>
+    </Fragment>
+  );
 }
 
 export const getContactData = (method, userId) => {
