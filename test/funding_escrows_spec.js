@@ -123,8 +123,6 @@ contract("Escrow Funding", function() {
       // TODO: test if inside the contract we can encode the call, and call approveAndCall
 
       receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value});
-
-      console.log('ok');
     });
   });
 
