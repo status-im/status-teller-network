@@ -1,10 +1,10 @@
-/*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const MetadataStore = embark.require('Embark/contracts/MetadataStore');
-const Escrow = embark.require('Embark/contracts/Escrow');
-const SNT = embark.require('Embark/contracts/SNT');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
+const MetadataStore = require('Embark/contracts/MetadataStore');
+const Escrow = require('Embark/contracts/Escrow');
+const SNT = require('Embark/contracts/SNT');
 
 const ARBITRATION_SOLVED_BUYER = 1;
 const ARBITRATION_SOLVED_SELLER = 2;
@@ -17,11 +17,8 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-
-
 config({
-  deployment: {
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
+  blockchain: {
     accounts: [
       {
         mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
@@ -31,47 +28,49 @@ config({
     ]
   },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": {
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
-    MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
-    },
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
-      onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
-    },
-    StandardToken: {
+      },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
+      MetadataStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      },
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
+        onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
+      },
+      StandardToken: {
+      }
     }
   }
 }, (_err, web3_accounts) => {
@@ -107,8 +106,8 @@ contract("Escrow", function() {
   describe("Offer Stake", async() => {
 
     it("price for each offers should increase exponentially (0.01, 0.04, 0.09, 0.16,...)", async() => {
-      let amountToStake; 
-      
+      let amountToStake;
+
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.01", "ether"));
 
@@ -117,7 +116,7 @@ contract("Escrow", function() {
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
-    
+
       receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
@@ -136,7 +135,7 @@ contract("Escrow", function() {
 
     it("price should decrease for each offer exponentially (1600, 900, 400, 100)", async() => {
       let currOffer, amountToStake;
-      
+
       currOffer = offerIds.pop();
       await MetadataStore.methods.removeOffer(currOffer).send();
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
@@ -160,7 +159,7 @@ contract("Escrow", function() {
     });
 
     it("price for each offers should keep increasing exponentially (0.04)", async() => {
-      let amountToStake; 
+      let amountToStake;
 
       amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
       receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
@@ -173,7 +172,7 @@ contract("Escrow", function() {
 
     it("deleting an offer should refund the stake", async() => {
       let contractBalance, userBalance1, userBalance2;
-      
+
       userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
       contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
@@ -183,7 +182,7 @@ contract("Escrow", function() {
       assert.strictEqual(contractBalance, web3.utils.toWei("0", "ether"));
 
       userBalance2 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
-      
+
       assert(userBalance1.lt(userBalance2), "User balance did not increase after refund");
     });
 
@@ -292,7 +291,7 @@ contract("Escrow", function() {
     });
 
     it("winning a dispute should not release the stake (only succesful trades do)", async() => {
-      let contractBalance, userBalance1, userBalance2;
+      let contractBalance;
 
       // Create Offer
       const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
@@ -300,7 +299,6 @@ contract("Escrow", function() {
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
-      userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
       assert.strictEqual(contractBalance, web3.utils.toWei("0.04", "ether"));
 
       // Create Escrow
