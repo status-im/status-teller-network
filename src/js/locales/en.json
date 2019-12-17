@@ -306,7 +306,7 @@
     "recommendedPlatform": "<0>Status</0> is the recommended chat platform"
   },
   "contactDialog": {
-    "contactMethod": "<0>{{username}}'s <2>{{contactMethod}}</2></0>"
+    "contactMethod": "{{username}}'s <2>{{contactMethod}}</2>"
   },
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",

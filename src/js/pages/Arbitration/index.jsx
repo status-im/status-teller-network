@@ -134,11 +134,11 @@ class Arbitration extends Component {
           <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
 
           {isBuyer && <Trans i18nKey="contactDialog.contactMethod" values={{username: buyerInfo.username, contactMethod: ContactMethods[stringToContact(buyerInfo.contactData).method]}}>
-            <Fragment>{buyerInfo.username} <span className="text-muted">Contact Method</span></Fragment>
+            {buyerInfo.username} <span className="text-muted">{ContactMethods[stringToContact(buyerInfo.contactData).method]}</span>
           </Trans>}
 
           {!isBuyer && <Trans i18nKey="contactDialog.contactMethod" values={{username: sellerInfo.username, contactMethod: ContactMethods[stringToContact(sellerInfo.contactData).method]}}>
-          <Fragment>{buyerInfo.username} <span className="text-muted">Contact Method</span></Fragment>
+            {buyerInfo.username} <span className="text-muted">{ContactMethods[stringToContact(sellerInfo.contactData).method]}</span>
           </Trans>}
 
           <Row noGutters className="mt-4">
