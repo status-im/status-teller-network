@@ -1,29 +1,39 @@
 import React from 'react';
 import {Row, Col} from 'reactstrap';
 import PropTypes from 'prop-types';
-import Identicon from "../../../components/UserInformation/Identicon";
-import classnames from "classnames";
+import RoundedIcon from "../../../ui/RoundedIcon";
+import ChatIcon from "../../../../images/read-chat.svg";
+import { stringToContact } from '../../../utils/strings';
+import {withTranslation} from "react-i18next";
 
-const ContactUser = ({username, statusContactCode, isBuyer}) => (
-  <a href={"https://get.status.im/user/" + statusContactCode} rel="noopener noreferrer" target="_blank">
-    <Row className="mt-3 gutterBottom">
-      <Col xs="2">
-        <div className="rounded-icon rounded-circle rounded-icon__blue">
-          <Identicon seed={statusContactCode} className="rounded-circle border" scale={5}/>
-        </div>
-        <span className={classnames("icon-badge", {'seller-text': !isBuyer, 'buyer-text': isBuyer})}>{isBuyer ? 'Buyer' : 'Seller'}</span>
-      </Col>
-      <Col xs="10" className="my-auto">
-        <h6 className="m-0">Contact {username}</h6>
-      </Col>
-    </Row>
-  </a>
-);
+const ContactUser = ({t, isStatus, userInfo, isBuyer, onClick}) => {
+  const userContactObject = stringToContact(userInfo.contactData);
 
-ContactUser.propTypes = {
-  username: PropTypes.string,
-  statusContactCode: PropTypes.string,
-  isBuyer: PropTypes.bool
+  const button = <Row className="mt-4">
+    <Col xs="2">
+      <RoundedIcon image={ChatIcon} bgColor="blue"/>
+    </Col>
+    <Col xs="10 my-auto">
+      <h6 className="m-0 font-weight-normal">
+        {t('escrow.openChat.chatWith', {person: isBuyer ? t('general.smallCaseBuyer') : t('general.smallCaseSeller')})}
+      </h6>
+    </Col>
+  </Row>;
+
+  if (isStatus && userContactObject.method === 'Status') {
+    return <a href={"https://get.status.im/user/" + userContactObject.userId}
+              rel="noopener noreferrer" target="_blank">{button}</a>;
+  }
+
+  return <span className="clickable text-primary" onClick={onClick}>{button}</span>;
 };
 
-export default ContactUser;
+ContactUser.propTypes = {
+  t: PropTypes.func,
+  userInfo: PropTypes.object,
+  isBuyer: PropTypes.bool,
+  onClick: PropTypes.func,
+  isStatus: PropTypes.bool
+};
+
+export default withTranslation()(ContactUser);
