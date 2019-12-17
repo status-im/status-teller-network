@@ -1,21 +1,21 @@
-/*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const MetadataStore = embark.require('Embark/contracts/MetadataStore');
-const Escrow = embark.require('Embark/contracts/Escrow');
-const StandardToken = embark.require('Embark/contracts/StandardToken');
-const SNT = embark.require('Embark/contracts/SNT');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
+const MetadataStore = require('Embark/contracts/MetadataStore');
+const Escrow = require('Embark/contracts/Escrow');
+const StandardToken = require('Embark/contracts/StandardToken');
+const SNT = require('Embark/contracts/SNT');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-const ESCROW_CREATED = 0;
-const ESCROW_FUNDED = 1;
-const _ESCROW_PAID = 2;
-const ESCROW_RELEASED = 3;
-const ESCROW_CANCELED = 4;
+const ESCROW_CREATED = '0';
+const ESCROW_FUNDED = '1';
+const _ESCROW_PAID = '2';
+const ESCROW_RELEASED = '3';
+const ESCROW_CANCELED = '4';
 
 let accounts;
 let arbitrator, arbitrator2;
@@ -24,8 +24,7 @@ let _deltaTime = 0; // TODO: this can be fixed with ganache-cli v7, and evm_reve
 const feePercent = 1;
 
 config({
-  deployment: {
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
+  blockchain: {
     accounts: [
       {
         mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
@@ -35,50 +34,53 @@ config({
     ]
   },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": {
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
+      },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
 
-    MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
-    },
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
-    },
-    StandardToken: {
+      MetadataStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      },
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000]
+      },
+      StandardToken: {
+      }
     }
   }
 }, (_err, web3_accounts) => {
+  web3.eth.defaultAccount = web3_accounts[0];
   accounts = web3_accounts;
   arbitrator = accounts[8];
   arbitrator2 = accounts[9];
@@ -92,20 +94,21 @@ contract("Escrow", function() {
   const feeAmount = Math.round(tradeAmount * (feePercent / 100));
 
   // util
-  let expirationTime = parseInt((new Date()).getTime() / 1000, 10) + (5 * 86400);
   const expireTransaction = async() => {
     const addTime = 5 * 86400;
     await TestUtils.increaseTime(addTime + 1);
-    expirationTime += addTime;
   };
 
-  let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, noArbiterOfferId, hash, signature, nonce;
+  let receipt, escrowId, escrowTokenId, sntOfferId, ethOfferId, tokenOfferId, hash, signature, nonce;
   let created;
 
   this.timeout(0);
 
   before(async () => {
-    await MetadataStore.methods.setAllowedContract(Escrow.options.address, true).send();
+    let toSend = MetadataStore.methods.setAllowedContract(Escrow.options.address, true);
+    let gas = await toSend.estimateGas();
+    gas += 2000;
+    await toSend.send({gas});
 
     await SNT.methods.generateTokens(accounts[0], 1000).send();
 
@@ -127,7 +130,7 @@ contract("Escrow", function() {
     amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await MetadataStore.methods.addOffer(StandardToken.options.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    
+
     amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await MetadataStore.methods.addOffer(SNT.options.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     sntOfferId = receipt.events.OfferAdded.returnValues.offerId;
@@ -139,8 +142,8 @@ contract("Escrow", function() {
 
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
-      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
     it("Buyer can create escrow using signature", async () => {
@@ -152,8 +155,8 @@ contract("Escrow", function() {
 
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
-      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
     it("Seller should be able to create escrows", async () => {
@@ -166,18 +169,18 @@ contract("Escrow", function() {
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
 
-      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(created.returnValues.buyer, accounts[1], "Invalid buyer");
       escrowId = created.returnValues.escrowId;
     });
 
     it("Created escrow should contain valid data", async () => {
       const escrow = await Escrow.methods.transactions(escrowId).call();
 
-      assert.equal(escrow.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(escrow.buyer, accounts[1], "Invalid buyer");
-      assert.equal(escrow.tokenAmount, 123, "Invalid trade amount");
-      assert.equal(escrow.status, ESCROW_CREATED, "Invalid status");
+      assert.strictEqual(escrow.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(escrow.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(escrow.tokenAmount, "123", "Invalid trade amount");
+      assert.strictEqual(escrow.status, ESCROW_CREATED, "Invalid status");
     });
 
     it("Seller should be able to fund escrow", async () => {
@@ -197,10 +200,10 @@ contract("Escrow", function() {
       const ethFeeBalance = await Escrow.methods.feeTokenBalances(TestUtils.zeroAddress).call();
       assert.strictEqual(parseInt(ethFeeBalance, 10), feeAmount, 'Invalid fee balance');
       const contractBalance = await web3.eth.getBalance(Escrow.options.address);
-      assert.equal(contractBalance, feeAmount + tradeAmount, "Invalid contract balance");
+      assert.strictEqual(parseInt(contractBalance, 10), feeAmount + tradeAmount, "Invalid contract balance");
       const escrow = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
-      assert.equal(escrow.status, ESCROW_FUNDED, "Invalid status");
+      assert.strictEqual(parseInt(escrow.tokenAmount, 10), tradeAmount, "Invalid amount");
+      assert.strictEqual(escrow.status, ESCROW_FUNDED, "Invalid status");
     });
 
     it("Escrows can be created with ERC20 tokens", async () => {
@@ -235,7 +238,7 @@ contract("Escrow", function() {
 
       const escrow = await Escrow.methods.transactions(escrowTokenId).call();
 
-      assert.equal(escrow.tokenAmount, tradeAmount, "Invalid amount");
+      assert.strictEqual(parseInt(escrow.tokenAmount, 10), tradeAmount, "Invalid amount");
     });
 
     it("Can fund an SNT escrow with approveAndCall", async () => {
@@ -248,7 +251,6 @@ contract("Escrow", function() {
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
       let receipt = await Escrow.methods.createEscrow(sntOfferId, tradeAmount, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[0]});
-      const created = receipt.events.Created;
       escrowTokenId = receipt.events.Created.returnValues.escrowId;
 
 
@@ -277,7 +279,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Can only be canceled after expiration");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Can only be canceled after expiration");
       }
     });
 
@@ -300,7 +302,7 @@ contract("Escrow", function() {
       assert(!!Canceled, "Canceled() not triggered");
 
       let escrow = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(escrow.status, ESCROW_CANCELED, "Should have been canceled");
+      assert.strictEqual(escrow.status, ESCROW_CANCELED, "Should have been canceled");
     });
 
     it("A seller can cancel their expired token escrows and gets back the fee", async () => {
@@ -329,9 +331,9 @@ contract("Escrow", function() {
 
       let escrow = await Escrow.methods.transactions(escrowTokenId).call();
 
-      assert.equal(escrow.status, ESCROW_CANCELED, "Should have been canceled");
-      assert.equal(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
-      assert.equal(contractBalanceBeforeCreation, contractBalanceAfterCancelation, "Invalid contract balance");
+      assert.strictEqual(escrow.status, ESCROW_CANCELED, "Should have been canceled");
+      assert.strictEqual(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
+      assert.strictEqual(contractBalanceBeforeCreation, contractBalanceAfterCancelation, "Invalid contract balance");
     });
 
     it("A buyer can cancel an escrow that hasn't been funded yet", async () => {
@@ -384,7 +386,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
 
@@ -403,7 +405,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[2]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
@@ -424,7 +426,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
   });
@@ -459,7 +461,7 @@ contract("Escrow", function() {
         await Escrow.methods.release(escrowId).send({from: accounts[1]}); // Buyer tries to release
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the seller can invoke this function");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only the seller can invoke this function");
       }
     });
 
@@ -472,8 +474,8 @@ contract("Escrow", function() {
       assert(!!released, "Released() not triggered");
 
       const escrow = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(escrow.status, ESCROW_RELEASED, "Should have been released");
-      assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
+      assert.strictEqual(escrow.status, ESCROW_RELEASED, "Should have been released");
+      assert.strictEqual(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)).toString(), buyerBalanceAfterEscrow.toString(), "Invalid buyer balance");
     });
 
     it("Escrow owner can release token funds to the buyer", async () => {
@@ -498,9 +500,9 @@ contract("Escrow", function() {
       const buyerBalanceAfterEscrow = await StandardToken.methods.balanceOf(accounts[1]).call();
       const contractBalanceAfterEscrow = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
+      assert.strictEqual(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)).toString(), buyerBalanceAfterEscrow.toString(), "Invalid buyer balance");
       const after = toBN(contractBalanceBeforeEscrow).sub(toBN(tradeAmount).add(toBN(feeAmount)));
-      assert.equal(contractBalanceAfterEscrow, after, "Invalid contract balance");
+      assert.strictEqual(contractBalanceAfterEscrow.toString(), after.toString(), "Invalid contract balance");
     });
 
     it("Released escrow cannot be released again", async() => {
@@ -510,7 +512,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid transaction status");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Invalid transaction status");
       }
     });
 
@@ -521,7 +523,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
 
@@ -534,7 +536,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Invalid transaction status");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Invalid transaction status");
       }
     });
   });
@@ -558,7 +560,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.pay(escrowId).send({from: accounts[7]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only the buyer can invoke this function");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only the buyer can invoke this function");
       }
     });
 
@@ -566,7 +568,7 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.pay(escrowId).send({from: accounts[1]});
       const paid = receipt.events.Paid;
       assert(!!paid, "Paid() not triggered");
-      assert.equal(paid.returnValues.escrowId, escrowId, "Invalid escrow id");
+      assert.strictEqual(paid.returnValues.escrowId, escrowId, "Invalid escrow id");
     });
 
     it("Anyone should be able to mark an escrow transaction as paid on behalf of the buyer", async () => {
@@ -587,7 +589,7 @@ contract("Escrow", function() {
 
       const paid = receipt.events.Paid;
       assert(!!paid, "Paid() not triggered");
-      assert.equal(paid.returnValues.escrowId, escrowId, "Invalid escrowId");
+      assert.strictEqual(paid.returnValues.escrowId, escrowId, "Invalid escrowId");
     });
 
     it("A seller cannot cancel paid escrows", async () => {
@@ -599,7 +601,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancel(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only transactions in created or funded state can be canceled");
       }
     });
   });
@@ -643,14 +645,14 @@ contract("Escrow", function() {
       it("should allow a score of " + i, async() => {
         await Escrow.methods.rateTransaction(escrowId, i).send({from: accounts[1]});
         const transaction = await Escrow.methods.transactions(escrowId).call();
-        assert.equal(transaction.sellerRating, i.toString());
+        assert.strictEqual(transaction.sellerRating, i.toString());
       });
     }
 
     it("should only allow rating once", async() => {
       await Escrow.methods.rateTransaction(escrowId, 3).send({from: accounts[1]});
       let transaction = await Escrow.methods.transactions(escrowId).call();
-      assert.equal(transaction.sellerRating, "3");
+      assert.strictEqual(transaction.sellerRating, "3");
 
       try {
         await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
@@ -738,7 +740,7 @@ contract("Escrow", function() {
       const events = await Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {seller}});
 
       let ratings = events.slice(events.length - 5).map((e) => parseInt(e.returnValues.rating, 10));
-      assert.equal(arrAvg(ratings), 3, "The seller rating is not correct");
+      assert.strictEqual(arrAvg(ratings), 3, "The seller rating is not correct");
     });
   });
 
@@ -812,7 +814,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.withdraw_emergency(escrowTokenId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Contract must be paused");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Contract must be paused");
       }
 
       receipt = await Escrow.methods.pause().send({from: accounts[0]});
@@ -825,22 +827,22 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.withdraw_emergency(releasedEscrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
       }
 
       await Escrow.methods.withdraw_emergency(escrowId).send({from: accounts[0]});
 
       let escrow = await Escrow.methods.transactions(escrowId).call();
 
-      assert.equal(escrow.status, ESCROW_CANCELED, "Should be canceled");
+      assert.strictEqual(escrow.status, ESCROW_CANCELED, "Should be canceled");
 
       await Escrow.methods.withdraw_emergency(escrowTokenId).send({from: accounts[0]});
 
       const balanceAfterCancelation = await StandardToken.methods.balanceOf(accounts[0]).call();
       const contractBalanceAfterCancelation = await StandardToken.methods.balanceOf(Escrow.options.address).call();
 
-      assert.equal(contractBalanceAfterCancelation, contractBalanceBeforeCancelation, "Invalid contract balance");
-      assert.equal(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
+      assert.strictEqual(contractBalanceAfterCancelation, contractBalanceBeforeCancelation, "Invalid contract balance");
+      assert.strictEqual(balanceBeforeCreation, balanceAfterCancelation, "Invalid seller balance");
     });
 
   });

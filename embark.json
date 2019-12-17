@@ -5,9 +5,7 @@
   "buildDir": "dist/",
   "config": "embarkConfig/",
   "versions": {
-    "web3": "1.0.0-beta",
-    "solc": "0.5.10",
-    "ipfs-api": "17.2.4"
+    "solc": "0.5.10"
   },
   "plugins": {
     "embark-solium": {},
