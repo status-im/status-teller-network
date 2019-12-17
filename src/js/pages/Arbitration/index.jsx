@@ -2,25 +2,25 @@ import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
-import {Button, Col, Row, Modal, ModalBody, ButtonGroup, ModalFooter} from "reactstrap";
-
+import {Button, Col, Row, Modal, ModalBody, ButtonGroup, ModalFooter, Input} from "reactstrap";
+import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
+import { stringToContact, copyToClipboard } from '../../utils/strings';
 import ContactUser from './components/ContactUser';
 import TradeParticipant from './components/TradeParticipant';
 import EscrowDetail from './components/EscrowDetail';
 import Loading from '../../components/Loading';
 import ErrorInformation from '../../components/ErrorInformation';
-
 import arbitration from '../../features/arbitration';
 import network from '../../features/network';
 import metadata from '../../features/metadata';
-
 import CheckButton from '../../ui/CheckButton';
 import Identicon from "../../components/UserInformation/Identicon";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import ModalDialog from "../../components/ModalDialog";
 import bubbleTriangle from "../../../images/diamond.png";
-
+import RoundedIcon from "../../ui/RoundedIcon";
+import ProfileIcon from "../../../images/profileUser.svg";
 import {addressCompare} from "../../utils/address";
-
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER, ARBITRATION_UNSOLVED, UNRESPONSIVE, PAYMENT, OTHER} from "../../features/arbitration/constants";
 
 import './index.scss';
@@ -52,7 +52,8 @@ class Arbitration extends Component {
   state = {
     displayUsers: false,
     selectedUser: null,
-    displayDialog: false
+    displayDialog: false,
+    displayContactDialog: false
   };
 
   openSolveDisputeDialog = () => {
@@ -124,6 +125,40 @@ class Arbitration extends Component {
     }
   }
 
+  renderContactDialog() {
+    const {t, isStatus, buyerInfo, sellerInfo} = this.props;
+    const isBuyer = this.state.displayContactDialog === 'buyer';
+
+    return (
+      <ModalDialog display={!!this.state.displayContactDialog} onClose={this.displayContactDialog(false)} hideButton>
+          <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
+          {isBuyer && <Fragment>{buyerInfo.username}&apos;s <span
+            className="text-muted">{ContactMethods[stringToContact(buyerInfo.contactData).method]}</span></Fragment>}
+          {!isBuyer && <Fragment>{sellerInfo.username}&apos;s <span
+            className="text-muted">{ContactMethods[stringToContact(sellerInfo.contactData).method]}</span></Fragment>}
+          <Row noGutters className="mt-4">
+            <Col xs={9}>
+              <Input type="text"
+                      value={stringToContact(isBuyer ? buyerInfo.contactData : sellerInfo.contactData).userId}
+                      readOnly
+                      className="form-control"
+                      />
+            </Col>
+            <Col xs={3}>
+              <Button className="px-3 float-right"
+                      color="primary"
+                      onClick={() => copyToClipboard(stringToContact(isBuyer ? buyerInfo.contactData : sellerInfo.contactData).userId)}>
+                {t('escrow.page.copy')}
+              </Button>
+            </Col>
+          </Row>
+          {!isStatus && ((isBuyer && buyerInfo.contactData.startsWith("Status")) || (!isBuyer && sellerInfo.contactData.startsWith("Status"))) && <p className="text-center text-muted mt-3">
+            <span>{t('escrow.page.notStatusUser')}</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">{t('escrow.page.getStatusNow')}</a>
+          </p>}
+        </ModalDialog>
+      );
+  }
+
   renderModal() {
     const {t, escrow, buyerInfo, sellerInfo} = this.props;
     const {displayUsers, selectedUser} = this.state;
@@ -157,8 +192,14 @@ class Arbitration extends Component {
     </Modal>);
   }
 
+  displayContactDialog = show => (e) => {
+    if(e) e.preventDefault();
+    this.setState({displayContactDialog: show});
+    return false;
+  }
+
   render() {
-    const {t, escrow, address, loading, buyerInfo, sellerInfo} = this.props;
+    const {t, escrow, address, loading, buyerInfo, sellerInfo, isStatus} = this.props;
 
     if (!escrow || !buyerInfo || !sellerInfo) {
       return <Loading/>;
@@ -206,10 +247,10 @@ class Arbitration extends Component {
         <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false}
                           winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER}/>
 
-        <ContactUser username={buyerInfo.username} seed={escrow.buyer} statusContactCode={buyerInfo.statusContactCode}
-                     isBuyer={true}/>
-        <ContactUser username={sellerInfo.username} seed={escrow.seller}
-                     statusContactCode={sellerInfo.statusContactCode} isBuyer={false}/>
+        {this.renderContactDialog()}
+
+        <ContactUser userInfo={buyerInfo} isBuyer={true} isStatus={isStatus} onClick={this.displayContactDialog('buyer')} />
+        <ContactUser userInfo={sellerInfo} isBuyer={false} isStatus={isStatus} onClick={this.displayContactDialog('seller')} />
 
         {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
           <Fragment>
@@ -247,13 +288,15 @@ Arbitration.propTypes = {
   loadArbitration: PropTypes.func,
   getProfile: PropTypes.func,
   resolveDispute: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  isStatus: PropTypes.bool
 };
 
 
 const mapStateToProps = (state, props) => {
   const escrow = arbitration.selectors.getArbitration(state);
   return {
+    isStatus: network.selectors.isStatus(state),
     address: network.selectors.getAddress(state) || "",
     escrowId:  props.match.params.id.toString(),
     escrow: escrow,
