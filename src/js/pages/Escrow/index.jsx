@@ -12,7 +12,6 @@ import SendMoney from "./components/SendMoney";
 import ReleaseFunds from "./components/ReleaseFunds";
 import Done from "./components/Done";
 import EscrowDetail from './components/EscrowDetail';
-import OpenChat from './components/OpenChat';
 import Profile from './components/Profile';
 import OpenDispute from './components/OpenDispute';
 import Loading from '../../components/Loading';
@@ -41,7 +40,7 @@ import emailNotifications from "../../features/emailNotifications";
 import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
-import {withTranslation} from "react-i18next";
+import {withTranslation, Trans} from "react-i18next";
 
 const {toBN} = web3.utils;
 
@@ -287,22 +286,23 @@ class Escrow extends Component {
               />
       </div>
 
-      <EscrowDetail escrow={escrow} isBuyer={isBuyer} currentPrice={this.props.assetCurrentPrice}/>
-      <OpenChat onClick={this.displayDialog(true)}
-                buyerContactData={escrow.buyerInfo.contactData}
-                sellerContactData={escrow.seller.contactData}
-                isStatus={isStatus}
-                withBuyer={!isBuyer} />
-      <ModalDialog display={this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
+      <EscrowDetail escrow={escrow} 
+                    arbitrationDetails={arbitrationDetails}
+                    isBuyer={isBuyer}
+                    onClickChat={this.displayDialog}
+                    currentPrice={this.props.assetCurrentPrice} />
+
+      <ModalDialog display={!!this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
         <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
-        {!isBuyer && <Fragment>{escrow.buyerInfo.username}&apos;s <span
-          className="text-muted">{ContactMethods[stringToContact(escrow.buyerInfo.contactData).method]}</span></Fragment>}
-        {isBuyer && <Fragment>{escrow.seller.username}&apos;s <span
-          className="text-muted">{ContactMethods[stringToContact(escrow.seller.contactData).method]}</span></Fragment>}
+
+        <Trans i18nKey="contactDialog.contactMethod" values={{username: this.getUserInfo(escrow).username, contactMethod: ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}}>
+          {this.getUserInfo(escrow).username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}</span>
+        </Trans>
+        
         <Row noGutters className="mt-4">
           <Col xs={9}>
             <Input type="text"
-                    value={stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId}
+                    value={stringToContact(this.getUserInfo(escrow).contactData).userId}
                     readOnly
                     className="form-control"
                     />
@@ -310,12 +310,12 @@ class Escrow extends Component {
           <Col xs={3}>
             <Button className="px-3 float-right"
                     color="primary"
-                    onClick={() => copyToClipboard(stringToContact(!isBuyer ? escrow.buyerInfo.contactData : escrow.seller.contactData).userId)}>
+                    onClick={() => copyToClipboard(stringToContact(this.getUserInfo(escrow).contactData).userId)}>
               {t('escrow.page.copy')}
             </Button>
           </Col>
         </Row>
-        {!isStatus && ((isBuyer && escrow.seller.contactData.startsWith("Status")) || (!isBuyer && escrow.buyerInfo.contactData.startsWith("Status"))) && <p className="text-center text-muted mt-3">
+        {!isStatus && this.getUserInfo(escrow).contactData.startsWith("Status") && <p className="text-center text-muted mt-3">
           <span>{t('escrow.page.notStatusUser')}</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">{t('escrow.page.getStatusNow')}</a>
         </p>}
       </ModalDialog>
@@ -326,6 +326,14 @@ class Escrow extends Component {
       <CancelDispute trade={escrow} cancelDispute={cancelDispute}/>}
       {(!arbitrationDetails || !arbitrationDetails.open) && <OpenDispute trade={escrow}/>}
     </Fragment>);
+  }
+
+  getUserInfo(escrow) {
+    switch(this.state.displayDialog){
+      case 'buyer': return escrow.buyerInfo;
+      case 'seller': return escrow.seller;
+      default: return escrow.arbitratorInfo;
+    }
   }
 }
 
