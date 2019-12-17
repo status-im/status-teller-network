@@ -1,12 +1,12 @@
-/*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
-const Escrow = embark.require('Embark/contracts/Escrow');
-const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
-const OwnedUpgradeabilityProxy = embark.require('Embark/contracts/OwnedUpgradeabilityProxy');
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const SNT = embark.require('Embark/contracts/SNT');
-const MetadataStore = embark.require('Embark/contracts/MetadataStore');
-const TestEscrowUpgrade = embark.require('Embark/contracts/TestEscrowUpgrade');
+const Escrow = require('Embark/contracts/Escrow');
+const EscrowRelay = require('Embark/contracts/EscrowRelay');
+const OwnedUpgradeabilityProxy = require('Embark/contracts/OwnedUpgradeabilityProxy');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
+const SNT = require('Embark/contracts/SNT');
+const MetadataStore = require('Embark/contracts/MetadataStore');
+const TestEscrowUpgrade = require('Embark/contracts/TestEscrowUpgrade');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
@@ -18,57 +18,56 @@ let receipt;
 let ethOfferId;
 
 config({
-  deployment: {
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-  },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": { },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
+    deploy: {
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": { },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      MetadataStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
 
-    EscrowRelay: {
-      args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
-    },
-    OwnedUpgradeabilityProxy: {
-    },
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
-    },
-    TestEscrowUpgrade: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
-    },
-    StandardToken: { }
+      EscrowRelay: {
+        args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"]
+      },
+      OwnedUpgradeabilityProxy: {
+      },
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      },
+      TestEscrowUpgrade: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
+      },
+      StandardToken: { }
+    }
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
@@ -116,8 +115,8 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U").send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
-      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
     it("Can create an escrow using a signature", async () => {
@@ -128,8 +127,8 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
-      assert.equal(created.returnValues.offerId, ethOfferId, "Invalid offerId");
-      assert.equal(created.returnValues.buyer, accounts[1], "Invalid buyer");
+      assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
+      assert.strictEqual(created.returnValues.buyer, accounts[1], "Invalid buyer");
     });
 
     it("Can upgrade contract", async () => {
@@ -144,7 +143,7 @@ contract("Escrow", function() {
       const val = 5;
       await TestEscrowUpgrade.methods.setVal(val).send();
       const currentVal = await TestEscrowUpgrade.methods.getVal().call();
-      assert.equal(val, currentVal);
+      assert.strictEqual(val.toString(), currentVal.toString());
     });
   });
 });
