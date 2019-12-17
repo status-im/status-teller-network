@@ -45,7 +45,11 @@
     "loading": "Loading...",
     "youSure": "Are you sure?",
     "error": "Error",
-    "send": "Send"
+    "send": "Send",
+    "address": "Address",
+    "contactMethod": "Contact method",
+    "noContactMethodAvailable": "No contact method for this user",
+    "trades": "Trades"
   },
   "header": {
     "buy": "Buy",
@@ -289,7 +293,17 @@
       "foundOffers_plural": "We found {{count}} offers"
     },
     "offerTrade": {
-      "enterBefore": "Enter a fiat or asset quantity before submitting. Make sure the asset amount is between the limits above."
+      "dialogButton": "Ok got it",
+      "dispute": "Dispute",
+      "disputeInfo": "A dispute is a disagreement on a point of law or fact, a conflict of legal views or of interests between two persons.",
+      "enterBefore": "Enter a fiat or asset quantity before submitting. Make sure the asset amount is between the limits above.",
+      "assetQuantity": "Asset quantity",
+      "fiatQuantity": "Fiat quantity",
+      "arbitratorInfo": "<0>You can think of an arbitrator as a neutral <1>judge</1> who, when the trade comes to the <3>dispute</3>, will review the trade and resolve the dispute.</0>",
+      "sellerBalance": "This is the current balance of the seller. This is why it is the maximum",
+      "limits": "Limits: {{min}} {{symbol}} to <5>{{max}} {{symbol}}</5>",
+      "amountWarning": "Amount is greater than the seller's balance",
+      "newOrderDelay": "New orders can be created in {{time}}"
     }
   },
   "contactForm": {

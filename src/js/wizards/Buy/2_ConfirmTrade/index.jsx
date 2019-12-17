@@ -10,12 +10,11 @@ import Loading from "../../../components/Loading";
 import ErrorInformation from "../../../components/ErrorInformation";
 import escrow from "../../../features/escrow";
 import Identicon from "../../../components/UserInformation/Identicon";
-import Address from "../../../components/UserInformation/Address";
 import {limitDecimals} from '../../../utils/numbers';
 import {Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
 import {withTranslation} from "react-i18next";
-import { formatArbitratorName } from '../../../utils/strings';
+import { formatArbitratorName, renderContactDetails } from '../../../utils/strings';
 import PriceWarning from '../../../components/PriceWarning';
 
 import './index.scss';
@@ -98,22 +97,20 @@ class ConfirmTrade extends Component {
           </Alert>}
           <h2>Summary</h2>
           <h3 className="mt-4 font-weight-normal">Seller</h3>
-          <p className="mt-2 font-weight-medium mb-1">
-            <Identicon seed={this.props.offer.owner} className="rounded-circle border mr-2 float-left" scale={5}/>
-            {this.props.offer.user.username}
-          </p>
-          <p className="text-muted text-small addr"><Address address={this.props.offer.user.statusContactCode} length={6}/>
-          </p>
+          <div className="mt-2 font-weight-medium mb-1">
+            <Identicon seed={this.props.offer.owner} className="rounded-circle border mr-2 mb-4 float-left" scale={5}/>
+            <p className="font-weight-medium mb-0 name">{this.props.offer.user.username}</p>
+            {renderContactDetails(t, this.props.offer.user.contactData, this.props.offer.owner, 'mb-0')}
+          </div>
 
           <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
-          <p className="mt-2 font-weight-medium mb-1">
-            <Identicon seed={this.props.offer.arbitrator} className="rounded-circle border mr-2 float-left" scale={5}/>
-            {formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator)}
-          </p>
-          <p className="text-muted text-small addr"><Address address={this.props.offer.arbitratorData.statusContactCode} length={6}/>
-          </p>
+          <div className="mt-2 font-weight-medium mb-1">
+            <Identicon seed={this.props.offer.arbitrator} className="rounded-circle border mr-2 mb-4 float-left" scale={5}/>
+            <p className="font-weight-medium mb-0 name">{formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator)}</p>
+            {renderContactDetails(t, this.props.offer.arbitratorData.contactData, this.props.offer.arbitrator, 'mb-0')}
+          </div>
 
-          <h3 className="font-weight-normal">Price</h3>
+          <h3 className="font-weight-normal mt-4">Price</h3>
           <p className="mt-2 font-weight-medium mb-1">
             1 {this.props.offer.token.symbol} = {price.toFixed(4)} {this.props.offer.currency}
           </p>
