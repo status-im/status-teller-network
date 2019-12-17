@@ -7,8 +7,6 @@ import { stringToContact } from '../../../utils/strings';
 import {withTranslation} from "react-i18next";
 
 const ContactUser = ({t, isStatus, userInfo, isBuyer, onClick}) => {
-
-
   const userContactObject = stringToContact(userInfo.contactData);
 
   const button = <Row className="mt-4">

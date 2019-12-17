@@ -132,10 +132,15 @@ class Arbitration extends Component {
     return (
       <ModalDialog display={!!this.state.displayContactDialog} onClose={this.displayContactDialog(false)} hideButton>
           <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
-          {isBuyer && <Fragment>{buyerInfo.username}&apos;s <span
-            className="text-muted">{ContactMethods[stringToContact(buyerInfo.contactData).method]}</span></Fragment>}
-          {!isBuyer && <Fragment>{sellerInfo.username}&apos;s <span
-            className="text-muted">{ContactMethods[stringToContact(sellerInfo.contactData).method]}</span></Fragment>}
+
+          {isBuyer && <Trans i18nKey="contactDialog.contactMethod" values={{username: buyerInfo.username, contactMethod: ContactMethods[stringToContact(buyerInfo.contactData).method]}}>
+            <Fragment>{buyerInfo.username} <span className="text-muted">Contact Method</span></Fragment>
+          </Trans>}
+
+          {!isBuyer && <Trans i18nKey="contactDialog.contactMethod" values={{username: sellerInfo.username, contactMethod: ContactMethods[stringToContact(sellerInfo.contactData).method]}}>
+          <Fragment>{buyerInfo.username} <span className="text-muted">Contact Method</span></Fragment>
+          </Trans>}
+
           <Row noGutters className="mt-4">
             <Col xs={9}>
               <Input type="text"

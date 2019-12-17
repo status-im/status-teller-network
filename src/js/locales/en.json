@@ -305,6 +305,9 @@
     "consider": "Consider which method you choose as buyers and arbitrators will contact you using it",
     "recommendedPlatform": "<0>Status</0> is the recommended chat platform"
   },
+  "contactDialog": {
+    "contactMethod": "<0>{{username}}'s <2>{{contactMethod}}</2></0>"
+  },
   "sellerLicenseInfo": {
     "title": "Value propositions/info about a seller license",
     "fee": "1% fee",
