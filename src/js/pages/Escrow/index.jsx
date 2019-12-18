@@ -158,7 +158,6 @@ class Escrow extends Component {
     const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
     const isETHorSNT = escrow && (isETH || addressCompare(escrow.offer.asset, tokens.SNT.address));
 
-    console.log(escrow, sntAllowance, tokenAllowance);
     if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETHorSNT && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
     }
