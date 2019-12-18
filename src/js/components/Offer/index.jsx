@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
 import Reputation from '../Reputation';
@@ -19,7 +19,7 @@ import {stringToContact} from "../../utils/strings";
 
 import './index.scss';
 
-const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommunicationMethod}) => {
+const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommunicationMethod, numberPaymentMethodsShown, paymentMethodFilter}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
@@ -30,6 +30,19 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
     currencySymbol = offer.currency;
   } else {
     currencySymbol = currencySymbol.symbol;
+  }
+
+  const paymentMethods = offer.paymentMethods;
+  if (paymentMethodFilter !== -1) {
+    paymentMethods.sort((a, b) => {
+      if (a === paymentMethodFilter) {
+        return -1;
+      }
+      if (b === paymentMethodFilter) {
+        return 1;
+      }
+      return 0;
+    });
   }
 
   return (<Card className="mb-3 shadow border-0 offer-card clickable" onClick={() => offerClick(offer.id)}>
@@ -47,7 +60,22 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
         </p>}
         <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
-          {offer.paymentMethods.map(paymentMethod => PAYMENT_METHODS[paymentMethod]).join(', ')}
+          {paymentMethods.map((paymentMethod, index) => {
+            if (index >= numberPaymentMethodsShown) {
+              return '';
+            }
+            const showComma = !(index === paymentMethods.length - 1 || index === numberPaymentMethodsShown - 1);
+            if (index === 0 && paymentMethodFilter !== -1) {
+              return (<Fragment key={'method-' + index}>
+                <span className="font-weight-bold">
+                  {PAYMENT_METHODS[paymentMethod]}
+                </span>
+                {showComma && ', '}
+              </Fragment>);
+            }
+            return PAYMENT_METHODS[paymentMethod] + (showComma ? ', ' : '');
+          })}
+          {paymentMethods.length > numberPaymentMethodsShown && ' ' + t('offer.andMore')}
         </p>
 
         {!limitless && <p className="text-black m-0 mt-2 clearfix data-item">
@@ -91,13 +119,17 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 };
 
 Offer.defaultProps = {
-  withDetail: false
+  withDetail: false,
+  numberPaymentMethodsShown: 2,
+  paymentMethodFilter: -1
 };
 
 Offer.propTypes = {
   t: PropTypes.func,
   offer: PropTypes.object,
   withDetail: PropTypes.bool,
+  numberPaymentMethodsShown: PropTypes.number,
+  paymentMethodFilter: PropTypes.number,
   showCommunicationMethod: PropTypes.bool,
   prices: PropTypes.object,
   userAddress: PropTypes.string,

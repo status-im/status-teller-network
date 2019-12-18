@@ -265,7 +265,8 @@
     "isArbitrator": "You are an arbitrator on this offer",
     "buyFor": "Buy for {{price}} {{currency}}",
     "disabledBecauseArbi": "Offer disabled because you are the seller or the arbitrator",
-    "disabledBecausePrice": "Offer disabled because we failed to fetch the token prices. Check back later."
+    "disabledBecausePrice": "Offer disabled because we failed to fetch the token prices. Check back later.",
+    "andMore": "and more"
   },
   "filter": {
     "clearSelection": "Clear selection",
