@@ -28,6 +28,8 @@ export function *onApproveToken() {
 }
 
 export function *doGetSNTAllowance() {
+  if(!web3.eth.defaultAccount) return;
+  
   try {
     const allowance = yield SNT.methods.allowance(web3.eth.defaultAccount, Escrow.options.address).call();
     yield put({type: GET_SNT_ALLOWANCE_SUCCEEDED, allowance});

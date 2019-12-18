@@ -14,6 +14,8 @@ export function *checkSubscription() {
   try {
     const account = web3.eth.defaultAccount;
 
+    if(!account) return;
+
     const response = yield call(axios.get, `${EMAIL_SERVER_ENDPOINT}/user/${account}`);
     yield put({type: CHECK_EMAIL_SUBSCRIPTION_SUCCESS, subscribed: response.data.isUser});
   } catch (error) {

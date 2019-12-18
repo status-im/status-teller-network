@@ -32,6 +32,7 @@ import {toTokenDecimals, fromTokenDecimals} from '../../utils/numbers';
 import ProfileIcon from "../../../images/profileUser.svg";
 import escrowF from '../../features/escrow';
 import network from '../../features/network';
+import metadata from '../../features/metadata';
 import approval from '../../features/approval';
 import arbitrationF from '../../features/arbitration';
 import events from '../../features/events';
@@ -41,6 +42,7 @@ import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 import {withTranslation, Trans} from "react-i18next";
+import ConnectWallet from '../../components/ConnectWallet';
 
 const {toBN} = web3.utils;
 
@@ -76,13 +78,23 @@ class Escrow extends Component {
     if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset);
   }
 
+  componentDidMount() {
+    if (this.props.isEip1102Enabled) {
+      this.loadData();
+    }
+  }
+
   showApproveScreen = () => {
     this.setState({showApproveFundsScreen: true});
   };
 
   componentDidUpdate(prevProps) {
-    if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null)) { // Reload allowance information
-      this.props.getTokenAllowance(this.props.escrow.offer.asset);
+    if ((!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) || (!prevProps.address && this.props.address)) {
+      this.loadData();
+    }
+
+    if ((prevProps.loading && !this.props.loading) || (prevProps.escrow === null && this.props.escrow !== null) || (!prevProps.address && this.props.address)) { // Reload allowance information
+       this.props.getTokenAllowance(this.props.escrow.offer.asset);
     }
     if (this.props.escrow && !this.watching && !this.props.escrowEvents[this.props.escrowId]) {
       if (this.props.escrow.status === escrowF.helpers.tradeStates.funded ||
@@ -135,13 +147,18 @@ class Escrow extends Component {
   render() {
     let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus,
-      approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash} = this.props;
+      approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash, isEip1102Enabled, enableEthereum } = this.props;
+
+      if (!isEip1102Enabled || !address) {
+        return <ConnectWallet enableEthereum={enableEthereum} />;
+      }
 
     const {showApproveFundsScreen} = this.state;
 
     const isETH = escrow && addressCompare(escrow.offer.asset, zeroAddress);
     const isETHorSNT = escrow && (isETH || addressCompare(escrow.offer.asset, tokens.SNT.address));
 
+    console.log(escrow, sntAllowance, tokenAllowance);
     if (!escrow || (!sntAllowance && sntAllowance !== 0) || !arbitration || !arbitration.arbitration || (!isETHorSNT && !tokenAllowance && tokenAllowance !== 0)) {
       return <Loading page={true}/>;
     }
@@ -379,7 +396,9 @@ Escrow.propTypes = {
   isSubscribed: PropTypes.bool,
   checkEmailSubscription: PropTypes.func,
   setRedirectTarget: PropTypes.func,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  isEip1102Enabled: PropTypes.bool,
+  enableEthereum: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -400,6 +419,7 @@ const mapStateToProps = (state, props) => {
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
     tokens: network.selectors.getTokens(state),
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     loading: theEscrow && ((theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending) ||
       approvalLoading || arbitrationLoading || (theEscrow.releaseStatus === States.pending ||
         (theEscrow.mining && (theEscrow.status === escrowF.helpers.tradeStates.funded || theEscrow.status === escrowF.helpers.tradeStates.paid))) ||
@@ -436,6 +456,7 @@ export default connect(
     watchEscrow: escrowF.actions.watchEscrow,
     getLastActivity: escrowF.actions.getLastActivity,
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
-    setRedirectTarget: emailNotifications.actions.setRedirectTarget
+    setRedirectTarget: emailNotifications.actions.setRedirectTarget,
+    enableEthereum: metadata.actions.enableEthereum
   }
 )(withRouter(withTranslation()(Escrow)));
