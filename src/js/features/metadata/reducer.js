@@ -81,6 +81,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         addOfferStatus: States.success,
         offers: {
+          ...state.offers,
           [action.receipt.events.OfferAdded.returnValues.offerId]: {
             ...formatOffer(action.offer),
             owner: _from,
