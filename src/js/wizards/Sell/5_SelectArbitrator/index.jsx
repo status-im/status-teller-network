@@ -45,8 +45,14 @@ class SelectArbitrator extends Component {
     if (this.props.profile && !this.props.seller.username) {
       const contactObject = stringToContact(this.props.profile && this.props.profile.contactData);
       this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactMethod: DOMPurify.sanitize(contactObject.method), contactUsername: DOMPurify.sanitize(contactObject.userId)});
-    } else if(!this.props.seller.username) return this.props.wizard.previous();
-    
+    } else if(!this.props.seller.contactData) {
+      return this.props.wizard.previous();
+    }
+    // Prefill location because we skipped prev. wizard page
+    if (this.props.profile && !this.props.seller.location && this.props.seller.location !== '') {
+      this.props.setLocation(DOMPurify.sanitize(this.props.profile.location));
+    }
+
     this.setState({ready: true});
   }
 
@@ -89,7 +95,8 @@ SelectArbitrator.propTypes = {
   getArbitrators: PropTypes.func,
   getUser: PropTypes.func,
   profile: PropTypes.object,
-  setContactInfo: PropTypes.func
+  setContactInfo: PropTypes.func,
+  setLocation: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -107,6 +114,7 @@ export default connect(
     setArbitrator: newSeller.actions.setArbitrator,
     getArbitrators: arbitration.actions.getArbitrators,
     getUser: metadata.actions.loadUserOnly,
-    setContactInfo: newSeller.actions.setContactInfo
+    setContactInfo: newSeller.actions.setContactInfo,
+    setLocation: newSeller.actions.setLocation
   }
 )(SelectArbitrator);

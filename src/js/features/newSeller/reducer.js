@@ -16,7 +16,7 @@ import {getContactData} from "../../utils/strings";
 const DEFAULT_STATE = {
   asset: '',
   contactData: '',
-  location: '',
+  location: null,
   currency: '',
   username: '',
   arbitrator: '',
