@@ -82,7 +82,7 @@ class MyProfile extends Component {
   render() {
     const {t, profile, address, requests, trades, enableEthereum} = this.props;
 
-    if (!this.props.isEip1102Enabled) {
+    if (!this.props.isEip1102Enabled || !this.props.address) {
       return <ConnectWallet enableEthereum={enableEthereum} />;
     }
 

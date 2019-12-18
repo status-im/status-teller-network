@@ -14,7 +14,6 @@ import newBuy from "../../features/newBuy";
 import network from "../../features/network";
 
 import {addressCompare, zeroAddress} from "../../utils/address";
-import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 
 import './index.scss';
 import Loading from "../../components/Loading";
@@ -37,7 +36,7 @@ class Profile extends Component {
   };
 
   render() {
-    const {t, profile, prices, address} = this.props;
+    const {profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
 
     const filteredOffers = profile.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress) && !x.deleted);

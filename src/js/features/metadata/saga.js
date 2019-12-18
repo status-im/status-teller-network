@@ -54,6 +54,8 @@ SellerLicense.options.address = SellerLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
+  if(!address) return;
+
   const defaultAccount = web3.eth.defaultAccount || zeroAddress;
   try {
     const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});

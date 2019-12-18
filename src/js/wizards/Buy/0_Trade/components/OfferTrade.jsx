@@ -119,27 +119,30 @@ return <Fragment>
         </FormGroup>
         { limitless && <p className="mt-3 limits">
           <Trans 
-            i18nKey="buyer.offerTrade.limits" values={{
-            min: limitDecimals(minToken),
-            max: limitDecimals(maxToken),
-            symbol: asset
-          }}>
-            Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
+            i18nKey="buyer.offerTrade.limits" 
+            values={{
+              min: limitDecimals(minToken),
+              max: limitDecimals(maxToken),
+              symbol: asset
+            }} 
+          >
+            Limits: {{min: limitDecimals(minToken)}} {{symbol: asset}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: asset}}</span>
           </Trans>
-        <UncontrolledTooltip placement="right" target="max-token">
+          <UncontrolledTooltip placement="right" target="max-token">
           {t('buyer.offerTrade.sellerBalance')}
-        </UncontrolledTooltip>
+          </UncontrolledTooltip>
         </p> }
         { !limitless && <Fragment>
             { amountGreaterThanBalance && <FormFeedback className="d-block">{t('buyer.offerTrade.amountWarning')}</FormFeedback> }
             <p className="mt-3 limits">
               <Trans 
-               i18nKey="buyer.offerTrade.limits" values={{
+               i18nKey="buyer.offerTrade.limits"
+               values={{
                 min: limitDecimals(minFiat),
                 max: limitDecimals(maxFiat),
                 symbol: currency.id
               }}>
-              Limits: {limitDecimals(minToken)} {asset} to <span id="max-token">{limitDecimals(maxToken)} {asset}</span>
+              Limits: {{min: limitDecimals(minFiat)}} {{symbol: currency.id}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: currency.id}}</span>
               </Trans>
             </p>  
           </Fragment>

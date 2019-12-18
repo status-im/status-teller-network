@@ -229,6 +229,8 @@ export function *onLoadPrice() {
 }
 
 export function *doCheckLicenseOwner() {
+  if(!web3.eth.defaultAccount) return;
+
   try {
     const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
     const licenseDetails = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
