@@ -40,8 +40,7 @@ class Profile extends Component {
     const {t, profile, prices, address} = this.props;
     if(!profile || !prices) return <Loading page={true} />;
 
-    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
-    const filteredOffers = filterValidGaslessOffers(profile.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress) && !x.deleted);
+    const filteredOffers = profile.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress) && !x.deleted);
 
     return (
       <div className="seller-profile-container">
@@ -61,7 +60,6 @@ class Profile extends Component {
                                                            prices={prices}
                                                            onClick={() => this.offerClick(offer.id)}/>)}
             </div>
-            { notEnoughETH && <p>{t('offers.hiddenOffers')}</p>}
           </Col>
         </Row>}
       </div>

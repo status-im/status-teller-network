@@ -18,6 +18,7 @@ import arbitratorImg from "../../../../../images/arbitrator.svg";
 import disputeImg from "../../../../../images/dispute.svg";
 import questionIcon from "../../../../../images/question-mark.svg";
 import {formatArbitratorName, renderContactDetails} from '../../../../utils/strings';
+import { zeroAddress, addressCompare } from '../../../../utils/address';
 
 import './index.scss';
 
@@ -47,7 +48,7 @@ class OfferTrade extends Component {
 
   render() {
     const {
-      seller, minToken, maxToken, currency, asset, lastActivity, limitless,
+      seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
       limitH, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress
     } = this.props;
@@ -55,8 +56,10 @@ class OfferTrade extends Component {
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
     const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
+    const isETH = addressCompare(assetAddress, zeroAddress);
+    const isETHorSNT =  (isETH || addressCompare(assetAddress, tokens.SNT.address));
 
-    return <Fragment>
+return <Fragment>
   <Row noGutters className="offerTrade">
     <Col xs="12">
       <h3 className="mt-4 font-weight-normal">{t('general.seller')}</h3>
@@ -142,7 +145,7 @@ class OfferTrade extends Component {
           </Fragment>
         }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
-        {notEnoughETH && !canRelay && <Col xs="12" className="text-small text-center text-danger">
+        {notEnoughETH && !canRelay && isETHorSNT && <Col xs="12" className="text-small text-center text-danger">
           {t('buyer.offerTrade.newOrderDelay', {time: moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)})}
         </Col>}
       </Form>
@@ -187,6 +190,7 @@ OfferTrade.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
+  assetAddress: PropTypes.string,
   sellerBalance: PropTypes.string,
   onCurrencyChange: PropTypes.func,
   onAssetChange: PropTypes.func,
@@ -201,7 +205,8 @@ OfferTrade.propTypes = {
   sellerAddress: PropTypes.string,
   sellerContactData: PropTypes.string,
   arbitratorAddress: PropTypes.string,
-  arbitratorContactData: PropTypes.string
+  arbitratorContactData: PropTypes.string,
+  tokens: PropTypes.object
 };
 
 export default withTranslation()(OfferTrade);
