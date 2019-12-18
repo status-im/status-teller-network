@@ -8,6 +8,7 @@ import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import PriceWarning from '../../../components/PriceWarning';
 import Address from '../../../components/UserInformation/Address';
 import {withTranslation} from "react-i18next";
+import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
 
 const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat}) => {
   if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
@@ -36,6 +37,19 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
       <h3 className="font-weight-normal mt-4">{t('escrow.detail.location')}</h3>
       <p className="font-weight-medium mb-1">
         {escrow.seller.location}
+      </p>
+
+      <h3 className="font-weight-normal mt-4">{t('escrow.detail.contract')}</h3>
+      <p className="font-weight-medium mb-0">
+        {EscrowProxy.options.address}
+      </p>
+      <span className="mb-1">
+        <a href={"https://etherscan.io/address/" + EscrowProxy.options.address} target="_blank" rel="noopener noreferrer">{t('escrow.detail.viewEtherscan')} →</a>
+      </span>
+
+      <h3 className="font-weight-normal mt-4">{t('escrow.detail.escrowID')}</h3>
+      <p className="font-weight-medium mb-1">
+        {escrow.escrowId}
       </p>
 
     {isBuyer && <Fragment>
