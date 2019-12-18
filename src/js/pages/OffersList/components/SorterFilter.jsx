@@ -18,7 +18,7 @@ import ContactMethodModal from "./Modals/ContactMethodModal";
 import LocationModal from "./Modals/LocationModal";
 
 import { ReactComponent as ListIcon } from '../../../../images/list.svg';
-import { ReactComponent as FlagIcon } from '../../../../images/flag.svg';
+import { ReactComponent as LocationIcon } from '../../../../images/location.svg';
 import { ReactComponent as MoneyIcon } from '../../../../images/money-hand.svg';
 import { ReactComponent as CurrencyIcon } from '../../../../images/dollar.svg';
 import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg';
@@ -121,7 +121,7 @@ class SorterFilter extends Component {
               <ListIcon className="mr-2"/>{this.props.sortTypes[this.props.sortType]}
             </Button>
             <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.location})} onClick={this.openLocation}>
-              <FlagIcon className="mr-2"/>{this.props.location ? this.props.location : t('filter.location')}
+              <LocationIcon className="mr-2"/>{this.props.location ? this.props.location : t('filter.location')}
             </Button>
             <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.paymentMethodFilter === -1})} onClick={this.openPaymentMethod}>
               <MoneyIcon className="mr-2"/>{this.props.paymentMethodFilter !== -1 ? PAYMENT_METHODS[this.props.paymentMethodFilter] : t('filter.paymentMethod')}
