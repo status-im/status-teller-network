@@ -488,7 +488,10 @@
       "price": "Price",
       "paymentMethods": "Payment Method",
       "location": "Trade Location",
-      "expirationTime": "Expiration time:"
+      "expirationTime": "Expiration time:",
+      "contract": "Contract Address",
+      "viewEtherscan": "View on Etherscan",
+      "escrowID": "EscrowID"
     },
     "funding": {
       "fundingEscrow": "Funding an escrow",
