@@ -14,7 +14,6 @@ import {sortByRating, sortByMargin} from '../../utils/sorters';
 import './index.scss';
 import {withTranslation} from "react-i18next";
 import {addressCompare, zeroAddress} from "../../utils/address";
-import {checkNotEnoughETH, filterValidGaslessOffers} from "../../utils/transaction";
 import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
 import {stringToContact} from "../../utils/strings";
@@ -136,8 +135,7 @@ class OffersList extends Component {
   };
 
   render() {
-    const notEnoughETH = checkNotEnoughETH(this.props.gasPrice, this.props.ethBalance);
-    let filteredOffers = filterValidGaslessOffers(this.props.offers, notEnoughETH).filter(x => !addressCompare(x.arbitrator, zeroAddress));
+    let filteredOffers = this.props.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
@@ -196,8 +194,6 @@ class OffersList extends Component {
                         contactMethodFilter={this.state.contactMethodFilter}
                         setContactMethodFilter={this.setContactMethodFilter}/>
         </div>
-
-        {notEnoughETH && <p>{this.props.t('offers.hiddenOffers')}</p>}
 
         {this.state.calculatingLocation && <Loading value={this.props.t('offers.locationLoading')}/>}
 

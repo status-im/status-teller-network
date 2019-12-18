@@ -161,6 +161,8 @@ class Trade extends Component {
                   disabled={disabled}
                   notEnoughETH={notEnoughETH}
                   canRelay={canRelay}
+                  tokens={this.props.tokens}
+                  assetAddress={this.props.offer.asset}
                   lastActivity={this.props.lastActivity}
       />);
   }
@@ -191,7 +193,8 @@ Trade.propTypes = {
   getLastActivity: PropTypes.func,
   ethBalance: PropTypes.string,
   gasPrice: PropTypes.string,
-  updateBalances: PropTypes.func
+  updateBalances: PropTypes.func,
+  tokens: PropTypes.object
 };
 
 const mapStateToProps = (state) => {
@@ -213,6 +216,7 @@ const mapStateToProps = (state) => {
     lastActivity: escrow.selectors.getLastActivity(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH'),
+    tokens: network.selectors.getTokens(state),
     offer,
     offerId,
     price

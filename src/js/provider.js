@@ -1,11 +1,15 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
 import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
-
+import MetadataStore from '../embarkArtifacts/contracts/MetadataStore';
+import MetadataStoreProxy from '../embarkArtifacts/contracts/MetadataStoreProxy';
+import SNT from '../embarkArtifacts/contracts/SNT';
 import {checkNotEnoughETH} from './utils/transaction';
-import {addressCompare} from './utils/address';
+import {addressCompare, zeroAddress} from './utils/address';
+import {canRelay} from './features/escrow/helpers';
 
 Escrow.options.address = EscrowProxy.options.address;
+MetadataStore.options.address = MetadataStoreProxy.options.address;
 
 const VALID_OPERATIONS = {
   "cancel(uint256)": "40e58ee5",
@@ -19,6 +23,13 @@ class Provider {
   constructor(relayProvider) {
     this.relayProvider = relayProvider;
     this.relayProviderSend = (this.relayProvider['sendAsync'] || this.relayProvider['send']).bind(this.relayProvider);
+  }
+
+  async isEthOrSNT(web3, data){
+    if(!data || data.length < 74) return false;
+    const offerId = web3.utils.hexToNumber(data.substr(10, 64));
+    const offer = await MetadataStore.methods.offers(offerId).call();
+    return addressCompare(offer.asset, SNT.options.address) || addressCompare(offer.asset, zeroAddress);    
   }
 
   startProvider(web3) {
@@ -41,7 +52,18 @@ class Provider {
       (async () => {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
+
         if (checkNotEnoughETH(gasPrice, balance) || operation === VALID_OPERATIONS["rateTransaction(uint256,uint256)"]) {
+
+          if(operation === VALID_OPERATIONS["createEscrow(uint256,uint256,uint256,string,string,string)"]){
+            const isEthOrSNT = await this.isEthOrSNT(web3, payload.params[0].data);
+            const lastActivity = await EscrowRelay.methods.lastActivity(web3.eth.defaultAccount).call();
+            if(!isEthOrSNT || !canRelay(parseInt(lastActivity + '000', 10))) {
+              this.origProviderSend(payload, callback);
+              return;
+            }
+          }
+
           payload.params[0].to = EscrowRelay.options.address;
           payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
           

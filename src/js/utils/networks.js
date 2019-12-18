@@ -644,6 +644,12 @@ export const Tokens = {
       name: "KudosToken",
       address: "0x93bb0afbd0627bbd3a6c72bc318341d3a22e254a",
       decimals: 18
+    },
+    {
+      symbol: 'DAI',
+      name: 'DAI',
+      address: DAI.address && DAI.address.toLowerCase(),
+      decimals: 18
     }
   ]
 };
