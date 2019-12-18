@@ -17,7 +17,7 @@ export const Tokens = {
   'mainnet': [
     {
       symbol: 'ETH',
-      name: 'ETH',
+      name: 'Ethereum',
       address: zeroAddress,
       decimals: 18
     },
@@ -29,7 +29,7 @@ export const Tokens = {
     },
     {
       symbol: 'MKR',
-      name: "MKR",
+      name: "Maker",
       address: "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2",
       decimals: 18
     },
@@ -53,7 +53,7 @@ export const Tokens = {
     },
     {
       symbol: 'REP',
-      name: "Reputation",
+      name: "Augur",
       address: "0x1985365e9f78359a9B6AD760e32412f4a445E862",
       decimals: 18
     },
@@ -65,7 +65,7 @@ export const Tokens = {
     },
     {
       symbol: 'PAY',
-      name: "TenX Pay Token",
+      name: "Pay Chain Token",
       address: "0xB97048628DB6B661D4C2aA833e95Dbe1A905B280",
       decimals: 18
     },
@@ -89,7 +89,7 @@ export const Tokens = {
     },
     {
       symbol: 'BNB',
-      name: "BNB",
+      name: "Binance coin",
       address: "0xB8c77482e45F1F44dE1745F52C74426C631bDD52",
       decimals: 18
     },
@@ -119,16 +119,16 @@ export const Tokens = {
     },
     {
       symbol: 'TRX',
-      name: "Tronix",
+      name: "Tron",
       address: "0xf230b790e05390fc8295f4d3f60332c93bed42e2",
       decimals: 6
     },
-    {
-      symbol: 'ETHOS',
-      name: "Ethos",
-      address: "0x5af2be193a6abca9c8817001f45744777db30756",
-      decimals: 8
-    },
+    // {
+    //   symbol: 'ETHOS',
+    //   name: "Ethos",
+    //   address: "0x5af2be193a6abca9c8817001f45744777db30756",
+    //   decimals: 8
+    // },
     {
       symbol: 'RDN',
       name: "Raiden Token",
@@ -177,12 +177,12 @@ export const Tokens = {
       address: "0x41e5560054824ea6b0732e656e3ad64e20e94e45",
       decimals: 8
     },
-    {
-      symbol: 'ICN',
-      name: "ICONOMI",
-      address: "0x888666CA69E0f178DED6D75b5726Cee99A87D698",
-      decimals: 18
-    },
+    // {
+    //   symbol: 'ICN',
+    //   name: "ICONOMI",
+    //   address: "0x888666CA69E0f178DED6D75b5726Cee99A87D698",
+    //   decimals: 18
+    // },
     {
       symbol: 'WTC',
       name: "Walton Token",
@@ -197,7 +197,7 @@ export const Tokens = {
     },
     {
       symbol: 'ZRX',
-      name: "0x Protocol Token",
+      name: "0x",
       address: "0xe41d2489571d322189246dafa5ebde1f4699f498",
       decimals: 18
     },
@@ -305,7 +305,7 @@ export const Tokens = {
     },
     {
       symbol: 'QRL',
-      name: "QRL",
+      name: "Quantum Resistant Ledger",
       address: "0x697beac28b09e122c4332d163985e8a73121b97f",
       decimals: 8
     },
@@ -317,7 +317,7 @@ export const Tokens = {
     },
     {
       symbol: 'TAAS',
-      name: "Token-as-a-Service",
+      name: "TaaS",
       address: "0xe7775a6e9bcf904eb39da2b68c5efb4f9360e08c",
       decimals: 6
     },
@@ -365,7 +365,7 @@ export const Tokens = {
     },
     {
       symbol: 'R',
-      name: "R token",
+      name: "Revain",
       address: "0x48f775efbe4f5ece6e0df2f7b5932df56823b990",
       decimals: 0
     },
@@ -395,7 +395,7 @@ export const Tokens = {
     },
     {
       symbol: 'XPA',
-      name: "XPlay Token",
+      name: "XPA",
       address: "0x90528aeb3a2b736b780fd1b6c478bb7e1d643170",
       decimals: 18
     },
@@ -407,19 +407,19 @@ export const Tokens = {
     },
     {
       symbol: 'TRST',
-      name: "Trustcoin",
+      name: "WeTrust",
       address: "0xcb94be6f13a1182e4a4b6140cb7bf2025d28e41b",
       decimals: 6
     },
     {
       symbol: 'TKN',
-      name: "Monolith TKN",
+      name: "Tokencard (Monolith)",
       address: "0xaaaf91d9b90df800df4f55c205fd6989c977e73a",
       decimals: 8
     },
     {
       symbol: 'RHOC',
-      name: "RHOC",
+      name: "RChain",
       address: "0x168296bb09e24a88805cb9c33356536b980d3fc5",
       decimals: 8
     },
@@ -447,12 +447,12 @@ export const Tokens = {
       address: "0x0abdace70d3790235af448c88547603b945604ea",
       decimals: 18
     },
-    {
-      symbol: '٨',
-      name: "Dentacoin",
-      address: "0x08d32b0da63e2C3bcF8019c9c5d849d7a9d791e6",
-      decimals: 0
-    },
+    // {
+    //   symbol: '٨',
+    //   name: "Dentacoin",
+    //   address: "0x08d32b0da63e2C3bcF8019c9c5d849d7a9d791e6",
+    //   decimals: 0
+    // },
     {
       symbol: 'EDO',
       name: "Eidoo Token",
@@ -509,16 +509,16 @@ export const Tokens = {
     },
     {
       symbol: 'VIB',
-      name: "Vibe",
+      name: "Viberate",
       address: "0x2c974b2d0ba1716e644c1fc59982a89ddd2ff724",
       decimals: 18
     },
-    {
-      symbol: 'PRG',
-      name: "PRG",
-      address: "0x7728dFEF5aBd468669EB7f9b48A7f70a501eD29D",
-      decimals: 6
-    },
+    // {
+    //   symbol: 'PRG',
+    //   name: "PRG",
+    //   address: "0x7728dFEF5aBd468669EB7f9b48A7f70a501eD29D",
+    //   decimals: 6
+    // },
     {
       symbol: 'DPY',
       name: "Delphy Token",
@@ -527,7 +527,7 @@ export const Tokens = {
     },
     {
       symbol: 'CDT',
-      name: "CoinDash Token",
+      name: "Blox (CoinDash Token)",
       address: "0x2fe6ab85ebbf7776fee46d191ee4cea322cecf51",
       decimals: 18
     },
@@ -549,12 +549,12 @@ export const Tokens = {
       address: "0x42d6622deCe394b54999Fbd73D108123806f6a18",
       decimals: 18
     },
-    {
-      symbol: 'BRLN',
-      name: "Berlin Coin",
-      address: "0x80046305aaab08f6033b56a360c184391165dc2d",
-      decimals: 18
-    },
+    // {
+    //   symbol: 'BRLN',
+    //   name: "Berlin Coin",
+    //   address: "0x80046305aaab08f6033b56a360c184391165dc2d",
+    //   decimals: 18
+    // },
     {
       symbol: 'USDC',
       name: "USD//C",
@@ -567,12 +567,12 @@ export const Tokens = {
       address: "0x58b6a8a3302369daec383334672404ee733ab239",
       decimals: 18
     },
-    {
-      symbol: 'ST',
-      name: "Simple Token",
-      address: "0x2c4e8f2d746113d0696ce89b35f0d8bf88e0aeca",
-      decimals: 18
-    }
+    // {
+    //   symbol: 'ST',
+    //   name: "Simple Token",
+    //   address: "0x2c4e8f2d746113d0696ce89b35f0d8bf88e0aeca",
+    //   decimals: 18
+    // }
   ],
   'private': [
     {
