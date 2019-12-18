@@ -57,6 +57,9 @@ export function *loadUser({address}) {
   if(!address) return;
 
   const defaultAccount = web3.eth.defaultAccount || zeroAddress;
+  
+  if(!address) return;
+
   try {
     const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
     const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
