@@ -507,7 +507,8 @@
       "title": "Waiting for the confirmations from the miners"
     },
     "openChat": {
-      "chatWith": "Chat with {{person}}"
+      "chatWith": "Chat with {{person}}",
+      "chat": "Chat"
     },
     "openDispute": {
       "open": "Open dispute",
