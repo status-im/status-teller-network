@@ -55,7 +55,9 @@ class Asset extends Component {
   };
 
   render() {
-    return (<SellerAssets selectAsset={this.selectAsset} selectedAsset={this.state.selectedAsset}
+    return (<SellerAssets selectAsset={this.selectAsset} 
+                          selectedAsset={this.state.selectedAsset}
+                          address={this.props.address}
                           availableAssets={this.props.tokens}
                           isEip1102Enabled={this.props.isEip1102Enabled}
                           enableEip1102={() => this.props.enableEthereum()}/>);
