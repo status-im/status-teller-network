@@ -6,6 +6,7 @@ pragma solidity >=0.5.0 <0.6.0;
 import "../common/Pausable.sol";
 import "../common/MessageSigned.sol";
 import "../token/ERC20Token.sol";
+import "../token/SafeTransfer.sol";
 import "./ArbitrationLicense.sol";
 import "./License.sol";
 import "./MetadataStore.sol";
@@ -396,7 +397,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
             (bool success, ) = _trx.buyer.call.value(_trx.tokenAmount)("");
             require(success, "Transfer failed.");
         } else {
-            require(ERC20Token(token).transfer(_trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
+            require(_safeTransfer(ERC20Token(token), _trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
         }
 
         _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
@@ -481,7 +482,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
                 require(success, "Transfer failed.");
             } else {
                 ERC20Token erc20token = ERC20Token(token);
-                require(erc20token.transfer(trx.seller, amount), "Transfer failed");
+                require(_safeTransfer(erc20token, trx.seller, amount), "Transfer failed");
             }
         }
 
