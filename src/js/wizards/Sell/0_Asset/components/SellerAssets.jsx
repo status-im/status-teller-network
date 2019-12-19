@@ -18,19 +18,19 @@ class SellerAssets extends Component {
   render() {
     return (
       <Fragment>
-        <h2>What assets are you going to sell</h2>
+        <h2>{this.props.t('sellerAssets.title')}</h2>
 
-        {!this.props.isEip1102Enabled && <Fragment>
+        {(!this.props.isEip1102Enabled || !this.props.address) && <Fragment>
           <p>{this.props.t('ethereumEnable.createOffer')}</p>
           <img src={noCryptoImg} alt="No crypto list" className="d-block mx-auto"/>
-          <Button className="d-block mx-auto" onClick={this.props.enableEip1102}>Connect wallet</Button>
+          <Button className="d-block mx-auto" onClick={this.props.enableEip1102}>{this.props.t('connectWallet.connect')}</Button>
         </Fragment>}
 
-        {this.props.isEip1102Enabled &&
+        {(this.props.isEip1102Enabled && this.props.address) &&
         <Fragment>
           <ButtonGroup vertical className="w-100">
             {!this.props.availableAssets.length &&
-            <p className="text-warning">You have no assets in your wallet</p>}
+            <p className="text-warning">{this.props.t('sellerAssets.noAssets')}</p>}
             {this.props.availableAssets.map((asset) => (
               <CheckButton active={addressCompare(this.props.selectedAsset, asset.address)}
                            key={`asset-${asset.name}`} size="l"
@@ -43,8 +43,7 @@ class SellerAssets extends Component {
             ))}
           </ButtonGroup>
 
-          <p className="text-muted">Add assets to your wallet to get the ability to sell it. For each asset, you need to
-            create a separate offer.</p>
+          <p className="text-muted">{this.props.t('sellerAssets.helpText')}</p>
         </Fragment>}
       </Fragment>
     );
@@ -53,6 +52,7 @@ class SellerAssets extends Component {
 
 SellerAssets.propTypes = {
   t: PropTypes.func,
+  address: PropTypes.string,
   selectAsset: PropTypes.func,
   selectedAsset: PropTypes.string,
   availableAssets: PropTypes.array,
