@@ -6714,24 +6714,24 @@ elliptic@6.5.2, elliptic@^6.0.0, elliptic@^6.4.0, elliptic@^6.4.1, elliptic@^6.5
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-embark-accounts-manager@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-accounts-manager/-/embark-accounts-manager-5.0.0-alpha.5.tgz#183986138bd820705c462e3e6ab31ad9f88b9ca9"
-  integrity sha512-QQ6JVa1A4TEFMFO8MZaG7ofop6RP/e7pCFnE1UtdhZICXcSVvZbQ+xE3EHX7GqxMUudSWQ9B4OQnhKzCHwZNAQ==
+embark-accounts-manager@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-accounts-manager/-/embark-accounts-manager-5.0.0-alpha.8.tgz#e95b5ac4a1306adb509d9f41bec54d1f00e6ead1"
+  integrity sha512-HIZF4vCLVNue6BnK9HGTe3kx/Wbc7jr6KON69H9jufEFiPqThKWpjhQsfNzhCHwr8upVJs8pJPW/kS33WrQLcw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     web3 "1.2.1"
 
-embark-api@^5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark-api/-/embark-api-5.0.0-alpha.6.tgz#43563a9208525a4eaa725e8fa0472e4d88e5a22f"
-  integrity sha512-0DRXPHghyp9fqcZVmD2fUCvwHJzWMiqXGEEKAHOHdzBSBuy0VDEzbaU4Emm/qbdK0jQbhqBd6ctD8MIZNq3mEA==
+embark-api@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-api/-/embark-api-5.0.0-alpha.8.tgz#b7c7f80f2eed17820878b9b96bd319a23fefa9bf"
+  integrity sha512-aA7vlBF4cu7glvQa76Ty098V62X0yD+OUuHHFyLdV8cr83fbWj5xcTgjiIO4kjbs+E1TxX8Kn3ZsycX2I5grhA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/body-parser" "1.17.1"
@@ -6743,31 +6743,31 @@ embark-api@^5.0.0-alpha.6:
     colors "1.3.2"
     core-js "3.4.3"
     cors "2.8.5"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-ui "^5.0.0-alpha.6"
-    embark-utils "^5.0.0-alpha.5"
+    embark-ui "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     express "4.17.1"
     express-ws "4.0.0"
     find-up "4.1.0"
     helmet "3.13.0"
 
-embark-authenticator@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-authenticator/-/embark-authenticator-5.0.0-alpha.5.tgz#f7b83f7855e33bd2afbaf9fe4d6d390288915d45"
-  integrity sha512-2lCzlgV8qoQDOTpXzjIyWQ5DOTE9XyzVy08B2twKibSqHhp+MAfbQv6mXNJfu4WyObpDIotnw4dchP/n6EJDOg==
+embark-authenticator@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-authenticator/-/embark-authenticator-5.0.0-alpha.8.tgz#3e65d0e93a4fd3de5a35540dbc4883e49154b10b"
+  integrity sha512-szcw4MVzV20Gbb3HW9m6jV7tpTNVucOEAWBAeDMDJPt+PurBH6DtrSLmySqcWVdfHaIaKaiE1ugmuFzPJ08xUA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     keccakjs "0.2.3"
     uuid "3.3.2"
 
-embark-basic-pipeline@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-basic-pipeline/-/embark-basic-pipeline-5.0.0-alpha.5.tgz#d60d1532a369a75a8a12d0f2cabd9cb0a875c2fa"
-  integrity sha512-VMR0h85cBd71NmXqap7lEvHCbaqz7Qg59DAwGjol98p9OeSj2wir9B5PkdCBy033hUXohGlaOzCnS2c2Oq1ckQ==
+embark-basic-pipeline@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-basic-pipeline/-/embark-basic-pipeline-5.0.0-alpha.8.tgz#5a89b84a612949adda3739269fd282fd1c8488ed"
+  integrity sha512-KIn9LUxnELHElW4IxB0KXGKR/KSQDnXPj5DBXjztRFuR05x4K+gk16M3ddlp8DO+0KYvzQwtWF6tS4aLVRo3Xw==
   dependencies:
     "@babel/core" "7.7.4"
     "@babel/plugin-proposal-class-properties" "7.7.4"
@@ -6790,9 +6790,9 @@ embark-basic-pipeline@^5.0.0-alpha.5:
     colors "1.3.2"
     core-js "3.4.3"
     css-loader "3.2.0"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     file-loader "5.0.2"
     find-up "4.1.0"
     fs-extra "8.1.0"
@@ -6814,98 +6814,98 @@ embark-blockchain-client@^5.0.0-alpha.5:
     core-js "3.4.3"
     web3 "1.2.1"
 
-embark-blockchain@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-blockchain/-/embark-blockchain-5.0.0-alpha.5.tgz#aaadaa448c9141aadeee6ccaad78936654d3e2de"
-  integrity sha512-TCT7N5hMeRXIwIPgrOVTy2s60y7VOTt+fGuSbaXw/ZboG/i+MBCymkwSkvxrqwUOHbnF3SCmiLPKr2jlymXqvg==
+embark-blockchain@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-blockchain/-/embark-blockchain-5.0.0-alpha.8.tgz#f48fc6e641e7b43a83efef405d92a010c31d40b1"
+  integrity sha512-lVQIPXUM5MBy9rY5PiVKU3TvzmsUOkSofuTeVhBydBGBa2VrScQ/mKeytoS9QDvSonBsBovIyI0XvXRKBWKmPQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-code-runner@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-code-runner/-/embark-code-runner-5.0.0-alpha.5.tgz#9f30fbc0c9085674345d59f91aeeb0dcf67779c0"
-  integrity sha512-D88c5f/1BUNQEnW73JZF3CcBgqNTGurPeRzLnzpw4tHjmG2br3JwegpIh6C3wtCLEcddhAi3cfNKwmwWH5ncOw==
+embark-code-runner@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-code-runner/-/embark-code-runner-5.0.0-alpha.8.tgz#62fabac4bb64a2563638c4045e2c7a0ce0aeb1ff"
+  integrity sha512-Bn9EzmQNr2Tjr4ZCsLAYGgkLnyFeF6yPTdw2lvo0Tufzqtholw/0EeT0oJ2J1m7xMrcbd9vg+4rgXxtoWdhJYQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     fs-extra "8.1.0"
     parse-json "4.0.0"
     vm2 "3.6.4"
     web3 "1.2.1"
 
-embark-communication@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-communication/-/embark-communication-5.0.0-alpha.5.tgz#5d2bf15378f2de27691e4981461386218fec8869"
-  integrity sha512-F+xVSxWrnpuyvDxjXRhamkQn1d6sBcWPCKbPz3SB11p6bkhjRxQYIpH24qOYqGGEI0P6Zvgwl0AhDVo+cIxbIw==
+embark-communication@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-communication/-/embark-communication-5.0.0-alpha.8.tgz#42e5eafeaf5c512259c735059b429028253c4abf"
+  integrity sha512-DbOx0jurIemKleOFVvaPkMw0J8VuOoNol2OZ03jqNRW93qyZyd1XKwu35fnG6o7WygRlaL/cQQUHyVPc+59svw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-compiler@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-5.0.0-alpha.5.tgz#1bccc4359dfbf2fd47f683e44144ce563f5164ab"
-  integrity sha512-PbmvTybbl+4YJVih/BgcB2EwAQPw21vwdnTswb+fqtVU0FRZ2CCyg69mTHxsw59sxjHL3B0iAW6Pzf16nYGekA==
+embark-compiler@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-5.0.0-alpha.8.tgz#4d36133d81368dabfbe60cc009781fd555a8d055"
+  integrity sha512-sq8ZWN5UKYwbJQqQnvYs6LcFKH1IKFpkPnYU+kthjmYr2QKGX/4iJABQtJXwSE3QERoTJOfkS66lLGx85pkW5A==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-console@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-console/-/embark-console-5.0.0-alpha.5.tgz#733da191c3a71ea6de31b193be298991cd3e4273"
-  integrity sha512-GCWb/gT9UQKQ+xT5DI1Igti+4HnBE+QNSJ8J7YggBktBW/QcoB4dBQWQy2TW3E+HccYwa69lvTlpYj1vesOGMg==
+embark-console@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-console/-/embark-console-5.0.0-alpha.8.tgz#757cfdaab1e4eb28080e3444e92ec1f1ea566ade"
+  integrity sha512-jdWlAs4TucN5B7eQxBeDqGWOFDD7gtqArXxX7jd9GnkWo45jSmgxjqR+efPIwBE1+jFHHD+mPiwBZncoHx62vQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/json-stringify-safe" "5.0.0"
     async "2.6.1"
     chalk "2.4.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     json-stringify-safe "5.0.1"
 
-embark-contracts-manager@^5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark-contracts-manager/-/embark-contracts-manager-5.0.0-alpha.6.tgz#8aa9d87e953c0e2f86bae78e4190bfe814092d4d"
-  integrity sha512-4tncJaOTTsyuasiZ0ssIf+YDy7eXvJXRGT66X7HBiiZkEf5IT4AgAO+SvXDvKVlOhpL3AQewwpuJuBPwONxvUQ==
+embark-contracts-manager@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-contracts-manager/-/embark-contracts-manager-5.0.0-alpha.8.tgz#4a9373a865ef4c3878aed6f04ac02fe12211655f"
+  integrity sha512-tnZTXX70UWa31Jr9rfvuWDF7F6cC0iDF78jjpiz/Vy0cGlyxxooUN1yvgN3WGv0ehiOIr1YoKXwpBM+1xN0Yaw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     web3 "1.2.1"
 
-embark-core@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-core/-/embark-core-5.0.0-alpha.5.tgz#1c1219366a4e8bba5413ab4d2644efbe22659acd"
-  integrity sha512-Wz0dF8Z4r5STXFhnsD6H2wHjKn8bO/bVaxwtsGCGXNZI780X+LtSXzThyqtaksRH3m4vXI2s+VOfVm0DhmtpxA==
+embark-core@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-core/-/embark-core-5.0.0-alpha.8.tgz#1200caaee3c9e7d0746b453d2554a2055aac8027"
+  integrity sha512-xUpaMvnlkn6NGmIEHHRanWWkc4lFRdn1jPdygpaEjjJhI2rG7h/rtQ8InNrAKl0yHdhl01tMtdGcrbufCH5SBQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/deep-equal" "1.0.1"
@@ -6916,7 +6916,7 @@ embark-core@^5.0.0-alpha.5:
     deep-equal "1.0.1"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     find-up "4.1.0"
     flatted "0.2.3"
     fs-extra "8.1.0"
@@ -6928,10 +6928,10 @@ embark-core@^5.0.0-alpha.5:
     uuid "3.3.2"
     window-size "1.1.1"
 
-embark-coverage@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-coverage/-/embark-coverage-5.0.0-alpha.5.tgz#b1704828c6f624aae21994d25bbc29de2725fd01"
-  integrity sha512-rsSUHdL2WQlst0xr1iz3vZ222iGHjoxTui6R/gE9t1dZfvmOiXQo6y/V6UGL9rrLTp0jfHo7gbUETs6ywQRXaA==
+embark-coverage@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-coverage/-/embark-coverage-5.0.0-alpha.8.tgz#16f6659dd73d75c169166de4e0c181381c508502"
+  integrity sha512-vhxP4ZBOs/Y8fjSmQWbEfboCRf9qIuNhVIp+0blRNWnGHAGn2VbYVXqPuvziysMsd+0G/HTMk1JLkrfMpeAS0w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/fs-extra" "7.0.0"
@@ -6941,8 +6941,8 @@ embark-coverage@^5.0.0-alpha.5:
     "@types/semver" "5.5.0"
     "@types/web3" "1.0.12"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     globule "1.2.1"
     prettier-plugin-solidity "1.0.0-alpha.25"
@@ -6962,125 +6962,125 @@ embark-debugger@^5.0.0-alpha.5:
     embark-i18n "^5.0.0-alpha.5"
     remix-debug-debugtest "0.2.16"
 
-embark-deploy-tracker@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-deploy-tracker/-/embark-deploy-tracker-5.0.0-alpha.5.tgz#73127cf5ab60531978e16fd1b3b6633085b31288"
-  integrity sha512-f0dWLv7M+fTPWy4lpzb7/EIfNlK3JAhyNcAy8xcA0Z4z3eqBgTlT1mP56VcyIk/WxkZiY5u4hn1Z7dHyk6+CEA==
+embark-deploy-tracker@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-deploy-tracker/-/embark-deploy-tracker-5.0.0-alpha.8.tgz#c727375b8ad683231de0d91680002503add00635"
+  integrity sha512-gfYdp9Ba1XjimcREBhTpS0KCe1SzV3cnse3lVstpSy8R1BmW7xX7MKMrxbPjqnS9xs1/4PX4wTXrofXIjdBJsQ==
   dependencies:
     colors "1.3.2"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     web3 "1.2.1"
 
-embark-deployment@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-deployment/-/embark-deployment-5.0.0-alpha.5.tgz#de14822a21dcd8b66db969142ce301ebfd4483d3"
-  integrity sha512-DIXtHZLAsCiAuOQ1QBd5RhccV6puiAHJuNyd68naF+q0JboO4vCvELKtKi9uf9BlkdriXD9bDM8CHpTAmX7CZg==
+embark-deployment@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-deployment/-/embark-deployment-5.0.0-alpha.8.tgz#86d59bc5fa44115f8e0315c66e06d8f98598ca6c"
+  integrity sha512-KLxyxRvhF+Nz+w9X1DoC879PmTYyDN39Wq6UAfCmKYRFjN2jumavWNTIVq6ZKP60ufMTp9xglF92qM2sy0y4gA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-embarkjs@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-embarkjs/-/embark-embarkjs-5.0.0-alpha.5.tgz#21222be1bdc0f53f0dc9749e15be83db4267c82d"
-  integrity sha512-kPRu3c9++jWJzIqhqvizo+sec39zXLsmC4rCaTXvutS1+pX8ZU2faU3vnUEjh4VxU98JREmR+oegan3tCMtDog==
+embark-embarkjs@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-embarkjs/-/embark-embarkjs-5.0.0-alpha.8.tgz#df182992bf635db10440f8ca373d5c91a7a728ed"
+  integrity sha512-dBbh51wYvFWdYf42gvCa/WK1gNgjxVE6Ar+AnqU6Oha24/0QED12l0YadYx6AkDv3Q+xdncPW8b8+7g3BexJgQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     ejs "2.6.1"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
 
-embark-engine@^5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark-engine/-/embark-engine-5.0.0-alpha.6.tgz#85382bdbaa2a27867bab9ecf8af686a08ab783c0"
-  integrity sha512-tKkKDVllDyGjGmYnpzt8RjinwssODIJmahrxJTF0Gom37B45wvqEBuy9G7EbgC/duoXcwc79bMswn3DIlsvKXQ==
+embark-engine@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-engine/-/embark-engine-5.0.0-alpha.8.tgz#3436a085ba88061a11cb4bfafea7021e4da6ffac"
+  integrity sha512-JtaNiLvN6ZNuxnJaIFRK1YyTbdK1MMV4ulWgkTPdBw4Nf9eqMEle2SSXPin95yuJ1FKBZHvArRk5VOVysoDvHQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-accounts-manager "^5.0.0-alpha.5"
-    embark-api "^5.0.0-alpha.6"
-    embark-authenticator "^5.0.0-alpha.5"
-    embark-basic-pipeline "^5.0.0-alpha.5"
-    embark-blockchain "^5.0.0-alpha.5"
+    embark-accounts-manager "^5.0.0-alpha.8"
+    embark-api "^5.0.0-alpha.8"
+    embark-authenticator "^5.0.0-alpha.8"
+    embark-basic-pipeline "^5.0.0-alpha.8"
+    embark-blockchain "^5.0.0-alpha.8"
     embark-blockchain-client "^5.0.0-alpha.5"
-    embark-code-runner "^5.0.0-alpha.5"
-    embark-communication "^5.0.0-alpha.5"
-    embark-compiler "^5.0.0-alpha.5"
-    embark-console "^5.0.0-alpha.5"
-    embark-contracts-manager "^5.0.0-alpha.6"
-    embark-core "^5.0.0-alpha.5"
-    embark-coverage "^5.0.0-alpha.5"
+    embark-code-runner "^5.0.0-alpha.8"
+    embark-communication "^5.0.0-alpha.8"
+    embark-compiler "^5.0.0-alpha.8"
+    embark-console "^5.0.0-alpha.8"
+    embark-contracts-manager "^5.0.0-alpha.8"
+    embark-core "^5.0.0-alpha.8"
+    embark-coverage "^5.0.0-alpha.8"
     embark-debugger "^5.0.0-alpha.5"
-    embark-deployment "^5.0.0-alpha.5"
-    embark-embarkjs "^5.0.0-alpha.5"
-    embark-ens "^5.0.0-alpha.6"
-    embark-ethereum-blockchain-client "^5.0.0-alpha.5"
+    embark-deployment "^5.0.0-alpha.8"
+    embark-embarkjs "^5.0.0-alpha.8"
+    embark-ens "^5.0.0-alpha.8"
+    embark-ethereum-blockchain-client "^5.0.0-alpha.8"
     embark-ganache "^5.0.0-alpha.5"
-    embark-geth "^5.0.0-alpha.5"
-    embark-ipfs "^5.0.0-alpha.5"
-    embark-library-manager "^5.0.0-alpha.5"
+    embark-geth "^5.0.0-alpha.8"
+    embark-ipfs "^5.0.0-alpha.8"
+    embark-library-manager "^5.0.0-alpha.8"
     embark-logger "^5.0.0-alpha.5"
-    embark-mocha-tests "^5.0.0-alpha.5"
+    embark-mocha-tests "^5.0.0-alpha.8"
     embark-namesystem "^5.0.0-alpha.5"
-    embark-parity "^5.0.0-alpha.5"
-    embark-pipeline "^5.0.0-alpha.5"
-    embark-plugin-cmd "^5.0.0-alpha.5"
-    embark-process-logs-api-manager "^5.0.0-alpha.5"
+    embark-parity "^5.0.0-alpha.8"
+    embark-pipeline "^5.0.0-alpha.8"
+    embark-plugin-cmd "^5.0.0-alpha.8"
+    embark-process-logs-api-manager "^5.0.0-alpha.8"
     embark-profiler "^5.0.0-alpha.5"
-    embark-proxy "^5.0.0-alpha.5"
-    embark-rpc-manager "^5.0.0-alpha.5"
-    embark-scaffolding "^5.0.0-alpha.5"
-    embark-solidity "^5.0.0-alpha.5"
-    embark-solidity-tests "^5.0.0-alpha.5"
+    embark-proxy "^5.0.0-alpha.8"
+    embark-rpc-manager "^5.0.0-alpha.8"
+    embark-scaffolding "^5.0.0-alpha.8"
+    embark-solidity "^5.0.0-alpha.8"
+    embark-solidity-tests "^5.0.0-alpha.8"
     embark-specialconfigs "^5.0.0-alpha.5"
-    embark-storage "^5.0.0-alpha.5"
-    embark-swarm "^5.0.0-alpha.5"
-    embark-test-runner "^5.0.0-alpha.5"
-    embark-transaction-logger "^5.0.0-alpha.5"
+    embark-storage "^5.0.0-alpha.8"
+    embark-swarm "^5.0.0-alpha.8"
+    embark-test-runner "^5.0.0-alpha.8"
+    embark-transaction-logger "^5.0.0-alpha.8"
     embark-transaction-tracker "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embark-vyper "^5.0.0-alpha.5"
-    embark-watcher "^5.0.0-alpha.5"
-    embark-web3 "^5.0.0-alpha.5"
-    embark-webserver "^5.0.0-alpha.5"
-    embark-whisper-geth "^5.0.0-alpha.5"
-    embark-whisper-parity "^5.0.0-alpha.5"
+    embark-watcher "^5.0.0-alpha.8"
+    embark-web3 "^5.0.0-alpha.8"
+    embark-webserver "^5.0.0-alpha.8"
+    embark-whisper-geth "^5.0.0-alpha.8"
+    embark-whisper-parity "^5.0.0-alpha.8"
 
-embark-ens@^5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark-ens/-/embark-ens-5.0.0-alpha.6.tgz#7c4d512a61317edc7f80ed44168943191c6b9361"
-  integrity sha512-ffMOJobfsNq7AEUfZopDHGF7lgAepGwgsta7UPAx6XK2y5hZ1FnX0jsjw/WLTAxpcOELiWeLs6iwMQI9a5HF+Q==
+embark-ens@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-ens/-/embark-ens-5.0.0-alpha.8.tgz#56f5f4015eb4309908ea28915487fcddad84d64c"
+  integrity sha512-ZyU5AhCuskmvH0sxRlb7mZWTaqhhFW1UYgQIQExYgBPBHuF3MLtDraQiL1oUhVXM2CTjtGGCy7RYM+62Tzy1QQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     embarkjs-ens "^5.0.0-alpha.6"
     eth-ens-namehash "2.0.8"
     lodash.clonedeep "4.5.0"
     web3 "1.2.1"
 
-embark-ethereum-blockchain-client@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-ethereum-blockchain-client/-/embark-ethereum-blockchain-client-5.0.0-alpha.5.tgz#79df107b1746c0b8f7ad1d0f2382521cad2e7e8a"
-  integrity sha512-6JXxlwgnIa2dX9FujgcPmbRjBicqAulhvqJlgzm4ND7+NBpb0DSg972ZVHnL7CRKHNsuzHqFDPhaJGLkCfBY4w==
+embark-ethereum-blockchain-client@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-ethereum-blockchain-client/-/embark-ethereum-blockchain-client-5.0.0-alpha.8.tgz#f9a848828d814e9a819daf9f1fe6c90393cf2046"
+  integrity sha512-l+lcTTJPQ3l7NRrAU4XZThvkSH0IxtxL32MSs4ntH7RwvJCG4DpX+v5XDA52tO1mXfVIQpdwKCVpF51HwBmw+w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     ethereumjs-util "6.0.0"
     web3 "1.2.1"
@@ -7095,18 +7095,18 @@ embark-ganache@^5.0.0-alpha.5:
     core-js "3.4.3"
     ganache-cli "6.4.3"
 
-embark-geth@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-geth/-/embark-geth-5.0.0-alpha.5.tgz#e45deb5404b42592cd837847832f600f3e08ce91"
-  integrity sha512-Chjt5rSRXGE0It8SWmw8sbkPh6diuppLM8dM9MeI9AAD+xkcmnNr0Z+ESBT+/Nkfh6LEEwAAYT1MriS2yERYXg==
+embark-geth@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-geth/-/embark-geth-5.0.0-alpha.8.tgz#835afb0cea6dad1d1e8e800a70a58aac6e74185b"
+  integrity sha512-lYxnW1Ef6UizDdjnLWA/CWN2w+NLJYnKp8vPOuHJ7tRWKSI/eestU+5zvCt6CjI9q1nl4MD8dV/mUQWfpb+9TQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     netcat "1.3.5"
     semver "5.6.0"
@@ -7135,34 +7135,34 @@ embark-i18n@^5.0.0-alpha.5:
     i18n "0.8.3"
     os-locale "4.0.0"
 
-embark-ipfs@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-ipfs/-/embark-ipfs-5.0.0-alpha.5.tgz#130248d91547e5bb26a9d01f1524af892108a745"
-  integrity sha512-dRg16qv4twCFif2/K5WsBSKtoLVKfUCMgSmoJSDfxfo8NS70xRKtrsDHc8DsNwwaTUHvj7dwvdI6EtDLw8+fGw==
+embark-ipfs@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-ipfs/-/embark-ipfs-5.0.0-alpha.8.tgz#4d33335fc1e878a3a4c18c5c850041c43b1dbc9a"
+  integrity sha512-ZqWQVJ4K3yzd+8sU6CENnIgyJgfMX2i8hzDD1y73EGVFUoZZy3BOUABXAoqQeVq9YN18t/fLK3vgZjS0+4kKnw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-storage "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-storage "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     embarkjs-ipfs "^5.0.0-alpha.5"
     ipfs-http-client "40.0.0"
     shelljs "0.8.3"
 
-embark-library-manager@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-library-manager/-/embark-library-manager-5.0.0-alpha.5.tgz#17e320bd7b6e7058bcf66733c34fbae7193ad260"
-  integrity sha512-/QGJKD/iegay/jWXCf89IcmoguQ+0AscixQLUMwTSVAVckjToRvYpAyQ4vx9x1hM8R9VASgclcl/rPc53DiPbQ==
+embark-library-manager@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-library-manager/-/embark-library-manager-5.0.0-alpha.8.tgz#f644fd68728e6d54ce760f670e811c72efb2d8ab"
+  integrity sha512-7zDGINcemzrp3o832N/g70YD/7t2M7EnKPebFeVKuj7s1IJ+LwN5Vj3mCsitVFHCHSV9zwUZc40fJluuxij+mg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     colors "1.3.2"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     rimraf "3.0.0"
 
@@ -7176,17 +7176,17 @@ embark-logger@^5.0.0-alpha.5:
     core-js "3.4.3"
     date-and-time "0.6.2"
 
-embark-mocha-tests@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-mocha-tests/-/embark-mocha-tests-5.0.0-alpha.5.tgz#5612e3552651a6994539463e0cf8f7254a9566d4"
-  integrity sha512-qSZIFLNf7fy7dUMpMRwk4OXhmbta6y0IXL6jlIax0Z/DV68I+PTLIGnHVY6JIoNjjQnRXnZ2ew0nku2Keu7pSw==
+embark-mocha-tests@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-mocha-tests/-/embark-mocha-tests-5.0.0-alpha.8.tgz#32c2a0566943c0c53eda75605fb185797a1dea71"
+  integrity sha512-xqaVGVnSpjSIeRp0/7E11x6MANHlt4PR+Y535IXmmjhiPJP5DLWf2hwCcOqOktCz55ltRUjOr9ixw405th/24w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
     async "3.1.0"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     mocha "6.2.2"
     web3 "1.2.1"
@@ -7200,56 +7200,56 @@ embark-namesystem@^5.0.0-alpha.5:
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
 
-embark-parity@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-parity/-/embark-parity-5.0.0-alpha.5.tgz#892404a7fdc90e663d377bffc546f8572276dded"
-  integrity sha512-zJdXLdmc9+p1V7hlQoEDI4/OofvnMJotwW1E4VB84G4EgYHA3aYAmcnwjt6v25H+pth8kHpazbHB5oL7eCYzaA==
+embark-parity@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-parity/-/embark-parity-5.0.0-alpha.8.tgz#42fbf324df9a11e36269cac719792ffb12c5535d"
+  integrity sha512-ZSDwZmuP2HOt1yudLXof4hgWKK3aG/tBP71E3rtFHcUXcDGPM7Y+tPjBiTTRlDAqLc4NrCLrWjZpRKceI2OBVA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     netcat "1.3.5"
     semver "5.6.0"
     ws "7.1.2"
 
-embark-pipeline@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-pipeline/-/embark-pipeline-5.0.0-alpha.5.tgz#4c4760037318fedbdc2a02b95fed9b064c02146d"
-  integrity sha512-vbljwm6iwB9c5A+Sl/Bzt+CJDPhB0uDCr/+Dgu6n5tqMVDCjbKgnN8fJkgYtuBLPswA1mwsLHD+TM6wGaUqRxw==
+embark-pipeline@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-pipeline/-/embark-pipeline-5.0.0-alpha.8.tgz#a67b52b3be36309ee1d31a6a1d98bff342299a6f"
+  integrity sha512-scjc0m8lq2ImO8VPjloyZ8azDorUgQ4izyoRrdzQR8kAusTGJBlQ+z0JwxQWtbq4Dt6bEZoD4CvfVRjDy1Uo5Q==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     find-up "2.1.0"
     fs-extra "8.1.0"
 
-embark-plugin-cmd@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-plugin-cmd/-/embark-plugin-cmd-5.0.0-alpha.5.tgz#e5655aa16d9cfe092e34d8c5f9bb4020502bf238"
-  integrity sha512-1HbwhOtx1F0qyROSQO/A13Y8/AQEX0RurkQGZyY4k6bv55mtvx2sE7GehCgiNPuA8lRtd5mOGnv73GDpdXzsoQ==
+embark-plugin-cmd@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-plugin-cmd/-/embark-plugin-cmd-5.0.0-alpha.8.tgz#c6100f8278a2df5cea6eda7f6d47766b51710b12"
+  integrity sha512-iv1S2bYJEX40wuj4kMyYfFVdjebeKFNyHlfjc15aGT45Dh8VSr//ag03ZU5M/gVaUImOStT5zxJ5agM+euXqZA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-process-logs-api-manager@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-process-logs-api-manager/-/embark-process-logs-api-manager-5.0.0-alpha.5.tgz#567ce7a0c4933f699209547bfbb00e0606cf8f5c"
-  integrity sha512-VBj0Xb8J8yVZf3KE2N5nHZojF2GSOVuP4yPhp0bGmN6MP5bQyJvroQjDcwRrsFZoeYGMgQ93gYaXceJ3/QLNdw==
+embark-process-logs-api-manager@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-process-logs-api-manager/-/embark-process-logs-api-manager-5.0.0-alpha.8.tgz#dd0c44907d00240e23573b0a3898ea6ba3481cc0"
+  integrity sha512-k9ILwpkMqcRq/8gpOznTBbMlrApry41elgnZNYUB/1TBhSuJCot5RHPOMqHQfdPcRkjZ8onIE8couqdq0oy9mg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
 embark-profiler@^5.0.0-alpha.5:
   version "5.0.0-alpha.5"
@@ -7263,10 +7263,10 @@ embark-profiler@^5.0.0-alpha.5:
     web3 "1.2.1"
     web3-utils "1.2.1"
 
-embark-proxy@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-proxy/-/embark-proxy-5.0.0-alpha.5.tgz#71a7502f5212279b568bc6a32d4f5d3fae6ab2db"
-  integrity sha512-i9xTqeNU2i/XuBI5TaL1hA26aGJZ5KUfwvAnYdy+D59lvTMEtI6BuBkRMLITutPSWpw9jZf5ZYhGUjoZULBwcA==
+embark-proxy@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-proxy/-/embark-proxy-5.0.0-alpha.8.tgz#133bfbc33ea4a926ecbccec2d6c9d88b29292771"
+  integrity sha512-M2gmE1jRVqnXla3I7BZPGGK3Oi5pr+x8VyIWNrdk6qHthQ/jQ80UJpQtBc2paf/eg60eIuVQXHm970vrgrQ+HA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/cors" "2.8.6"
@@ -7274,10 +7274,10 @@ embark-proxy@^5.0.0-alpha.5:
     "@types/express-ws" "3.0.0"
     core-js "3.4.3"
     cors "2.8.5"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     express "4.17.1"
     express-ws "4.0.0"
     web3-core-requestmanager "1.2.1"
@@ -7290,33 +7290,33 @@ embark-reset@^5.0.0-alpha.5:
   dependencies:
     rimraf "3.0.0"
 
-embark-rpc-manager@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-rpc-manager/-/embark-rpc-manager-5.0.0-alpha.5.tgz#f765adfe79ae578a07ffe2d3076da59d58453c00"
-  integrity sha512-vyYTVjS4GZsTDm6gDcp0c4ejghyZim9gWPcB0Yyqg/EctO3RDQBBTmsXDGsDVCqFs0bbdG5KDtYmLhLS6cTHAw==
+embark-rpc-manager@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-rpc-manager/-/embark-rpc-manager-5.0.0-alpha.8.tgz#29863a4f7f2e377482115aeabf4b525d8103cb78"
+  integrity sha512-0wKXbd7Ks+eAGvp8+MdPQP50Qwy1eJ03mPfNUxAVZnxf5M/UC8H6luT/0CLAgahh0lM731vCITmPo4VsYRLL0Q==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@omisego/omg-js-util" "2.0.0-v0.2"
     "@types/async" "2.0.50"
     async "2.6.1"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     web3 "1.2.1"
 
-embark-scaffolding@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-scaffolding/-/embark-scaffolding-5.0.0-alpha.5.tgz#08bf428f204c86723851941d3ceaa0e05d66470a"
-  integrity sha512-LM+is0sg8UHftWLgJrSr6ZVpxf/lhPm1j9ye8g0cva7InEsUuSMIAn2HbmroR05bZZi5omxWw9S9CZzrGeepWA==
+embark-scaffolding@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-scaffolding/-/embark-scaffolding-5.0.0-alpha.8.tgz#51bac55bc32c735815156481f6fd7c65a6e2c359"
+  integrity sha512-/DmTujhOozcBz1b9J6BvdwogYWQ1h4rFOxVwYBALdjLDJBZRY3vCxhIjiuXmQFRXZZFk2AFfVwECa+5DEPg6HQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     ajv "6.10.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     handlebars "4.2.0"
 
 embark-solc@^4.0.3:
@@ -7328,31 +7328,31 @@ embark-solc@^4.0.3:
     semver "^5.6.0"
     shelljs "0.8.3"
 
-embark-solidity-tests@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-solidity-tests/-/embark-solidity-tests-5.0.0-alpha.5.tgz#b8f14e4a9bacb8cfc34f0b5613176f73afb1bcd0"
-  integrity sha512-M8FN0cmF+v6G4uqtV6pfkqF5tAZC5oWLxDP0aF5u349gwwkhEJ51bI2vqT5IFaAzW+GiQSqlQBZ670+y0EnleQ==
+embark-solidity-tests@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-solidity-tests/-/embark-solidity-tests-5.0.0-alpha.8.tgz#1dae24fe793d4b0f3671d09f85ac6b4466617959"
+  integrity sha512-PJokre+Ok91zS0anzgoCeMz/oO9YdM92C6oRwpr4CUJo1Ao8QsCTkH4qqoI/omm1aGLO331ct4kT3G7s9yNyMA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
     async "3.1.0"
     core-js "3.4.3"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     remix-tests "0.1.20"
     web3 "1.2.1"
     yo-yoify "4.3.0"
 
-embark-solidity@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-solidity/-/embark-solidity-5.0.0-alpha.5.tgz#6c3b1b33d0245a23640be301512ec82ff0fedccc"
-  integrity sha512-HvohgWpPvXmIhteV6UeVj43m6I9lQdP6EBy7qHMw4FKHmhTLA8q3zjceKda0Lo9k12HAFc1iTxPVJ37Ss6U3PA==
+embark-solidity@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-solidity/-/embark-solidity-5.0.0-alpha.8.tgz#49e61cf664fbad6aa0fbe82a730c87aaeb23e921"
+  integrity sha512-alJ+sIPmcqzxEvcj+cjxjjRf07AuPJUmP1glHCRtVMxEM1iAEwJsSk3wq8JJMxpkvfbzCTWoSqFPG54QUy92xw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     semver "5.6.0"
     solc "0.5.0"
@@ -7377,40 +7377,40 @@ embark-specialconfigs@^5.0.0-alpha.5:
     embark-i18n "^5.0.0-alpha.5"
     viz.js "1.8.2"
 
-embark-storage@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-storage/-/embark-storage-5.0.0-alpha.5.tgz#4c8a83934c9ee013a235fce5120d78c06fa3fa01"
-  integrity sha512-lyt2whl9bvQL+TDuUnNGnTyW7Ro7w0lyacmN4KoMnhk6EBSzzGomI55GyxcOuqcozifizUm6gWKxcigk1viHJA==
+embark-storage@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-storage/-/embark-storage-5.0.0-alpha.8.tgz#fee2939985c9594f30a0b8e9cb1ebad58053dead"
+  integrity sha512-/E+XUaeXciyNJg75RZxDWQh6yIu3HuCy1MMS8czzELUdXt/bjExht4gHIO758RO5O1gKRuvkY2n9mShks6/2lg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     lodash.clonedeep "4.5.0"
     shelljs "0.8.3"
 
-embark-swarm@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-swarm/-/embark-swarm-5.0.0-alpha.5.tgz#334113d6b29ed5f346688e51b1fcd3ebc24713d7"
-  integrity sha512-Y2G3QYRytrhKW11SjwdkpmHcSi+VB0azPzqJnX/iegxRq7+Vtuz1GxY5cF0au/l+v93z2H3nNgBXFap4FGMJTw==
+embark-swarm@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-swarm/-/embark-swarm-5.0.0-alpha.8.tgz#740072a28b21e24de7194adc21c7d87b4b0de055"
+  integrity sha512-er4/fQGwaxRc+druKFns1/pXRtdA50dpESYmUqtGAQFySa70pUqNCF7tOaRPQqi2VWBQ6HDoHArmIYORNNOgkg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-storage "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-storage "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs "^5.0.0-alpha.5"
     embarkjs-swarm "^5.0.0-alpha.5"
     swarm-api "0.1.2"
 
-embark-test-runner@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-test-runner/-/embark-test-runner-5.0.0-alpha.5.tgz#424b8cf54db02e1b49dbd5316ac0723e5a66ad77"
-  integrity sha512-R+zgTd/n3VceMKmeIFiEjZF17BFJPEp3RrLPkROWS9lbYW0zq4+bBjK3mipqqDfgLJ+9zeYm0CPIm1w6A967ig==
+embark-test-runner@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-test-runner/-/embark-test-runner-5.0.0-alpha.8.tgz#aaa16813f4213d3389dbd7284638e871a1b46dcc"
+  integrity sha512-Kvt9uvv/eAzcXKdLa0ukGotZv5dy7e3215JbPpE3jwciqaMmU9ypS3K4tDEIDBTfR2AoJtrYdIqPqgDxe0cxiQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
@@ -7419,7 +7419,7 @@ embark-test-runner@^5.0.0-alpha.5:
     deep-equal "1.0.1"
     embark-i18n "^5.0.0-alpha.5"
     embark-testing "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     fs-extra "8.1.0"
     istanbul-lib-coverage "2.0.5"
     istanbul-lib-report "2.0.8"
@@ -7440,18 +7440,18 @@ embark-testing@^5.0.0-alpha.5:
     refute "1.0.2"
     sinon "7.4.2"
 
-embark-transaction-logger@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-transaction-logger/-/embark-transaction-logger-5.0.0-alpha.5.tgz#de2dbd04b8f4ae13215ac154a5b51ec6ec1f8aa3"
-  integrity sha512-HpQMj1CdqG8npqh3Vwc923YFk68WzFtBii81+EMmR1vczkul/e/RVIH0ilU8qHoexBrXUEcTnUlshsSLxiz1vg==
+embark-transaction-logger@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-transaction-logger/-/embark-transaction-logger-5.0.0-alpha.8.tgz#8ad87dd6c78122976168c3867d0b133ed043fa1b"
+  integrity sha512-U3MEZLqfnauOwq5QfPXR5Sp02YUwjCHXvaPD5V1WfDYu7aYZf3pq47c9siHirbCmBr7hoaf6zs1f4xwERuepvA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/web3" "1.0.12"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     ethereumjs-tx "1.3.7"
     ethereumjs-util "6.0.0"
     web3 "1.2.1"
@@ -7466,15 +7466,15 @@ embark-transaction-tracker@^5.0.0-alpha.5:
     core-js "3.4.3"
     viz.js "1.8.2"
 
-embark-ui@^5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-5.0.0-alpha.6.tgz#54b83031efd282eeda749b7d3798f823fd88291f"
-  integrity sha512-iGdv/GGf9GmigagazJ7Wuoy6WOowdmDKwT+hAyL+9cp7f6sj9qyUlY/oYGCDp6c+7u8dL7aOBJA/tsK1IQfD2Q==
+embark-ui@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-5.0.0-alpha.8.tgz#8ad5d48e96895d98cb748e01420f230093cfbe43"
+  integrity sha512-um5tIf1GQc2DV+GzvSeM1fnF8TvYht0Yys+6Q8/t2h68YEa8Q8sHwgz/Eiej49/X4BwwjBIg9DeYB6wKbxDRbA==
 
-embark-utils@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-utils/-/embark-utils-5.0.0-alpha.5.tgz#d993f81a5184bdda8dbd17a399d4902116950607"
-  integrity sha512-N84l/nZXM5yWT9xpMz3TryKLHujRl42hVBYdGqZbmZiCAAP8egkEeqiVQy8xH959oq4dntt482wkRjReR2XCNg==
+embark-utils@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-utils/-/embark-utils-5.0.0-alpha.8.tgz#cae00c6fcd24f3feda2bdaf6194b925aa09f6cf9"
+  integrity sha512-JLjOrbbYQo2wk1KFKnemqsXKaoPp5S3qZsdKGAms4TzAutuhM9DiSQ89pdluIV/Y4MEJVmDjOqJnyBi5CCZnSA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/follow-redirects" "1.5.0"
@@ -7515,76 +7515,76 @@ embark-vyper@^5.0.0-alpha.5:
     embark-i18n "^5.0.0-alpha.5"
     shelljs "0.8.3"
 
-embark-watcher@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-watcher/-/embark-watcher-5.0.0-alpha.5.tgz#b084ff2078df42fd69a7d75833da079de39a7ba4"
-  integrity sha512-ZsRLoh9sfccNSWF6Kyi7HrOAwkc7Tttc5JclGg4g22KpFACDCUTdDB5uOoDN+IdHtR+kiSJnX+FUX8xNpMVPNA==
+embark-watcher@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-watcher/-/embark-watcher-5.0.0-alpha.8.tgz#bbfb2992f36dcb45bdc13cd5d09e2fa3ff81e52c"
+  integrity sha512-/LfuMH3jwNe67GIqOZqL9LvjZ4xAYow37ZwS2fq0L0foLDzs67YkNvBr2Iogpl53BSDJEPz7uvgPK9VVkR7x4w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     chokidar "2.1.6"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
 
-embark-web3@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-web3/-/embark-web3-5.0.0-alpha.5.tgz#bc9a2f9a29eb2565d1e6befc6d266c7a2995e4aa"
-  integrity sha512-iy+L8JLw6Qg/DwUPqmqsunQSsUREKmLEfz8X4CoB4Hj+xf4AFWgomLL4ECzxetnbvViGTSFVLs1pt+HTbxn0KA==
+embark-web3@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-web3/-/embark-web3-5.0.0-alpha.8.tgz#eeb399f5033967ee90aa64a53f382e4bed8b3d59"
+  integrity sha512-w50b5cYdXgc3qEAz0vXWTpcEMuFn6gwoVBp8/0QhuRJKubk98FIVvAgaRCiolbwI6tWT9vJ/9OWWZ/fT9EpTww==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     ejs "2.6.1"
-    embark-core "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs-web3 "^5.0.0-alpha.5"
 
-embark-webserver@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-webserver/-/embark-webserver-5.0.0-alpha.5.tgz#839e3761ec788378ba1a201856335a005650ec0f"
-  integrity sha512-YqRFMAM95YSJCJxMMzZp+0mXSXHMvY6nx/F5kRRQ1QdG8sXQQq8wT6hqSYbaswqDeG3ZNSdINYJucE87ICxAow==
+embark-webserver@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-webserver/-/embark-webserver-5.0.0-alpha.8.tgz#881b379fe568f6e0a8cde6895257814fae068f48"
+  integrity sha512-p1uhxS3AOdAobWJYU2HSEW74XFFu+fW2HKC9eSCATHBFndUiVxmeKBfaoTnax2B9JEMiOwYrVmNemlVFRuZmVA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     express "4.17.1"
     express-ws "4.0.0"
     open "6.4.0"
     serve-static "1.13.2"
 
-embark-whisper-geth@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-whisper-geth/-/embark-whisper-geth-5.0.0-alpha.5.tgz#4e1eb6a55c5eeeca90430cbd5210ad16f14987e4"
-  integrity sha512-CcR2Ma811eeilAHMZRt1QYpmyw7+amP/5qSunZWiPoUluO434G5Zw3JVjAr0H5OTnC2KcSuk5kgKkTwu61+zFw==
+embark-whisper-geth@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-whisper-geth/-/embark-whisper-geth-5.0.0-alpha.8.tgz#96c7dda7ef710afd24713b072499d907faae5a2b"
+  integrity sha512-OKErgz1ZuaZIJ0i+UphOVwHSG7uW3LOkAfw6lzbgZ/xYoC/VNBWL0RSCfOW7GjB7yAqIs2fmgAmr+b2EgkIIMg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs-whisper "^5.0.0-alpha.5"
     rxjs "6.4.0"
 
-embark-whisper-parity@^5.0.0-alpha.5:
-  version "5.0.0-alpha.5"
-  resolved "https://registry.yarnpkg.com/embark-whisper-parity/-/embark-whisper-parity-5.0.0-alpha.5.tgz#aafd27de69cab014bd74f308530d7172c163a861"
-  integrity sha512-qhy4GVUlf3Yov7Z8EUl+zaE6H+HXX1dahLTZrNic/g4LFCQfEH3GW72D8uGqBbtL5xmjDjPwzsWuRxoo7J+8Pg==
+embark-whisper-parity@^5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark-whisper-parity/-/embark-whisper-parity-5.0.0-alpha.8.tgz#c5856dcd0837481b5782605cd239616aae0dbb92"
+  integrity sha512-fzlEJQiLBl8S01AtqCebCuuxzZWfYgQHc22yZDAbmPT8FJ7iZLdG3CYvs2Gex9TKjlGu3JQRoB1PLVNu4jXWJQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.0.0-alpha.5"
+    embark-core "^5.0.0-alpha.8"
     embark-i18n "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-utils "^5.0.0-alpha.8"
     embarkjs-whisper "^5.0.0-alpha.5"
     rxjs "6.4.0"
 
-embark@5.0.0-alpha.6:
-  version "5.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/embark/-/embark-5.0.0-alpha.6.tgz#e7760636b15fa0b9847abb998461e5bcb660d0e0"
-  integrity sha512-LGgV52q+Y+IALgeJZJJuvvc2SMlgZ+LLCmw9pw39kBZw5UGQIambH2a60W2bgzV2Qm2rc8xQE9Nq3O6nUiUU5A==
+embark@5.0.0-alpha.8:
+  version "5.0.0-alpha.8"
+  resolved "https://registry.yarnpkg.com/embark/-/embark-5.0.0-alpha.8.tgz#c29b45e23b1f849cedec9b7fcf818c0a907478e6"
+  integrity sha512-WLACzgpYgIsk4ueHzXKkEmJFzO5SdAnSRZAlkWntUSLJxJu+7MfRTX9iaPiXdIRUdfoGtJ2TCSpL7NSfK/iheQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     ajv "6.10.2"
@@ -7598,15 +7598,15 @@ embark@5.0.0-alpha.6:
     core-js "3.4.3"
     date-and-time "0.6.2"
     decompress "4.2.0"
-    embark-core "^5.0.0-alpha.5"
-    embark-deploy-tracker "^5.0.0-alpha.5"
-    embark-engine "^5.0.0-alpha.6"
+    embark-core "^5.0.0-alpha.8"
+    embark-deploy-tracker "^5.0.0-alpha.8"
+    embark-engine "^5.0.0-alpha.8"
     embark-graph "^5.0.0-alpha.5"
     embark-i18n "^5.0.0-alpha.5"
     embark-logger "^5.0.0-alpha.5"
     embark-reset "^5.0.0-alpha.5"
-    embark-scaffolding "^5.0.0-alpha.5"
-    embark-utils "^5.0.0-alpha.5"
+    embark-scaffolding "^5.0.0-alpha.8"
+    embark-utils "^5.0.0-alpha.8"
     eth-ens-namehash "2.0.8"
     ethereumjs-wallet "0.6.3"
     find-up "2.1.0"
