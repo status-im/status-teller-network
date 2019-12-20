@@ -209,9 +209,9 @@ module.exports = {
     afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null),
     dappConnection: ["$WEB3"],
     contracts: {
-      StandardToken: { },
-      DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
-      MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
+      StandardToken: { deploy: false },
+      DAI: { deploy: false },
+      MKR: { deploy: false },
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
@@ -275,7 +275,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, null),
     dappConnection: ["$WEB3"]
   },
 
