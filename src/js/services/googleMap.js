@@ -1,4 +1,4 @@
-export const API_KEY = 'AIzaSyALAskxuamVIKbyUiw6CxgfVTk6YM2wYu8';
+export const API_KEY = 'AIzaSyBudXYUykxdQZ7ljEdw9wCBpGNzofNWs7Q';
 
 const geocoder = require('google-geocoder');
 const geo = geocoder({
