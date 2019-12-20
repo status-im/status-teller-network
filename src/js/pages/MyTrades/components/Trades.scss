@@ -5,3 +5,9 @@
     height: 40px;
   }
 }
+
+.offer-card {
+  .col-md-1:first-child {
+    max-width: 65px;
+  }
+}

@@ -17,6 +17,7 @@ import moneyImage from '../../../../images/money-hand.svg';
 import {PAYMENT_METHODS} from "../../../features/metadata/constants";
 
 import UserInfoRow from "../../../components/UserInfoRow";
+import {stringToContact} from "../../../utils/strings";
 
 class Trades extends Component {
   state = {
@@ -97,27 +98,29 @@ class Trades extends Component {
 
               const isBuyer = addressCompare(trade.buyer, this.props.address);
               const tradeStyle = this.getTradeStyle(trade, isBuyer);
+              const address = isBuyer ? trade.buyer : trade.offer.owner;
+              const userInfo = isBuyer ? trade.seller : trade.buyerInfo;
 
               return (<Card key={index} className={classnames("clickable mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
                 <CardBody>
-                  <UserInfoRow hideAddress user={isBuyer ? trade.seller : trade.buyerInfo}
-                               address={isBuyer ? trade.buyer : trade.offer.owner}
+                  <UserInfoRow hideAddress user={userInfo}
+                               address={address}
                                lastColSize={4}
                                lastCol={<div className="text-right">
                                  <span
                                    className={"p-1 px-2 d-inline text-white rounded-sm text-small nowrap " + tradeStyle.className}>{tradeStyle.text}</span>
                                </div>}/>
                    <Row className="mt-2">
-                     <Col xs={2}><RoundedIcon image={messageImage} bgColor="blue" size="sm"/></Col>
-                     <Col xs={10} className="pl-0">Status {/*TODO Put the real comm method once contract is implemented*/}</Col>
+                     <Col xs={2} md={1}><RoundedIcon image={messageImage} bgColor="blue" size="sm"/></Col>
+                     <Col xs={10} md={11} className="pl-0">{stringToContact(userInfo.contactData).method}</Col>
                    </Row>
                    <Row className="mt-2">
-                     <Col xs={2}><RoundedIcon image={moneyImage} bgColor="blue" size="sm"/></Col>
-                     <Col xs={10} className="pl-0">{trade.offer.paymentMethods.map(method => PAYMENT_METHODS[method]).join(', ')}</Col>
+                     <Col xs={2} md={1}><RoundedIcon image={moneyImage} bgColor="blue" size="sm"/></Col>
+                     <Col xs={10} md={11} className="pl-0">{trade.offer.paymentMethods.map(method => PAYMENT_METHODS[method]).join(', ')}</Col>
                    </Row>
                 </CardBody>
-                <CardFooter className="bg-white text-right border-0 pt-0 clickable">
+                <CardFooter className="bg-white text-right border-0 pt-0 clickable mt-3">
                   <p className="m-0 border-top pt-2">
                     Buy <span className="text-black"><img
                     src={getTokenImage(trade.token.symbol)}
