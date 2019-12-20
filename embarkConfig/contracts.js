@@ -2,6 +2,8 @@ const LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(1, 18)
 const ARB_LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(10, 18)
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x000000000000000000000000000000000000dead";
+const MAINNET_OWNER = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
+const FALLBACK_ARBITRATOR = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
 
 const dataMigration = require('./data.js');
 
@@ -117,7 +119,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "Proxy",
@@ -179,7 +181,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null)
   },
 
   // merges with the settings in default
@@ -204,7 +206,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null),
     dappConnection: ["$WEB3"],
     contracts: {
       StandardToken: { },
@@ -273,7 +275,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null),
     dappConnection: ["$WEB3"]
   },
 
@@ -294,7 +296,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR)
     dappConnection: ["$WEB3"],
     contracts: {
       StandardToken: { deploy: false },
