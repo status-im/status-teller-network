@@ -39,10 +39,11 @@ import events from '../../features/events';
 import prices from '../../features/prices';
 import emailNotifications from "../../features/emailNotifications";
 import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
-import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 import {withTranslation, Trans} from "react-i18next";
 import ConnectWallet from '../../components/ConnectWallet';
+
+import "./index.scss";
 
 const {toBN} = web3.utils;
 
@@ -64,7 +65,7 @@ class Escrow extends Component {
     if(e) e.preventDefault();
     this.setState({displayDialog: show});
     return false;
-  }
+  };
 
 
   loadData() {
