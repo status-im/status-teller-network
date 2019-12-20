@@ -1,7 +1,7 @@
-const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
-const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
+const LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(1, 18)
+const ARB_LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(10, 18)
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
-const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+const BURN_ADDRESS = "0x000000000000000000000000000000000000dead";
 
 const dataMigration = require('./data.js');
 
@@ -280,10 +280,46 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
+    tracking: 'shared.mainnet.json',
+    deployment: {
+      accounts: [
+        {
+          mnemonic: secret.mnemonic,
+          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
+          numAddresses: "10"
+        }
+      ],
+      host: `mainnet.infura.io/v3/${secret.infuraKey}`,
+      port: false,
+      protocol: 'https',
+      type: "rpc"
+    },
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    dappConnection: ["$WEB3"],
     contracts: {
+      StandardToken: { deploy: false },
+      DAI: { deploy: false },
+      MKR: { deploy: false },
+      SNT: {
+        address: "0x744d70fdbe2ba4cf95131626614a1763df805b9e"
+      },
+      "RLPReader": { deploy: false },
+      "RelayHub": {
+        address: "0xd216153c06e857cd7f72665e0af1d7d82172f494"
+      },
+      "MiniMeTokenFactory": { deploy: false },
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Mainnet/
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      },
+      EscrowRelay: {
+        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
+        deps: ['RelayHub'],
+        onDeploy: [
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()"
+          // ,
+          // "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})" // Deposit for GSN
+        ]
       }
     }
   }
