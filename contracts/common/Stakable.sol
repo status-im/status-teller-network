@@ -2,8 +2,10 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
+import "../token/SafeTransfer.sol";
 
-contract Stakable is Ownable {
+
+contract Stakable is Ownable, SafeTransfer {
 
     uint public basePrice = 0.01 ether;
 
@@ -63,7 +65,7 @@ contract Stakable is Ownable {
         if (_tokenAddress != address(0)) {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transferFrom(_owner, address(this), stakeAmount), "Unsuccessful token transfer");
+            require(_safeTransferFrom(tokenToPay, _owner, address(this), stakeAmount), "Unsuccessful token transfer");
         } else {
             require(msg.value == stakeAmount, "ETH amount is required");
         }
@@ -96,7 +98,7 @@ contract Stakable is Ownable {
             (bool success, ) = s.owner.call.value(amount)("");
             require(success, "Transfer failed.");
         } else {
-            require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
+            require(_safeTransfer(ERC20Token(s.token), s.owner, amount), "Couldn't transfer funds");
         }
 
         emit Unstaked(_itemId, s.owner, amount);
@@ -115,7 +117,7 @@ contract Stakable is Ownable {
             (bool success, ) = burnAddress.call.value(amount)("");
             require(success, "Transfer failed.");
         } else {
-            require(ERC20Token(s.token).transfer(burnAddress, amount), "Couldn't transfer funds");
+            require(_safeTransfer(ERC20Token(s.token), burnAddress, amount), "Couldn't transfer funds");
         }
 
         emit Slashed(_itemId, s.owner, msg.sender, amount);
@@ -136,7 +138,7 @@ contract Stakable is Ownable {
                 (bool success, ) = s.owner.call.value(amount)("");
                 require(success, "Transfer failed.");
             } else {
-                require(ERC20Token(s.token).transfer(s.owner, amount), "Couldn't transfer funds");
+                require(_safeTransfer(ERC20Token(s.token), s.owner, amount), "Couldn't transfer funds");
             }
         }
     }

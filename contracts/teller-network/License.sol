@@ -4,13 +4,14 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
+import "../token/SafeTransfer.sol";
 import "../token/ApproveAndCallFallBack.sol";
 
 /**
 * @title License
 * @dev Contract for buying a license
 */
-contract License is Ownable, ApproveAndCallFallBack {
+contract License is Ownable, ApproveAndCallFallBack, SafeTransfer {
     uint256 public price;
 
     ERC20Token token;
@@ -98,7 +99,7 @@ contract License is Ownable, ApproveAndCallFallBack {
 
         emit Bought(_licenseOwner, price);
 
-        require(token.transferFrom(_licenseOwner, burnAddress, price), "Unsuccessful token transfer");
+        require(_safeTransferFrom(token, _licenseOwner, burnAddress, price), "Unsuccessful token transfer");
 
         return idx;
     }

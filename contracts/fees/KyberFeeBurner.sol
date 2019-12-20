@@ -3,6 +3,7 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
+import "../token/SafeTransfer.sol";
 import "./KyberNetworkProxy.sol";
 
 /**
@@ -10,7 +11,7 @@ import "./KyberNetworkProxy.sol";
  * @dev Contract that holds assets for the purpose of trading them to SNT and burning them
  * @dev Assets come from the Escrow contract fees
  */
-contract KyberFeeBurner is Ownable {
+contract KyberFeeBurner is Ownable, SafeTransfer {
 
     address public SNT;
     address public burnAddress;
@@ -136,7 +137,7 @@ contract KyberFeeBurner is Ownable {
             require(_amount <= t.balanceOf(address(this)), "Invalid amount");
 
             if (_token == SNT) {
-                require(t.transfer(burnAddress, _amount), "SNT transfer failure");
+                require(_safeTransfer(t, burnAddress, _amount), "SNT transfer failure");
                 emit Swap(msg.sender, SNT, SNT, _amount, _amount);
                 return;
             } else {
@@ -174,7 +175,7 @@ contract KyberFeeBurner is Ownable {
         } else {
             ERC20Token t = ERC20Token(_token);
             uint tokenBalance = t.balanceOf(address(this));
-            require(t.transfer(owner(), tokenBalance), "Token transfer error");
+            require(_safeTransfer(t, owner(), tokenBalance), "Token transfer error");
             emit EscapeTriggered(msg.sender, _token, tokenBalance);
         }
     }

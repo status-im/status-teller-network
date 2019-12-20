@@ -1,6 +1,7 @@
 pragma solidity >=0.5.0 <0.6.0;
 
 import "../token/ERC20Token.sol";
+import "../token/SafeTransfer.sol";
 import "../common/Ownable.sol";
 import "../common/ReentrancyGuard.sol";
 
@@ -8,7 +9,7 @@ import "../common/ReentrancyGuard.sol";
  * @title Fee utilities
  * @dev Fee registry, payment and withdraw utilities.
  */
-contract Fees is Ownable, ReentrancyGuard {
+contract Fees is Ownable, ReentrancyGuard, SafeTransfer {
     address payable public feeDestination;
     uint public feeMilliPercent;
     mapping(address => uint) public feeTokenBalances;
@@ -67,9 +68,9 @@ contract Fees is Ownable, ReentrancyGuard {
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transfer(_arbitrator, arbitratorValue), "Unsuccessful token transfer - arbitrator");
+            require(_safeTransfer(tokenToPay, _arbitrator, arbitratorValue), "Unsuccessful token transfer - arbitrator");
             if (destinationValue > 0) {
-                require(tokenToPay.transfer(feeDestination, destinationValue), "Unsuccessful token transfer - destination");
+                require(_safeTransfer(tokenToPay, feeDestination, destinationValue), "Unsuccessful token transfer - destination");
             }
         } else {
             // EIP1884 fix
@@ -116,7 +117,7 @@ contract Fees is Ownable, ReentrancyGuard {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
 
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(tokenToPay.transferFrom(_from, address(this), feeAmount + _value), "Unsuccessful token transfer");
+            require(_safeTransferFrom(tokenToPay, _from, address(this), feeAmount + _value), "Unsuccessful token transfer");
         } else {
             require(msg.value == (_value + feeAmount), "ETH amount is required");
         }
