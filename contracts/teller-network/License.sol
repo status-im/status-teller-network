@@ -6,12 +6,13 @@ import "../common/Ownable.sol";
 import "../token/ERC20Token.sol";
 import "../token/SafeTransfer.sol";
 import "../token/ApproveAndCallFallBack.sol";
+import "../proxy/Proxiable.sol";
 
 /**
 * @title License
 * @dev Contract for buying a license
 */
-contract License is Ownable, ApproveAndCallFallBack, SafeTransfer {
+contract License is Ownable, ApproveAndCallFallBack, SafeTransfer, Proxiable {
     uint256 public price;
 
     ERC20Token token;
@@ -60,6 +61,10 @@ contract License is Ownable, ApproveAndCallFallBack, SafeTransfer {
         burnAddress = _burnAddress;
 
         _setOwner(msg.sender);
+    }
+
+    function updateCode(address newCode) public onlyOwner {
+        updateCodeAddress(newCode);
     }
 
     /**

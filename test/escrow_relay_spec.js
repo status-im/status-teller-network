@@ -2,7 +2,7 @@
 const TestUtils = require("../utils/testUtils");
 const Escrow = embark.require('Embark/contracts/Escrow');
 const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
-const OwnedUpgradeabilityProxy = embark.require('Embark/contracts/OwnedUpgradeabilityProxy');
+const Proxy = embark.require('Embark/contracts/Proxy');
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const SNT = embark.require('Embark/contracts/SNT');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
@@ -56,12 +56,13 @@ config({
     */
 
     EscrowRelay: {
-      args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
+      args: ["$MetadataStore", "$Proxy", "$SNT"],
       onDeploy: [
         "MetadataStore.methods.setAllowedContract('$EscrowRelay', true).send()"
       ]
     },
-    OwnedUpgradeabilityProxy: {
+    Proxy: {
+      args: ["0x", "$Escrow"]
     },
     Escrow: {
       args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000],
@@ -86,6 +87,8 @@ contract("Escrow Relay", function() {
 
 
   before(async () => {
+    Escrow.options.address = Proxy.options.address;
+
     await SNT.methods.generateTokens(accounts[0], 1000).send();
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
@@ -96,20 +99,16 @@ contract("Escrow Relay", function() {
    
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    const abiEncode = Escrow.methods.init(
+    Escrow.methods.init(
       accounts[0],
       EscrowRelay.options.address,
       ArbitrationLicense.options.address,
       MetadataStore.options.address,
       BURN_ADDRESS, // TODO: replace by StakingPool address
       1000
-    ).encodeABI();
+    ).send({from: accounts[0]});
 
-    // Here we are setting the initial "template", and calling the init() function
-    receipt = await OwnedUpgradeabilityProxy.methods.upgradeToAndCall(Escrow.options.address, abiEncode).send();
-    Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
-
-    await MetadataStore.methods.setAllowedContract(OwnedUpgradeabilityProxy.options.address, true).send();
+    await MetadataStore.methods.setAllowedContract(Escrow.options.address, true).send();
     
     EscrowRelay.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name === 'Created'));
   });

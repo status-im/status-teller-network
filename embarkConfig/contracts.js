@@ -66,7 +66,7 @@ module.exports = {
     strategy: 'explicit',
 
     contracts: {
-      OwnedUpgradeabilityProxy: {
+      Proxy: {
         deploy: false
       },
       License: {
@@ -81,7 +81,8 @@ module.exports = {
         ]
       },
       SellerLicenseProxy: {
-        instanceOf: "OwnedUpgradeabilityProxy"
+        instanceOf: "Proxy",
+        args: ["0x", "$SellerLicense"]
       },
       ArbitrationLicense: {
         args: [
@@ -91,13 +92,15 @@ module.exports = {
         ]
       },
       ArbitrationLicenseProxy: {
-        instanceOf: "OwnedUpgradeabilityProxy"
+        instanceOf: "Proxy",
+        args: ["0x", "$ArbitrationLicense"]
       },
       "MetadataStore": {
         args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
       },
       MetadataStoreProxy: {
-        instanceOf: "OwnedUpgradeabilityProxy"
+        instanceOf: "Proxy",
+        args: ["0x", "$MetadataStore"]
       },
       "RLPReader": {
         file: 'tabookey-gasless/contracts/RLPReader.sol'
@@ -117,7 +120,8 @@ module.exports = {
         args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
-        instanceOf: "OwnedUpgradeabilityProxy"
+        instanceOf: "Proxy",
+        args: ["0x", "$Escrow"]
       },
       "MiniMeToken": { "deploy": false },
       "MiniMeTokenFactory": { },

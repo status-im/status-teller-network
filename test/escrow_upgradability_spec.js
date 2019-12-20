@@ -2,7 +2,7 @@
 const TestUtils = require("../utils/testUtils");
 const Escrow = embark.require('Embark/contracts/Escrow');
 const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
-const OwnedUpgradeabilityProxy = embark.require('Embark/contracts/OwnedUpgradeabilityProxy');
+const Proxy = embark.require('Embark/contracts/Proxy');
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
 const SNT = embark.require('Embark/contracts/SNT');
 const MetadataStore = embark.require('Embark/contracts/MetadataStore');
@@ -57,11 +57,14 @@ config({
     },
     */
 
+    Proxy: {
+      args: ["0x", "$Escrow"]
+    },
+    
     EscrowRelay: {
-      args: ["$MetadataStore", "$OwnedUpgradeabilityProxy", "$SNT"],
+      args: ["$MetadataStore", "$Proxy", "$SNT"]
     },
-    OwnedUpgradeabilityProxy: {
-    },
+    
     Escrow: {
       args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, 1000]
     },
@@ -81,10 +84,10 @@ contract("Escrow", function() {
   describe("Upgradeable Escrows", async () => {
 
     before(async () => {
+      Escrow.options.address = Proxy.options.address;
 
-      await MetadataStore.methods.setAllowedContract(OwnedUpgradeabilityProxy.options.address, true).send();
+      await MetadataStore.methods.setAllowedContract(Escrow.options.address, true).send();
       await MetadataStore.methods.setAllowedContract(EscrowRelay.options.address, true).send();
-
 
       await SNT.methods.generateTokens(accounts[0], 1000).send();
       await SNT.methods.generateTokens(arbitrator, 1000).send();
@@ -98,18 +101,17 @@ contract("Escrow", function() {
 
 
     it("Can create initial escrow version", async () => {
-      const abiEncode = Escrow.methods.init(
+     
+      // Here we are setting the initial "template" by calling the init() function
+      Escrow.methods.init(
         accounts[0],
         EscrowRelay.options.address,
         ArbitrationLicense.options.address,
         MetadataStore.options.address,
         "0x0000000000000000000000000000000000000002", // TODO: replace by StakingPool address
         1000
-      ).encodeABI();
+      ).send({from: accounts[0]});
 
-      // Here we are setting the initial "template", and calling the init() function
-      receipt = await OwnedUpgradeabilityProxy.methods.upgradeToAndCall(Escrow.options.address, abiEncode).send();
-      Escrow.options.address = OwnedUpgradeabilityProxy.options.address;
     });
 
     it("Can create an escrow", async () => {
@@ -133,11 +135,8 @@ contract("Escrow", function() {
     });
 
     it("Can upgrade contract", async () => {
-      // This is an upgrade without calling an initialization function.
-      // Some upgrades might require doing that, so you need to call upgradeToAndCall
-      // and set some initialization var
-      receipt = await OwnedUpgradeabilityProxy.methods.upgradeTo(TestEscrowUpgrade.options.address).send();
-      TestEscrowUpgrade.options.address = OwnedUpgradeabilityProxy.options.address;
+      receipt = await Escrow.methods.updateCode(TestEscrowUpgrade.options.address).send();
+      TestEscrowUpgrade.options.address = Escrow.options.address;
     });
 
     it("Can call new contract functions", async () => {

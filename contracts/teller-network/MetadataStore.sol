@@ -5,13 +5,14 @@ import "./ArbitrationLicense.sol";
 import "../common/MessageSigned.sol";
 import "../common/SecuredFunctions.sol";
 import "../common/Stakable.sol";
+import "../proxy/Proxiable.sol";
 
 
 /**
 * @title MetadataStore
 * @dev User and offers registry
 */
-contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
+contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
 
     struct User {
         string contactData;
@@ -89,6 +90,10 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions {
 
 
         _setOwner(msg.sender);
+    }
+
+    function updateCode(address newCode) public onlyOwner {
+        updateCodeAddress(newCode);
     }
 
     event LicensesChanged(address sender, address oldSellingLicenses, address newSellingLicenses, address oldArbitrationLicenses, address newArbitrationLicenses);

@@ -13,13 +13,13 @@ import "./MetadataStore.sol";
 import "./Fees.sol";
 import "./Arbitrable.sol";
 import "./IEscrow.sol";
-
+import "../proxy/Proxiable.sol";
 
 /**
  * @title Escrow
  * @dev Escrow contract for selling ETH and ERC20 tokens
  */
-contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
+contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable {
 
     EscrowTransaction[] public transactions;
 
@@ -88,6 +88,10 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable {
         feeMilliPercent = _feeMilliPercent;
         paused = false;
         _setOwner(msg.sender);
+    }
+
+    function updateCode(address newCode) public onlyOwner {
+        updateCodeAddress(newCode);
     }
 
     /**
