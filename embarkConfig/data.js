@@ -1,6 +1,7 @@
+/* eslint-disable complexity */
 const async = require('async');
 
-module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
+module.exports = async (GAS_PRICE, licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
   try {
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
@@ -13,6 +14,24 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       return;
     }
 
+    if(mainnetOwner){
+      console.log('Setting ownership of 6 contracts');
+      let receipt;
+      receipt = await deps.contracts.Escrow.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`1/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`2/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`3/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`4/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`5/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.EscrowRelay.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`6/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
+
+
     {
       console.log('Setting the initial SellerLicense "template", and calling the init() function');
       deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
@@ -20,7 +39,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         deps.contracts.SNT.options.address,
         licensePrice,
         burnAddress
-      ).send({from: main, gas: 1000000});
+      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
@@ -32,7 +51,7 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
         deps.contracts.SNT.options.address,
         arbitrationLicensePrice,
         burnAddress
-      ).send({from: main, gas: 1000000});
+      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
@@ -42,32 +61,22 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
       const receipt = await deps.contracts.MetadataStore.methods.init(
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address
-      ).send({from: main, gas: 1000000});
+      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
     {
       console.log('Setting the initial Escrow "template", and calling the init() function');
       deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
-      const receipt = deps.contracts.Escrow.methods.init(
+      const receipt = await deps.contracts.Escrow.methods.init(
         fallbackArbitrator || main,
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.MetadataStoreProxy.options.address,
         burnAddress, // TODO: replace with StakingPool address
         feeMilliPercent
-      ).send({from: main, gas: 1000000});
+      ).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-    }
-
-    if(mainnetOwner){
-      console.log('Setting ownership of contracts');
-      await deps.contracts.Escrow.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.SellerLicense.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.ArbitrationLicense.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.MetadataStore.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.KyberFeeBurner.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.EscrowRelay.methods.setOwner(mainnetOwner).send({from: main});
     }
 
     deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
@@ -75,31 +84,31 @@ module.exports = async (licensePrice, arbitrationLicensePrice, feeMilliPercent, 
     deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
     deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
-    if(mainnetOwner){
-      console.log('Setting ownership of proxy');
-      await deps.contracts.Escrow.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.SellerLicense.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.ArbitrationLicense.methods.setOwner(mainnetOwner).send({from: main});
-      await deps.contracts.MetadataStore.methods.setOwner(mainnetOwner).send({from: main});
-    }
-
-
     {
       console.log('Setting the escrow proxy address in MetadataStore');
-      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true).send({from: main, gas: 2000000});
+      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
     {
       console.log('Setting the EscrowRelay address in MetadataStore');
-      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true).send({from: main, gas: 2000000});
+      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
       console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
     }
 
 
-    
-
-
+    if(mainnetOwner){
+      console.log('Setting ownership of 4 proxy');
+      let receipt;
+      receipt = await deps.contracts.Escrow.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`1/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`2/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`3/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
+      console.log(`4/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+    }
 
     const arbitrator = addresses[9];
 
