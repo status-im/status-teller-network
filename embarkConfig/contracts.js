@@ -296,7 +296,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR)
+    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
     dappConnection: ["$WEB3"],
     contracts: {
       StandardToken: { deploy: false },
