@@ -1,7 +1,13 @@
-const LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
-const ARB_LICENSE_PRICE = "10000000000000000000"; // 10 * Math.pow(10, 18)
+const LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(1, 18)
+const ARB_LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(10, 18)
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
+const MAINNET_OWNER = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
+const FALLBACK_ARBITRATOR = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
+const GAS_PRICE = "5000000000"; //5 gwei
+
+// TODO: extract this to .env?
+
 
 const dataMigration = require('./data.js');
 
@@ -117,7 +123,7 @@ module.exports = {
         ]
       },
       Escrow: {
-        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "Proxy",
@@ -179,7 +185,7 @@ module.exports = {
         }
       ]
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS)
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null)
   },
 
   // merges with the settings in default
@@ -190,6 +196,7 @@ module.exports = {
   // merges with the settings in default
   // used with "embark run testnet"
   testnet: {
+    gasPrice: GAS_PRICE,
     tracking: 'shared.rinkeby.json',
     deployment: {
       accounts: [
@@ -204,12 +211,12 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
     dappConnection: ["$WEB3"],
     contracts: {
-      StandardToken: { },
-      DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
-      MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
+      StandardToken: { deploy: false },
+      DAI: { deploy: false },
+      MKR: { deploy: false },
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
@@ -221,8 +228,8 @@ module.exports = {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub'],
         onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})"
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: " + GAS_PRICE + "})",
+          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000, gasPrice: " + GAS_PRICE + "})"
         ]
       }
     }
@@ -273,17 +280,54 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
     dappConnection: ["$WEB3"]
   },
 
   // merges with the settings in default
   // used with "embark run livenet"
   livenet: {
+    gasPrice: GAS_PRICE,
+    tracking: 'shared.mainnet.json',
+    deployment: {
+      accounts: [
+        {
+          mnemonic: secret.mnemonic,
+          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
+          numAddresses: "10"
+        }
+      ],
+      host: `mainnet.infura.io/v3/${secret.infuraKey}`,
+      port: false,
+      protocol: 'https',
+      type: "rpc"
+    },
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
+    dappConnection: ["$WEB3"],
     contracts: {
+      StandardToken: { deploy: false },
+      DAI: { deploy: false },
+      MKR: { deploy: false },
+      SNT: {
+        address: "0x744d70fdbe2ba4cf95131626614a1763df805b9e"
+      },
+      "RLPReader": { deploy: false },
+      "RelayHub": {
+        address: "0xd216153c06e857cd7f72665e0af1d7d82172f494"
+      },
+      "MiniMeTokenFactory": { deploy: false },
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Mainnet/
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      },
+      EscrowRelay: {
+        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
+        deps: ['RelayHub'],
+        onDeploy: [
+          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()"
+          // ,
+          // "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})" // Deposit for GSN
+        ]
       }
     }
   }

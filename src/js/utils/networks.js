@@ -6,7 +6,7 @@ import MKR from '../../embarkArtifacts/contracts/MKR';
 import { zeroAddress } from './address';
 
 export const Networks = {
-  // 1: 'mainnet', Not deployed
+  1: 'mainnet',
   3: 'ropsten',
   4: 'rinkeby',
   1337: 'private'
@@ -566,7 +566,7 @@ export const Tokens = {
       name: "Livepeer Token",
       address: "0x58b6a8a3302369daec383334672404ee733ab239",
       decimals: 18
-    },
+    }
     // {
     //   symbol: 'ST',
     //   name: "Simple Token",
