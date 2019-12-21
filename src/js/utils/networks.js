@@ -22,9 +22,15 @@ export const Tokens = {
       decimals: 18
     },
     {
-      symbol: 'DAI',
-      name: 'DAI',
+      symbol: 'SAI',
+      name: 'Sai Stablecoin',
       address: "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359",
+      decimals: 18
+    },
+    {
+      symbol: 'DAI',
+      name: 'Dai Stablecoin',
+      address: "0x6b175474e89094c44da98b954eedeac495271d0f",
       decimals: 18
     },
     {
