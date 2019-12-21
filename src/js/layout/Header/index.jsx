@@ -17,7 +17,6 @@ const Header = ({t, location, history}) => {
     return null;
   }
   const isProfile = location.pathname === '/profile';
-  const isSellerProfile =  location.pathname.indexOf('/profile/0x') > -1;
 
   return (
     <header className={classnames("app-header", {'in-profile': isProfile})}>
@@ -43,18 +42,13 @@ const Header = ({t, location, history}) => {
           <Col xs={1}>
             <Nav className="hamburger-nav" navbar>
               <NavItem>
-                {(!isProfile && !isSellerProfile && location.pathname !== '/sellers') &&
+                {!isProfile &&
                 <NavLink tag={Link} to="/profile">
                   <img src={iconProfile} alt="Profile" width="32" height="32"/>
                 </NavLink>}
 
                 {isProfile &&
                 <NavLink onClick={() => history.go(-1)}>
-                  <img src={iconCloseProfile} alt="Home" width="32" height="32"/>
-                </NavLink>}
-
-                {(isSellerProfile || location.pathname === '/sellers') &&
-                <NavLink onClick={() => history.go(-2)}>
                   <img src={iconCloseProfile} alt="Home" width="32" height="32"/>
                 </NavLink>}
               </NavItem>

@@ -10,12 +10,12 @@ import Address from "../../components/UserInformation/Address";
 
 const UserInfoRow = ({address, user = {}, lastCol, hideAddress, lastColSize}) => {
   return <Row>
-    <Col xs={2}>
+    <Col xs={2} md={1}>
       <div className="rounded-icon rounded-circle rounded-icon__blue">
         <Identicon seed={address} className="rounded-circle border" scale={5}/>
       </div>
     </Col>
-    <Col xs={12 - (lastColSize + 2)} className="pl-0">
+    <Col xs={12 - (lastColSize + 2)} md={12 - (lastColSize + 1)} className="pl-0">
       <h6 className="m-0">{user.username}</h6>
       {!hideAddress && <p className="text-muted m-0 text-small"><Address address={address} length={5}/></p>}
       <p className="m-0 text-small font-weight-medium">

@@ -39,10 +39,11 @@ import events from '../../features/events';
 import prices from '../../features/prices';
 import emailNotifications from "../../features/emailNotifications";
 import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
-import "./index.scss";
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 import {withTranslation, Trans} from "react-i18next";
 import ConnectWallet from '../../components/ConnectWallet';
+
+import "./index.scss";
 
 const {toBN} = web3.utils;
 
@@ -64,7 +65,7 @@ class Escrow extends Component {
     if(e) e.preventDefault();
     this.setState({displayDialog: show});
     return false;
-  }
+  };
 
 
   loadData() {
@@ -216,7 +217,8 @@ class Escrow extends Component {
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
 
     return (<Fragment>
-      {!this.props.isSubscribed && !this.state.hideNotifBox && <div className="rounded shadow p-3 position-relative" onClick={this.goToEmailPage}>
+      {!this.props.isSubscribed && !this.state.hideNotifBox && !this.props.refusedEmailNotifications &&
+      <div className="rounded shadow p-3 position-relative clickable" onClick={this.goToEmailPage}>
         <img alt="close" src={closeIcon} className="close-email-notification-box clickable" width={25} height={25}
              onClick={() => this.setState({hideNotifBox: true})}/>
         <RoundedIcon image={bellIcon} bgColor="blue" className="float-left mr-3"/>
@@ -302,7 +304,7 @@ class Escrow extends Component {
               />
       </div>
 
-      <EscrowDetail escrow={escrow} 
+      <EscrowDetail escrow={escrow}
                     arbitrationDetails={arbitrationDetails}
                     isBuyer={isBuyer}
                     onClickChat={this.displayDialog}
@@ -314,7 +316,7 @@ class Escrow extends Component {
         <Trans i18nKey="contactDialog.contactMethod" values={{username: this.getUserInfo(escrow).username, contactMethod: ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}}>
           {this.getUserInfo(escrow).username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}</span>
         </Trans>
-        
+
         <Row noGutters className="mt-4">
           <Col xs={9}>
             <Input type="text"
@@ -393,6 +395,7 @@ Escrow.propTypes = {
   gasPrice: PropTypes.string,
   feeMilliPercent: PropTypes.string,
   isSubscribed: PropTypes.bool,
+  refusedEmailNotifications: PropTypes.bool,
   checkEmailSubscription: PropTypes.func,
   setRedirectTarget: PropTypes.func,
   isStatus: PropTypes.bool,
@@ -417,6 +420,7 @@ const mapStateToProps = (state, props) => {
     tokenAllowance: approval.selectors.getTokenAllowance(state),
     approvalTxHash: approval.selectors.txHash(state),
     approvalError: approval.selectors.error(state),
+    refusedEmailNotifications: emailNotifications.selectors.refusedEmailNotifications(state),
     tokens: network.selectors.getTokens(state),
     isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     loading: theEscrow && ((theEscrow.cancelStatus === States.pending || theEscrow.rateStatus === States.pending) ||
