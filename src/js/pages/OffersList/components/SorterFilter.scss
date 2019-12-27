@@ -41,6 +41,16 @@ $filter-modal-padding: 16px;
   .filter-menu-slider {
     width: 970px;
 
+    @media screen and (min-width: 560px) {
+      width: auto;
+      transform: none !important;
+      margin-bottom: -1rem;
+
+      .btn {
+        margin-bottom: 1rem;
+      }
+    }
+
     svg {
       fill: $blue;
     }
