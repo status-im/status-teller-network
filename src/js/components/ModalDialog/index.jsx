@@ -8,7 +8,7 @@ const ModalDialog = ({display, onClose, children, buttonText, hideButton}) => (
       <div className="p-4">
       {children}
       </div>
-      {!hideButton && <Button onClick={onClose} className="btn-primary m-2">{buttonText || 'Ok'}</Button>}
+      {!hideButton && <Button onClick={onClose} color="primary" className="m-2">{buttonText || 'Ok'}</Button>}
     </ModalBody>
   </Modal>
 );
