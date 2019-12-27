@@ -34,6 +34,7 @@
   },
   "general": {
     "buyer": "Buyer",
+    "buy": "Buy",
     "seller": "Seller",
     "smallCaseBuyer": "buyer",
     "smallCaseSeller": "seller",

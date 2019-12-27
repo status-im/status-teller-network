@@ -20,7 +20,7 @@ const LandingFooter = ({t}) => (
       <Col xs={6} md={3} className="order-1 order-md-0">
         <h5>{t('home.footer.documentation')}</h5>
         <ul>
-          <li><Link to="offer/list">{t('home.footer.gettingStarted')}</Link></li>
+          <li><Link to="buy">{t('home.footer.gettingStarted')}</Link></li>
         </ul>
       </Col>
 

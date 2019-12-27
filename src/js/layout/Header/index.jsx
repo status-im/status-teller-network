@@ -48,7 +48,7 @@ const Header = ({t, location, history}) => {
                 </NavLink>}
 
                 {isProfile &&
-                <NavLink onClick={() => history.go(-1)}>
+                <NavLink className="clickable" onClick={() => history.go(-1)}>
                   <img src={iconCloseProfile} alt="Home" width="32" height="32"/>
                 </NavLink>}
               </NavItem>
