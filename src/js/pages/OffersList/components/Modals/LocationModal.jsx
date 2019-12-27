@@ -14,8 +14,13 @@ class LocationModal extends Component {
     this.locationInput = React.createRef();
   }
 
-  componentDidUpdate() {
-    this.locationInput.current.focus();
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.locationInput && this.locationInput.current) {
+        // Focus after the element in mounted
+        this.locationInput.current.focus();
+      }
+    }, 500);
   }
 
   onChange = (e) => {

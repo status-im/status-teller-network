@@ -130,7 +130,7 @@ class SorterFilter extends Component {
               <CurrencyIcon className="mr-2"/>{this.props.selectedCurrency ? this.props.selectedCurrency : t('filter.currency')}
             </Button>
             {this.props.selectedCurrency && <Button className={classnames("p-2 px-3 mr-3", {inactive: this.props.amountFilter === -1})} onClick={this.openAmountModal}>
-              <TransferIcon className="mr-2"/>{this.props.amountFilter !== -1 ? `${this.props.amountFilter} ${this.props.selectedCurrency}` : t('filter.Amount')}
+              <TransferIcon className="mr-2"/>{this.props.amountFilter !== -1 ? `${this.props.amountFilter} ${this.props.selectedCurrency}` : t('filter.amount')}
             </Button>}
             <Button className={classnames("p-2 px-3 mr-3", {inactive: !this.props.contactMethodFilter})} onClick={this.contactMethodModal}>
               <ChatIcon className="mr-2"/>{this.props.contactMethodFilter ? this.props.contactMethodFilter : t('filter.contactMethod')}
