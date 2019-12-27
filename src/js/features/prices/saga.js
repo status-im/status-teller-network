@@ -110,6 +110,7 @@ function *fetchAllTokenPrices() {
         console.error('Error getting price data for', currency, response.data || response.error);
         continue;
       }
+      // eslint-disable-next-line no-loop-func
       response.data.forEach(coinMarkerInfo => {
         const id = coinMarkerInfo.id;
         if (!data[coinGeckoIds[id]]) {
