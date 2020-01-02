@@ -34,8 +34,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     
     event Rating(uint indexed offerId, address indexed participant, uint indexed escrowId, uint rating, bool ratingSeller);
 
-    bool internal _initialized;
-
     /**
      * @param _relayer EscrowRelay contract address
      * @param _fallbackArbitrator Default arbitrator to use after timeout on solving arbitrations

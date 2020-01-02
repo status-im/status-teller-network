@@ -1,82 +1,106 @@
 /* eslint-disable complexity */
 const async = require('async');
 
-module.exports = async (GAS_PRICE, licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
+const estimateAndSend = (from, gasPrice) => async (toSend, value = 0) => {
+  const estimatedGas = await toSend.estimateGas({from, value});
+  return toSend.send({from, gasPrice, value, gas: estimatedGas + 10000});
+};
+
+module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
   try {
+    const networkId = await deps.web3.eth.net.getId();
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
+    const sendTrxAccount0 = estimateAndSend(main, gasPrice);
 
+    {
+      console.log("Verifying if data script has been run already...");
+      const cVerif = new deps.web3.eth.Contract(deps.contracts.Escrow.options.jsonInterface, deps.contracts.EscrowProxy.options.address);
+      const isInitialized = await cVerif.methods.isInitialized().call();
+      if (isInitialized) {
+        console.log('- Data script already ran once.');
+        console.log('- If you want to run it again (eg you updated the Escrow contract), use `embark reset`');
+        return;
+      }
+    }
 
-    const balance = await deps.contracts.SNT.methods.balanceOf(main).call();
-    if (balance !== '0') {
-      console.log('Data script already ran once.');
-      console.log('If you want to run it again (eg you updated the Escrow contract), use `embark reset`');
-      return;
+    {
+      console.log("Setting RelayHub address in EscrowRelay");
+      let receipt;
+      receipt = await sendTrxAccount0(deps.contracts.EscrowRelay.methods.setRelayHubAddress(deps.contracts.RelayHub.options.address));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
+    }
+
+    if(networkId === 4 || networkId === 3) {
+      let receipt;
+      console.log("Depositing 0.1 ETH in GSN RelayHub");
+      receipt = await sendTrxAccount0(deps.contracts.RelayHub.methods.depositFor(deps.contracts.EscrowRelay.options.address), deps.web3.utils.toWei("0.1", "ether"));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     if(mainnetOwner){
-      console.log('Setting ownership of 6 contracts');
+      console.log("Setting ownership of 6 contracts");
       let receipt;
-      receipt = await deps.contracts.Escrow.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`1/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`2/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`3/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`4/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`5/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.EscrowRelay.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`6/6 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.transferOwnership(mainnetOwner));
+      console.log('- 1/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 2/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 3/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner));
+      console.log('- 4/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner));
+      console.log('- 5/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.EscrowRelay.methods.transferOwnership(mainnetOwner));
+      console.log('- 6/6: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
     }
 
 
     {
-      console.log('Setting the initial SellerLicense "template", and calling the init() function');
+      console.log("Setting the initial SellerLicense template calling the init() function");
       deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
-      const receipt = await deps.contracts.SellerLicense.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.init(
         deps.contracts.SNT.options.address,
         licensePrice,
         burnAddress
-      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      ));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
 
     {
-      console.log('Setting the initial ArbitrationLicense "template", and calling the init() function');
+      console.log("Setting the initial ArbitrationLicense template calling the init() function");
       deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
-      const receipt = await deps.contracts.ArbitrationLicense.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.init(
         deps.contracts.SNT.options.address,
         arbitrationLicensePrice,
         burnAddress
-      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      ));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     {
-      console.log('Setting the initial MetadataStore "template", and calling the init() function');
+      console.log("Setting the initial MetadataStore template calling the init() function");
       deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
-      const receipt = await deps.contracts.MetadataStore.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.MetadataStore.methods.init(
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address
-      ).send({from: main, gas: 1000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      ));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     {
-      console.log('Setting the initial Escrow "template", and calling the init() function');
+      console.log("Setting the initial Escrow template calling the init() function");
       deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
-      const receipt = await deps.contracts.Escrow.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.init(
         fallbackArbitrator || main,
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.MetadataStoreProxy.options.address,
         burnAddress, // TODO: replace with StakingPool address
         feeMilliPercent
-      ).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      ));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
@@ -85,49 +109,67 @@ module.exports = async (GAS_PRICE, licensePrice, arbitrationLicensePrice, feeMil
     deps.contracts.MetadataStore.options.address = deps.contracts.MetadataStoreProxy.options.address;
 
     {
-      console.log('Setting the escrow proxy address in MetadataStore');
-      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      console.log("Setting the escrow proxy address in MetadataStore");
+      const receipt = await sendTrxAccount0(deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     {
-      console.log('Setting the EscrowRelay address in MetadataStore');
-      const receipt = await deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      console.log("Setting the EscrowRelay address in MetadataStore");
+      const receipt = await sendTrxAccount0(deps.contracts.MetadataStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
+      console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
 
     if(mainnetOwner){
-      console.log('Setting ownership of 4 proxy');
+      console.log("Setting ownership of 4 proxy");
       let receipt;
-      receipt = await deps.contracts.Escrow.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`1/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`2/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`3/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
-      receipt = await deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner).send({from: main, gas: 2000000, gasPrice: GAS_PRICE});
-      console.log(`4/4 Setting done and was a ${(receipt.status === true || receipt.status === 1) ? 'success' : 'failure'}`);
+      receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.transferOwnership(mainnetOwner));
+      console.log('- 1/4: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 2/4: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 3/4: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.MetadataStore.methods.transferOwnership(mainnetOwner));
+      console.log('- 4/4: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
     }
+
+    if(networkId === 1 || networkId === 4 || networkId === 3) {
+      console.log("DONE ======================================================================================================");
+
+      const rhBalance = await deps.contracts.RelayHub.methods.balanceOf(deps.contracts.EscrowRelay.options.address).call();
+      console.log(`- The GSN Balance for EscrowRelay is ${rhBalance} wei`);
+      console.log("- Deposit some ETH on GSN relay with:");
+      console.log(`> RelayHub.methods.depositFor(EscrowRelay.options.address).send({value: web3.utils.toWei("0.01", "ether")})`);
+      return;
+    }
+
+
+    // Seeding data only on dev environment
+
+    console.log("Seeding data...");
 
     const arbitrator = addresses[9];
 
     const sntToken = 10000000;
 
-    console.log("Seeding data...");
-
     console.log('Send ETH...');
     const value = 100 * Math.pow(10, 18);
     let startNonce = await deps.web3.eth.getTransactionCount(main, undefined);
+    try {
     await Promise.all(addresses.slice(1, 10).map(async (address, idx) => {
       return deps.web3.eth.sendTransaction({
         to: address,
         from: main,
         value: value.toString(),
-        nonce: startNonce + idx
+        nonce: startNonce + idx,
+        gas: 21000
       });
     }));
-
+  } catch(ex){
+    console.log(ex);
+    return;
+  }
 
     console.log('Generate SNT...');
     await async.eachLimit(addresses, 1, async (address) => {

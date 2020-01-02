@@ -116,11 +116,7 @@ module.exports = {
       },
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub'],
-        onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 1000000000000000000})"
-        ]
+        deps: ['RelayHub']
       },
       Escrow: {
         args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
@@ -211,7 +207,7 @@ module.exports = {
       protocol: 'https',
       type: "rpc"
     },
-    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, FALLBACK_ARBITRATOR),
     dappConnection: ["$WEB3"],
     contracts: {
       StandardToken: { deploy: false },
@@ -226,11 +222,7 @@ module.exports = {
       },
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub'],
-        onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: " + GAS_PRICE + "})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000, gasPrice: " + GAS_PRICE + "})"
-        ]
+        deps: ['RelayHub']
       }
     }
   },
@@ -241,11 +233,7 @@ module.exports = {
     contracts: {
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub'],
-        onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send({gasPrice: 20000000000, gas: 1000000})",
-          "RelayHub.methods.depositFor('$EscrowRelay').send({gasPrice: 20000000000, value: 1000000, gas: 1000000})"
-        ]
+        deps: ['RelayHub']
       },
       Escrow: {
         args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicenseProxy", "$MetadataStoreProxy", BURN_ADDRESS, FEE_MILLI_PERCENT]
@@ -322,18 +310,8 @@ module.exports = {
       },
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub'],
-        onDeploy: [
-          "EscrowRelay.methods.setRelayHubAddress('$RelayHub').send()"
-          // ,
-          // "RelayHub.methods.depositFor('$EscrowRelay').send({value: 10000000000000000})" // Deposit for GSN
-        ]
+        deps: ['RelayHub']
       }
     }
   }
-
-  // you can name an environment with specific settings and then specify with
-  // "embark run custom_name" or "embark blockchain custom_name"
-  //custom_name: {
-  //}
 };

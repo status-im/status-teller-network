@@ -42,8 +42,6 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
 
-    bool internal _initialized;
-
     event OfferAdded(
         address owner,
         uint256 offerId,
