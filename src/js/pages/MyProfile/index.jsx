@@ -88,7 +88,7 @@ class MyProfile extends Component {
 
     if(!profile) return <Loading page={true} />;
 
-    const activeOffers = profile.offers.filter(x => !x.deleted).length;
+    const activeOffers = profile.offers.filter(x => !x.deleted && !addressCompare(x.arbitrator, zeroAddress)).length;
     const pendingRequests = requests.reduce((a, b) => a + (b.status === arbitration.constants.AWAIT ? 1 : 0), 0);
     const openDisputes = this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address));
     const activeTrades = trades.filter(x => !escrow.helpers.completedStates.includes(x.status)).length;

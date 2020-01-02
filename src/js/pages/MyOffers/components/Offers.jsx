@@ -9,6 +9,7 @@ import ConfirmDialog from "../../../components/ConfirmDialog";
 import {CURRENCY_DATA} from "../../../constants/currencies";
 import classnames from 'classnames';
 import iconDelete from '../../../../images/delete.svg';
+import { addressCompare, zeroAddress } from '../../../utils/address';
 
 class Offers extends Component {
   state = {
@@ -72,7 +73,7 @@ class Offers extends Component {
           <Row>
             <dl className="col-12">
               <dt>Arbitrator</dt>
-              <dd>{offer.arbitratorData ? offer.arbitratorData.username : t('offers.noUsername')} ({offer.arbitrator})</dd>
+              <dd>{offer.arbitratorData ? (offer.arbitratorData.username || t('offers.noUsername')) : t('offers.noArbitrator')} ({offer.arbitrator})</dd>
             </dl>
           </Row>
         </CardBody>
@@ -91,8 +92,8 @@ class Offers extends Component {
 
   render() {
     const {t, offers} = this.props;
-    const activeOffers = offers.filter(x => !x.deleted);
-    const inactiveOffers = offers.filter(x => x.deleted);
+    const activeOffers = offers.filter(x => !x.deleted && !addressCompare(x.arbitrator, zeroAddress));
+    const inactiveOffers = offers.filter(x => x.deleted || addressCompare(x.arbitrator, zeroAddress));
 
     return (
       <div className="mt-3">

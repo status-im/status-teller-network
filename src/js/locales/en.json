@@ -262,6 +262,7 @@
     "rate": "Rate",
     "locationLoading": "Calculating location distance...",
     "noUsername": "No Username",
+    "noArbitrator": "No arbitrator",
     "deleteOffer": "Delete offer",
     "hiddenOffers": "Other assets are hidden until you have ETH in your wallet"
   },
