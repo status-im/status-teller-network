@@ -7,11 +7,14 @@ import {withTranslation} from "react-i18next";
 
 import logoWhite from "../../../images/teller-logo-white.svg";
 import iconProfile from "../../../images/profile.svg";
+import iconProfileActionNeeded from "../../../images/profile-action-needed.svg";
 import iconCloseProfile from "../../../images/close_profile.svg";
 
 import "./index.scss";
+import {connect} from "react-redux";
+import escrow from "../../features/escrow";
 
-const Header = ({t, location, history}) => {
+const Header = ({t, location, history, actionNeeded}) => {
   if (location.pathname === '/') {
     // Not this header on the landing page
     return null;
@@ -43,8 +46,11 @@ const Header = ({t, location, history}) => {
             <Nav className="hamburger-nav" navbar>
               <NavItem>
                 {!isProfile &&
-                <NavLink tag={Link} to="/profile">
-                  <img src={iconProfile} alt="Profile" width="32" height="32"/>
+                <NavLink tag={Link} to="/profile" className="mt-1">
+                  <img src={actionNeeded ? iconProfileActionNeeded : iconProfile}
+                       alt="Profile"
+                       width="22"
+                       height="19"/>
                 </NavLink>}
 
                 {isProfile &&
@@ -63,7 +69,15 @@ const Header = ({t, location, history}) => {
 Header.propTypes = {
   t: PropTypes.func,
   history: PropTypes.object,
-  location: PropTypes.object
+  location: PropTypes.object,
+  actionNeeded: PropTypes.bool
 };
 
-export default withRouter(withTranslation()(Header));
+const mapStateToProps = (state) => ({
+  actionNeeded: escrow.selectors.actionNeeded(state)
+});
+
+export default connect(
+  mapStateToProps,
+  {}
+)(withRouter(withTranslation()(Header)));
