@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+/*global web3*/
 
 import {
   GET_DISPUTED_ESCROWS_SUCCEEDED,
@@ -59,7 +60,7 @@ import {
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
-import {zeroAddress} from '../../utils/address';
+import {toChecksumAddress, zeroAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
   escrows: [], arbitration: null, arbitrators: {}, licenseOwner: false, acceptAny: false,
@@ -70,6 +71,18 @@ const DEFAULT_STATE = {
   arbitratorRequests: [],
   blacklistedSellers: []
 };
+
+function isActionNeeded(escrows) {
+  const defaultAccount = web3.eth.defaultAccount;
+  // Check the trade status to see if there are actions needed
+  const actionNeeded = Object.values(escrows).find(escrow => {
+    if (toChecksumAddress(defaultAccount) !== toChecksumAddress(escrow.arbitration.arbitrator)) {
+      return false;
+    }
+    return escrow.arbitration.open;
+  });
+  return !!actionNeeded;
+}
 
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
@@ -97,7 +110,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           escrows: action.escrows,
-          loading: false
+          loading: false,
+          actionNeeded: isActionNeeded(action.escrows)
         }
       };
     case CANCEL_DISPUTE_SUCCEEDED:
@@ -168,7 +182,8 @@ function reducer(state = DEFAULT_STATE, action) {
           },
           errorGet: '',
           loading: false
-        }
+        },
+        actionNeeded: isActionNeeded(escrowsClone)
       };
     }
     case LOAD_ARBITRATION_SUCCEEDED:

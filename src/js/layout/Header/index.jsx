@@ -1,9 +1,12 @@
 import React from 'react';
 import {Link, withRouter} from "react-router-dom";
+import {connect} from "react-redux";
 import PropTypes from 'prop-types';
 import {Navbar, NavbarBrand, Nav, NavLink, NavItem, Button, Row, Col} from 'reactstrap';
 import classnames from 'classnames';
 import {withTranslation} from "react-i18next";
+import escrow from "../../features/escrow";
+import arbitration from "../../features/arbitration";
 
 import logoWhite from "../../../images/teller-logo-white.svg";
 import iconProfile from "../../../images/profile.svg";
@@ -11,8 +14,6 @@ import iconProfileActionNeeded from "../../../images/profile-action-needed.svg";
 import iconCloseProfile from "../../../images/close_profile.svg";
 
 import "./index.scss";
-import {connect} from "react-redux";
-import escrow from "../../features/escrow";
 
 const Header = ({t, location, history, actionNeeded}) => {
   if (location.pathname === '/') {
@@ -74,7 +75,7 @@ Header.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  actionNeeded: escrow.selectors.actionNeeded(state)
+  actionNeeded: escrow.selectors.actionNeeded(state) || arbitration.selectors.actionNeeded(state)
 });
 
 export default connect(
