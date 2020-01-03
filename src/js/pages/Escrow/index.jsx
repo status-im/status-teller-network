@@ -21,7 +21,7 @@ import ErrorInformation from "../../components/ErrorInformation";
 import {Col, Row, Input, Button} from 'reactstrap';
 import RoundedIcon from "../../ui/RoundedIcon";
 import exclamationCircle from "../../../images/exclamation-circle.png";
-import checkCircle from "../../../images/check-circle.svg";
+import {ReactComponent as checkCircle} from '../../../images/check-circle.svg';
 import canceledIcon from "../../../images/cancel.svg";
 import bellIcon from "../../../images/bell.svg";
 import closeIcon from "../../../images/close_profile.svg";
@@ -226,45 +226,47 @@ class Escrow extends Component {
         <p className="text-muted mb-0 text-small">{t('escrow.page.getNotifs')}</p>
       </div>}
 
-      {arbitrationDetails.open && <Row className="mt-4">
-        <Col xs="2">
-          <RoundedIcon image={exclamationCircle} bgColor="red"/>
-        </Col>
-        <Col xs="10 my-auto text-danger">
-          <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
-        </Col>
-      </Row>}
+      <div className="escrow-warnings-and-infos">
+        {arbitrationDetails.open && <Row className="mt-4">
+          <Col xs="2">
+            <RoundedIcon image={exclamationCircle} bgColor="red"/>
+          </Col>
+          <Col xs="10 my-auto text-danger">
+            <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
+          </Col>
+        </Row>}
 
-      {((!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
-         (isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
-      <Row className="mt-4">
-        <Col xs="2">
-          <RoundedIcon image={exclamationCircle} bgColor="red"/>
-        </Col>
-        <Col xs="10 my-auto text-danger">
-          <p className="m-0">{t('escrow.page.arbiRuledAgainst')}</p>
-        </Col>
-      </Row>}
+        {((!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
+          (isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
+        <Row className="mt-4">
+          <Col xs="2">
+            <RoundedIcon image={exclamationCircle} bgColor="red"/>
+          </Col>
+          <Col xs="10 my-auto text-danger">
+            <p className="m-0">{t('escrow.page.arbiRuledAgainst')}</p>
+          </Col>
+        </Row>}
 
-      {((isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
-         (!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
-      <Row className="mt-4">
-        <Col xs="2">
-          <RoundedIcon image={checkCircle} className="disputeSuccess" />
-        </Col>
-        <Col xs="10 my-auto text-success">
-          <p className="m-0">{t('escrow.page.arbiRuledFor')}</p>
-        </Col>
-      </Row>}
+        {((isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
+          (!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
+        <Row className="mt-4">
+          <Col xs="2">
+            <RoundedIcon imageComponent={checkCircle} className="disputeSuccess" size="sm" bgColor="green"/>
+          </Col>
+          <Col xs="10 my-auto text-success">
+            <p className="m-0">{t('escrow.page.arbiRuledFor')}</p>
+          </Col>
+        </Row>}
 
-      {escrow.status === escrowF.helpers.tradeStates.canceled && <Row className="mt-4">
-      <Col xs="2">
-        <RoundedIcon image={canceledIcon} bgColor="red"/>
-      </Col>
-      <Col xs="10 my-auto text-danger">
-        <p className="m-0">{t('escrow.page.tradeWasCanceled')}</p>
-      </Col>
-      </Row>}
+        {escrow.status === escrowF.helpers.tradeStates.canceled && <Row className="mt-4">
+          <Col xs="2">
+            <RoundedIcon image={canceledIcon} bgColor="red"/>
+          </Col>
+          <Col xs="10 my-auto text-danger">
+            <p className="m-0">{t('escrow.page.tradeWasCanceled')}</p>
+          </Col>
+        </Row>}
+      </div>
 
       <div className={classnames("escrow", {'escrow-disabled': arbitrationDetails.open})}>
         <FundingEscrow

@@ -31,7 +31,7 @@ const UserInfoRow = ({address, user = {}, lastCol, hideAddress, lastColSize}) =>
         </Fragment>}
       </p>
     </Col>
-    <Col xs={lastColSize} className="text-center">
+    <Col xs={lastColSize} className="text-center ml-auto">
       {lastCol}
     </Col>
   </Row>;

@@ -41,6 +41,16 @@ $filter-modal-padding: 16px;
   .filter-menu-slider {
     width: 970px;
 
+    @media screen and (min-width: 560px) {
+      width: auto;
+      transform: none !important;
+      margin-bottom: -1rem;
+
+      .btn {
+        margin-bottom: 1rem;
+      }
+    }
+
     svg {
       fill: $blue;
     }
@@ -51,6 +61,21 @@ $filter-modal-padding: 16px;
 
       svg {
         fill: $dark;
+      }
+    }
+
+    .btn {
+      border-color: $secondary;
+
+      &:focus, &:hover {
+        box-shadow: none;
+        border-color: $secondary;
+
+        &:not(.inactive) {
+          color: $primary;
+          background-color: $light-blue;
+          border-color: $light-blue;
+        }
       }
     }
   }
@@ -78,6 +103,12 @@ $filter-modal-padding: 16px;
     right: $filter-modal-padding;
     border-radius: 40px;
     z-index: 1000;
+
+    &:hover {
+      background-color: $light-blue;
+      border-color: $light-blue;
+      color: $blue;
+    }
   }
 
   .modal-content .modal-body {

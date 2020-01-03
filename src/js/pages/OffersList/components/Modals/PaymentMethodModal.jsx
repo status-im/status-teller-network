@@ -32,6 +32,7 @@ const PaymentMethodModal = ({t, onClose, paymentMethodFilter, setPaymentMethodFi
         {Object.keys(PAYMENT_METHODS).filter(x => POPULAR_PAYMENT_METHODS_INDEXES.indexOf(parseInt(x, 10)) === -1).map((index) => (
           <Fragment key={'paymentMethod-' + index}>
             <CheckButton active={index === paymentMethodFilter}
+                         className="mt-2"
                          key={'paymentMethod-' + index}
                          onClick={(_e) => {
                            setPaymentMethodFilter(index);

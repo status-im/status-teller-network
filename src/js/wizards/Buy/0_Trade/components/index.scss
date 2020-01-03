@@ -13,16 +13,19 @@
         font-size: 12px;
     }
 
-    .addr {
+    .seller-info, .reputation {
         font-size: 15px;
     }
 
     .reputation {
         font-weight: 500;
-        font-size: 14px;
     }
 
     .info-btn {
-        padding: 0px 3px 2px 3px;
+        padding: 0 3px 2px 3px;
+    }
+
+    .arbitrator-info {
+        font-size: 12px;
     }
 }

@@ -23,7 +23,7 @@ class SellerAssets extends Component {
         {(!this.props.isEip1102Enabled || !this.props.address) && <Fragment>
           <p>{this.props.t('ethereumEnable.createOffer')}</p>
           <img src={noCryptoImg} alt="No crypto list" className="d-block mx-auto"/>
-          <Button className="d-block mx-auto" onClick={this.props.enableEip1102}>{this.props.t('connectWallet.connect')}</Button>
+          <Button color="primary" className="d-block mx-auto" onClick={this.props.enableEip1102}>{this.props.t('connectWallet.connect')}</Button>
         </Fragment>}
 
         {(this.props.isEip1102Enabled && this.props.address) &&

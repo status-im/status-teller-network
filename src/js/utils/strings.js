@@ -45,7 +45,7 @@ export function renderContactDetails(t, contactData, address, className = '') {
       {contactObj.method && <p className={"text-muted text-small addr " + className}>
         {t('general.contactMethod')}: {contactObj.method}
       </p>}
-      <p className="text-muted text-small addr mb-0">
+      <p className={"text-muted text-small addr mb-0 " + className}>
       {t('general.address')}: <Address disableHover address={address} length={6}/>
       </p>
     </Fragment>

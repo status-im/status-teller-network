@@ -67,7 +67,7 @@ return <Fragment>
         <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
         <p className="font-weight-medium mb-1 name">{seller.username}</p>
       </div>
-      {renderContactDetails(t, seller.contactData, sellerAddress, 'mb-0')}
+      {renderContactDetails(t, seller.contactData, sellerAddress, 'mb-0 seller-info')}
       <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-2">{t('general.trades')}</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
 
       <h3 className="mt-4 font-weight-normal">{t('general.arbitrator')} <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
@@ -76,7 +76,7 @@ return <Fragment>
           <Identicon seed={arbitratorAddress} className="rounded-circle border mr-1 float-left" scale={5}/>
           {formatArbitratorName(arbitrator, arbitratorAddress)}
         </div>
-        {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0')}
+        {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
       </div>
 
       <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
@@ -94,19 +94,6 @@ return <Fragment>
         <FormGroup>
           <Row>
             <Col xs={12} sm={12}>
-              <Input type="text"
-                     name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
-                     data-maxvalue={parseFloat(maxToken) || ''}
-                     data-minvalue={parseFloat(minToken) || ''}
-                     validations={[isNumber, lowerEqThan, higherEqThan]}
-                     placeholder={t('buyer.offerTrade.assetQuantity')} onChange={(e) => onAssetChange(e.target.value)} step="any"/>
-              <span className="input-icon mr-3">{asset}</span>
-            </Col>
-          </Row>
-        </FormGroup>
-        <FormGroup>
-          <Row>
-            <Col xs={12} sm={12}>
               <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
                      data-maxvalue={limitless ? '' : maxFiat}
                      data-minvalue={0}
@@ -117,14 +104,27 @@ return <Fragment>
             </Col>
           </Row>
         </FormGroup>
+        <FormGroup>
+          <Row>
+            <Col xs={12} sm={12}>
+              <Input type="text"
+                     name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
+                     data-maxvalue={parseFloat(maxToken) || ''}
+                     data-minvalue={parseFloat(minToken) || ''}
+                     validations={[isNumber, lowerEqThan, higherEqThan]}
+                     placeholder={t('buyer.offerTrade.assetQuantity')} onChange={(e) => onAssetChange(e.target.value)} step="any"/>
+              <span className="input-icon mr-3">{asset}</span>
+            </Col>
+          </Row>
+        </FormGroup>
         { limitless && <p className="mt-3 limits">
-          <Trans 
-            i18nKey="buyer.offerTrade.limits" 
+          <Trans
+            i18nKey="buyer.offerTrade.limits"
             values={{
               min: limitDecimals(minToken),
               max: limitDecimals(maxToken),
               symbol: asset
-            }} 
+            }}
           >
             Limits: {{min: limitDecimals(minToken)}} {{symbol: asset}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: asset}}</span>
           </Trans>
@@ -135,7 +135,7 @@ return <Fragment>
         { !limitless && <Fragment>
             { amountGreaterThanBalance && <FormFeedback className="d-block">{t('buyer.offerTrade.amountWarning')}</FormFeedback> }
             <p className="mt-3 limits">
-              <Trans 
+              <Trans
                i18nKey="buyer.offerTrade.limits"
                values={{
                 min: limitDecimals(minFiat),
@@ -144,7 +144,7 @@ return <Fragment>
               }}>
               Limits: {{min: limitDecimals(minFiat)}} {{symbol: currency.id}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: currency.id}}</span>
               </Trans>
-            </p>  
+            </p>
           </Fragment>
         }
         {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}

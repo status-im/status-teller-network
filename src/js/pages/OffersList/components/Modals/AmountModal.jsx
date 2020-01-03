@@ -14,8 +14,13 @@ class AmountModal extends Component {
     this.amountInput = React.createRef();
   }
 
-  componentDidUpdate() {
-    this.amountInput.current.focus();
+  componentDidMount() {
+    setTimeout(() => {
+      if (this.amountInput && this.amountInput.current) {
+        // Focus after the element in mounted
+        this.amountInput.current.focus();
+      }
+    }, 500);
   }
 
   onChange = (e) => {

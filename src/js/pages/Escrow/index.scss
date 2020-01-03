@@ -6,7 +6,9 @@
   background-repeat: no-repeat;
   background-position-y: 30px;
   background-position-x: 6px;
+}
 
+.escrow, .escrow-warnings-and-infos {
   &.escrow-disabled {
     opacity: 0.4;
   }
@@ -29,13 +31,23 @@
     background: #fff;
   }
 
-  .row .col-1:first-child {
-    max-width: 35px;
+  @media screen and (min-width: 500px) {
+    .row .col-1:first-child {
+      max-width: 35px;
+    }
+
+    .row .col-2:first-child {
+      max-width: 55px;
+    }
   }
 }
 
 .disputeSuccess {
   background-color: #ECFAEF;
+
+  svg {
+    fill: $green;
+  }
 }
 
 .disabled-gray {
