@@ -31,10 +31,14 @@ const DEFAULT_STATE = {
 };
 
 function isActionNeeded(escrows) {
-  const defaultAccount = web3.eth.defaultAccount;
+  const defaultAccount = toChecksumAddress(web3.eth.defaultAccount);
   // Check the trade status to see if there are actions needed
   const actionNeeded = Object.values(escrows).find(trade => {
-    const isBuyer = toChecksumAddress(defaultAccount) === toChecksumAddress(trade.buyer);
+    const isBuyer = defaultAccount === toChecksumAddress(trade.buyer);
+    if (!isBuyer && defaultAccount !== toChecksumAddress(trade.offer.owner)) {
+      // not buyer nor seller
+      return false;
+    }
     switch (trade.status) {
       case escrowStatus.CREATED: return !isBuyer;
       case escrowStatus.FUNDED: return isBuyer;
