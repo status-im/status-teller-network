@@ -2,6 +2,7 @@ import React from 'react';
 import {Link, withRouter} from "react-router-dom";
 import {connect} from "react-redux";
 import PropTypes from 'prop-types';
+import {withLastLocation} from 'react-router-last-location';
 import {Navbar, NavbarBrand, Nav, NavLink, NavItem, Button, Row, Col} from 'reactstrap';
 import classnames from 'classnames';
 import {withTranslation} from "react-i18next";
@@ -15,7 +16,14 @@ import iconCloseProfile from "../../../images/close_profile.svg";
 
 import "./index.scss";
 
-const Header = ({t, location, history, actionNeeded}) => {
+function goBack(history, lastLocation) {
+  if (lastLocation && lastLocation.hash.includes('profile')) {
+    return history.push('/buy');
+  }
+  history.go(-1);
+}
+
+const Header = ({t, location, history, actionNeeded, lastLocation}) => {
   if (location.pathname === '/') {
     // Not this header on the landing page
     return null;
@@ -55,7 +63,7 @@ const Header = ({t, location, history, actionNeeded}) => {
                 </NavLink>}
 
                 {isProfile &&
-                <NavLink className="clickable" onClick={() => history.go(-1)}>
+                <NavLink className="clickable" onClick={() => goBack(history, lastLocation)}>
                   <img src={iconCloseProfile} alt="Home" width="32" height="32"/>
                 </NavLink>}
               </NavItem>
@@ -71,6 +79,7 @@ Header.propTypes = {
   t: PropTypes.func,
   history: PropTypes.object,
   location: PropTypes.object,
+  lastLocation: PropTypes.object,
   actionNeeded: PropTypes.bool
 };
 
@@ -78,7 +87,6 @@ const mapStateToProps = (state) => ({
   actionNeeded: escrow.selectors.actionNeeded(state) || arbitration.selectors.actionNeeded(state)
 });
 
-export default connect(
-  mapStateToProps,
-  {}
-)(withRouter(withTranslation()(Header)));
+export default withRouter(connect(
+  mapStateToProps
+)(withTranslation()(withLastLocation(Header))));
