@@ -205,7 +205,7 @@ export function *doLoadEscrows({address}) {
       return escrow;
     }));
 
-    yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows: escrows});
+    yield put({type: LOAD_ESCROWS_SUCCEEDED, escrows});
   } catch (error) {
     console.error(error);
     yield put({type: LOAD_ESCROWS_FAILED, error: error.message});

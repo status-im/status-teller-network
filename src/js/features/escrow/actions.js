@@ -1,6 +1,6 @@
 /*global web3*/
 import {
-  CREATE_ESCROW, LOAD_ESCROWS, RELEASE_ESCROW, CANCEL_ESCROW,
+  CREATE_ESCROW, RELEASE_ESCROW, CANCEL_ESCROW,
   RATE_TRANSACTION, PAY_ESCROW, OPEN_CASE, OPEN_CASE_SIGNATURE, PAY_ESCROW_SIGNATURE, CLOSE_DIALOG,
   ADD_USER_RATING, USER_RATING, GET_ESCROW, FUND_ESCROW, RESET_STATUS,
   WATCH_ESCROW, WATCH_ESCROW_CREATIONS, CLEAR_NEW_ESCROW, GET_LAST_ACTIVITY, RESET_CREATE_STATUS,
@@ -53,8 +53,6 @@ export const fundEscrow = (escrow) => {
 export const releaseEscrow = (escrowId) => ({ type: RELEASE_ESCROW, escrowId, toSend: Escrow.methods.release(escrowId) });
 
 export const payEscrow = (escrowId) => ({ type: PAY_ESCROW, escrowId, toSend: Escrow.methods.pay(escrowId) });
-
-export const loadEscrows = (address) => ({ type: LOAD_ESCROWS, address });
 
 export const getEscrow = (escrowId) => ({ type: GET_ESCROW, escrowId });
 

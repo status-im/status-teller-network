@@ -56,6 +56,8 @@ export const txHash = state => state.escrow.txHash;
 export const newEscrow = state => state.escrow.newEscrow;
 export const changedEscrow = state => state.escrow.changedEscrow;
 
+export const actionNeeded = state => state.escrow.actionNeeded;
+
 // TODO: move to new UI
 export const receipt = state => state.escrow.receipt;
 export const error = state => state.escrow.error;

@@ -98,7 +98,7 @@ class MyProfile extends Component {
         <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation}
                          identiconSeed={profile.address} username={profile.username}/>
         <ProfileButton linkTo="/profile/trades" image={iconTrades} title={t('profile.myTrades')}
-                       subtitle={t('profile.nbActive', {nb: activeTrades})}/>
+                       subtitle={t('profile.nbActive', {nb: activeTrades})} active={this.props.tradeActionNeeded}/>
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title={t('profile.myOffers')}
                        subtitle={t('profile.nbActive', {nb: activeOffers})}/>
         <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title={t('profile.myArbitrators')}
@@ -110,7 +110,8 @@ class MyProfile extends Component {
                        subtitle={t('profile.makeTokensByJudging')}/>}
         {profile.isArbitrator && <Fragment>
           <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title={t('profile.disputes')}
-                         subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}/>
+                         subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}
+                         active={this.props.arbitrationActionNeeded}/>
           <ProfileButton linkTo="/sellers" image={iconDisputes} title={t('profile.arbitratorSettings')}
                          subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
         </Fragment>}
@@ -134,6 +135,8 @@ MyProfile.propTypes = {
   watchEscrow: PropTypes.func,
   deleteOffer: PropTypes.func,
   isEip1102Enabled: PropTypes.bool,
+  tradeActionNeeded: PropTypes.bool,
+  arbitrationActionNeeded: PropTypes.bool,
   requests: PropTypes.array,
   enableEthereum: PropTypes.func,
   getArbitratorRequests: PropTypes.func
@@ -150,7 +153,9 @@ const mapStateToProps = state => {
     escrowEvents: events.selectors.getEscrowEvents(state),
     txHash: metadata.selectors.txHash(state),
     requests: arbitration.selectors.getArbitratorRequests(state),
-    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state)
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
+    tradeActionNeeded: escrow.selectors.actionNeeded(state),
+    arbitrationActionNeeded: arbitration.selectors.actionNeeded(state)
   };
 };
 
