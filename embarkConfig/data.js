@@ -3,7 +3,7 @@ const async = require('async');
 
 const estimateAndSend = (from, gasPrice) => async (toSend, value = 0) => {
   const estimatedGas = await toSend.estimateGas({from, value});
-  return toSend.send({from, gasPrice, value, gas: estimatedGas + 10000});
+  return toSend.send({from, gasPrice, value, gas: estimatedGas + 2000});
 };
 
 module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
