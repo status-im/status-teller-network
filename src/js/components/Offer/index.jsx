@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
 import Reputation from '../Reputation';
-import {truncateTwo, limitDecimals} from '../../utils/numbers';
+import {truncateTwo, limitDecimals, formatFiatPrice} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
 import {addressCompare, zeroAddress} from '../../utils/address';
@@ -112,7 +112,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
         Buy <span className="text-black"><img
         src={getTokenImage(offer.token.symbol)}
         alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
-        className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+        className="font-weight-bold text-black">{formatFiatPrice(truncateTwo(calculateEscrowPrice(offer, prices)))} {offer.currency}</span>
       </p>
     </CardFooter>}
   </Card>);

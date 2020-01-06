@@ -4,7 +4,7 @@ import {Card, Row, Col, CardBody, CardFooter} from 'reactstrap';
 import {withTranslation} from 'react-i18next';
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
-import {truncateTwo} from '../../../utils/numbers';
+import {formatFiatPrice, truncateTwo} from '../../../utils/numbers';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -125,7 +125,7 @@ class Trades extends Component {
                     {t('general.buy')} <span className="text-black"><img
                     src={getTokenImage(trade.token.symbol)}
                     alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> {t('trades.at')} <span
-                    className="font-weight-bold text-black">{truncateTwo(calculateEscrowPrice(trade, this.props.prices))} {trade.currency}</span>
+                    className="font-weight-bold text-black">{formatFiatPrice(truncateTwo(calculateEscrowPrice(trade, this.props.prices)))} {trade.currency}</span>
                   </p>
                 </CardFooter>
               </Card>);
