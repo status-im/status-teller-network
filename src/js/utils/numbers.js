@@ -19,8 +19,14 @@ export function limitDecimals(input, numDecimals = 6) {
 }
 
 export function formatFiatPrice(price) {
+  if (price < 0.0001) {
+    return '< 0.0001';
+  }
+  if (price < 0.001) {
+    return price.toFixed(4).toString();
+  }
   if (price < 0.01) {
-    return '< 0.01';
+    return price.toFixed(3).toString();
   }
   return price.toFixed(2).toString();
 }

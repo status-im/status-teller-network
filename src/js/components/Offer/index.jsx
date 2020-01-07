@@ -112,7 +112,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
         Buy <span className="text-black"><img
         src={getTokenImage(offer.token.symbol)}
         alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
-        className="font-weight-bold text-black">{formatFiatPrice(truncateTwo(calculateEscrowPrice(offer, prices)))} {offer.currency}</span>
+        className="font-weight-bold text-black">{formatFiatPrice(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
       </p>
     </CardFooter>}
   </Card>);

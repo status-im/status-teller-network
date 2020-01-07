@@ -125,7 +125,7 @@ class Trades extends Component {
                     {t('general.buy')} <span className="text-black"><img
                     src={getTokenImage(trade.token.symbol)}
                     alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> {t('trades.at')} <span
-                    className="font-weight-bold text-black">{formatFiatPrice(truncateTwo(calculateEscrowPrice(trade, this.props.prices)))} {trade.currency}</span>
+                    className="font-weight-bold text-black">{formatFiatPrice(calculateEscrowPrice(trade, this.props.prices))} {trade.currency}</span>
                   </p>
                 </CardFooter>
               </Card>);
