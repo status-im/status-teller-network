@@ -12,11 +12,10 @@ const Footer = (props) => {
     return null;
   }
   return (<footer className="footer">
-    {props.wizard.canPrevious() &&
-    <Button onClick={props.previous} className="m-2 p-1" color="link"><img className="fa-rotate-180 footer-arrow mr-2" src={arrow} alt="previous arrow"/> Previous</Button>}
     {props.wizard.canNext() &&
-    <Button onClick={props.next} className="float-right m-2 p-1" color="link"
-            disabled={!props.nextEnabled}>{props.nextLabel} <img  className="footer-arrow ml-2" src={props.nextEnabled ? arrow : arrowDisabled} alt="next arrow"/></Button>}
+    <Button onClick={props.next} color="primary" disabled={!props.nextEnabled}>
+      {props.nextLabel} →
+    </Button>}
   </footer>);
 };
 
