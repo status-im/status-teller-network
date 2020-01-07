@@ -100,6 +100,7 @@ module.exports = {
   // used with "embark run testnet" and/or "embark blockchain testnet"
   testnet: {
     networkType: "testnet",
+    networkId: 4,
     syncMode: "light",
     accounts: [
       {

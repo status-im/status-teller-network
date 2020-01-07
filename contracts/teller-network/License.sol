@@ -30,8 +30,6 @@ contract License is Ownable, ApproveAndCallFallBack, SafeTransfer, Proxiable {
     event Bought(address buyer, uint256 price);
     event PriceChanged(uint256 _price);
 
-    bool internal _initialized;
-
     /**
      * @param _tokenAddress Address of token used to pay for licenses (SNT)
      * @param _price Price of the licenses
