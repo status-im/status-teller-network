@@ -73,6 +73,16 @@ contract EscrowRelay is RelayRecipient, Ownable {
   }
 
   /**
+   * @notice Withdraw the ETH used for relay trxs
+   * @dev Only contract owner can execute this function
+   */
+  function withdraw() external onlyOwner {
+    IRelayHub rh = IRelayHub(getHubAddr());
+    uint balance = getRecipientBalance();
+    rh.withdraw(balance, msg.sender);
+  }
+
+  /**
    * @notice Determine if the timeout for relaying a create/cancel transaction has passed
    * @param _account Account to verify
    * @return bool
