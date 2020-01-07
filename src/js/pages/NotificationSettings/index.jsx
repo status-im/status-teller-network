@@ -17,15 +17,20 @@ class NotificationSettings extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.isSubscribed !== this.props.isSubscribed) {
+    if ((prevProps.isSubscribed !== this.props.isSubscribed) || (!prevProps.error && this.props.error)) {
       this.setState({showEmailSection: this.props.isSubscribed});
     }
   }
 
   changeNotificationParam = (checked) => {
-    this.setState({showEmailSection: checked});
     if (checked === false && this.props.isSubscribed) {
       this.props.unsubscribe();
+    }
+
+    if(!checked){
+      this.setState({showEmailSection: !this.props.isSubscribed ? false : ''});
+    } else {
+      this.setState({showEmailSection: true});
     }
   };
 
@@ -43,7 +48,6 @@ class NotificationSettings extends Component {
 
   render() {
     const {t, working, error, subscribeSuccess} = this.props;
-
     return (<Fragment>
       <h2 className="mb-4 mt-3">{t('notificationSettings.title')}</h2>
       {error && <Alert color="danger" toggle={this.hideError}>{t('general.error')}: {error}</Alert>}
@@ -56,7 +60,11 @@ class NotificationSettings extends Component {
                 onColor="#18B6FF"
                 uncheckedIcon={false}
                 checkedIcon={false}/>}
-        {typeof this.state.showEmailSection !== 'boolean' && <p className="float-right">{t('general.loading')}</p>}
+        {typeof this.state.showEmailSection !== 'boolean' && (
+          <div className="float-right spinner-border mr-3 mt-1 spinner-border-sm" role="status">
+            <span className="sr-only">{t('general.loading')}</span>
+          </div>
+        )}
       </div>
 
       {this.state.showEmailSection && !this.props.isSubscribed &&
