@@ -2,9 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Button} from 'reactstrap';
 
-import arrow from '../../../images/arrow.svg';
-import arrowDisabled from '../../../images/arrow-disabled.svg';
-
 import './withFooter.scss';
 
 const Footer = (props) => {
