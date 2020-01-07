@@ -81,7 +81,6 @@ class Summary extends Component {
   };
   hideFinalModal = () => {
     this.setState({showFinalModal: false});
-    this.props.wizard.previous();
   };
 
   render() {
