@@ -117,7 +117,7 @@ contract("Escrow Funding", function() {
       const nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
       const signature = await web3.eth.sign(hash, accounts[1]);
 
-      receipt = await Escrow.methods.createEscrow(ethOfferId, fundAmount, 140, CONTACT_DATA, "U", "Iuri", nonce, signature)
+      receipt = await Escrow.methods.createEscrow(ethOfferId, fundAmount, 140, accounts[1], CONTACT_DATA, "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
 
       escrowId = receipt.events.Created.returnValues.escrowId;
@@ -145,7 +145,7 @@ contract("Escrow Funding", function() {
       let signature = await web3.eth.sign(hash, accounts[1]);
       let nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.createEscrow(SNTOfferId, fundAmount, 140, CONTACT_DATA, "U", "Iuri", nonce,  signature)
+      receipt = await Escrow.methods.createEscrow(SNTOfferId, fundAmount, 140, accounts[1], CONTACT_DATA, "U", "Iuri", nonce,  signature)
                                     .send({from: accounts[0]});
       escrowIdSNT = receipt.events.Created.returnValues.escrowId;
 
@@ -153,7 +153,7 @@ contract("Escrow Funding", function() {
       signature = await web3.eth.sign(hash, accounts[1]);
       nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.createEscrow(tokenOfferId, fundAmount, 140, CONTACT_DATA, "U", "Iuri", nonce, signature)
+      receipt = await Escrow.methods.createEscrow(tokenOfferId, fundAmount, 140, accounts[1], CONTACT_DATA, "U", "Iuri", nonce, signature)
                                     .send({from: accounts[0]});
       escrowIdToken = receipt.events.Created.returnValues.escrowId;
     });
