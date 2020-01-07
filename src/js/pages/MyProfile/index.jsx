@@ -7,6 +7,7 @@ import network from '../../features/network';
 import escrow from '../../features/escrow';
 import arbitration from '../../features/arbitration';
 import events from "../../features/events";
+import emailNotifications from '../../features/emailNotifications';
 
 import { zeroAddress, addressCompare } from '../../utils/address';
 
@@ -65,6 +66,7 @@ class MyProfile extends Component {
     this.props.loadProfile(this.props.address);
     this.props.getDisputedEscrows();
     this.props.getArbitratorRequests();
+    this.props.resetNotificationWarnings();
   }
 
   watchEscrows() {
@@ -139,7 +141,8 @@ MyProfile.propTypes = {
   arbitrationActionNeeded: PropTypes.bool,
   requests: PropTypes.array,
   enableEthereum: PropTypes.func,
-  getArbitratorRequests: PropTypes.func
+  getArbitratorRequests: PropTypes.func,
+  resetNotificationWarnings: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -166,5 +169,6 @@ export default connect(
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     watchEscrow: escrow.actions.watchEscrow,
     getArbitratorRequests: arbitration.actions.getArbitratorRequests,
-    enableEthereum: metadata.actions.enableEthereum
+    enableEthereum: metadata.actions.enableEthereum,
+    resetNotificationWarnings: emailNotifications.actions.resetNotificationWarnings
   })(withRouter(withTranslation()(MyProfile)));
