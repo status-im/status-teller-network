@@ -34,6 +34,7 @@ import {sortByRating} from "../../utils/sorters";
 
 import "./index.scss";
 import 'aos/dist/aos.css';
+import { addressCompare, zeroAddress } from '../../utils/address';
 
 class Home extends Component {
   constructor(props) {
@@ -75,10 +76,12 @@ class Home extends Component {
   };
 
   render() {
-    const {hasPrices, t, priceError, networkId, mainnetWarningShowed, offers, prices, address} = this.props;
+    const {hasPrices, t, priceError, networkId, mainnetWarningShowed, prices, address} = this.props;
 
     const loading = !hasPrices && !priceError;
 
+    const offers = this.props.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress));
+    
     return (
       <div className="home px-4">
         <LandingHeader loading={!hasPrices && !priceError}/>
