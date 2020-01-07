@@ -147,8 +147,8 @@ class App extends Component {
       return <Loading initial/>;
     }
 
-    if (!this.props.hasToken) {
-      return <ErrorInformation network/>;
+    if (!this.props.hasToken || (this.props.network.id !== 1 && this.props.environment === 'mainnet') || (this.props.network.id === 1 && this.props.environment === 'testnet')) {
+      return <ErrorInformation network={this.props.environment === 'mainnet' ? 'Mainnet' : 'Rinkeby'}/>;
     }
 
     return (
@@ -236,13 +236,17 @@ App.propTypes = {
   watchEscrowCreations: PropTypes.func,
   loadOffers: PropTypes.func,
   isEip1102Enabled: PropTypes.bool,
-  checkAccountChange: PropTypes.func
+  checkAccountChange: PropTypes.func,
+  network: PropTypes.object,
+  environment: PropTypes.string
 };
 
 const mapStateToProps = (state) => {
   const address = network.selectors.getAddress(state) || '';
   return {
     address,
+    network: network.selectors.getNetwork(state),
+    environment: network.selectors.getEnvironment(state),
     currentUser: metadata.selectors.currentUser(state),
     isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     isReady: network.selectors.isReady(state),

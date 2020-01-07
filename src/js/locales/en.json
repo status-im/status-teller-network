@@ -385,7 +385,7 @@
     },
     "network": {
       "title": "Network is not supported",
-      "tip": "Switch your wallet to Rinkeby Network"
+      "tip": "Switch your wallet to {{network}} Network"
     },
     "transaction": {
       "title": "Transaction failed",

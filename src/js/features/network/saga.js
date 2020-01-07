@@ -1,6 +1,8 @@
 /*global web3*/
 
 import ERC20Token from '../../../embarkArtifacts/contracts/ERC20Token';
+import SNT from '../../../embarkArtifacts/contracts/SNT';
+
 import Resolver from '../../../embarkArtifacts/contracts/Resolver';
 import ethNameHash from 'eth-ens-namehash';
 import { fork, takeEvery, call, put, all, select } from 'redux-saga/effects';
@@ -11,15 +13,15 @@ import {
 } from './constants';
 import {FETCH_EXCHANGE_RATE} from '../prices/constants';
 import { onReady } from '../../services/embarkjs';
-import { zeroAddress, zeroBytes } from '../../utils/address';
+import { zeroAddress, zeroBytes, addressCompare } from '../../utils/address';
 
 export function *doInit() {
   try {
     yield call(onReady);
     const networkId = yield call(web3.eth.net.getId);
-
+    let environment = addressCompare(SNT.options.address, "0x744d70fdbe2ba4cf95131626614a1763df805b9e") ? 'mainnet' : 'testnet';
     yield all([
-      put({type: INIT_SUCCEEDED, networkId}),
+      put({type: INIT_SUCCEEDED, networkId, environment}),
       put({type: GET_GAS_PRICE}),
       put({type: FETCH_EXCHANGE_RATE})
     ]);
