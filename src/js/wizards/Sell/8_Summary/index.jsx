@@ -109,7 +109,9 @@ class Summary extends Component {
           <FinalModal hide={this.hideFinalModal}
                       isOpen={this.state.showFinalModal}
                       postOffer={this.postOffer}
-                      stake={this.props.offerStake}/>
+                      stake={this.props.offerStake}
+                      prices={this.props.prices}
+                      />
         </Fragment>;
       case States.success:
         return <Success onClick={this.continue}/>;

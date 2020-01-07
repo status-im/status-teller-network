@@ -9,14 +9,18 @@ import {getTokenImage} from "../../../../utils/images";
 
 import './FinalModal.scss';
 
-const FinalModal = ({isOpen, hide, postOffer, stake}) => (
+const FinalModal = ({isOpen, hide, postOffer, stake, prices}) => {
+  const ETHAmount = web3.utils.fromWei(stake || '0', "ether");
+  const ETHPrice = parseFloat(prices.ETH.USD) * parseFloat(ETHAmount);
+
+  return (
   <Modal isOpen={isOpen} toggle={hide} className="final-step-modal">
     <ModalHeader>
       <RoundedIcon image={pencilIcon} className="mb-3" bgColor="blue"/>
       <p className="m-0">Final Step</p>
     </ModalHeader>
     <ModalBody className="text-center">
-      <p className="text-muted">Almost there! As a way to protect teller from spams, each offer is under a stake condition. The stake is as small as 0.10 USD in ETH.</p>
+      <p className="text-muted">Almost there! As a way to protect teller from spams, each offer is under a stake condition. The stake is as small as 0.01 ETH.</p>
 
       <p className="text-muted">The stake will be returned to you as soon as you 1) Delete this offer, or 2) successfully finish a trade.</p>
       <div className="bottom-details ">
@@ -32,7 +36,7 @@ const FinalModal = ({isOpen, hide, postOffer, stake}) => (
         <Row>
           <Col xs={3}>Stake</Col>
           <Col xs={9} className="text-right">
-            {web3.utils.fromWei(stake || '0', "ether")} <span className="text-muted">ETH</span> ~ 0.10 <span className="text-muted">USD</span>
+            {ETHAmount} <span className="text-muted">ETH</span> ~ {ETHPrice.toFixed(2)} <span className="text-muted">USD</span>
           </Col>
         </Row>
       </div>
@@ -40,13 +44,15 @@ const FinalModal = ({isOpen, hide, postOffer, stake}) => (
       <Button color="primary" className="mt-4" onClick={postOffer}>Sign & Post the offer</Button>
     </ModalBody>
   </Modal>
-);
+  );
+};
 
 FinalModal.propTypes = {
   isOpen: PropTypes.bool,
   stake: PropTypes.string,
   hide: PropTypes.func,
-  postOffer: PropTypes.func
+  postOffer: PropTypes.func,
+  prices: PropTypes.object
 };
 
 export default FinalModal;

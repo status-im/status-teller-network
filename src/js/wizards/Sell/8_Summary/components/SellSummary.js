@@ -52,7 +52,7 @@ class SellSummary extends Component {
 
       {this.formatRow('Payment methods', paymentMethods.map(method => PAYMENT_METHODS[method]).join(', '))}
 
-      {this.formatRow('Location', !profile || location === profile.location ? location : `${location} (used to be ${profile.location})`)}
+      {this.formatRow('Location', !profile || (location === profile.location && profile.location) ? location : `${location} (used to be ${profile.location})`)}
 
       {this.formatRow('Arbitrator', <Row>
         <Col xs={1}>
