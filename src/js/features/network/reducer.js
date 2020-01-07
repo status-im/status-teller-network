@@ -17,7 +17,8 @@ const DEFAULT_STATE = {
     name: ''
   },
   tokens: {},
-  ensError: ''
+  ensError: '',
+  environment: 'testnet'
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -34,6 +35,7 @@ function reducer(state = DEFAULT_STATE, action) {
         address: web3.eth.defaultAccount,
         isStatus: web3.currentProvider.isStatus,
         error: '',
+        environment: action.environment,
         network: {
           id: action.networkId,
           name

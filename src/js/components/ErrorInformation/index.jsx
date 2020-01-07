@@ -19,7 +19,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
     {message && <p className="text-muted mb-2">{message}</p>}
     <p className="text-muted mb-2">
       {provider && t('errorInformation.provider.tip')}
-      {network && t('errorInformation.network.tip')}
+      {network && t('errorInformation.network.tip', {network})}
       {transaction && t('errorInformation.transaction.tip')}
       {sntTokenError && t('errorInformation.sntTokenError.tip')}
     </p>
@@ -32,14 +32,14 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
 
 ErrorInformation.defaultProps = {
   provider: false,
-  network: false,
+  network: 'Rinkeby',
   transaction: false
 };
 
 ErrorInformation.propTypes = {
   t: PropTypes.func,
   provider: PropTypes.bool,
-  network: PropTypes.bool,
+  network: PropTypes.string,
   transaction: PropTypes.bool,
   sntTokenError: PropTypes.bool,
   retry: PropTypes.func,

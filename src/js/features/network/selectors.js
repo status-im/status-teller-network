@@ -28,3 +28,4 @@ export const getTokenByAddress = (state, address) => {
 export const getStatusContactCode = (state) => state.network.contactCode;
 export const getENSError = state => state.network.ensError;
 export const getNetwork = state => state.network.network;
+export const getEnvironment = state => state.network.environment;
