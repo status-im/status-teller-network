@@ -1,7 +1,5 @@
 import SNT from '../../embarkArtifacts/contracts/SNT';
 import StandardToken from '../../embarkArtifacts/contracts/StandardToken';
-import DAI from '../../embarkArtifacts/contracts/DAI';
-import MKR from '../../embarkArtifacts/contracts/MKR';
 
 import { zeroAddress } from './address';
 
@@ -598,18 +596,6 @@ export const Tokens = {
       name: "Bitcoin",
       address: StandardToken.options.address,
       decimals: 18
-    },
-    {
-      symbol: 'DAI',
-      name: 'DAI',
-      address: DAI.address && DAI.address.toLowerCase(),
-      decimals: 18
-    },
-    {
-      symbol: 'MKR',
-      name: "MKR",
-      address: MKR.address && MKR.address.toLowerCase(),
-      decimals: 18
     }
   ],
   'ropsten': [
@@ -649,12 +635,6 @@ export const Tokens = {
       symbol: 'KDO',
       name: "KudosToken",
       address: "0x93bb0afbd0627bbd3a6c72bc318341d3a22e254a",
-      decimals: 18
-    },
-    {
-      symbol: 'DAI',
-      name: 'DAI',
-      address: DAI.address && DAI.address.toLowerCase(),
       decimals: 18
     }
   ]

@@ -208,7 +208,10 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, FALLBACK_ARBITRATOR),
-    dappConnection: ["$WEB3"],
+    dappConnection: [
+      "$WEB3",
+      "https://rinkeby.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
+    ],
     contracts: {
       StandardToken: { deploy: false },
       DAI: { deploy: false },
@@ -291,7 +294,10 @@ module.exports = {
       type: "rpc"
     },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
-    dappConnection: ["$WEB3"],
+    dappConnection: [
+      "$WEB3",
+      "https://mainnet.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
+    ],
     contracts: {
       StandardToken: { deploy: false },
       DAI: { deploy: false },
