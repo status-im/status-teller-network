@@ -1,3 +1,4 @@
+/* global web3 */
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
 import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
@@ -7,17 +8,20 @@ import SNT from '../embarkArtifacts/contracts/SNT';
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare, zeroAddress} from './utils/address';
 import {canRelay} from './features/escrow/helpers';
+import stripHexPrefix from 'strip-hex-prefix';
 
 Escrow.options.address = EscrowProxy.options.address;
 MetadataStore.options.address = MetadataStoreProxy.options.address;
 
-const VALID_OPERATIONS = {
-  "cancel(uint256)": "40e58ee5",
-  "createEscrow(uint256,uint256,uint256,string,string,string)":"56a9480a",
-  "openCase(uint256,uint8)": "267b4cc3",
-  "pay(uint256)": "c290d691",
-  "rateTransaction(uint256,uint256)":"79347b06"
-};
+const CREATE_ESCROW = "createEscrow(uint256,uint256,uint256,address,string,string,string)";
+const RATE_TRANSACTION = "rateTransaction(uint256,uint256)";
+const CANCEL_ESCROW = "cancel(uint256)";
+const OPEN_CASE = "openCase(uint256,uint8)";
+const PAY_ESCROW = "pay(uint256)";
+
+const VALID_OPERATIONS = [CREATE_ESCROW, CANCEL_ESCROW, OPEN_CASE, PAY_ESCROW, RATE_TRANSACTION]
+                          .map(x => ({[x]: stripHexPrefix(web3.utils.soliditySha3(x)).substring(0,8)}))
+                          .reduce((curr,accum) => Object.assign(curr, accum), {});
 
 class Provider {
   constructor(relayProvider) {
@@ -53,9 +57,9 @@ class Provider {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
 
-        if (checkNotEnoughETH(gasPrice, balance) || operation === VALID_OPERATIONS["rateTransaction(uint256,uint256)"]) {
+        if (checkNotEnoughETH(gasPrice, balance) || operation === VALID_OPERATIONS[RATE_TRANSACTION]) {
 
-          if(operation === VALID_OPERATIONS["createEscrow(uint256,uint256,uint256,string,string,string)"]){
+          if(operation === VALID_OPERATIONS[CREATE_ESCROW]){
             const isEthOrSNT = await this.isEthOrSNT(web3, payload.params[0].data);
             const lastActivity = await EscrowRelay.methods.lastActivity(web3.eth.defaultAccount).call();
             if(!isEthOrSNT || !canRelay(parseInt(lastActivity + '000', 10))) {

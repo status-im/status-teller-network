@@ -20,7 +20,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
   mapping(address => uint) public lastActivity;
 
-  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,string,string,string)"));
+  bytes4 constant CREATE_SIGNATURE = bytes4(keccak256("createEscrow(uint256,uint256,uint256,address,string,string,string)"));
   bytes4 constant PAY_SIGNATURE = bytes4(keccak256("pay(uint256)"));
   bytes4 constant CANCEL_SIGNATURE = bytes4(keccak256("cancel(uint256)"));
   bytes4 constant OPEN_CASE_SIGNATURE = bytes4(keccak256("openCase(uint256,uint8)"));
