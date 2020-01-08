@@ -1,6 +1,8 @@
 @import "../../../css/variable-overrides";
 
-$footer-height: 58px;
+$footer-btn-height: 44px;
+$footer-padding: 16px;
+$footer-height: $footer-btn-height + $footer-padding * 2;
 
 .container {
   position: relative;
@@ -8,6 +10,8 @@ $footer-height: 58px;
   min-height: 100%;
 
   .wizard-container {
+    align-items: flex-start;
+
     .footer {
       right: 0;
       bottom: 0;
@@ -18,8 +22,19 @@ $footer-height: 58px;
       position: fixed;
       background: #fff;
       z-index: 1000;
-      padding-top: 10px;
-      padding-bottom: 10px;
+      padding: $footer-padding;
+
+      @media screen and (min-width: map-get($grid-breakpoints, "md")) {
+        position: sticky;
+        width: 100%;
+        padding: $footer-padding 0;
+        z-index: auto;
+      }
+
+      .btn {
+        width: 100%;
+        height: $footer-btn-height;
+      }
 
       .footer-arrow {
         position: relative;

@@ -23,7 +23,7 @@
     background-repeat: no-repeat;
     background-position: top 76% left -13px;
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: map-get($grid-breakpoints, "md")) {
       background-position: top 76% left 4px;
       max-width: 790px;
       padding: 12px 40px 0;
@@ -58,7 +58,7 @@
     .hamburger-nav {
       margin-top: -8px;
 
-      @media screen and (min-width: 768px) {
+      @media screen and (min-width: map-get($grid-breakpoints, "md")) {
         margin-left: 17px;
       }
     }

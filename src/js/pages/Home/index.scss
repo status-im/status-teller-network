@@ -29,7 +29,7 @@ $max-width: 750px;
     left: -231px;
     margin-top: 60px;
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: map-get($grid-breakpoints, "md")) {
       width: auto;
       left: 0;
     }
@@ -44,7 +44,7 @@ $max-width: 750px;
       background-size: 181px 108px;
       background-repeat: no-repeat;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: map-get($grid-breakpoints, "md")) {
         display: none;
       }
     }
@@ -68,7 +68,7 @@ $max-width: 750px;
       position: relative;
       z-index: 1000;
 
-      @media screen and (max-width: 768px) {
+      @media screen and (max-width: map-get($grid-breakpoints, "md")) {
         padding: 0;
       }
     }
@@ -108,7 +108,7 @@ $max-width: 750px;
     text-align: left;
 
 
-    @media screen and (min-width: 768px) {
+    @media screen and (min-width: map-get($grid-breakpoints, "md")) {
       position: relative;
       left: -382px;
     }
