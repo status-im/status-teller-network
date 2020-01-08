@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { ConnectedRouter } from "connected-react-router";
 import { Provider } from 'react-redux';
 import { I18nextProvider } from 'react-i18next';
+import { LastLocationProvider } from 'react-router-last-location';
 import i18n from './js/i18n';
 import { PersistGate } from 'redux-persist/integration/react';
 
@@ -28,9 +29,11 @@ ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <ConnectedRouter history={history}>
-        <I18nextProvider i18n={ i18n }>
-          <App />
-        </I18nextProvider>
+        <LastLocationProvider>
+          <I18nextProvider i18n={i18n}>
+            <App/>
+          </I18nextProvider>
+        </LastLocationProvider>
       </ConnectedRouter>
     </PersistGate>
   </Provider>,
