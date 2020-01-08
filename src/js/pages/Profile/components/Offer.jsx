@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col, Button, UncontrolledTooltip} from 'reactstrap';
-import {truncateTwo} from '../../../utils/numbers';
+import {formatFiatPrice, truncateTwo} from '../../../utils/numbers';
 import {getTokenImage} from '../../../utils/images';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import classnames from 'classnames';
@@ -19,7 +19,7 @@ const Offer = ({t, offer, prices, onClick, disabled}) => {
         <Button color={disabled ? "secondary" : "primary"}
                 className={classnames('p-2', {disabled: isDisabled, 'not-clickable': isDisabled})}
                 onClick={isDisabled ? null : onClick} id={`buy-btn-${offer.id}`}>
-          {t('offer.buyFor', {price:truncateTwo(calculateEscrowPrice(offer, prices)), currency: offer.currency})}
+          {t('offer.buyFor', {price: formatFiatPrice(calculateEscrowPrice(offer, prices)), currency: offer.currency})}
         </Button>
         {disabled && <UncontrolledTooltip placement="top" target={`buy-btn-${offer.id}`}>
           {t('offer.disabledBecauseArbi')}

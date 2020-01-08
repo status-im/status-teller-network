@@ -1,6 +1,7 @@
 import React, {Component, Fragment} from "react";
 import PropTypes from "prop-types";
 import {Row, Col} from "reactstrap";
+import {formatFiatPrice} from "../../../../utils/numbers";
 
 import { PAYMENT_METHODS } from '../../../../features/metadata/constants';
 import Identicon from "../../../../components/UserInformation/Identicon";
@@ -43,8 +44,8 @@ class SellSummary extends Component {
         </span>
       </Fragment>)}
 
-      {calcPrice !== null && this.formatRow('Selling price',  `1 ${assetData.symbol} = ${calcPrice.toFixed(2)} ${currency} (${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'})`)}
-      {calcPrice === null && this.formatRow('Margin',  `${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'}`)}
+      {calcPrice !== null && this.formatRow('Selling price', `1 ${assetData.symbol} = ${formatFiatPrice(calcPrice)} ${currency} (${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'})`)}
+      {calcPrice === null && this.formatRow('Margin', `${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'}`)}
 
 
       {this.formatRow('Limits',  !useCustomLimits ? 'No limits' : `Between ${limitL} and ${limitU} ${currency}`)}
