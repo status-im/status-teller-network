@@ -32,7 +32,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
 
 ErrorInformation.defaultProps = {
   provider: false,
-  network: 'Rinkeby',
+  network: '',
   transaction: false
 };
 

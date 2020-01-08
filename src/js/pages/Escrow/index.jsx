@@ -175,6 +175,7 @@ class Escrow extends Component {
     const canRelay = escrowF.helpers.canRelay(lastActivity);
 
     const token = Object.keys(tokens).map(t => tokens[t]).find(x => addressCompare(x.address, escrow.offer.asset));
+    const userInfo = this.getUserInfo(escrow);
     const isBuyer = addressCompare(escrow.buyer, address);
     const offer = this.getOffer(escrow, isBuyer);
     offer.token = token;
@@ -315,14 +316,14 @@ class Escrow extends Component {
       <ModalDialog display={!!this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
         <RoundedIcon image={ProfileIcon} bgColor="blue" className="mb-2" />
 
-        <Trans i18nKey="contactDialog.contactMethod" values={{username: this.getUserInfo(escrow).username, contactMethod: ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}}>
-          {this.getUserInfo(escrow).username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(this.getUserInfo(escrow).contactData).method]}</span>
+        <Trans i18nKey="contactDialog.contactMethod" values={{username: userInfo.username, contactMethod: ContactMethods[stringToContact(userInfo.contactData).method]}}>
+          {userInfo.username}&apos;s <span className="text-muted">{ContactMethods[stringToContact(userInfo.contactData).method]}</span>
         </Trans>
 
         <Row noGutters className="mt-4">
           <Col xs={9}>
             <Input type="text"
-                    value={stringToContact(this.getUserInfo(escrow).contactData).userId}
+                    value={stringToContact(userInfo.contactData).userId}
                     readOnly
                     className="form-control"
                     />
@@ -330,12 +331,12 @@ class Escrow extends Component {
           <Col xs={3}>
             <Button className="px-3 float-right"
                     color="primary"
-                    onClick={() => copyToClipboard(stringToContact(this.getUserInfo(escrow).contactData).userId)}>
+                    onClick={() => copyToClipboard(stringToContact(userInfo.contactData).userId)}>
               {t('escrow.page.copy')}
             </Button>
           </Col>
         </Row>
-        {!isStatus && this.getUserInfo(escrow).contactData.startsWith("Status") && <p className="text-center text-muted mt-3">
+        {!isStatus && userInfo && userInfo.contactData.startsWith("Status") && <p className="text-center text-muted mt-3">
           <span>{t('escrow.page.notStatusUser')}</span> <a href="https://status.im/get/" target="_blank" rel="noopener noreferrer">{t('escrow.page.getStatusNow')}</a>
         </p>}
       </ModalDialog>
