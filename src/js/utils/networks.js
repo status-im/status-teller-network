@@ -581,7 +581,7 @@ export const Tokens = {
   'private': [
     {
       symbol: 'ETH',
-      name: 'ETH',
+      name: 'Ethereum',
       address: zeroAddress,
       decimals: 18
     },
@@ -601,7 +601,7 @@ export const Tokens = {
   'ropsten': [
     {
       symbol: 'ETH',
-      name: 'ETH',
+      name: 'Ethereum',
       address: zeroAddress,
       decimals: 18
     },
@@ -615,7 +615,7 @@ export const Tokens = {
   'rinkeby': [
     {
       symbol: 'ETH',
-      name: 'ETH',
+      name: 'Ethereum',
       address: zeroAddress,
       decimals: 18
     },

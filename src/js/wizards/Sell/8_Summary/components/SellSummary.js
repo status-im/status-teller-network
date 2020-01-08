@@ -2,6 +2,7 @@ import React, {Component, Fragment} from "react";
 import PropTypes from "prop-types";
 import {Row, Col} from "reactstrap";
 import {formatFiatPrice} from "../../../../utils/numbers";
+import {withTranslation} from "react-i18next";
 
 import { PAYMENT_METHODS } from '../../../../features/metadata/constants';
 import Identicon from "../../../../components/UserInformation/Identicon";
@@ -21,7 +22,7 @@ class SellSummary extends Component {
   }
 
   render() {
-    const {profile, assetData, arbitratorProfile, prices} = this.props;
+    const {profile, assetData, arbitratorProfile, prices, t} = this.props;
     const {
       location, margin, arbitrator,
       paymentMethods, currency, useCustomLimits, limitL, limitU
@@ -35,8 +36,8 @@ class SellSummary extends Component {
     }
 
     return (<div className="offer-summary">
-      <h2>Offer summary</h2>
-      {this.formatRow('Asset', <Fragment>
+      <h2>{t('sellSummary.title')}</h2>
+      {this.formatRow(t('sellSummary.asset'), <Fragment>
         <img src={getTokenImage(assetData.symbol)} alt={assetData.name + ' icon'}
              className="asset-image mr-2 float-left token-img"/>
         <span className="line-text-asset">
@@ -44,22 +45,21 @@ class SellSummary extends Component {
         </span>
       </Fragment>)}
 
-      {calcPrice !== null && this.formatRow('Selling price', `1 ${assetData.symbol} = ${formatFiatPrice(calcPrice)} ${currency} (${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'})`)}
-      {calcPrice === null && this.formatRow('Margin', `${Math.abs(margin)}% ${margin >= 0 ? 'above' : 'below'}`)}
+      {calcPrice !== null && this.formatRow(t("sellSummary.sellingPrice"), `1 ${assetData.symbol} = ${formatFiatPrice(calcPrice)} ${currency} (${Math.abs(margin)}% ${margin >= 0 ? t("sellSummary.above") : t("sellSummary.below")})`)}
+      {calcPrice === null && this.formatRow(t("sellSummary.margin"), `${Math.abs(margin)}% ${margin >= 0 ? t("sellSummary.above") : t("sellSummary.below")}`)}
+      
+      {this.formatRow(t("sellSummary.limits"),  !useCustomLimits ? t("sellSummary.noLimits") : `Between ${limitL} and ${limitU} ${currency}`)}
 
+      {this.formatRow(t('offers.paymentMethods'), paymentMethods.map(method => PAYMENT_METHODS[method]).join(', '))}
 
-      {this.formatRow('Limits',  !useCustomLimits ? 'No limits' : `Between ${limitL} and ${limitU} ${currency}`)}
+      {this.formatRow(t("offers.location"), !profile || (location === profile.location && profile.location) ? location : `${location} (used to be ${profile.location})`)}
 
-      {this.formatRow('Payment methods', paymentMethods.map(method => PAYMENT_METHODS[method]).join(', '))}
-
-      {this.formatRow('Location', !profile || location === profile.location ? location : `${location} (used to be ${profile.location})`)}
-
-      {this.formatRow('Arbitrator', <Row>
+      {this.formatRow(t("general.arbitrator"), <Row>
         <Col xs={1}>
           <Identicon seed={arbitrator} className="rounded-circle border mt-1"/>
         </Col>
         <Col xs={11}className="pl-3">
-          <p className="m-0">{arbitratorProfile && arbitratorProfile.username ? arbitratorProfile.username : 'No Username'}</p>
+          <p className="m-0">{arbitratorProfile && arbitratorProfile.username ? arbitratorProfile.username : t("escrowList.offers.noUsername")}</p>
           <p className="m-0 text-muted text-small">{compactAddress(arbitrator, 5)}</p>
         </Col>
       </Row>)}
@@ -68,6 +68,7 @@ class SellSummary extends Component {
 }
 
 SellSummary.propTypes = {
+  t: PropTypes.func,
   seller: PropTypes.object,
   profile: PropTypes.object,
   prices: PropTypes.object,
@@ -75,4 +76,4 @@ SellSummary.propTypes = {
   assetData: PropTypes.object
 };
 
-export default SellSummary;
+export default withTranslation()(SellSummary);
