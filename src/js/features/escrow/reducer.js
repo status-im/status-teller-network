@@ -219,6 +219,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...escrowsClone[action.escrowId]
       };
 
+      escrowsClone[action.escrowId].rateLoading = true;
       if(action.ratingSeller){
         escrowsClone[action.escrowId].rateSellerStatus = States.pending;
         escrowsClone[action.escrowId].sellerRating = action.rating;
@@ -236,6 +237,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...escrowsClone[action.escrowId]
       };
 
+      escrowsClone[action.escrowId].rateLoading = false;
       if(action.ratingSeller){
         escrowsClone[action.escrowId].rateSellerStatus = States.success;
         escrowsClone[action.escrowId].sellerRating = action.rating;
@@ -254,6 +256,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...escrowsClone[action.escrowId]
       };
 
+      escrowsClone[action.escrowId].rateLoading = false;
       if(action.ratingSeller){
         escrowsClone[action.escrowId].rateSellerStatus = States.failed;
         escrowsClone[action.escrowId].sellerRating = 0;

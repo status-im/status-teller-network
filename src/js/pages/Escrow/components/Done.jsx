@@ -12,7 +12,7 @@ import {withTranslation} from "react-i18next";
 // eslint-disable-next-line complexity
 const Done = ({t, isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus, rateBuyerStatus, rateTransaction}) => {
   const rating = trade ? parseInt(isBuyer ? trade.sellerRating : trade.buyerRating, 10) : 0;
-  const tradeWasRated = trade && rating !== 0;
+  const tradeWasRated = trade && rating !== 0 && !trade.rateLoading;
 
   return (
   <Row className="mt-4">
@@ -36,7 +36,7 @@ const Done = ({t, isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus
     </Col>
     {(isActive || hadDispute) && <Col xs="5" sm="3">
       <div className={classnames("rounded p-2 position-relative bg-white", {'shadow-sm': !tradeWasRated})}>
-        {!tradeWasRated && <p className="mb-1 text-small text-black">
+        {!trade.rateLoading && !tradeWasRated && <p className="mb-1 text-small text-black">
           {t('escrow.done.howDidItGo')}
         </p>}
         <p className="m-0 text-center">
@@ -49,18 +49,20 @@ const Done = ({t, isDone, hadDispute, isBuyer, isActive, trade, rateSellerStatus
             <RatingIcon isPositiveRating={rating > 3} isRated={true} size="sm"/>
           </span>
           }
-          {!tradeWasRated && isBuyer &&
+          {!trade.rateLoading && !tradeWasRated && isBuyer &&
           <Reputation trade={trade}
                       rateTransaction={(rateSellerStatus !== States.pending && rateSellerStatus !== States.success) ? rateTransaction : null}
                       size="l"
                       isBuyer={isBuyer}
           />}
-          {!tradeWasRated && !isBuyer &&
+          {!trade.rateLoading && !tradeWasRated && !isBuyer &&
           <Reputation trade={trade}
                       rateTransaction={(rateBuyerStatus !== States.pending && rateBuyerStatus !== States.success) ? rateTransaction : null}
                       size="l"
                       isBuyer={isBuyer}
           />}
+
+          {trade.rateLoading && 'Loading...'}
         </p>
       </div>
     </Col>}
