@@ -15,7 +15,6 @@ contract IEscrow {
       address payable buyer;
       address payable seller;
       address payable arbitrator;
-      address payable destination;
       EscrowStatus status;
   }
 
@@ -24,7 +23,6 @@ contract IEscrow {
         uint _offerId,
         uint _tokenAmount,
         uint _fiatAmount,
-        address payable _destination,
         string calldata _contactData,
         string calldata _location,
         string calldata _username

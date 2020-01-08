@@ -38,7 +38,6 @@ export function *createEscrow({user, escrow}) {
   const toSend = Escrow.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
-    web3.eth.defaultAccount,
     escrow.currencyQuantity,
     user.contactData,
     '',

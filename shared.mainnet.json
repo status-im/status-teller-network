@@ -56,6 +56,26 @@
       "0x4248a86e72c9087cc5f5f9ea64e0da7c4275820f70b245cee78977c6c2fa643c": {
         "name": "EscrowRelay",
         "address": "0x4BbCCa869E9931280Cb46AE0DfF18881Be581a4d"
+      },
+      "0xbac46f4eec8f09c07e29b892667e410601eb47ccb0660a26d76c6e6a1108cedc": {
+        "name": "SellerLicense",
+        "address": "0xf49BBF077D371a35E8CEB8B23A912184B24eC150"
+      },
+      "0x39c88e6b5ac1a11ed500e63a4d1ba84aa0e336eb79a19dccd2ce3a6529e285a6": {
+        "name": "ArbitrationLicense",
+        "address": "0x63f5035069E325AC3b2546BBdC4DF49B244CedfA"
+      },
+      "0x64d1e6a32569a2443cb47a13c6a0cfd19cb3a83a9f0d8de2bb53f9fec1b7823a": {
+        "name": "MetadataStore",
+        "address": "0x137a2417Edb173E43Ccc246Dc76dfeb5281005Cc"
+      },
+      "0x03047262e4af486fa413ff4aadb3f64b8bd30672a1f56c0f1238733d536e3f24": {
+        "name": "Escrow",
+        "address": "0xcc0Ab31133B71852278fE08D3c8F2a25633b6B92"
+      },
+      "0x2772569fb753df92a77658531559689ac48156f42309cb5c19f4ef4baccca6d7": {
+        "name": "EscrowRelay",
+        "address": "0x4BbCCa869E9931280Cb46AE0DfF18881Be581a4d"
       }
     }
   }

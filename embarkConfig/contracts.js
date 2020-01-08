@@ -316,8 +316,17 @@ module.exports = {
       },
       EscrowRelay: {
         args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub']
-      }
+        deps: ['RelayHub'],
+        address: "0x4BbCCa869E9931280Cb46AE0DfF18881Be581a4d" 
+      },
+      SellerLicense: { address: "0xf49BBF077D371a35E8CEB8B23A912184B24eC150" },
+      ArbitrationLicense: { address: "0x63f5035069E325AC3b2546BBdC4DF49B244CedfA" },
+      SellerLicenseProxy: { address: "0x9e14Ee88715FEB84BC3a2601D7B49d0E8C005498" },
+      MetadataStore: { address: "0x137a2417Edb173E43Ccc246Dc76dfeb5281005Cc" },
+      ArbitrationLicenseProxy: { address: "0x079A72015Fe55D2F580750fF8Ad7f77ced5a7854" },
+      MetadataStoreProxy: { address: "0x333F7D10C3d8F3b0a070C0F6673cF61Bd4a86622" },
+      Escrow: { address: "0xcc0Ab31133B71852278fE08D3c8F2a25633b6B92" },
+      EscrowProxy: { address: "0x23a6F0bdBd6b5e6DBe5768F3aA68DDC3acF610d8" }
     }
   }
 };
