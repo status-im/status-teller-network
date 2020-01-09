@@ -105,19 +105,26 @@ class MyProfile extends Component {
                        subtitle={t('profile.nbActive', {nb: activeOffers})}/>
         <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title={t('profile.myArbitrators')}
                        subtitle={t('profile.requestApproval')}/>
-        <Separator/>
-        {profile.isArbitrator && <p className="text-muted mt-4">{t('profile.arbitrator')}</p>}
-        {!profile.isArbitrator &&
-        <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title={t('profile.becomeArbitrator')}
-                       subtitle={t('profile.makeTokensByJudging')}/>}
-        {profile.isArbitrator && <Fragment>
+        {!profile.isArbitrator && (
+        <Fragment>
+          <Separator/>
+          <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title={t('profile.becomeArbitrator')}
+                       subtitle={t('profile.makeTokensByJudging')}/>
+        </Fragment>
+        )}
+                       
+        {profile.isArbitrator && (
+        <Fragment>
+          <p className="text-muted mt-4">{t('profile.arbitrator')}</p>
           <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title={t('profile.disputes')}
                          subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}
                          active={this.props.arbitrationActionNeeded}/>
           <ProfileButton linkTo="/sellers" image={iconDisputes} title={t('profile.arbitratorSettings')}
                          subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
-        </Fragment>}
-        <Separator/>
+          <Separator/>
+        </Fragment>
+        )}
+        
         <ProfileButton linkTo="/profile/settings" image={iconSettings} title={t('profile.profileSettings')}/>
       </Fragment>
     );

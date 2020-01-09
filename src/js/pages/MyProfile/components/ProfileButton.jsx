@@ -8,7 +8,7 @@ import actionNeededIcon from '../../../../images/action-needed.svg';
 
 const ProfileButton = ({linkTo, image, imageComponent, title, subtitle, active}) => (
   <Link to={linkTo} className="profile-button">
-    <Row className="mt-2 mb-4">
+    <Row className="mt-4 mb-4">
       <Col xs="12 my-auto">
         <span className="float-left mr-2 profile-button-icon">
             <RoundedIcon image={image} imageComponent={imageComponent} bgColor="blue" />
