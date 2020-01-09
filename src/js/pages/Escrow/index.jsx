@@ -182,7 +182,7 @@ class Escrow extends Component {
 
     const requiredBalance = this.calculateRequiredBalance();
     const isTokenApproved = (tokenAllowance !== null && toBN(tokenAllowance).gte(toBN(requiredBalance)));
-    const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredBalance).lt(toBN(tokenAllowance));
+    const shouldResetToken = token.address !== zeroAddress && tokenAllowance !== null && toBN(tokenAllowance).gt(toBN(0)) && toBN(requiredBalance).gt(toBN(tokenAllowance));
 
     let showFundButton = isTokenApproved;
     if(isETH){
