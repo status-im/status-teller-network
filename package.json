@@ -96,6 +96,7 @@
     "redux-saga": "^0.16.2",
     "sass-loader": "^7.1.0",
     "staking-pool": "^0.0.1",
+    "strip-hex-prefix": "^1.0.0",
     "tabookey-gasless": "^0.4.1",
     "web3": "1.2.0"
   },
