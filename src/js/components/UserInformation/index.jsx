@@ -4,12 +4,13 @@ import {Row, Col} from 'reactstrap';
 import Reputation from "../Reputation";
 import Address from './Address';
 import Identicon from "./Identicon";
+import {withTranslation} from "react-i18next";
 
-const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbReleasedTrades, nbCreatedTrades}) => (
+const UserInformation = ({t, identiconSeed, username, reputation, isArbitrator, nbReleasedTrades, nbCreatedTrades}) => (
   <Row className="m-0 text-center mb-4">
     <Col xs="12">
       <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
-      {isArbitrator && <span className="icon-badge">Arbiter</span>}
+      {isArbitrator && <span className="icon-badge">{t('general.arbitrator')}</span>}
     </Col>
     <Col xs="12">
       <h4 className="font-weight-bold">{username}</h4>
@@ -25,6 +26,7 @@ const UserInformation = ({identiconSeed, username, reputation, isArbitrator, nbR
   </Row>);
 
 UserInformation.propTypes = {
+  t: PropTypes.object,
   identiconSeed: PropTypes.string,
   username: PropTypes.string,
   reputation: PropTypes.object,
@@ -33,4 +35,4 @@ UserInformation.propTypes = {
   nbCreatedTrades: PropTypes.number
 };
 
-export default UserInformation;
+export default withTranslation()(UserInformation);
