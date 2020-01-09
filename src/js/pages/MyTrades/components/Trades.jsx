@@ -4,7 +4,7 @@ import {Card, Row, Col, CardBody, CardFooter} from 'reactstrap';
 import {withTranslation} from 'react-i18next';
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
-import {formatFiatPrice, truncateTwo} from '../../../utils/numbers';
+import {formatFiatPrice} from '../../../utils/numbers';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 import RoundedIcon from "../../../ui/RoundedIcon";
@@ -109,7 +109,7 @@ class Trades extends Component {
                                lastColSize={4}
                                lastCol={<div className="text-right">
                                  <span
-                                   className={"p-1 px-2 d-inline text-white rounded-sm text-small nowrap " + tradeStyle.className}>{tradeStyle.text}</span>
+                                   className={"p-1 px-2 d-inline text-white rounded-sm text-small nowrap label " + tradeStyle.className}>{tradeStyle.text}</span>
                                </div>}/>
                    <Row className="mt-2">
                      <Col xs={2} md={1}><RoundedIcon image={messageImage} bgColor="blue" size="sm"/></Col>

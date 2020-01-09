@@ -7,9 +7,16 @@
 }
 
 .offer-card {
+  position: relative;
   @media screen and (min-width: 500px) and (max-width: 765px) {
     .col-md-1:first-child {
       max-width: 65px;
     }
   }
+}
+
+.offer-card .label {
+  position: absolute;
+  top: 0;
+  right: 10px;
 }
