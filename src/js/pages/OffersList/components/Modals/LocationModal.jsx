@@ -45,7 +45,10 @@ class LocationModal extends Component {
                    }
                  }}/>
           <div className="text-right">
-            <Button onClick={() => setLocation(this.state.location)} color="primary">{t('filter.apply')}</Button>
+            <Button onClick={() => { 
+              setLocation(this.state.location); 
+              onClose();
+              }} color="primary">{t('filter.apply')}</Button>
           </div>
         </FormGroup>
       </ModalBody>
