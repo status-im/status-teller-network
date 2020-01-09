@@ -58,6 +58,7 @@ class OfferTrade extends Component {
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
     const isETH = addressCompare(assetAddress, zeroAddress);
     const isETHorSNT =  (isETH || addressCompare(assetAddress, tokens.SNT.address));
+    const limitlessMaxFiat = (maxToken * price).toFixed(8);
 
 return <Fragment>
   <Row noGutters className="offerTrade">
@@ -95,9 +96,9 @@ return <Fragment>
           <Row>
             <Col xs={12} sm={12}>
               <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
-                     data-maxvalue={limitless ? '' : maxFiat}
-                     data-minvalue={0}
-                     validations={[isNumber, lowerEqThan, higherThan]}
+                     data-maxvalue={limitless ? limitlessMaxFiat : maxFiat}
+                     data-minvalue={limitless ? 0 : minFiat}
+                     validations={[isNumber, lowerEqThan, limitless ? higherThan : higherEqThan]}
                      id="fiat-quantity-input"
                      placeholder={t('buyer.offerTrade.fiatQuantity')} onChange={(e) => onCurrencyChange(e.target.value)} step="any"/>
               <span className="input-icon mr-3">{currency.id}</span>
