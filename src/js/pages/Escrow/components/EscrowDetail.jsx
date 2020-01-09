@@ -129,6 +129,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
         margin={escrow.offer.margin}
         tokenAmount={escrow.tokenAmount}
         tokenSymbol={escrow.token.symbol}
+        hideDefaultText
       />
 
       </Col>
