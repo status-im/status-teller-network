@@ -236,7 +236,12 @@ export function *addOffer({user, offer}) {
     offer.margin,
     offer.arbitrator
   );
-  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {user, offer, toSend, value: price});
+  yield doTransaction(ADD_OFFER_PRE_SUCCESS, ADD_OFFER_SUCCEEDED, ADD_OFFER_FAILED, {
+    user,
+    offer: Object.assign(offer, {limitH: offer.limitU}),
+    toSend,
+    value: price
+  });
 }
 
 export function *onAddOffer() {
