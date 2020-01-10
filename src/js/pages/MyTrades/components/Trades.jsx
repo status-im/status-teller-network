@@ -100,6 +100,7 @@ class Trades extends Component {
               const tradeStyle = this.getTradeStyle(trade, isBuyer);
               const address = isBuyer ? trade.buyer : trade.offer.owner;
               const userInfo = isBuyer ? trade.seller : trade.buyerInfo;
+              const escrowAssetPrice = (trade.fiatAmount / 100) / trade.tokenAmount;
 
               return (<Card key={index} className={classnames("clickable mb-3 shadow border-0 offer-card", {"card-transparent": !this.props.active})}
                             onClick={() => this.props.tradeClick(trade.escrowId)}>
@@ -122,10 +123,15 @@ class Trades extends Component {
                 </CardBody>
                 <CardFooter className="bg-white text-right border-0 pt-0 clickable mt-3">
                   <p className="m-0 border-top pt-2">
-                    {t('general.buy')} <span className="text-black"><img
-                    src={getTokenImage(trade.token.symbol)}
-                    alt={trade.token.symbol + ' icon'}/> {trade.token.symbol}</span> {t('trades.at')} <span
-                    className="font-weight-bold text-black">{formatFiatPrice(calculateEscrowPrice(trade, this.props.prices))} {trade.currency}</span>
+                    <span className="text-black">
+                      {isBuyer ? t('general.buy') : t('general.sell')} 
+                      <img src={getTokenImage(trade.token.symbol)}
+                         alt={trade.token.symbol + ' icon'}
+                         className="ml-1" /> {trade.tokenAmount} {trade.token.symbol}</span> {t('trades.for')} <span
+                    className="font-weight-bold text-black">{(trade.fiatAmount / 100).toFixed(2)} {trade.currency}</span>
+                  </p>
+                  <p>
+                    1 {trade.token.symbol} = {escrowAssetPrice.toFixed(4)}  {trade.currency}
                   </p>
                 </CardFooter>
               </Card>);

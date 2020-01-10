@@ -26,7 +26,7 @@ const UserInformation = ({t, identiconSeed, username, reputation, isArbitrator, 
   </Row>);
 
 UserInformation.propTypes = {
-  t: PropTypes.object,
+  t: PropTypes.func,
   identiconSeed: PropTypes.string,
   username: PropTypes.string,
   reputation: PropTypes.object,

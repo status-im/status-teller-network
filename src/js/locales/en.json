@@ -36,6 +36,7 @@
     "buyer": "Buyer",
     "buy": "Buy",
     "seller": "Seller",
+    "sell": "Sell",
     "smallCaseBuyer": "buyer",
     "smallCaseSeller": "seller",
     "arbitrator": "Arbitrator",
@@ -264,6 +265,7 @@
     "mining": "Mining",
     "actionNeeded": "Action needed",
     "at": "at",
+    "for": "for",
     "activeTrades": "Active trades",
     "pastTrade": "Past trades"
   },
