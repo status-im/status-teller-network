@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { fromTokenDecimals } from '../../utils/numbers';
-import { addressCompare } from '../../utils/address';
+import { addressCompare, zeroAddress } from '../../utils/address';
 import { getTradeStatus, tradeStates } from './helpers';
 
 const unimportantStates = [tradeStates.canceled, tradeStates.expired, tradeStates.released];
@@ -13,7 +13,16 @@ export const getTrades = (state, userAddress, offers) => {
   const escrows = state.escrow.escrows || {};
   return Object.values(escrows).filter(escrow => addressCompare(escrow.buyer, userAddress) || offers.find(x => x.toString() === escrow.offerId.toString()) !== undefined)
                 .map((escrow) => {
-                  const token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, escrow.offer.asset));
+                  let token = Object.values(state.network.tokens).find((token) => addressCompare(token.address, escrow.offer.asset));
+                  if (!token) {
+                    token = {
+                      symbol: "???",
+                      name: "Unknown",
+                      address: zeroAddress,
+                      decimals: 18,
+                      balance: "0"
+                    };
+                  }
                   return {
                     ...escrow,
                     token,
