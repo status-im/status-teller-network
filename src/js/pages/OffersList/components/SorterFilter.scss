@@ -65,16 +65,14 @@ $filter-modal-padding: 16px;
     }
 
     .btn {
-      border-color: $secondary;
+      border: none;
 
       &:focus, &:hover {
         box-shadow: none;
-        border-color: $secondary;
 
         &:not(.inactive) {
           color: $primary;
           background-color: $light-blue;
-          border-color: $light-blue;
         }
       }
     }
