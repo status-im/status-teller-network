@@ -34,6 +34,9 @@ class Asset extends Component {
     if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
       this.load();
       this.props.footer.show();
+    } else if (prevProps.isEip1102Enabled && !this.props.isEip1102Enabled) {
+      // Somehow became disabled
+      this.props.footer.hide();
     }
   }
 
@@ -55,7 +58,7 @@ class Asset extends Component {
   };
 
   render() {
-    return (<SellerAssets selectAsset={this.selectAsset} 
+    return (<SellerAssets selectAsset={this.selectAsset}
                           selectedAsset={this.state.selectedAsset}
                           address={this.props.address}
                           availableAssets={this.props.tokens}
