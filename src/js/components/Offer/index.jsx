@@ -23,7 +23,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
   const noArbitrator = addressCompare(offer.arbitrator, zeroAddress);
-  const limitless = (!offer.limitL || offer.limitL === '0') && (!offer.limitH || offer.limitH === '0');
+  const limitless = (!offer.limitL || offer.limitL === '0') && (!offer.limitU || offer.limitU === '0');
 
   let currencySymbol = CURRENCY_DATA.find(curr => curr.id === offer.currency);
   if (!currencySymbol) {
@@ -80,7 +80,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
         {!limitless && <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={limitIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
-          {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitH)/100, 2)}{currencySymbol}
+          {limitDecimals(parseFloat(offer.limitL)/100, 2)}{currencySymbol} to {limitDecimals(parseFloat(offer.limitU)/100, 2)}{currencySymbol}
         </p>}
 
         {limitless && <p className="text-black m-0 mt-2 clearfix data-item">

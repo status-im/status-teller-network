@@ -59,7 +59,7 @@ class Trade extends Component {
   }
 
   validate(currencyQuantity, assetQuantity) {
-    const limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
+    const limitless = this.props.offer.limitL === '0' && this.props.offer.limitU === '0';
     if (limitless) {
       if (currencyQuantity <= 0 || assetQuantity <= 0) {
         this.props.footer.disableNext();
@@ -67,7 +67,7 @@ class Trade extends Component {
         return;
       }
     } else {
-      if ((currencyQuantity > (parseFloat(this.props.offer.limitH) / 100)) ||
+      if ((currencyQuantity > (parseFloat(this.props.offer.limitU) / 100)) ||
         (currencyQuantity < (parseFloat(this.props.offer.limitL) / 100))) {
         this.props.footer.disableNext();
         this.setState({disabled: true});
@@ -134,11 +134,11 @@ class Trade extends Component {
     }
 
     let maxToken = this.props.sellerBalance;
-    if(this.props.offer.limitH !== '0'){
-      maxToken = (parseFloat(this.props.offer.limitH) / 100) / price;
+    if(this.props.offer.limitU !== '0'){
+      maxToken = (parseFloat(this.props.offer.limitU) / 100) / price;
     }
 
-    let limitless = this.props.offer.limitL === '0' && this.props.offer.limitH === '0';
+    let limitless = this.props.offer.limitL === '0' && this.props.offer.limitU === '0';
     return (
       <OfferTrade seller={this.props.offer.user}
                   sellerAddress={this.props.offer.owner}
@@ -148,7 +148,7 @@ class Trade extends Component {
                   maxToken={maxToken}
                   limitless={limitless}
                   limitL={this.props.offer.limitL}
-                  limitH={this.props.offer.limitH}
+                  limitU={this.props.offer.limitU}
                   price={price}
                   sellerBalance={this.props.sellerBalance}
                   asset={this.props.offer.token.symbol}

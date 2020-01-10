@@ -155,9 +155,9 @@ class OffersList extends Component {
     }
     if (this.state.amountFilter !== -1) {
       filteredOffers = filteredOffers.filter(offer => {
-        const limitH = parseFloat(offer.limitH);
+        const limitU = parseFloat(offer.limitU);
         const limitL = parseFloat(offer.limitL);
-        return (limitH === 0 || limitH >= this.state.amountFilter) && (limitL === 0 || limitL <= this.state.amountFilter);
+        return (limitU === 0 || limitU >= this.state.amountFilter) && (limitL === 0 || limitL <= this.state.amountFilter);
       });
     }
 

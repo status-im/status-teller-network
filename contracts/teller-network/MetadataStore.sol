@@ -342,7 +342,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
         int16 margin,
         uint[] memory paymentMethods,
         uint limitL,
-        uint limitH,
+        uint limitU,
         address payable owner,
         address payable arbitrator,
         bool deleted

@@ -50,11 +50,11 @@ class OfferTrade extends Component {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-      limitH, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress
+      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress
     } = this.props;
 
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
-    const maxFiat = (parseFloat(limitH) / 100).toFixed(2);
+    const maxFiat = (parseFloat(limitU) / 100).toFixed(2);
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
     const isETH = addressCompare(assetAddress, zeroAddress);
     const isETHorSNT =  (isETH || addressCompare(assetAddress, tokens.SNT.address));
@@ -204,7 +204,7 @@ OfferTrade.propTypes = {
   lastActivity: PropTypes.number,
   limitless: PropTypes.bool,
   limitL: PropTypes.string,
-  limitH: PropTypes.string,
+  limitU: PropTypes.string,
   arbitrator: PropTypes.object,
   sellerAddress: PropTypes.string,
   sellerContactData: PropTypes.string,
