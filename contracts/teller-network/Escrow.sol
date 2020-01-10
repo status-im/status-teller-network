@@ -9,7 +9,8 @@ import "../token/ERC20Token.sol";
 import "../token/SafeTransfer.sol";
 import "./ArbitrationLicense.sol";
 import "./License.sol";
-import "./MetadataStore.sol";
+import "./UserStore.sol";
+import "./OfferStore.sol";
 import "./Fees.sol";
 import "./Arbitrable.sol";
 import "./IEscrow.sol";
@@ -24,7 +25,9 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     EscrowTransaction[] public transactions;
 
     address public relayer;
-    MetadataStore public metadataStore;
+    OfferStore public offerStore;
+    UserStore public userStore;
+
 
     event Created(uint indexed offerId, address indexed seller, address indexed buyer, uint escrowId);
     event Funded(uint indexed escrowId, address indexed buyer, uint expirationTime, uint amount);
@@ -38,7 +41,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _relayer EscrowRelay contract address
      * @param _fallbackArbitrator Default arbitrator to use after timeout on solving arbitrations
      * @param _arbitratorLicenses License contract instance address for arbitrators
-     * @param _metadataStore MetadataStore contract address
+     * @param _offerStore OfferStore contract address
+     * @param _userStore UserStore contract address
      * @param _feeDestination Address where the fees are going to be sent
      * @param _feeMilliPercent Percentage applied as a fee to each escrow. 1000 == 1%
      */
@@ -46,7 +50,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         address _relayer,
         address _fallbackArbitrator,
         address _arbitratorLicenses,
-        address _metadataStore,
+        address _offerStore,
+        address _userStore,
         address payable _feeDestination,
         uint _feeMilliPercent)
         Fees(_feeDestination, _feeMilliPercent)
@@ -54,7 +59,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         public {
         _initialized = true;
         relayer = _relayer;
-        metadataStore = MetadataStore(_metadataStore);
+        offerStore = OfferStore(_offerStore);
+        userStore = UserStore(_userStore);
     }
 
     /**
@@ -62,7 +68,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _fallbackArbitrator Default arbitrator to use after timeout on solving arbitrations
      * @param _relayer EscrowRelay contract address
      * @param _arbitratorLicenses License contract instance address for arbitrators
-     * @param _metadataStore MetadataStore contract address
+     * @param _offerStore OfferStore contract address
+     * @param _userStore UserStore contract address
      * @param _feeDestination Address where the fees are going to be sent
      * @param _feeMilliPercent Percentage applied as a fee to each escrow. 1000 == 1%
      */
@@ -70,7 +77,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         address _fallbackArbitrator,
         address _relayer,
         address _arbitratorLicenses,
-        address _metadataStore,
+        address _offerStore,
+        address _userStore,
         address payable _feeDestination,
         uint _feeMilliPercent
     ) external {
@@ -80,7 +88,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         fallbackArbitrator = _fallbackArbitrator;
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
-        metadataStore = MetadataStore(_metadataStore);
+        offerStore = OfferStore(_offerStore);
+        userStore = UserStore(_userStore);
         relayer = _relayer;
         feeDestination = _feeDestination;
         feeMilliPercent = _feeMilliPercent;
@@ -117,11 +126,13 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     }
 
     /**
-     * @dev Update MetadataStore contract address
-     * @param _metadataStore MetadataStore contract address
+     * @dev Update Metadata Stores contract address
+     * @param _offerStore OfferStore contract address
+     * @param _userStore UserStore contract address
      */
-    function setMetadataStore(address _metadataStore) external onlyOwner {
-        metadataStore = MetadataStore(_metadataStore);
+    function setMetadataStore(address _offerStore, address _userStore) external onlyOwner {
+        offerStore = OfferStore(_offerStore);
+        userStore = UserStore(_userStore);
     }
 
     /**
@@ -146,7 +157,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         bool deleted;
         address token;
 
-        (token, , , , , , seller, arbitrator, deleted) = metadataStore.offer(_offerId);
+        (token, , , , , , seller, arbitrator, deleted) = offerStore.offer(_offerId);
 
         require(!deleted, "Offer is not valid");
         require(seller != _buyer, "Seller and Buyer must be different");
@@ -195,7 +206,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         string memory _location,
         string memory _username
     ) public returns(uint escrowId) {
-        metadataStore.addOrUpdateUser(msg.sender, _contactData, _location, _username);
+        userStore.addOrUpdateUser(msg.sender, _contactData, _location, _username);
         escrowId = _createTransaction(msg.sender, _destination, _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -207,7 +218,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _destination Address that will receive the crypto
      * @param _contactData Contact Data   ContactType:UserId
      * @param _username The username of the user
-     * @param _nonce The nonce for the user (from MetadataStore.user_nonce(address))
+     * @param _nonce The nonce for the user (from UserStore.user_nonce(address))
      * @param _signature buyer's signature
      * @return Id of the new escrow
      * @dev Requires contract to be unpaused.
@@ -224,7 +235,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         uint _nonce,
         bytes memory _signature
     ) public returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_signature, _contactData, _location, _username, _nonce);
+        address payable _buyer = userStore.addOrUpdateUser(_signature, _contactData, _location, _username, _nonce);
         escrowId = _createTransaction(_buyer, _destination, _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -255,7 +266,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     ) external returns(uint escrowId) {
         assert(msg.sender == relayer);
 
-        metadataStore.addOrUpdateUser(_sender, _contactData, _location, _username);
+        userStore.addOrUpdateUser(_sender, _contactData, _location, _username);
         escrowId = _createTransaction(_sender, _destination,  _offerId, _tokenAmount, _fiatAmount);
     }
 
@@ -302,7 +313,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @param _bContactData Contact Data   ContactType:UserId
      * @param _bLocation The location on earth
      * @param _bUsername The username of the user
-     * @param _bNonce The nonce for the user (from MetadataStore.user_nonce(address))
+     * @param _bNonce The nonce for the user (from userStore.user_nonce(address))
      * @param _bSignature buyer's signature
      * @return Id of the new escrow
      * @dev Requires contract to be unpaused.
@@ -318,7 +329,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         uint _bNonce,
         bytes memory _bSignature
     ) public payable returns(uint escrowId) {
-        address payable _buyer = metadataStore.addOrUpdateUser(_bSignature, _bContactData, _bLocation, _bUsername, _bNonce);
+        address payable _buyer = userStore.addOrUpdateUser(_bSignature, _bContactData, _bLocation, _bUsername, _bNonce);
         escrowId = _createTransaction(_buyer, _buyer, _offerId, _tokenAmount, _fiatAmount);
         _fund(msg.sender, escrowId);
     }
@@ -400,7 +411,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         _trx.status = EscrowStatus.RELEASED;
 
         if(!_isDispute){
-            metadataStore.refundStake(_trx.offerId);
+            offerStore.refundStake(_trx.offerId);
         }
 
         address token = _trx.token;
@@ -629,7 +640,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         if (_releaseFunds) {
             _release(_escrowId, trx, true);
-            metadataStore.slashStake(trx.offerId);
+            offerStore.slashStake(trx.offerId);
         } else {
             _cancel(_escrowId, trx, true);
             _releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);

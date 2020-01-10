@@ -5,7 +5,7 @@
 pragma solidity >=0.5.0 <0.6.0;
 
 import "./IEscrow.sol";
-import "./MetadataStore.sol";
+import "./OfferStore.sol";
 import "../common/Ownable.sol";
 import "tabookey-gasless/contracts/RelayRecipient.sol";
 
@@ -14,7 +14,7 @@ import "tabookey-gasless/contracts/RelayRecipient.sol";
  */
 contract EscrowRelay is RelayRecipient, Ownable {
 
-  MetadataStore public metadataStore;
+  OfferStore public offerStore;
   IEscrow public escrow;
   address public snt;
 
@@ -35,12 +35,12 @@ contract EscrowRelay is RelayRecipient, Ownable {
   uint256 constant ERROR = 99;
 
   /**
-   * @param _metadataStore Metadata Store Address
+   * @param _offerStore Metadata Store Address
    * @param _escrow IEscrow Instance Address
    * @param _snt SNT address
    */
-  constructor(address _metadataStore, address _escrow, address _snt) public {
-    metadataStore = MetadataStore(_metadataStore);
+  constructor(address _offerStore, address _escrow, address _snt) public {
+    offerStore = OfferStore(_offerStore);
     escrow = IEscrow(_escrow);
     snt = _snt;
   }
@@ -48,10 +48,10 @@ contract EscrowRelay is RelayRecipient, Ownable {
   /**
    * @notice Set metadata store address
    * @dev Only contract owner can execute this function
-   * @param _metadataStore New metadata store address
+   * @param _offerStore New metadata store address
    */
-  function setMetadataStore(address _metadataStore) external onlyOwner {
-    metadataStore = MetadataStore(_metadataStore);
+  function setOfferStore(address _offerStore) external onlyOwner {
+    offerStore = OfferStore(_offerStore);
   }
 
   /**
@@ -228,7 +228,7 @@ contract EscrowRelay is RelayRecipient, Ownable {
 
       return OK;
     } else if(functionSignature == CREATE_SIGNATURE) {
-      token = metadataStore.getAsset(dataValue);
+      token = offerStore.getAsset(dataValue);
 
       if(token != snt && token != address(0)) return ERROR_INVALID_ASSET;
 

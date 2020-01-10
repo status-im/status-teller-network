@@ -1,24 +1,18 @@
 pragma solidity >=0.5.0 <0.6.0;
 
+import "./UserStore.sol";
 import "./License.sol";
 import "./ArbitrationLicense.sol";
-import "../common/MessageSigned.sol";
 import "../common/SecuredFunctions.sol";
 import "../common/Stakable.sol";
 import "../proxy/Proxiable.sol";
 
 
 /**
-* @title MetadataStore
-* @dev User and offers registry
+* @title OfferStore
+* @dev Offers registry
 */
-contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
-
-    struct User {
-        string contactData;
-        string location;
-        string username;
-    }
+contract OfferStore is Stakable, SecuredFunctions, Proxiable {
 
     struct Offer {
         int16 margin;
@@ -34,9 +28,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
 
     License public sellingLicenses;
     ArbitrationLicense public arbitrationLicenses;
-
-    mapping(address => User) public users;
-    mapping(address => uint) public user_nonce;
+    UserStore public userStore;
 
     Offer[] public offers;
     mapping(address => uint256[]) public addressToOffers;
@@ -58,35 +50,43 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
     event OfferRemoved(address owner, uint256 offerId);
 
     /**
+     * @param _userStore User store contract address
      * @param _sellingLicenses Sellers licenses contract address
      * @param _arbitrationLicenses Arbitrators licenses contract address
      * @param _burnAddress Address to send slashed offer funds
      */
-    constructor(address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public
+    constructor(address _userStore, address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public
         Stakable(_burnAddress)
     {
-        init(_sellingLicenses, _arbitrationLicenses);
+        init(_userStore, _sellingLicenses, _arbitrationLicenses, _burnAddress);
     }
 
     /**
      * @dev Initialize contract (used with proxy). Can only be called once
+     * @param _userStore User store contract address
      * @param _sellingLicenses Sellers licenses contract address
      * @param _arbitrationLicenses Arbitrators licenses contract address
+     * @param _burnAddress Address to send slashed offer funds
      */
     function init(
+        address _userStore,
         address _sellingLicenses,
-        address _arbitrationLicenses
+        address _arbitrationLicenses,
+        address payable _burnAddress
     ) public {
         assert(_initialized == false);
 
         _initialized = true;
 
+        userStore = UserStore(_userStore);
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+        burnAddress = _burnAddress;
 
         basePrice = 0.01 ether;
 
-
+// TODO: set burner address on mainet
+// -==-sd=a-s=d-as=d-a=s-d=as-d=as
         _setOwner(msg.sender);
     }
 
@@ -109,139 +109,6 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
-    }
-
-    /**
-     * @dev Get datahash to be signed
-     * @param _username Username
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _nonce Nonce value (obtained from user_nonce)
-     * @return bytes32 to sign
-     */
-    function _dataHash(string memory _username, string memory _contactData, uint _nonce) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _contactData, _nonce));
-    }
-
-    /**
-     * @notice Get datahash to be signed
-     * @param _username Username
-     * @param _contactData Contact Data   ContactType:UserId
-     * @return bytes32 to sign
-     */
-    function getDataHash(string calldata _username, string calldata _contactData) external view returns (bytes32) {
-        return _dataHash(_username, _contactData, user_nonce[msg.sender]);
-    }
-
-    /**
-     * @dev Get signer address from signature. This uses the signature parameters to validate the signature
-     * @param _username Status username
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _nonce User nonce
-     * @param _signature Signature obtained from the previous parameters
-     * @return Signing user address
-     */
-    function _getSigner(
-        string memory _username,
-        string memory _contactData,
-        uint _nonce,
-        bytes memory _signature
-    ) internal view returns(address) {
-        bytes32 signHash = _getSignHash(_dataHash(_username, _contactData, _nonce));
-        return _recoverAddress(signHash, _signature);
-    }
-
-    /**
-     * @notice Get signer address from signature
-     * @param _username Status username
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _nonce User nonce
-     * @param _signature Signature obtained from the previous parameters
-     * @return Signing user address
-     */
-    function getMessageSigner(
-        string calldata _username,
-        string calldata _contactData,
-        uint _nonce,
-        bytes calldata _signature
-    ) external view returns(address) {
-        return _getSigner(_username, _contactData, _nonce, _signature);
-    }
-
-    /**
-     * @dev Adds or updates user information
-     * @param _user User address to update
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _location New location
-     * @param _username New status username
-     */
-    function _addOrUpdateUser(
-        address _user,
-        string memory _contactData,
-        string memory _location,
-        string memory _username
-    ) internal {
-        User storage u = users[_user];
-        u.contactData = _contactData;
-        u.location = _location;
-        u.username = _username;
-    }
-
-    /**
-     * @notice Adds or updates user information via signature
-     * @param _signature Signature
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _location New location
-     * @param _username New status username
-     * @return Signing user address
-     */
-    function addOrUpdateUser(
-        bytes calldata _signature,
-        string calldata _contactData,
-        string calldata _location,
-        string calldata _username,
-        uint _nonce
-    ) external returns(address payable _user) {
-        _user = address(uint160(_getSigner(_username, _contactData, _nonce, _signature)));
-
-        require(_nonce == user_nonce[_user], "Invalid nonce");
-
-        user_nonce[_user]++;
-        _addOrUpdateUser(_user, _contactData, _location, _username);
-
-        return _user;
-    }
-
-    /**
-     * @notice Adds or updates user information
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _location New location
-     * @param _username New status username
-     * @return Signing user address
-     */
-    function addOrUpdateUser(
-        string calldata _contactData,
-        string calldata _location,
-        string calldata _username
-    ) external {
-        _addOrUpdateUser(msg.sender, _contactData, _location, _username);
-    }
-
-    /**
-     * @notice Adds or updates user information
-     * @dev can only be called by the escrow contract
-     * @param _sender Address that sets the user info
-     * @param _contactData Contact Data   ContactType:UserId
-     * @param _location New location
-     * @param _username New status username
-     * @return Signing user address
-     */
-    function addOrUpdateUser(
-        address _sender,
-        string calldata _contactData,
-        string calldata _location,
-        string calldata _username
-    ) external onlyAllowedContracts {
-        _addOrUpdateUser(_sender, _contactData, _location, _username);
     }
 
     /**
@@ -277,7 +144,7 @@ contract MetadataStore is Stakable, MessageSigned, SecuredFunctions, Proxiable {
         require(_limitL <= _limitU, "Invalid limits");
         require(msg.sender != _arbitrator, "Cannot arbitrate own offers");
 
-        _addOrUpdateUser(
+        userStore.addOrUpdateUser(
             msg.sender,
             _contactData,
             _location,
