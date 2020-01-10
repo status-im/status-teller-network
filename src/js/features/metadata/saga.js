@@ -1,6 +1,6 @@
 /* global web3 */
-import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
-import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
+import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
+import UserStore from '../../../embarkArtifacts/contracts/UserStore';import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import {fork, takeEvery, put, all, call, select} from 'redux-saga/effects';
@@ -44,11 +44,13 @@ import { zeroAddress, addressCompare } from '../../utils/address';
 import {getContactData} from '../../utils/strings';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
-import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
 import {enableEthereum} from '../../services/embarkjs';
 import network from '../../features/network';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
 
-MetadataStore.options.address = MetadataStoreProxy.options.address;
+OfferStore.options.address = OfferStoreProxy.options.address;
+UserStore.options.address = UserStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 SellerLicense.options.address = SellerLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
@@ -67,7 +69,7 @@ export function *loadUser({address}) {
       isSeller
     };
 
-    const user = Object.assign(userLicenses, yield MetadataStore.methods.users(address).call({from: defaultAccount}));
+    const user = Object.assign(userLicenses, yield UserStore.methods.users(address).call({from: defaultAccount}));
 
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
@@ -135,9 +137,9 @@ export function *loadOffers({address}) {
 
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     if (address) {
-      offerIds = yield MetadataStore.methods.getOfferIds(address).call({from: defaultAccount});
+      offerIds = yield OfferStore.methods.getOfferIds(address).call({from: defaultAccount});
     } else {
-      const size = yield MetadataStore.methods.offersSize().call({from: defaultAccount});
+      const size = yield OfferStore.methods.offersSize().call({from: defaultAccount});
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
     const loadedUsers = [];
@@ -153,10 +155,10 @@ export function *loadOffers({address}) {
     const nbCreatedTradesObject = {};
 
     const offers = yield all(offerIds.map(function *(id) {
-      const offer = yield MetadataStore.methods.offer(id).call({from: defaultAccount});
+      const offer = yield OfferStore.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        offer.arbitratorData = yield MetadataStore.methods.users(offer.arbitrator).call({from: defaultAccount});
+        offer.arbitratorData = yield UserStore.methods.users(offer.arbitrator).call({from: defaultAccount});
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -224,7 +226,7 @@ export function *onLoad() {
 
 export function *addOffer({user, offer}) {
   const price = yield call(getOfferPrice);
-  const toSend = MetadataStore.methods.addOffer(
+  const toSend = OfferStore.methods.addOffer(
     offer.asset,
     user.contactData,
     user.location,
@@ -249,7 +251,7 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = MetadataStore.methods['addOrUpdateUser(string,string,string)'](
+  const toSend = UserStore.methods['addOrUpdateUser(string,string,string)'](
     getContactData(user.contactMethod, user.contactData),
     user.location,
     user.username
@@ -267,7 +269,7 @@ export function *onDeleteOffer() {
 
 export function *getOfferPrice() {
   try {
-    const price = yield MetadataStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+    const price = yield OfferStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
     yield put({type: GET_OFFER_PRICE_SUCCEEDED, price});
     return price;
   } catch(err){

@@ -1,6 +1,7 @@
 /*global web3*/
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
+import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
+import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
@@ -27,9 +28,12 @@ import {
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED, LOAD_USER} from "../metadata/constants";
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
 
-MetadataStore.options.address = MetadataStoreProxy.options.address;
+OfferStore.options.address = OfferStoreProxy.options.address;
+UserStore.options.address = UserStoreProxy.options.address;
+
 Escrow.options.address = EscrowProxy.options.address;
 
 const { toBN } = web3.utils;
@@ -186,18 +190,18 @@ export function *doLoadEscrows({address}) {
     const escrows = yield all(events.map(function *(ev) {
       const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
-      escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+      escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
       escrow.currency = escrow.offer.currency;
       escrow.margin = escrow.offer.margin;
 
       let sellerInfo = yield select(state => state.metadata.users[escrow.offer.owner]);
       if(!sellerInfo) {
-        sellerInfo = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+        sellerInfo = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
       }
 
       let buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
       if(!buyerInfo){
-        buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
+        buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
       }
 
       escrow.seller = sellerInfo;
@@ -222,10 +226,10 @@ export function *doGetEscrow({escrowId}) {
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     const escrow = yield Escrow.methods.transactions(escrowId).call({from: defaultAccount});
     escrow.escrowId = escrowId;
-    escrow.offer = yield MetadataStore.methods.offer(escrow.offerId).call({from: defaultAccount});
-    escrow.seller = yield MetadataStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
-    escrow.buyerInfo = yield MetadataStore.methods.users(escrow.buyer).call({from: defaultAccount});
-    escrow.arbitratorInfo = yield MetadataStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+    escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+    escrow.seller = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+    escrow.buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
+    escrow.arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);

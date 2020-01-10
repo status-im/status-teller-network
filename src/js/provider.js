@@ -2,8 +2,8 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
 import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
-import MetadataStore from '../embarkArtifacts/contracts/MetadataStore';
-import MetadataStoreProxy from '../embarkArtifacts/contracts/MetadataStoreProxy';
+import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
 import SNT from '../embarkArtifacts/contracts/SNT';
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare, zeroAddress} from './utils/address';
@@ -11,7 +11,7 @@ import {canRelay} from './features/escrow/helpers';
 import stripHexPrefix from 'strip-hex-prefix';
 
 Escrow.options.address = EscrowProxy.options.address;
-MetadataStore.options.address = MetadataStoreProxy.options.address;
+OfferStore.options.address = OfferStoreProxy.options.address;
 
 const CREATE_ESCROW = "createEscrow(uint256,uint256,uint256,address,string,string,string)";
 const RATE_TRANSACTION = "rateTransaction(uint256,uint256)";
@@ -32,7 +32,7 @@ class Provider {
   async isEthOrSNT(web3, data){
     if(!data || data.length < 74) return false;
     const offerId = web3.utils.hexToNumber(data.substr(10, 64));
-    const offer = await MetadataStore.methods.offers(offerId).call();
+    const offer = await OfferStore.methods.offers(offerId).call();
     return addressCompare(offer.asset, SNT.options.address) || addressCompare(offer.asset, zeroAddress);    
   }
 
