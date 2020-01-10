@@ -101,12 +101,19 @@ module.exports = {
         instanceOf: "Proxy",
         args: ["0x", "$ArbitrationLicense"]
       },
-      "MetadataStore": {
-        args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      UserStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
       },
-      MetadataStoreProxy: {
+      OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      },
+      UserStoreProxy: {
         instanceOf: "Proxy",
-        args: ["0x", "$MetadataStore"]
+        args: ["0x", "$UserStore"]
+      },
+      OfferStoreProxy: {
+        instanceOf: "Proxy",
+        args: ["0x", "$OfferStore"]
       },
       "RLPReader": {
         file: 'tabookey-gasless/contracts/RLPReader.sol'
@@ -115,11 +122,11 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       EscrowRelay: {
-        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
+        args: ["$OfferStoreProxy", "$EscrowProxy", "$SNT"],
         deps: ['RelayHub']
       },
       Escrow: {
-        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$MetadataStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "Proxy",
@@ -220,12 +227,11 @@ module.exports = {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
       },
+      RLPReader: {
+        deploy: false
+      },
       RelayHub: {
         address: '0xd216153c06e857cd7f72665e0af1d7d82172f494'
-      },
-      EscrowRelay: {
-        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub']
       }
     }
   },
@@ -234,13 +240,6 @@ module.exports = {
     gasPrice: "10000000000",
     tracking: 'shared.ropsten.json',
     contracts: {
-      EscrowRelay: {
-        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub']
-      },
-      Escrow: {
-        args: ["0x0000000000000000000000000000000000000000", "$ArbitrationLicenseProxy", "$MetadataStoreProxy", BURN_ADDRESS, FEE_MILLI_PERCENT]
-      },
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
       },
@@ -313,10 +312,6 @@ module.exports = {
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Mainnet/
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
-      },
-      EscrowRelay: {
-        args: ["$MetadataStoreProxy", "$EscrowProxy", "$SNT"],
-        deps: ['RelayHub']
       }
     }
   }
