@@ -64,7 +64,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.init(
         deps.contracts.SNT.options.address,
         licensePrice,
-        burnAddress
+        deps.contracts.KyberFeeBurner.options.address
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
@@ -76,7 +76,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.init(
         deps.contracts.SNT.options.address,
         arbitrationLicensePrice,
-        burnAddress
+        deps.contracts.KyberFeeBurner.options.address
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
@@ -112,7 +112,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.OfferStore.options.address,
         deps.contracts.UserStore.options.address,
-        burnAddress, // TODO: replace with StakingPool address
+        deps.contracts.KyberFeeBurner.options.address, // TODO: replace with StakingPool address
         feeMilliPercent
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
