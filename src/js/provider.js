@@ -2,8 +2,8 @@
 import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
 import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import OfferStore from '../embarkArtifacts/contracts/OfferStore';
+import OfferStoreProxy from '../embarkArtifacts/contracts/OfferStoreProxy';
 import SNT from '../embarkArtifacts/contracts/SNT';
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare, zeroAddress} from './utils/address';
