@@ -83,7 +83,7 @@ module.exports = {
         args: [
           "$SNT",
           LICENSE_PRICE,
-          BURN_ADDRESS  // TODO: replace with "$StakingPool"
+          "$KyberFeeBurner"  // TODO: replace with "$StakingPool"
         ]
       },
       SellerLicenseProxy: {
@@ -94,7 +94,7 @@ module.exports = {
         args: [
           "$SNT",
           ARB_LICENSE_PRICE,
-          BURN_ADDRESS  // TODO: replace with "$StakingPool"
+          "$KyberFeeBurner"  // TODO: replace with "$StakingPool"
         ]
       },
       ArbitrationLicenseProxy: {
