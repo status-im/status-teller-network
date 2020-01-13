@@ -85,8 +85,6 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
 
         basePrice = 0.01 ether;
 
-// TODO: set burner address on mainet
-// -==-sd=a-s=d-as=d-a=s-d=as-d=as
         _setOwner(msg.sender);
     }
 
