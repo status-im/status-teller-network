@@ -4,10 +4,10 @@ import {
   DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
   GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE
 } from './constants';
-import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
-import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
 
-MetadataStore.options.address = MetadataStoreProxy.options.address;
+OfferStore.options.address = OfferStoreProxy.options.address;
 
 export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
@@ -66,5 +66,5 @@ export const resetUpdateUserStatus = () => ({
 export const deleteOffer = (offerId) => ({
   type: DELETE_OFFER,
   offerId,
-  toSend: MetadataStore.methods.removeOffer(offerId)
+  toSend: OfferStore.methods.removeOffer(offerId)
 });

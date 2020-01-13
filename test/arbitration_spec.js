@@ -2,7 +2,8 @@
 const TestUtils = require("../utils/testUtils");
 
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const MetadataStore = embark.require('Embark/contracts/MetadataStore');
+const UserStore = require('Embark/contracts/UserStore');
+const OfferStore = require('Embark/contracts/OfferStore');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const SNT = embark.require('Embark/contracts/SNT');
 
@@ -61,12 +62,19 @@ config({
       args: ["$SNT"]
     },
     */
-    MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+    UserStore: {
+      args: ["$SellerLicense", "$ArbitrationLicense"]
+    },
+    OfferStore: {
+      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
     },
     Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
-      onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000],
+      onDeploy: [
+        "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
+        "UserStore.methods.setAllowedContract('$Escrow', true).send()"
+      ]
     },
     StandardToken: {
     }
@@ -83,7 +91,7 @@ contract("Escrow", function() {
   const tradeAmount = 100;
   const feeAmount = Math.round(tradeAmount * (feePercent / 100));
 
-  let receipt, escrowId, ethOfferId, hash, signature, nonce;
+  let receipt, escrowId, ethOfferId;
   let created;
 
   this.timeout(0);
@@ -103,9 +111,9 @@ contract("Escrow", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator2});
     await ArbitrationLicense.methods.blacklistSeller(blacklistedAccount).send({from: arbitrator});
 
-    const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+    const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
 
-    receipt  = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+    receipt  = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
   });
 
@@ -274,8 +282,8 @@ contract("Escrow", function() {
 
     it('should not allow a blacklisted seller to open an offer', async () => {
       try {
-        const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-        await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount, value: amountToStake});
+        const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+        await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount, value: amountToStake});
         assert.fail('should have reverted before');
       } catch (error) {
         assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");

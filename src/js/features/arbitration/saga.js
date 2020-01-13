@@ -2,7 +2,7 @@
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
-import MetadataStore from '../../../embarkArtifacts/contracts/MetadataStore';
+import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
@@ -29,9 +29,9 @@ import {
 } from './constants';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import MetadataStoreProxy from '../../../embarkArtifacts/contracts/MetadataStoreProxy';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
 
-MetadataStore.options.address = MetadataStoreProxy.options.address;
+OfferStore.options.address = OfferStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
 
@@ -79,7 +79,7 @@ export function *doGetEscrows() {
       const escrowId = events[i].returnValues.escrowId;
       const block = yield web3.eth.getBlock(events[0].blockNumber);
       const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-      const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
+      const offer = yield OfferStore.methods.offers(escrow.offerId).call();
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
@@ -114,7 +114,7 @@ export function *onGetEscrows() {
 export function *doLoadArbitration({escrowId}) {
   try {
     const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-    const offer = yield MetadataStore.methods.offers(escrow.offerId).call();
+    const offer = yield OfferStore.methods.offers(escrow.offerId).call();
 
     const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
     const block = yield web3.eth.getBlock(events[0].blockNumber);

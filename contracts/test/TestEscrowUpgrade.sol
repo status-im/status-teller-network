@@ -14,11 +14,12 @@ contract TestEscrowUpgrade is Escrow {
         address _fallbackArbitrator,
         address _relayer,
         address _arbitrationLicense,
-        address _metadataStore,
+        address _offerStore,
+        address _userStore,
         address payable _feeDestination,
         uint _feeMilliPercent
       )
-      Escrow(_fallbackArbitrator, _relayer, _arbitrationLicense, _metadataStore, _feeDestination, _feeMilliPercent)
+      Escrow(_fallbackArbitrator, _relayer, _arbitrationLicense, _offerStore, _userStore, _feeDestination, _feeMilliPercent)
       public {
     }
 

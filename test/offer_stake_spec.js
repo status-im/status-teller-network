@@ -2,7 +2,8 @@
 const TestUtils = require("../utils/testUtils");
 
 const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const MetadataStore = embark.require('Embark/contracts/MetadataStore');
+const OfferStore = embark.require('Embark/contracts/OfferStore');
+const UserStore = embark.require('Embark/contracts/UserStore');
 const Escrow = embark.require('Embark/contracts/Escrow');
 const SNT = embark.require('Embark/contracts/SNT');
 
@@ -64,12 +65,19 @@ config({
       args: ["$SNT"]
     },
     */
-    MetadataStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+    UserStore: {
+      args: ["$SellerLicense", "$ArbitrationLicense"]
+    },
+    OfferStore: {
+      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
     },
     Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$MetadataStore", BURN_ADDRESS, feePercent * 1000],
-      onDeploy: ["MetadataStore.methods.setAllowedContract('$Escrow', true).send()"]
+      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000],
+      onDeploy: [
+        "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
+        "UserStore.methods.setAllowedContract('$Escrow', true).send()"
+      ]
     },
     StandardToken: {
     }
@@ -109,28 +117,28 @@ contract("Escrow", function() {
     it("price for each offers should increase exponentially (0.01, 0.04, 0.09, 0.16,...)", async() => {
       let amountToStake; 
       
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.01", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
     
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.09", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
 
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.16", "ether"));
 
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       offerIds.push(receipt.events.OfferAdded.returnValues.offerId);
     });
 
@@ -138,23 +146,23 @@ contract("Escrow", function() {
       let currOffer, amountToStake;
       
       currOffer = offerIds.pop();
-      await MetadataStore.methods.removeOffer(currOffer).send();
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      await OfferStore.methods.removeOffer(currOffer).send();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.16", "ether"));
 
       currOffer = offerIds.pop();
-      await MetadataStore.methods.removeOffer(currOffer).send();
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      await OfferStore.methods.removeOffer(currOffer).send();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.09", "ether"));
 
       currOffer = offerIds.pop();
-      await MetadataStore.methods.removeOffer(currOffer).send();
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      await OfferStore.methods.removeOffer(currOffer).send();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
 
       currOffer = offerIds.pop();
-      await MetadataStore.methods.removeOffer(currOffer).send();
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      await OfferStore.methods.removeOffer(currOffer).send();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.01", "ether"));
 
     });
@@ -162,11 +170,11 @@ contract("Escrow", function() {
     it("price for each offers should keep increasing exponentially (0.04)", async() => {
       let amountToStake; 
 
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-      amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
     });
 
@@ -175,11 +183,11 @@ contract("Escrow", function() {
       let contractBalance, userBalance1, userBalance2;
       
       userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
-      receipt = await MetadataStore.methods.removeOffer(ethOfferId).send();
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      receipt = await OfferStore.methods.removeOffer(ethOfferId).send();
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0", "ether"));
 
       userBalance2 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
@@ -191,12 +199,12 @@ contract("Escrow", function() {
       let contractBalance, userBalance1, userBalance2;
 
       // Create Offer
-      const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
       userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
@@ -210,18 +218,18 @@ contract("Escrow", function() {
       // Release Escrow
       receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
 
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0", "ether"));
 
       userBalance2 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
       assert(userBalance1.lt(userBalance2), "User balance did not increase after refund");
 
-      const stakeDetails = await MetadataStore.methods.stakes(ethOfferId).call();
+      const stakeDetails = await OfferStore.methods.stakes(ethOfferId).call();
       assert.strictEqual(stakeDetails.amount, "0");
     });
 
     it("price for next offer should decrease", async() => {
-      const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.01", "ether"));
     });
 
@@ -229,18 +237,18 @@ contract("Escrow", function() {
       let contractBalance, burnAddressBalance1, burnAddressBalance2;
 
       // Create Offer
-      const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       burnAddressBalance1 = await web3.eth.getBalance(BURN_ADDRESS);
       assert.strictEqual(contractBalance, web3.utils.toWei("0.01", "ether"));
 
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
+      hash = await UserStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
-      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      nonce = await UserStore.methods.user_nonce(accounts[1]).call();
       receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
@@ -257,18 +265,18 @@ contract("Escrow", function() {
       // Seller loses dispute
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
 
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0", "ether"));
 
       burnAddressBalance2 = await web3.eth.getBalance(BURN_ADDRESS);
       assert.strictEqual(burnAddressBalance2, web3.utils.toBN(burnAddressBalance1).add(web3.utils.toBN(web3.utils.toWei("0.01", "ether"))).toString());
 
-      const stakeDetails = await MetadataStore.methods.stakes(ethOfferId).call();
+      const stakeDetails = await OfferStore.methods.stakes(ethOfferId).call();
       assert.strictEqual(stakeDetails.amount, "0");
     });
 
     it("price for next offer should not change after losing the dispute", async() => {
-      const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, web3.utils.toWei("0.04", "ether"));
     });
 
@@ -295,18 +303,18 @@ contract("Escrow", function() {
       let contractBalance, userBalance1, userBalance2;
 
       // Create Offer
-      const amountToStake = await MetadataStore.methods.getAmountToStake(accounts[0]).call();
-      receipt = await MetadataStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      receipt = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
       ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       userBalance1 = web3.utils.toBN(await web3.eth.getBalance(accounts[0]));
       assert.strictEqual(contractBalance, web3.utils.toWei("0.04", "ether"));
 
       // Create Escrow
-      hash = await MetadataStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
+      hash = await UserStore.methods.getDataHash("U", CONTACT_DATA).call({from: accounts[1]});
       signature = await web3.eth.sign(hash, accounts[1]);
-      nonce = await MetadataStore.methods.user_nonce(accounts[1]).call();
+      nonce = await UserStore.methods.user_nonce(accounts[1]).call();
       receipt = await Escrow.methods.createEscrow(ethOfferId, tradeAmount, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
@@ -323,7 +331,7 @@ contract("Escrow", function() {
       // Seller wins dispute
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_SELLER).send({from: arbitrator});
 
-      contractBalance = await web3.eth.getBalance(MetadataStore.options.address);
+      contractBalance = await web3.eth.getBalance(OfferStore.options.address);
       assert.strictEqual(contractBalance, web3.utils.toWei("0.04", "ether"));
     });
   });
