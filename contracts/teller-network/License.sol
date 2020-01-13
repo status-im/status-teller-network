@@ -29,6 +29,16 @@ contract License is Ownable, ApproveAndCallFallBack, SafeTransfer, Proxiable {
 
     event Bought(address buyer, uint256 price);
     event PriceChanged(uint256 _price);
+    event BurnAddressChanged(address sender, address prevBurnAddress, address newBurnAddress);
+
+    /**
+     * @dev Changes the burn address
+     * @param _burnAddress New burn address
+     */
+    function setBurnAddress(address payable _burnAddress) external onlyOwner {
+        emit BurnAddressChanged(msg.sender, burnAddress, _burnAddress);
+        burnAddress = _burnAddress;
+    }
 
     /**
      * @param _tokenAddress Address of token used to pay for licenses (SNT)
