@@ -99,7 +99,7 @@ contract("Escrow", function() {
   const feeAmount = Math.round(tradeAmount * (feePercent / 100));
 
   // util
-    const expireTransaction = async() => {
+  const expireTransaction = async() => {
     const addTime = 5 * 86400;
     await TestUtils.increaseTime(addTime + 1);
     expirationTime += addTime;

@@ -1,6 +1,7 @@
 /* global web3 */
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import UserStore from '../../../embarkArtifacts/contracts/UserStore';import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
+import UserStore from '../../../embarkArtifacts/contracts/UserStore';
+import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import {fork, takeEvery, put, all, call, select} from 'redux-saga/effects';
