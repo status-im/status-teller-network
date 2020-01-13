@@ -1,18 +1,16 @@
-/*global contract, config, it, embark, web3, before, describe, beforeEach*/
+/*global contract, config, it, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
 const UserStore = require('Embark/contracts/UserStore');
 const OfferStore = require('Embark/contracts/OfferStore');
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const Escrow = embark.require('Embark/contracts/Escrow');
-const StandardToken = embark.require('Embark/contracts/StandardToken');
-const SNT = embark.require('Embark/contracts/SNT');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
+const Escrow = require('Embark/contracts/Escrow');
+const StandardToken = require('Embark/contracts/StandardToken');
+const SNT = require('Embark/contracts/SNT');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
-
-
 
 let accounts;
 const fundAmount = 100;
@@ -21,55 +19,51 @@ const feePercent = 1;
 const feeAmount = Math.round(fundAmount * (feePercent / 100));
 
 config({
-  deployment: {
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-  },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": {"deploy": false},
+      "MiniMeTokenFactory": {},
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      UserStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
+      },
+      OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+        onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    UserStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense"]
-    },
-    OfferStore: {
-      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
-      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
 
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
-
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000]
-    },
-    StandardToken: {
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000]
+      },
+      StandardToken: {}
     }
   }
 }, (_err, web3_accounts) => {
@@ -91,7 +85,7 @@ contract("Escrow Funding", function() {
   before(async () => {
     await StandardToken.methods.mint(accounts[0], 100000000).send();
     await SNT.methods.generateTokens(accounts[0], 100000000).send();
-    
+
     // Register arbitrators
     arbitrator = accounts[9];
     await SNT.methods.generateTokens(arbitrator, 1000).send();
@@ -103,11 +97,11 @@ contract("Escrow Funding", function() {
     let amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    
+
     amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await OfferStore.methods.addOffer(StandardToken.options.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     tokenOfferId = receipt.events.OfferAdded.returnValues.offerId;
-    
+
     amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await OfferStore.methods.addOffer(SNT.options.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
     SNTOfferId = receipt.events.OfferAdded.returnValues.offerId;
@@ -130,9 +124,7 @@ contract("Escrow Funding", function() {
       // Still requires 2 transactions, because approveAndCall cannot send ETH
       // TODO: test if inside the contract we can encode the call, and call approveAndCall
 
-      receipt = await Escrow.methods.fund(escrowId)
-                                    .send({from: accounts[0], value});
-
+      receipt = await Escrow.methods.fund(escrowId).send({from: accounts[0], value});
     });
   });
 

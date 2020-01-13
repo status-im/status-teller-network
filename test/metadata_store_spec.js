@@ -10,51 +10,50 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-
 let accounts;
 
 config({
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": {"deploy": false},
+      "MiniMeTokenFactory": {},
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
 
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
-
-    UserStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense"]
-    },
-    OfferStore: {
-      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
-      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
+      UserStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
+      },
+      OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+        onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
+      }
     }
   }
 }, (_err, web3_accounts) => {
@@ -133,8 +132,7 @@ contract("MetadataStore", function () {
     const receipt2 = await OfferStore.methods.removeOffer(offerId).send();
     const offerRemoved = receipt2.events.OfferRemoved;
     assert(!!offerRemoved, "OfferRemoved() not triggered");
-    assert.equal(offerRemoved.returnValues.owner, accounts[0], "Invalid seller");
-    assert.equal(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
+    assert.strictEqual(offerRemoved.returnValues.owner, accounts[0], "Invalid seller");
+    assert.strictEqual(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
   });
-
 });

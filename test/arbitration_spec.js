@@ -1,11 +1,10 @@
-/*global contract, config, it, assert, embark, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
 
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const UserStore = require('Embark/contracts/UserStore');
+const Escrow = require('Embark/contracts/Escrow');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
 const OfferStore = require('Embark/contracts/OfferStore');
-const Escrow = embark.require('Embark/contracts/Escrow');
-const SNT = embark.require('Embark/contracts/SNT');
+const SNT = require('Embark/contracts/SNT');
 
 let accounts;
 let arbitrator, arbitrator2, blacklistedAccount;
@@ -15,10 +14,8 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
-
-
 config({
-  deployment: {
+  blockchain: {
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
     accounts: [
       {
@@ -29,54 +26,53 @@ config({
     ]
   },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": {"deploy": false},
+      "MiniMeTokenFactory": {},
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
-    UserStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense"]
-    },
-    OfferStore: {
-      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
-      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
-    },
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000],
-      onDeploy: [
-        "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
-        "UserStore.methods.setAllowedContract('$Escrow', true).send()"
-      ]
-    },
-    StandardToken: {
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
+      UserStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
+      },
+      OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+        onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
+      },
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000000", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, feePercent * 1000],
+        onDeploy: [
+          "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
+          "UserStore.methods.setAllowedContract('$Escrow', true).send()"
+        ]
+      },
+      StandardToken: {}
     }
   }
 }, (_err, web3_accounts) => {
@@ -143,7 +139,7 @@ contract("Escrow", function() {
         await Escrow.methods.openCase(escrowId, '1').send({from: accounts[3]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only participants can invoke this function");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only participants can invoke this function");
       }
     });
 
@@ -182,7 +178,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Only arbitrators can invoke this function");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Only arbitrators can invoke this function");
       }
     });
 
@@ -206,7 +202,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[0]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Arbitration can only be canceled by the opener");
       }
 
       receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
@@ -243,7 +239,7 @@ contract("Escrow", function() {
         receipt = await Escrow.methods.cancelArbitration(escrowId).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitration already solved or not open");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Arbitration already solved or not open");
       }
     });
 
@@ -272,7 +268,7 @@ contract("Escrow", function() {
         await Escrow.methods.rateTransaction(escrowId, 2).send({from: accounts[1]});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Transaction not completed yet");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Transaction not completed yet");
       }
 
       receipt = await Escrow.methods.setArbitrationResult(escrowId, ARBITRATION_SOLVED_BUYER).send({from: arbitrator});
@@ -286,7 +282,7 @@ contract("Escrow", function() {
         await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: blacklistedAccount, value: amountToStake});
         assert.fail('should have reverted before');
       } catch (error) {
-        assert.strictEqual(error.message, "VM Exception while processing transaction: revert Arbitrator does not allow this transaction");
+        assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Arbitrator does not allow this transaction");
       }
     });
   });

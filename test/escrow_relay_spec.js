@@ -1,10 +1,10 @@
-/*global contract, config, it, assert, embark, before, describe, beforeEach*/
+/*global contract, config, it, assert, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
-const Escrow = embark.require('Embark/contracts/Escrow');
-const EscrowRelay = embark.require('Embark/contracts/EscrowRelay');
-const Proxy = embark.require('Embark/contracts/Proxy');
-const ArbitrationLicense = embark.require('Embark/contracts/ArbitrationLicense');
-const SNT = embark.require('Embark/contracts/SNT');
+const Escrow = require('Embark/contracts/Escrow');
+const EscrowRelay = require('Embark/contracts/EscrowRelay');
+const Proxy = require('Embark/contracts/Proxy');
+const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
+const SNT = require('Embark/contracts/SNT');
 const UserStore = require('Embark/contracts/UserStore');
 const OfferStore = require('Embark/contracts/OfferStore');
 
@@ -17,70 +17,69 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
 config({
-  deployment: {
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-  },
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": { },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      deploy: false
-    },
-    SellerLicense: {
-      instanceOf: "License",
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
-    UserStore: {
-      args: ["$SellerLicense", "$ArbitrationLicense"]
-    },
-    OfferStore: {
-      args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
-      onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
-    },
-    ArbitrationLicense: {
-      args: ["$SNT", 10, BURN_ADDRESS]
-    },
+    deploy: {
+      "MiniMeToken": {"deploy": false},
+      "MiniMeTokenFactory": {},
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        deploy: false
+      },
+      SellerLicense: {
+        instanceOf: "License",
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      UserStore: {
+        args: ["$SellerLicense", "$ArbitrationLicense"]
+      },
+      OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+        onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
+      },
+      ArbitrationLicense: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      },
 
-    /*
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    },
-    */
+      /*
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      },
+      */
 
-    EscrowRelay: {
-      args: ["$OfferStore", "$Proxy", "$SNT"],
-      onDeploy: [
-        "OfferStore.methods.setAllowedContract('$EscrowRelay', true).send()",
-        "UserStore.methods.setAllowedContract('$EscrowRelay', true).send()"
-      ]
-    },
-    Proxy: {
-      args: ["0x", "$Escrow"]
-    },
-    Escrow: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000],
-      onDeploy: [
-        "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
-        "UserStore.methods.setAllowedContract('$Escrow', true).send()"
-      ]
-    },
-    TestEscrowUpgrade: {
-      args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
-    },
-    StandardToken: { }
+      EscrowRelay: {
+        args: ["$OfferStore", "$Proxy", "$SNT"],
+        onDeploy: [
+          "OfferStore.methods.setAllowedContract('$EscrowRelay', true).send()",
+          "UserStore.methods.setAllowedContract('$EscrowRelay', true).send()"
+        ]
+      },
+      Proxy: {
+        args: ["0x", "$Escrow"]
+      },
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000],
+        onDeploy: [
+          "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
+          "UserStore.methods.setAllowedContract('$Escrow', true).send()"
+        ]
+      },
+      TestEscrowUpgrade: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
+      },
+      StandardToken: {}
+    }
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
@@ -103,7 +102,7 @@ contract("Escrow Relay", function() {
     await ArbitrationLicense.methods.changeAcceptAny(true).send({from: arbitrator});
     const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
     receipt  = await OfferStore.methods.addOffer(TestUtils.zeroAddress, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, arbitrator).send({from: accounts[0], value: amountToStake});
-   
+
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
     Escrow.methods.init(
@@ -118,7 +117,7 @@ contract("Escrow Relay", function() {
 
     await OfferStore.methods.setAllowedContract(Escrow.options.address, true).send();
     await UserStore.methods.setAllowedContract(Escrow.options.address, true).send();
-    
+
     EscrowRelay.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name === 'Created'));
   });
 
@@ -131,9 +130,9 @@ contract("Escrow Relay", function() {
     receipt = await EscrowRelay.methods.cancel(escrowId).send({from: accounts[1]});
 
     const escrow = await Escrow.methods.transactions(escrowId).call();
-    const ESCROW_CANCELED = 4;
+    const ESCROW_CANCELED = '4';
 
-    assert.equal(escrow.status, ESCROW_CANCELED);
+    assert.strictEqual(escrow.status, ESCROW_CANCELED);
   });
 
 });
