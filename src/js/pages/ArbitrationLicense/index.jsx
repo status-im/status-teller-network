@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import {withTranslation} from "react-i18next";
 
 import arbitration from "../../features/arbitration";
 import network from "../../features/network";
@@ -81,10 +82,10 @@ class ArbitrationLicense extends Component {
 
     if(this.props.profile && !this.props.profile.username){
       return <ErrorInformation 
-                customErrorTitle="errorInformation.noContactDetails.title" 
-                CTAText="errorInformation.noContactDetails.CTA"
+                customErrorTitle={this.props.t("errorInformation.noContactDetails.title")} 
+                CTAText={this.props.t("errorInformation.noContactDetails.CTA")}
                 retry={() => this.props.history.push('/profile/settings/contact')} 
-                customErrorTip={"errorInformation.noContactDetails.tip"} 
+                customErrorTip={this.props.t("errorInformation.noContactDetails.tip")} 
                 cancel={() => this.props.history.go(-1)}
                 />;
     }
@@ -102,6 +103,7 @@ class ArbitrationLicense extends Component {
 }
 
 ArbitrationLicense.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
   profile: PropTypes.object,
   wizard: PropTypes.object,
@@ -144,4 +146,4 @@ export default connect(
     updateBalance: network.actions.updateBalance,
     loadProfile: metadata.actions.load
   }
-)(withRouter(ArbitrationLicense));
+)(withRouter(withTranslation()(ArbitrationLicense)));

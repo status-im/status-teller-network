@@ -15,7 +15,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {network && t('errorInformation.network.title')}
       {transaction && t('errorInformation.transaction.title')}
       {sntTokenError && t('errorInformation.sntTokenError.title')}
-      {customErrorTitle && t(customErrorTitle)}
+      {customErrorTitle}
     </h2>
     {message && <p className="text-muted mb-2">{message}</p>}
     <p className="text-muted mb-2">
@@ -23,11 +23,11 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {network && t('errorInformation.network.tip', {network})}
       {transaction && t('errorInformation.transaction.tip')}
       {sntTokenError && t('errorInformation.sntTokenError.tip')}
-      {customErrorTip && t(customErrorTip)}
+      {customErrorTip}
     </p>
     <p>
-      {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t(cancelText)}</Button>}
-      {retry && <Button color="primary" onClick={retry}>{t(CTAText)}</Button>}
+      {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{cancelText || t('errorInformation.cancel')}</Button>}
+      {retry && <Button color="primary" onClick={retry}>{CTAText || t('errorInformation.retry')}</Button>}
     </p>
   </div>
 );
@@ -38,8 +38,8 @@ ErrorInformation.defaultProps = {
   transaction: false,
   customErrorTitle: '',
   customErrorTip: '',
-  cancelText: 'errorInformation.cancel',
-  CTAText: 'errorInformation.retry'
+  cancelText: '',
+  CTAText: ''
 };
 
 ErrorInformation.propTypes = {
