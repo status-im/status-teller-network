@@ -7,7 +7,7 @@ import {Button} from 'reactstrap';
 import errorImage from '../../../images/error.png';
 import './index.scss';
 
-const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry, message, cancel}) => (
+const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry, message, cancel, customErrorTitle, customErrorTip, cancelText, CTAText, r}) => (
   <div className={classnames("error-information with-tip", {'with-button': !!retry})}>
     <img src={errorImage} alt="error"/>
     <h2 className="mt-5">
@@ -15,6 +15,7 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {network && t('errorInformation.network.title')}
       {transaction && t('errorInformation.transaction.title')}
       {sntTokenError && t('errorInformation.sntTokenError.title')}
+      {customErrorTitle && t(customErrorTitle)}
     </h2>
     {message && <p className="text-muted mb-2">{message}</p>}
     <p className="text-muted mb-2">
@@ -22,10 +23,11 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
       {network && t('errorInformation.network.tip', {network})}
       {transaction && t('errorInformation.transaction.tip')}
       {sntTokenError && t('errorInformation.sntTokenError.tip')}
+      {customErrorTip && t(customErrorTip)}
     </p>
     <p>
-      {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t('errorInformation.cancel')}</Button>}
-      {retry && <Button color="primary" onClick={retry}>{t('errorInformation.retry')}</Button>}
+      {cancel && <Button color="secondary" className="mr-3" onClick={cancel}>{t(cancelText)}</Button>}
+      {retry && <Button color="primary" onClick={retry}>{t(CTAText)}</Button>}
     </p>
   </div>
 );
@@ -33,7 +35,11 @@ const ErrorInformation = ({t, provider, network, transaction, sntTokenError, ret
 ErrorInformation.defaultProps = {
   provider: false,
   network: '',
-  transaction: false
+  transaction: false,
+  customErrorTitle: '',
+  customErrorTip: '',
+  cancelText: 'errorInformation.cancel',
+  CTAText: 'errorInformation.retry'
 };
 
 ErrorInformation.propTypes = {
@@ -44,7 +50,11 @@ ErrorInformation.propTypes = {
   sntTokenError: PropTypes.bool,
   retry: PropTypes.func,
   message: PropTypes.string,
-  cancel: PropTypes.func
+  cancel: PropTypes.func,
+  customErrorTitle: PropTypes.string,
+  customErrorTip: PropTypes.string,
+  cancelText: PropTypes.string,
+  CTAText: PropTypes.string
 };
 
 export default withTranslation()(ErrorInformation);
