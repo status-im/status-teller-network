@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Fragment, Component} from 'react';
 import PropTypes from 'prop-types';
 
 import {connect} from "react-redux";
@@ -7,6 +7,7 @@ import network from "../../../features/network";
 import newSeller from "../../../features/newSeller";
 import SellerAssets from './components/SellerAssets';
 import metadata from "../../../features/metadata";
+import NoWeb3Dialog from '../../../components/NoWeb3Dialog';
 
 class Asset extends Component {
   constructor(props) {
@@ -24,14 +25,14 @@ class Asset extends Component {
   }
 
   componentDidMount() {
-    if (this.props.isEip1102Enabled) {
+    if (this.props.isEip1102Enabled && this.props.address) {
       this.load();
       this.props.footer.show();
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled) {
+    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.address) {
       this.load();
       this.props.footer.show();
     } else if (prevProps.isEip1102Enabled && !this.props.isEip1102Enabled) {
@@ -57,13 +58,16 @@ class Asset extends Component {
     this.validate(selectedAsset);
   };
 
-  render() {
-    return (<SellerAssets selectAsset={this.selectAsset}
+  render() {  
+    return (<Fragment>
+        <NoWeb3Dialog />
+        <SellerAssets selectAsset={this.selectAsset}
                           selectedAsset={this.state.selectedAsset}
                           address={this.props.address}
                           availableAssets={this.props.tokens}
                           isEip1102Enabled={this.props.isEip1102Enabled}
-                          enableEip1102={() => this.props.enableEthereum()}/>);
+                          enableEip1102={() => this.props.enableEthereum()}/>
+      </Fragment>);
   }
 }
 

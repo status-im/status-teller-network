@@ -5,8 +5,8 @@ import {
   LOAD_USER_LOCATION_SUCCEEDED, SET_CURRENT_USER, LOAD_USER_TRADE_NUMBER_SUCCEEDED,
   DELETE_OFFER_SUCCEEDED, RESET_NEW_OFFER,
   DELETE_OFFER, DELETE_OFFER_PRE_SUCCESS, DELETE_OFFER_FAILED,
-  ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED,
-  SET_MAINNET_WARNING_SHOWED,
+  ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED,  SET_MAINNET_WARNING_SHOWED,
+  RESET_PROVIDER_VERIFICATION,
   GET_OFFER_PRICE,
   GET_OFFER_PRICE_SUCCEEDED
 } from './constants';
@@ -18,6 +18,7 @@ import {RESET_STATE, PURGE_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
+  defaultProvider: false,
   eip1102Enabled: false,
   mainnetWarningShowed: false,
   addOfferStatus: States.none,
@@ -52,12 +53,19 @@ function reducer(state = DEFAULT_STATE, action) {
     case ENABLE_ETHEREUM_SUCCEEDED:
       return {
         ...state,
-        eip1102Enabled: true
+        eip1102Enabled: true,
+       defaultProvider: action.accounts === undefined
       };
     case ENABLE_ETHEREUM_FAILED:
       return {
         ...state,
-        eip1102Enabled: false
+        eip1102Enabled: false,
+        defaultProvider: false
+      };
+    case RESET_PROVIDER_VERIFICATION: 
+      return {
+        ...state,
+        defaultProvider: false
       };
     case SET_MAINNET_WARNING_SHOWED:
       return {

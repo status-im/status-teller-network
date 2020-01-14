@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
@@ -11,6 +11,8 @@ import network from '../../../features/network';
 import Loading from '../../../components/Loading';
 import OfferTrade from './components/OfferTrade';
 import {limitDecimals} from '../../../utils/numbers';
+import ConnectWallet from '../../../components/ConnectWallet';
+import ModalDialog from '../../../components/ModalDialog';
 
 const MIN = 0;
 
@@ -21,7 +23,8 @@ class Trade extends Component {
       currencyQuantity: props.currencyQuantity,
       assetQuantity: props.assetQuantity,
       disabled: true,
-      ready: false
+      ready: false,
+      displayDialog: true
     };
 
     props.footer.onPageChange(() => {
@@ -45,6 +48,13 @@ class Trade extends Component {
 
     this.setState({ready: true});
   }
+
+
+  displayDialog = show => (e) => {
+    if(e) e.preventDefault();
+    this.setState({displayDialog: show});
+    return false;
+  };
 
   getSellerBalance() {
     if (this.props.offer && this.props.offer.token) {
@@ -140,7 +150,13 @@ class Trade extends Component {
 
     let limitless = this.props.offer.limitL === '0' && this.props.offer.limitU === '0';
     return (
-      <OfferTrade seller={this.props.offer.user}
+    <Fragment>
+        {(!this.props.isEip1102Enabled || !this.props.address) && (
+          <ModalDialog display={!!this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>
+             <ConnectWallet enableEthereum={this.props.enableEthereum} />
+          </ModalDialog>
+        )}
+        <OfferTrade seller={this.props.offer.user}
                   sellerAddress={this.props.offer.owner}
                   arbitrator={this.props.offer.arbitratorData}
                   arbitratorAddress={this.props.offer.arbitrator}
@@ -164,7 +180,9 @@ class Trade extends Component {
                   tokens={this.props.tokens}
                   assetAddress={this.props.offer.asset}
                   lastActivity={this.props.lastActivity}
-      />);
+      />
+    </Fragment>
+    );
   }
 }
 
@@ -194,7 +212,9 @@ Trade.propTypes = {
   ethBalance: PropTypes.string,
   gasPrice: PropTypes.string,
   updateBalances: PropTypes.func,
-  tokens: PropTypes.object
+  tokens: PropTypes.object,
+  isEip1102Enabled: PropTypes.bool,
+  enableEthereum: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -207,6 +227,7 @@ const mapStateToProps = (state) => {
   const price = priceData[offer.token.symbol][offer.currency];
 
   return {
+    isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     statusContactCode: newBuy.selectors.statusContactCode(state),
     username: newBuy.selectors.username(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
@@ -226,6 +247,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
+    enableEthereum: metadata.actions.enableEthereum,
     setTrade: newBuy.actions.setTrade,
     updateBalances: network.actions.updateBalances,
     updateBalance: network.actions.updateBalance,

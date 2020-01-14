@@ -2,7 +2,7 @@ import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
   DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
-  GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE
+  GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE, RESET_PROVIDER_VERIFICATION
 } from './constants';
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
@@ -67,4 +67,8 @@ export const deleteOffer = (offerId) => ({
   type: DELETE_OFFER,
   offerId,
   toSend: OfferStore.methods.removeOffer(offerId)
+});
+
+export const resetProviderVerification = () => ({
+  type: RESET_PROVIDER_VERIFICATION
 });

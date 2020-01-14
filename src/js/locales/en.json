@@ -395,6 +395,12 @@
     "initial": "The best and most convenient way to buy and sell crypto",
     "page": "Loading ..."
   },
+  "noWeb3Dialog": {
+    "title": "Your browser is not supported",
+    "subtitle": "Use one of the following Web3 browsers:",
+    "mobileBrowsers": "Mobile Web3 browsers and wallets", 
+    "desktopBrowsers": "Desktop Web3 browsers and wallets"
+  },
   "errorInformation": {
     "retry": "Retry",
     "cancel": "Back",
