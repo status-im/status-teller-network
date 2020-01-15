@@ -22,7 +22,6 @@ class SellerApproval extends Component {
     props.getArbitratorRequests();
     this.loadedUsers = [];
     if (props.acceptsEveryone) {
-      this.props.getLicenseOwners();
       this.props.getBlacklistedSellers();
     }
   }
@@ -42,7 +41,6 @@ class SellerApproval extends Component {
     }
 
     if (!prevProps.acceptsEveryone && this.props.acceptsEveryone) {
-      this.props.getLicenseOwners();
       this.props.getBlacklistedSellers();
     }
   }
@@ -66,7 +64,7 @@ class SellerApproval extends Component {
   }
 
   render(){
-    const {t, loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users, sellers, blacklistedSellers} = this.props;
+    const {t, loading, error, txHash, cancelArbitratorsActions, profile, acceptsEveryone, requests, users, blacklistedSellers} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
@@ -74,6 +72,8 @@ class SellerApproval extends Component {
     if(!profile.isArbitrator) {
       return <ErrorInformation message={t('sellerApproval.onlyForArbis')}/>;
     }
+
+    const sellers = this.props.offers.map(x => x.owner);
 
     if(loading || (!sellers && acceptsEveryone)) return <Loading mining={true} txHash={txHash} />;
 
@@ -102,12 +102,12 @@ class SellerApproval extends Component {
           <h3 className="mb-2 mt-5">{t('sellerApproval.blacklistSellers')}</h3>
           <p className="text-muted">{t('sellerApproval.blacklistExplanation')}</p>
           {sellers.map((seller, i) => {
-            const isBlacklisted = blacklistedSellers.includes(seller.address);
+            const isBlacklisted = blacklistedSellers.includes(seller);
 
             return <SellerApprovalItem key={'approval-' + i} status={isBlacklisted ? t('sellerApproval.blacklisted') : ''}
-                                       address={seller.address}
-                                       user={users[seller.address]} blacklist={(e) => this.blacklist(e, seller.address)}
-                                       unBlacklist={(e) => this.unBlacklist(e, seller.address)}/>;
+                                       address={seller}
+                                       user={users[seller]} blacklist={(e) => this.blacklist(e, seller)}
+                                       unBlacklist={(e) => this.unBlacklist(e, seller)}/>;
           })}
         </Fragment>}
       </Fragment>
@@ -128,7 +128,6 @@ SellerApproval.propTypes = {
   acceptsEveryone: PropTypes.bool,
   profile: PropTypes.object,
   requests: PropTypes.array,
-  sellers: PropTypes.array,
   blacklistedSellers: PropTypes.array,
   getArbitratorRequests: PropTypes.func,
   getUser: PropTypes.func,
@@ -136,9 +135,9 @@ SellerApproval.propTypes = {
   unBlacklistSeller: PropTypes.func,
   users: PropTypes.object,
   acceptRequest: PropTypes.func,
-  getLicenseOwners: PropTypes.func,
   getBlacklistedSellers: PropTypes.func,
-  rejectRequest: PropTypes.func
+  rejectRequest: PropTypes.func,
+  offers: PropTypes.array
 };
 
 
@@ -153,7 +152,7 @@ const mapStateToProps = state => {
     acceptsEveryone: arbitration.selectors.acceptsEveryone(state),
     requests: arbitration.selectors.getArbitratorRequests(state),
     users: metadata.selectors.getAllUsers(state),
-    sellers: license.selectors.licenseOwners(state),
+    offers: metadata.selectors.getOffersWithUser(state),
     blacklistedSellers: arbitration.selectors.getBlacklistedSellers(state)
   };
 };

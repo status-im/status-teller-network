@@ -15,7 +15,8 @@ const SellerApprovalItem = ({t, address, status, user = {}, acceptRequest, rejec
   };
   const BLACKLISTED_STATUS = t('sellerApproval.blacklisted');
 
-  return <UserInfoRow address={address} user={user} lastCol={<Fragment>
+  return <div className="mb-4">
+  <UserInfoRow address={address} user={user} lastCol={<Fragment>
     {status === arbitration.constants.AWAIT && !blacklist &&
     <Button color="link" onClick={acceptRequest} className="m-0 p-0">{t('sellerApproval.accept')}</Button>}
     {(status === arbitration.constants.AWAIT || status === arbitration.constants.ACCEPTED) && !blacklist &&
@@ -33,7 +34,8 @@ const SellerApprovalItem = ({t, address, status, user = {}, acceptRequest, rejec
     })}>
       {status && <Fragment>({requestStatus[status] || status})</Fragment>}
     </p>
-  </Fragment>}/>;
+  </Fragment>}/>
+  </div>;
 };
 
 SellerApprovalItem.propTypes = {
