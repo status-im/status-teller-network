@@ -57,119 +57,139 @@ class OfferTrade extends Component {
     const maxFiat = (parseFloat(limitU) / 100).toFixed(2);
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
     const isETH = addressCompare(assetAddress, zeroAddress);
-    const isETHorSNT =  (isETH || addressCompare(assetAddress, tokens.SNT.address));
+    const isETHorSNT = (isETH || addressCompare(assetAddress, tokens.SNT.address));
     const limitlessMaxFiat = (maxToken * price).toFixed(8);
 
-return <Fragment>
-  <Row noGutters className="offerTrade">
-    <Col xs="12">
-      <h3 className="mt-4 font-weight-normal">{t('general.seller')}</h3>
-      <div className="row d-flex flex-wrap align-items-center m-0">
-        <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
-        <p className="font-weight-medium mb-1 name">{seller.username}</p>
-      </div>
-      {renderContactDetails(t, seller.contactData, sellerAddress, 'mb-0 seller-info')}
-      <p className="reputation">{seller.nbReleasedTrades} <span className="text-muted mr-2">{t('general.trades')}</span> <img src={upvoteImg} className="mr-2" alt="Upvote"/>{seller.upCount} <img src={downvoteImg} className="mr-2 ml-3"  alt="Downvote"/>{seller.downCount}</p>
+    return <Fragment>
+      <Row noGutters className="offerTrade">
+        <Col xs="12">
+          <h3 className="mt-4 font-weight-normal">{t('general.seller')}</h3>
+          <div className="row d-flex flex-wrap align-items-center m-0">
+            <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
+            <p className="font-weight-medium mb-1 name">{seller.username}</p>
+          </div>
+          {renderContactDetails(t, seller.contactData, sellerAddress, 'mb-0 seller-info')}
+          <p className="reputation">{seller.nbReleasedTrades} <span
+            className="text-muted mr-2">{t('general.trades')}</span> <img src={upvoteImg} className="mr-2"
+                                                                          alt="Upvote"/>{seller.upCount} <img
+            src={downvoteImg} className="mr-2 ml-3" alt="Downvote"/>{seller.downCount}</p>
 
-      <h3 className="mt-4 font-weight-normal">{t('general.arbitrator')} <span onClick={this.toggleArbitratorDialog} className="clickable"><RoundedIcon image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
-      <div className="mt-2 font-weight-medium mb-1 overflow-hidden">
-        <div className="row d-flex flex-wrap align-items-center m-0">
-          <Identicon seed={arbitratorAddress} className="rounded-circle border mr-1 float-left" scale={5}/>
-          {formatArbitratorName(arbitrator, arbitratorAddress)}
-        </div>
-        {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
-      </div>
+          <h3 className="mt-4 font-weight-normal">{t('general.arbitrator')} <span onClick={this.toggleArbitratorDialog}
+                                                                                  className="clickable"><RoundedIcon
+            image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
+          <div className="mt-2 font-weight-medium mb-1 overflow-hidden">
+            <div className="row d-flex flex-wrap align-items-center m-0">
+              <Identicon seed={arbitratorAddress} className="rounded-circle border mr-1 float-left" scale={5}/>
+              {formatArbitratorName(arbitrator, arbitratorAddress)}
+            </div>
+            {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
+          </div>
       {addressCompare(arbitratorAddress, address) && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
 
-      <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
-      <p className="mt-2 font-weight-medium mb-1">
-        1 {asset} = {price.toFixed(4)} {currency.id}
-      </p>
-      <p className="text-muted text-small mt-2">
-        <RoundedIcon image={infoIcon} bgColor="secondary" className="float-left mr-1" size="sm"/>
-        <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
-      </p>
-    </Col>
-    {!addressCompare(arbitratorAddress, address) && <Col xs="12" className="mt-4">
-      <h3>{t('escrow.detail.amount')}</h3>
-      <Form className="text-center" onSubmit={(e) => e.preventDefault()}>
-        <FormGroup>
-          <Row>
-            <Col xs={12} sm={12}>
-              <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
-                     data-maxvalue={limitless ? limitlessMaxFiat : maxFiat}
-                     data-minvalue={limitless ? 0 : minFiat}
-                     validations={[isNumber, lowerEqThan, limitless ? higherThan : higherEqThan]}
-                     id="fiat-quantity-input"
-                     placeholder={t('buyer.offerTrade.fiatQuantity')} onChange={(e) => onCurrencyChange(e.target.value)} step="any"/>
-              <span className="input-icon mr-3">{currency.id}</span>
-            </Col>
-          </Row>
-        </FormGroup>
-        <FormGroup>
-          <Row>
-            <Col xs={12} sm={12}>
-              <Input type="text"
-                     name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
-                     data-maxvalue={parseFloat(maxToken) || ''}
-                     data-minvalue={parseFloat(minToken) || ''}
-                     validations={[isNumber, lowerEqThan, higherEqThan]}
-                     placeholder={t('buyer.offerTrade.assetQuantity')} onChange={(e) => onAssetChange(e.target.value)} step="any"/>
-              <span className="input-icon mr-3">{asset}</span>
-            </Col>
-          </Row>
-        </FormGroup>
-        { limitless && <p className="mt-3 limits">
-          <Trans
-            i18nKey="buyer.offerTrade.limits"
-            values={{
-              min: limitDecimals(minToken),
-              max: limitDecimals(maxToken),
-              symbol: asset
-            }}
-          >
-            Limits: {{min: limitDecimals(minToken)}} {{symbol: asset}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: asset}}</span>
-          </Trans>
-          <UncontrolledTooltip placement="right" target="max-token">
-          {t('buyer.offerTrade.sellerBalance')}
-          </UncontrolledTooltip>
-        </p> }
-        { !limitless && <Fragment>
-            { amountGreaterThanBalance && <FormFeedback className="d-block">{t('buyer.offerTrade.amountWarning')}</FormFeedback> }
-            <p className="mt-3 limits">
-              <Trans
-               i18nKey="buyer.offerTrade.limits"
-               values={{
-                min: limitDecimals(minFiat),
-                max: limitDecimals(maxFiat),
-                symbol: currency.id
-              }}>
-              Limits: {{min: limitDecimals(minFiat)}} {{symbol: currency.id}} to <span id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: currency.id}}</span>
-              </Trans>
-            </p>
-          </Fragment>
-        }
-        {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
-        {notEnoughETH && !canRelay && isETHorSNT && <Col xs="12" className="text-small text-center text-danger">
-          {t('buyer.offerTrade.newOrderDelay', {time: moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)})}
-        </Col>}
-      </Form>
-    </Col> }
-  </Row>
-  <ModalDialog display={this.state.displayDialogArbitrator} onClose={this.toggleArbitratorDialog} buttonText={t('buyer.offerTrade.dialogButton')}>
-    <RoundedIcon image={arbitratorImg} className="mb-2" bgColor="blue" />
-    <h2>{t('general.arbitrator')}</h2>
-    <Trans i18nKey="buyer.offerTrade.arbitratorInfo">
-      <p className="text-muted">You can think of an arbitrator as a neutral <span className="text-black">judge</span> who, when the trade comes to the <span className="clickable text-black" onClick={this.toggleDisputeDialog}>dispute</span>, will review the trade and resolve the dispute.</p>
-    </Trans>
-  </ModalDialog>
-  <ModalDialog display={this.state.displayDisputeDialog} onClose={this.toggleDisputeDialog} buttonText={t('buyer.offerTrade.dialogButton')}>
-    <RoundedIcon image={disputeImg} className="mb-2" bgColor="blue" />
-    <h2>{t('buyer.offerTrade.dispute')}</h2>
-    <p className="text-muted">{t('buyer.offerTrade.disputeInfo')}</p>
-  </ModalDialog>
+          <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
+          <p className="mt-2 font-weight-medium mb-1">
+            1 {asset} = {price.toFixed(4)} {currency.id}
+          </p>
 
-  </Fragment>;
+          {!price && <p className="text-danger">{t('buyer.offerTrade.noPrice')}</p>}
+
+          <p className="text-muted text-small mt-2">
+            <RoundedIcon image={infoIcon} bgColor="secondary" className="float-left mr-1" size="sm"/>
+            <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
+          </p>
+        </Col>
+        {!addressCompare(arbitratorAddress, address) && <Col xs="12" className="mt-4">
+          <h3>{t('escrow.detail.amount')}</h3>
+          <Form className="text-center" onSubmit={(e) => e.preventDefault()}>
+            <FormGroup>
+              <Row>
+                <Col xs={12} sm={12}>
+                  <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
+                         disabled={!price}
+                         data-maxvalue={limitless ? limitlessMaxFiat : maxFiat}
+                         data-minvalue={limitless ? 0 : minFiat}
+                         validations={[isNumber, lowerEqThan, limitless ? higherThan : higherEqThan]}
+                         id="fiat-quantity-input"
+                         placeholder={t('buyer.offerTrade.fiatQuantity')}
+                         onChange={(e) => onCurrencyChange(e.target.value)} step="any"/>
+                  <span className="input-icon mr-3">{currency.id}</span>
+                </Col>
+              </Row>
+            </FormGroup>
+            <FormGroup>
+              <Row>
+                <Col xs={12} sm={12}>
+                  <Input type="text"
+                         name="asset" className="form-control" value={assetQuantity} id="asset-quantity-input"
+                         disabled={!price}
+                         data-maxvalue={parseFloat(maxToken) || ''}
+                         data-minvalue={parseFloat(minToken) || ''}
+                         validations={[isNumber, lowerEqThan, higherEqThan]}
+                         placeholder={t('buyer.offerTrade.assetQuantity')}
+                         onChange={(e) => onAssetChange(e.target.value)} step="any"/>
+                  <span className="input-icon mr-3">{asset}</span>
+                </Col>
+              </Row>
+            </FormGroup>
+            {limitless && <p className="mt-3 limits">
+              <Trans
+                i18nKey="buyer.offerTrade.limits"
+                values={{
+                  min: limitDecimals(minToken),
+                  max: limitDecimals(maxToken),
+                  symbol: asset
+                }}
+              >
+                Limits: {{min: limitDecimals(minToken)}} {{symbol: asset}} to <span
+                id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: asset}}</span>
+              </Trans>
+              <UncontrolledTooltip placement="right" target="max-token">
+                {t('buyer.offerTrade.sellerBalance')}
+              </UncontrolledTooltip>
+            </p>}
+            {!limitless && <Fragment>
+              {amountGreaterThanBalance &&
+              <FormFeedback className="d-block">{t('buyer.offerTrade.amountWarning')}</FormFeedback>}
+              <p className="mt-3 limits">
+                <Trans
+                  i18nKey="buyer.offerTrade.limits"
+                  values={{
+                    min: limitDecimals(minFiat),
+                    max: limitDecimals(maxFiat),
+                    symbol: currency.id
+                  }}>
+                  Limits: {{min: limitDecimals(minFiat)}} {{symbol: currency.id}} to <span
+                  id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: currency.id}}</span>
+                </Trans>
+              </p>
+            </Fragment>
+            }
+            {disabled && <p className="text-muted">{t('buyer.offerTrade.enterBefore')}</p>}
+            {notEnoughETH && !canRelay && isETHorSNT && <Col xs="12" className="text-small text-center text-danger">
+              {t('buyer.offerTrade.newOrderDelay', {time: moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)})}
+            </Col>}
+          </Form>
+        </Col> }
+      </Row>
+      <ModalDialog display={this.state.displayDialogArbitrator} onClose={this.toggleArbitratorDialog}
+                   buttonText={t('buyer.offerTrade.dialogButton')}>
+        <RoundedIcon image={arbitratorImg} className="mb-2" bgColor="blue"/>
+        <h2>{t('general.arbitrator')}</h2>
+        <Trans i18nKey="buyer.offerTrade.arbitratorInfo">
+          <p className="text-muted">You can think of an arbitrator as a neutral <span
+            className="text-black">judge</span> who, when the trade comes to the <span className="clickable text-black"
+                                                                                       onClick={this.toggleDisputeDialog}>dispute</span>,
+            will review the trade and resolve the dispute.</p>
+        </Trans>
+      </ModalDialog>
+      <ModalDialog display={this.state.displayDisputeDialog} onClose={this.toggleDisputeDialog}
+                   buttonText={t('buyer.offerTrade.dialogButton')}>
+        <RoundedIcon image={disputeImg} className="mb-2" bgColor="blue"/>
+        <h2>{t('buyer.offerTrade.dispute')}</h2>
+        <p className="text-muted">{t('buyer.offerTrade.disputeInfo')}</p>
+      </ModalDialog>
+
+    </Fragment>;
   }
 }
 

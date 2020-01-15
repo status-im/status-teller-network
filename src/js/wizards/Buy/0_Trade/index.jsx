@@ -230,7 +230,8 @@ const mapStateToProps = (state) => {
   }
   const offer = metadata.selectors.getOfferById(state, offerId);
   const priceData = prices.selectors.getPrices(state);
-  const price = priceData[offer.token.symbol][offer.currency];
+
+  const price =  priceData && priceData[offer.token.symbol] ? priceData[offer.token.symbol][offer.currency] : null;
 
   return {
     isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),

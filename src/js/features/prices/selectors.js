@@ -8,7 +8,7 @@ export const getAssetPrice = (state, assetSymbol) => {
 };
 
 export const hasPrices = state => {
-  return state.prices.ETH !== undefined;
+  return state.prices !== undefined;
 };
 
 export const getGeckoIds = state => state.prices.coinGeckoIds;

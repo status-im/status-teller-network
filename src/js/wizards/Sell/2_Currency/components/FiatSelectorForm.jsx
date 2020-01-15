@@ -28,22 +28,19 @@ class FiatSelectorForm extends Component {
     }
 
     return (
-      <Fragment>
-        <h2>{t('sellerFiatContainer.title')}</h2>
-        <FormGroup>
-          <Label className="text-small mt-3 mb-0">Local currency</Label>
-          <Typeahead className="mb-3"
-            id="fiatSelector"
-            onChange={this.onChange}
-            options={this.props.currencies}
-            placeholder={t("fiatSelectorForm.placeholder")}
-            onInputChange={this.onInputChange}
-            submitFormOnEnter={true}
-            emptyLabel={t("fiatSelectorForm.emptyLabel")}
-            defaultSelected={defaultSelectedValue}
-          />
-        </FormGroup>
-      </Fragment>
+      <FormGroup>
+        <Label className="text-small mt-3 mb-0">Local currency</Label>
+        <Typeahead className="mb-3"
+                   id="fiatSelector"
+                   onChange={this.onChange}
+                   options={this.props.currencies}
+                   placeholder={t("fiatSelectorForm.placeholder")}
+                   onInputChange={this.onInputChange}
+                   submitFormOnEnter={true}
+                   emptyLabel={t("fiatSelectorForm.emptyLabel")}
+                   defaultSelected={defaultSelectedValue}
+        />
+      </FormGroup>
     );
   }
 }
