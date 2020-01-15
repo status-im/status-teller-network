@@ -148,6 +148,74 @@
       "0xdb63d70594ddec6de1a9da2d6ca73a16c66ac4e46beb6d2532b1679052b90015": {
         "name": "Escrow",
         "address": "0xF63290032cfb043B704a22CC1aFaf90A810db2A5"
+      },
+      "0x0165d0e31d22090c836f6381283d373cf653a2621e737a2950358a7c3059371a": {
+        "name": "KyberNetworkProxy",
+        "address": "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
+      },
+      "0x81860cadcca8c1ab5964e4c8f27e3e28170b345ed2ea0ebcbfefe7454c115e4f": {
+        "name": "RelayHub",
+        "address": "0xd216153c06e857cd7f72665e0af1d7d82172f494"
+      },
+      "0x42a973ee305b4f1de67596beb11eb15505a7661bb6f5985965931823d75c2ea4": {
+        "name": "MiniMeTokenFactory",
+        "address": "0xe00b9860513ae02115b9e59a8d4107CF169D3d57"
+      },
+      "0xbcee8181f76f9a8c99f0ff45513f69d2be81b098d2464d1979687dc1185d0d1b": {
+        "name": "SNT",
+        "address": "0x0Be64CEc3F1A47985782EfA990F72318FFafb354"
+      },
+      "0x5bda8090239ea7eadd24403dcad70e1067d82454e8dbd4ebce54e385c7002ab2": {
+        "name": "KyberFeeBurner",
+        "address": "0x6193CaC62130694289CD6498E32f390E79Bff622"
+      },
+      "0x4ef484d5bfb46217cc08b3c6383a3303596b2f7f6e5ad0d3bdd3c9eb9e863580": {
+        "name": "SellerLicense",
+        "address": "0x4368e4Aa1d3C9ACb03082385767D1d4308AC4c36"
+      },
+      "0x2f73d7670f429093b2b80571f299c0dbb86dbab6ec82eae5047ab7e1e1c63875": {
+        "name": "ArbitrationLicense",
+        "address": "0x2444becE7179C88AdC62A226968C8f47DEcF18C8"
+      },
+      "0x191cc556db39a2799cf723493305fc92cfe7acf8eeaf964b7dde776145193c2b": {
+        "name": "SellerLicenseProxy",
+        "address": "0xfcAD486E5341a27210eDA046E305b8D3708884ce"
+      },
+      "0x211159f8ef0d6d6e2bf21f646f3f4fdacda60a59cdf2166fd3d502d006794d07": {
+        "name": "UserStore",
+        "address": "0x388e1e48A106736885fE7eE1C2AE2342C06D5954"
+      },
+      "0x4719f6b62cac67a32bbedbbec50c795e77fbe3a13f8f815412b8d010bb5119ad": {
+        "name": "ArbitrationLicenseProxy",
+        "address": "0x15A2a072dbAB11EECAD9D720dD123eA56dcC2780"
+      },
+      "0x6ca358d3be66b7642a7c4995ff026f01e11dea1bbdbc26ee12af4397367d78ee": {
+        "name": "UserStoreProxy",
+        "address": "0x6FA6062054e5D24D1258eE2405f0f9B0910476FA"
+      },
+      "0xf9e2d72f1f4970d094655fa853c63e0871fd95d9dca29c15fdbd4a5634be0dbd": {
+        "name": "OfferStore",
+        "address": "0x9Fd33239452F776c072e18edf2EBA680898Bbe11"
+      },
+      "0xd24cc3ac912bcae8216d9253e02470d3550beb450143e5cb1ceb33b5a30b354e": {
+        "name": "Escrow",
+        "address": "0xddc0cB4392542173a883ed0675C07AFB1a2a8612"
+      },
+      "0xe2b00c3a36a41f1043037167e047b9fda3c3bee957e464065516952be645dadc": {
+        "name": "EscrowProxy",
+        "address": "0x56F5b39Df6f9267876C28058bad0A415c0C9ad64"
+      },
+      "0xfc2a4bc1385ac35cdff7240ea0b97697dcacb03dfee31d64ff1c684894b7fce2": {
+        "name": "EscrowRelay",
+        "address": "0x2aab743020bb478Ede815A047218f2E469844e74"
+      },
+      "0xf33b8c026c9e535d45099cd06b184d19e94ee3caab8c26a3687df5119891a860": {
+        "name": "OfferStoreProxy",
+        "address": "0x46A6253E07AbBA4e90D8934c2d86B485020F7862"
+      },
+      "0xc8ec8838648a9e9f46abaf70d2bfa6b6c62516ea5dc85c4a83c429bac7f53715": {
+        "name": "EscrowRelay",
+        "address": "0x48D2D7Fc4495ADfd73e9658e04d75D843Cb14e54"
       }
     }
   }
