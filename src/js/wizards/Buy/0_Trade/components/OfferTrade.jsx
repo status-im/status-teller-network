@@ -50,7 +50,7 @@ class OfferTrade extends Component {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress
+      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address
     } = this.props;
 
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
@@ -79,6 +79,7 @@ return <Fragment>
         </div>
         {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
       </div>
+      {addressCompare(arbitratorAddress, address) && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
 
       <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
       <p className="mt-2 font-weight-medium mb-1">
@@ -89,7 +90,7 @@ return <Fragment>
         <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
       </p>
     </Col>
-    <Col xs="12" className="mt-4">
+    {!addressCompare(arbitratorAddress, address) && <Col xs="12" className="mt-4">
       <h3>{t('escrow.detail.amount')}</h3>
       <Form className="text-center" onSubmit={(e) => e.preventDefault()}>
         <FormGroup>
@@ -153,7 +154,7 @@ return <Fragment>
           {t('buyer.offerTrade.newOrderDelay', {time: moment(escrow.helpers.nextRelayDate(lastActivity)).toNow(true)})}
         </Col>}
       </Form>
-    </Col>
+    </Col> }
   </Row>
   <ModalDialog display={this.state.displayDialogArbitrator} onClose={this.toggleArbitratorDialog} buttonText={t('buyer.offerTrade.dialogButton')}>
     <RoundedIcon image={arbitratorImg} className="mb-2" bgColor="blue" />
@@ -174,6 +175,7 @@ return <Fragment>
 
 OfferTrade.propTypes = {
   t: PropTypes.func,
+  address: PropTypes.string,
   seller: PropTypes.object,
   currency: PropTypes.object,
   minToken: PropTypes.oneOfType([

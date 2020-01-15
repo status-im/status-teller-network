@@ -13,6 +13,7 @@ import OfferTrade from './components/OfferTrade';
 import {limitDecimals} from '../../../utils/numbers';
 import ConnectWallet from '../../../components/ConnectWallet';
 import ModalDialog from '../../../components/ModalDialog';
+import { addressCompare } from '../../../utils/address';
 
 const MIN = 0;
 
@@ -47,8 +48,12 @@ class Trade extends Component {
     this.getSellerBalance();
 
     this.setState({ready: true});
-  }
 
+    if(addressCompare(this.props.offer.arbitrator, this.props.address)){
+      this.props.footer.hide();
+    }
+
+  }
 
   displayDialog = show => (e) => {
     if(e) e.preventDefault();
@@ -180,6 +185,7 @@ class Trade extends Component {
                   tokens={this.props.tokens}
                   assetAddress={this.props.offer.asset}
                   lastActivity={this.props.lastActivity}
+                  address={this.props.address}
       />
     </Fragment>
     );
