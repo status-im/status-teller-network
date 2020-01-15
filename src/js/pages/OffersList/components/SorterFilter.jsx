@@ -24,6 +24,7 @@ import { ReactComponent as CurrencyIcon } from '../../../../images/dollar.svg';
 import { ReactComponent as TransferIcon } from '../../../../images/transfer.svg';
 import { ReactComponent as ChatIcon } from '../../../../images/read-chat.svg';
 import cryptoIcons from '../../../../images/cryptoIcons.svg';
+import ArrowDown from '../../../../images/arrow-down.svg';
 
 import './SorterFilter.scss';
 
@@ -82,6 +83,8 @@ class SorterFilter extends Component {
           placeholder={t('filter.searchCryptos')}
           value={this.props.tokenFilter}
           onChange={this.props.setTokenFilter}
+          ref={(typeahead) => this.typeahead = typeahead}
+          onFocus={() => { this.isTokenFilterActive = true; }}
           renderMenuItemChildren={(option, props, idx) => {
             const symbol = getOptionLabel(option, props.labelKey);
             let nbOffersForToken = 0;
@@ -105,6 +108,20 @@ class SorterFilter extends Component {
                 {idx !== this.props.tokens.length - 1 && <Separator/>}
               </div>
             );
+          }}
+        />
+        <img src={ArrowDown} alt="" className="arrow-down clickable"
+          onClick={() => {
+            if(this.typeahead){
+              if(this.isTokenFilterActive){
+                this.typeahead.blur();
+                this.isTokenFilterActive = false;
+              } else {
+                this.typeahead.focus();
+                this.typeahead.getInput().click();
+                this.isTokenFilterActive = true;
+              }
+            }
           }}
         />
       </div>
