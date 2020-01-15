@@ -204,8 +204,14 @@ export function *doLoadEscrows({address}) {
         buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
       }
 
+      let arbitratorInfo = yield select(state => state.metadata.users[escrow.arbitrator]);
+      if(!arbitratorInfo){
+        arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+      }
+
       escrow.seller = sellerInfo;
       escrow.buyerInfo = buyerInfo;
+      escrow.arbitratorInfo = arbitratorInfo;
 
       return escrow;
     }));
