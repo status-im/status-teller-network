@@ -63,6 +63,10 @@ body {
     top: -14px;
     margin: 0 auto;
   }
+
+  .dropdown-menu {
+    z-index: 1001;
+  }
 }
 
 body > div {
