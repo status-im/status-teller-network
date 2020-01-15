@@ -15,7 +15,8 @@ const ModalDialog = ({display, onClose, children, buttonText, hideButton}) => (
 
 ModalDialog.defaultProps = {
   display: false,
-  hideButton: false
+  hideButton: false,
+  onClose: () => {}
 };
 
 ModalDialog.propTypes = {

@@ -46,7 +46,6 @@ class ContactDetails extends Component {
 
     if (!this.props.isEip1102Enabled) {
       this.props.footer.disableNext();
-      this.props.enableEthereum();
     }
   }
 
@@ -122,7 +121,6 @@ ContactDetails.propTypes = {
   resolveENSName: PropTypes.func,
   ensError: PropTypes.string,
   isEip1102Enabled: PropTypes.bool,
-  enableEthereum: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -142,7 +140,6 @@ export default connect(
   {
     setContactInfo: newBuy.actions.setContactInfo,
     getContactCode: network.actions.getContactCode,
-    resolveENSName: network.actions.resolveENSName,
-    enableEthereum: metadata.actions.enableEthereum
+    resolveENSName: network.actions.resolveENSName
   }
   )(withTranslation()(ContactDetails));
