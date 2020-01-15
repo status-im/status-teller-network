@@ -125,7 +125,8 @@
     "selectValid": "Select a valid currency to move to the next page",
     "placeholder": "Search local currencies",
     "continue": "Next",
-    "emptyLabel": "No matches found."
+    "emptyLabel": "No matches found.",
+    "localCurrency": "Local currency"
   },
   "sellerArbitratorContainer": {
     "title": "Select an arbitrator for this offer"

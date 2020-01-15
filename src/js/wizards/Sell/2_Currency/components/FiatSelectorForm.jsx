@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {FormGroup, Label} from 'reactstrap';
 import {Typeahead} from 'react-bootstrap-typeahead';
@@ -29,7 +29,7 @@ class FiatSelectorForm extends Component {
 
     return (
       <FormGroup>
-        <Label className="text-small mt-3 mb-0">Local currency</Label>
+        <Label className="text-small mt-3 mb-0">{t("fiatSelectorForm.localCurrency")}</Label>
         <Typeahead className="mb-3"
                    id="fiatSelector"
                    onChange={this.onChange}
