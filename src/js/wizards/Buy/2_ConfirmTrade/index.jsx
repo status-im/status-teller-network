@@ -54,7 +54,7 @@ class ConfirmTrade extends Component {
   };
 
   cancelTrade = () => {
-    return this.props.history.push('/');
+    return this.props.history.push('/buy');
   };
 
   _calcPrice = () => {
