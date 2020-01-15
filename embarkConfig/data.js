@@ -1,14 +1,18 @@
 /* eslint-disable complexity */
 const async = require('async');
 
-const estimateAndSend = (from, gasPrice) => async (toSend, value = 0) => {
-  const estimatedGas = await toSend.estimateGas({from, value});
-  return toSend.send({from, gasPrice, value, gas: estimatedGas + 2000});
-};
 
 module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMilliPercent, burnAddress, mainnetOwner, fallbackArbitrator, deps) => {
   try {
     const networkId = await deps.web3.eth.net.getId();
+
+    const estimateAndSend = (from, gasPrice) => async (toSend, value = 0) => {
+      const estimatedGas = await toSend.estimateGas({from, value});
+      // Don't know why, in the simulator, it fails with a small gas limit
+      const additionalGas = networkId === 1337 ? 20000 : 2000;
+      return toSend.send({from, gasPrice, value, gas: estimatedGas + additionalGas});
+    };
+
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
     const sendTrxAccount0 = estimateAndSend(main, gasPrice);
@@ -219,29 +223,23 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     console.log("Buy arbitration licenses");
     {
       const buyLicense = deps.contracts.ArbitrationLicense.methods.buy().encodeABI();
-      let toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
-      let gas = await toSend.estimateGas({from: arbitrator});
-      await toSend.send({from: arbitrator, gas});
 
-      toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense);
-      gas = await toSend.estimateGas({from: addresses[8]});
-      await toSend.send({from: addresses[8], gas});
+      const sendTrxAccountArbi = estimateAndSend(arbitrator, gasPrice);
+      const sendTrxAccount8 = estimateAndSend(addresses[8], gasPrice);
 
+      await sendTrxAccountArbi(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
+
+      await sendTrxAccount8(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
 
       // Accepting everyone
-      toSend = deps.contracts.ArbitrationLicense.methods.changeAcceptAny(true);
-      gas = await toSend.estimateGas({from: arbitrator});
-      await toSend.send({from: arbitrator, gas});
-
+      await sendTrxAccountArbi(deps.contracts.ArbitrationLicense.methods.changeAcceptAny(true));
     }
 
     console.log('Buy Licenses...');
+    const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
     await async.eachLimit(addresses.slice(1, 7), 1, async (address) => {
-      const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
-      const toSend = deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense);
-
-      const gas = await toSend.estimateGas({from: address});
-      return toSend.send({from: address, gas});
+      const sendTrxAccount = estimateAndSend(address, gasPrice);
+      return sendTrxAccount(deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense));
     });
 
     console.log('Generating Offers...');
@@ -253,7 +251,11 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     const offerStartIndex = 1;
 
     const offerReceipts = await async.mapLimit(addresses.slice(offerStartIndex, offerStartIndex + 5), 1, async (address) => {
-      const addOffer = deps.contracts.OfferStore.methods.addOffer(
+      const sendTrxAccount = estimateAndSend(address, gasPrice);
+
+      const amountToStake = await deps.contracts.OfferStore.methods.getAmountToStake(address).call();
+
+      return sendTrxAccount(deps.contracts.OfferStore.methods.addOffer(
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
@@ -266,11 +268,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
         0,
         Math.floor(Math.random() * 100),
         arbitrator
-      );
-
-      const amountToStake = await deps.contracts.OfferStore.methods.getAmountToStake(address).call();
-      const gas = await addOffer.estimateGas({from: address, value: amountToStake});
-      return addOffer.send({from: address, gas, value: amountToStake});
+      ), amountToStake);
     });
 
     console.log('Creating escrows and rating them...');
@@ -287,66 +285,53 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       // TODO when we re-enable creating tokens too, use this to know
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
 
-      let gas;
-
       // Create
       hash = await deps.contracts.UserStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.UserStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
-      gas = await creation.estimateGas({from: creatorAddress});
-      receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
+      const sendTrxAccount = estimateAndSend(creatorAddress, gasPrice);
+
+      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
 
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
       // Fund
-      const fund = deps.contracts.Escrow.methods.fund(escrowId);
-      gas = await fund.estimateGas({from: creatorAddress, value: val + feeAmount});
-      receipt = await fund.send({from: creatorAddress, gas: gas + 1000, value: val + feeAmount});
+      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.fund(escrowId), val + feeAmount);
 
       // Release
-      const release = deps.contracts.Escrow.methods.release(escrowId);
-      gas = await release.estimateGas({from: creatorAddress});
-      receipt = await release.send({from: creatorAddress, gas: gas + 1000});
+      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.release(escrowId));
 
       // Rate
       const rating = Math.floor(Math.random() * 5) + 1;
-      const rate = deps.contracts.Escrow.methods.rateTransaction(escrowId, rating);
-      gas = await rate.estimateGas({from: buyerAddress});
-      await rate.send({from: buyerAddress, gas: gas + 1000});
+      await sendTrxAccount(deps.contracts.Escrow.methods.rateTransaction(escrowId, rating));
     });
 
+    const sendTrxAccountBuyer = estimateAndSend(buyerAddress, gasPrice);
     console.log('Creating arbitrations');
     await async.eachOfLimit(addresses.slice(escrowStartIndex, 5), 1, async (creatorAddress, idx) => {
+      const sendTrxAccount = estimateAndSend(creatorAddress, gasPrice);
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
-      let gas, receipt;
+      let receipt;
 
       hash = await deps.contracts.UserStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.UserStore.methods.user_nonce(buyerAddress).call();
 
-      const creation = deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature);
-      gas = await creation.estimateGas({from: creatorAddress});
-      receipt = await creation.send({from: creatorAddress, gas: gas + 1000});
+      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
 
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
       // Fund
-      const fund = deps.contracts.Escrow.methods.fund(escrowId);
-      gas = await fund.estimateGas({from: creatorAddress, value: val + feeAmount});
-      await fund.send({from: creatorAddress, gas: gas + 1000, value: val + feeAmount});
+      await sendTrxAccount(deps.contracts.Escrow.methods.fund(escrowId), val + feeAmount);
 
+      // Buyer pays
+      await sendTrxAccountBuyer(deps.contracts.Escrow.methods.pay(escrowId));
 
-      const pay = deps.contracts.Escrow.methods.pay(escrowId);
-      gas = await pay.estimateGas({from: buyerAddress});
-      await pay.send({from: buyerAddress, gas: gas + 1000});
-
-      const openCase = deps.contracts.Escrow.methods.openCase(escrowId, '1');
-      gas = await openCase.estimateGas({from: buyerAddress});
-      await openCase.send({from: buyerAddress, gas: gas + 1000});
+      // Open case
+      await sendTrxAccountBuyer(deps.contracts.Escrow.methods.openCase(escrowId, '1'));
     });
 
     const accounts = await async.mapLimit(addresses, 1, async (address) => {
