@@ -31,6 +31,8 @@ const DEFAULT_STATE = {
 };
 
 function isActionNeeded(escrows) {
+  if(!web3.eth.defaultAccount) return false;
+  
   const defaultAccount = toChecksumAddress(web3.eth.defaultAccount);
   // Check the trade status to see if there are actions needed
   const actionNeeded = Object.values(escrows).find(trade => {

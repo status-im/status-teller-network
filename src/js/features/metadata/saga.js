@@ -105,6 +105,7 @@ export function *onLoadLocation() {
 export function *verifyAccountChange() {
   const accounts = yield web3.eth.getAccounts();
   const currAddress = yield select((state) => state.network.address);
+  if(currAddress === null) return;
   if(currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))){
     yield put(network.actions.clearCache(
       setTimeout(() => {
