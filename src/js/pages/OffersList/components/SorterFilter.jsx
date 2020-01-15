@@ -91,7 +91,7 @@ class SorterFilter extends Component {
               }
             });
             return (
-              <div className="mt-2">
+              <div className={classnames("mt-2", {'border-bottom pb-2': idx !== this.props.tokens.length - 1})}>
                 <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
                 {this.props.tokens.find(token => token.symbol === symbol).name}
                 <span className="text-muted ml-2 d-inline-block mb-2">
@@ -102,7 +102,6 @@ class SorterFilter extends Component {
                 <span className="text-muted float-right">
                 ({nbOffersForToken})
               </span>
-                {idx !== this.props.tokens.length - 1 && <Separator/>}
               </div>
             );
           }}
