@@ -117,7 +117,10 @@ export function *verifyAccountChange() {
 
 export function *enabledEthereum() {
   try {
-    const accounts = yield enableEthereum();
+    let accounts = yield enableEthereum();
+    if (!accounts) {
+      accounts = yield web3.eth.getAccounts();
+    }
     if (accounts) {
       web3.eth.defaultAccount = accounts[0];
       yield put({type: LOAD_USER, address: accounts[0]});

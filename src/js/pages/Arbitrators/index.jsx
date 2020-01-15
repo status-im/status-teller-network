@@ -83,7 +83,7 @@ class Arbitrators extends Component {
                 <Button disabled={isDisabled} onClick={this.requestArbitrator(arb)}>{t('arbitrators.request')}</Button>}
 
                 {arbitrators[arb].isAllowed && !isUser &&
-                <span className="text-success">{t('arbitrators.available')}</span>}
+                <p className="text-success mb-1">{t('arbitrators.available')}</p>}
 
                 {!isUser && arbitrators[arb].request.status === arbitration.constants.AWAIT &&
                 <Button onClick={this.cancelRequest(arb)}>{t('arbitrators.cancelRequest')}</Button>}
