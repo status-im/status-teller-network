@@ -23,13 +23,15 @@ class ArbitratorSelectorForm extends Component {
     const arbitratorStrings = this.props.arbitrators.map((arbitratorAddr, index) => {
       const user = this.props.users[arbitratorAddr];
 
+      if(!user || !user.username) return null;
+
       let text = formatArbitratorName(user, arbitratorAddr, compactAddress(arbitratorAddr, 3), index);
 
       if (value && value === arbitratorAddr) {
         defaultSelectedValue.push(text);
       }
       return text;
-    });
+    }).filter(x => x);
 
     return (
       <Fragment>

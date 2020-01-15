@@ -2,6 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import {connect} from "react-redux";
+import {withTranslation} from "react-i18next";
 
 import arbitration from "../../features/arbitration";
 import network from "../../features/network";
@@ -79,6 +80,16 @@ class ArbitrationLicense extends Component {
       return <Loading mining txHash={this.props.txHash}/>;
     }
 
+    if(this.props.profile && !this.props.profile.username){
+      return <ErrorInformation 
+                customErrorTitle={this.props.t("errorInformation.noContactDetails.title")} 
+                CTAText={this.props.t("errorInformation.noContactDetails.CTA")}
+                retry={() => this.props.history.push('/profile/settings/contact')} 
+                customErrorTip={this.props.t("errorInformation.noContactDetails.tip")} 
+                cancel={() => this.props.history.go(-1)}
+                />;
+    }
+
     return (
       <Fragment>
         <Info price={this.props.licensePrice} />
@@ -92,7 +103,9 @@ class ArbitrationLicense extends Component {
 }
 
 ArbitrationLicense.propTypes = {
+  t: PropTypes.func,
   history: PropTypes.object,
+  profile: PropTypes.object,
   wizard: PropTypes.object,
   checkLicenseOwner: PropTypes.func,
   buyLicense: PropTypes.func,
@@ -110,8 +123,10 @@ ArbitrationLicense.propTypes = {
 };
 
 const mapStateToProps = state => {
+  const address = network.selectors.getAddress(state) || '';
   return {
     address: network.selectors.getAddress(state) || '',
+    profile: metadata.selectors.getProfile(state, address),
     isLicenseOwner: arbitration.selectors.isLicenseOwner(state),
     isLoading: arbitration.selectors.isLoading(state),
     txHash: arbitration.selectors.txHash(state),
@@ -131,4 +146,4 @@ export default connect(
     updateBalance: network.actions.updateBalance,
     loadProfile: metadata.actions.load
   }
-)(withRouter(ArbitrationLicense));
+)(withRouter(withTranslation()(ArbitrationLicense)));

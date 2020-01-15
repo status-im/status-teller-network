@@ -419,6 +419,11 @@
       "tip": "The page your were looking for doesn't exist. Do you wish to go back to the previous page or the Home?",
       "back": "Back",
       "home": "Home"
+    },
+    "noContactDetails": {
+      "title": "Contact details are missing",
+      "tip": "You need to set your contact details before being able to buy an arbitrator license",
+      "CTA": "Ok"
     }
   },
   "arbitration": {
