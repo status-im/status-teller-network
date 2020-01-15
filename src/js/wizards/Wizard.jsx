@@ -19,6 +19,16 @@ class Wizard extends Component {
     };
   }
 
+  componentDidUpdate(){
+    const locationHash = this.props.location.hash || this.props.location.pathname;
+    let currentStep = this.props.steps.findIndex((step) => locationHash.endsWith(step.path));
+    if(currentStep === this.state.currentStep) return;
+    if (currentStep === -1) {
+      currentStep = 0;
+    }
+    this.setState({currentStep});
+  }
+
   canNext = () => {
     let currentStep = this.state.currentStep;
     const stepsLength = this.props.steps.length;
