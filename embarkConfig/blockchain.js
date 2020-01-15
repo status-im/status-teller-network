@@ -78,7 +78,7 @@ module.exports = {
   testnet: {
     networkType: "testnet", // Can be: testnet(ropsten), rinkeby, livenet or custom, in which case, it will use the specified networkId
     networkId: 4,
-    endpoint: `https://rinkeby.infura.io/${secret.infuraKey}`,
+    endpoint: `https://rinkeby.infura.io/v3/${secret.infuraKey}`,
     accounts: [
       {
         mnemonic: secret.mnemonic,
@@ -89,7 +89,7 @@ module.exports = {
   },
 
   ropsten: {
-    endpoint: `https://ropsten.infura.io/${secret.infuraKey}`,
+    endpoint: `https://ropsten.infura.io/v3/${secret.infuraKey}`,
     accounts: [
       {
         mnemonic: secret.mnemonic,
@@ -101,11 +101,12 @@ module.exports = {
 
   livenet: {
     networkType: "livenet",
-    syncMode: "light",
+    endpoint: `https://mainnet.infura.io/v3/${secret.infuraKey}`,
     accounts: [
       {
-        nodeAccounts: true,
-        password: "config/livenet/password"
+        mnemonic: secret.mnemonic,
+        hdpath: secret.hdpath || "m/44'/60'/0'/0/",
+        numAddresses: "10"
       }
     ]
   }
