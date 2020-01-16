@@ -80,45 +80,51 @@ function *fetchAllTokenPrices() {
       return yield put({type: FETCH_EXCHANGE_RATE_FALLBACK});
     }
 
-    let coinGeckoIds = yield select(getGeckoIds);
+    try {
+      let coinGeckoIds = yield select(getGeckoIds);
 
-    if (!coinGeckoIds || Object.keys(coinGeckoIds).length === 0) {
-      // Get the coin IDs
-      const allCoins = yield call(axios.get, COIN_GECKO_API_LIST);
+      if (!coinGeckoIds || Object.keys(coinGeckoIds).length === 0) {
+        // Get the coin IDs
+        const allCoins = yield call(axios.get, COIN_GECKO_API_LIST);
 
-      const tokens = Tokens.mainnet;
-      coinGeckoIds = {};
-      tokens.forEach(token => {
-        const result = symbolBinarySearch(allCoins.data, token.symbol.toUpperCase(), token.name.toUpperCase().replace(/ /g, ''));
+        const tokens = Tokens.mainnet;
+        coinGeckoIds = {};
+        tokens.forEach(token => {
+          const result = symbolBinarySearch(allCoins.data, token.symbol.toUpperCase(), token.name.toUpperCase().replace(/ /g, ''));
 
-        if (!result) {
-          console.warn('No Info for token', token.symbol);
-        } else {
-          coinGeckoIds[result.id] = token.symbol;
-        }
-      });
-      yield put({type: SAVE_COIN_GECKO_IDS, coinGeckoIds});
-    }
-    const keys = Object.keys(coinGeckoIds);
-    const ids = keys.join(',');
-    let currency;
-
-    for (let i = 0; i < CURRENCY_DATA.length; i++) {
-      currency = CURRENCY_DATA[i].id;
-      const response = yield call(axios.get, `${COIN_GECKO_API_MARKETS}?vs_currency=${currency.toLowerCase()}&ids=${ids}&order=market_cap_desc&per_page=${keys.length}&sparkline=false`);
-      if (response.status !== 200) {
-        console.error('Error getting price data for', currency, response.data || response.error);
-        continue;
+          if (!result) {
+            console.warn('No Info for token', token.symbol);
+          } else {
+            coinGeckoIds[result.id] = token.symbol;
+          }
+        });
+        yield put({type: SAVE_COIN_GECKO_IDS, coinGeckoIds});
       }
-      // eslint-disable-next-line no-loop-func
-      response.data.forEach(coinMarkerInfo => {
-        const id = coinMarkerInfo.id;
-        if (!data[coinGeckoIds[id]]) {
-          data[coinGeckoIds[id]] = {};
+      const keys = Object.keys(coinGeckoIds);
+      const ids = keys.join(',');
+      let currency;
+
+      for (let i = 0; i < CURRENCY_DATA.length; i++) {
+        currency = CURRENCY_DATA[i].id;
+        const response = yield call(axios.get, `${COIN_GECKO_API_MARKETS}?vs_currency=${currency.toLowerCase()}&ids=${ids}&order=market_cap_desc&per_page=${keys.length}&sparkline=false`);
+        if (response.status !== 200) {
+          console.error('Error getting price data for', currency, response.data || response.error);
+          continue;
         }
-        data[coinGeckoIds[id]][currency] = coinMarkerInfo.current_price;
-      });
-      yield put({type: FETCH_PRICES_SUCCEEDED, data});
+        // eslint-disable-next-line no-loop-func
+        response.data.forEach(coinMarkerInfo => {
+          const id = coinMarkerInfo.id;
+          if (!data[coinGeckoIds[id]]) {
+            data[coinGeckoIds[id]] = {};
+          }
+          data[coinGeckoIds[id]][currency] = coinMarkerInfo.current_price;
+        });
+        yield put({type: FETCH_PRICES_SUCCEEDED, data});
+      }
+    } catch (e) {
+      console.error('Error with Coingecko', e);
+      console.error('Fallbacking to other market API');
+      yield put({type: FETCH_EXCHANGE_RATE_FALLBACK});
     }
   } catch (error) {
     console.error(error);
