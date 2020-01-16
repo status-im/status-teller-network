@@ -62,7 +62,6 @@
     "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.0.0",
     "flag-icon-css": "^3.4.2",
-    "google-geocoder": "^0.2.1",
     "i18next": "^19.0.2",
     "i18next-browser-languagedetector": "^4.0.1",
     "identicon.js": "^2.3.3",
