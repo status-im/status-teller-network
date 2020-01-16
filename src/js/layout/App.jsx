@@ -115,6 +115,12 @@ class App extends Component {
     }
   }
 
+  componentDidCatch(error, info) {
+    // You can also log the error to an error reporting service
+    console.error('Error in one component', error, info);
+    this.setState({globalError: true});
+  }
+
   watchTradesForOffers() {
     if (this.watchingTrades) {
       return;
@@ -136,11 +142,20 @@ class App extends Component {
     this.setState({hidePriceError: true});
   };
 
+  // eslint-disable-next-line complexity
   render() {
     const t = this.props.t;
     if (this.props.error) {
       console.error(this.props.error);
       return <ErrorInformation provider/>;
+    }
+    if (this.state.globalError) {
+      return <ErrorInformation message="Something went wrong" retry={() => window.location.reload()} CTAText="Reload" cancelText="Clear cache data" cancel={() => {
+        this.props.clearCache();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      }} />;
     }
 
     if (!this.props.isReady) {
@@ -230,6 +245,7 @@ App.propTypes = {
   address: PropTypes.string,
   profile: PropTypes.object,
   loadProfile: PropTypes.func,
+  clearCache: PropTypes.func,
   setCurrentUser: PropTypes.func,
   resetState: PropTypes.func,
   currentUser: PropTypes.string,
@@ -269,6 +285,7 @@ export default connect(
     loadProfile: metadata.actions.load,
     setCurrentUser: metadata.actions.setCurrentUser,
     watchEscrowCreations: escrow.actions.watchEscrowCreations,
-    loadOffers: metadata.actions.loadOffers
+    loadOffers: metadata.actions.loadOffers,
+    clearCache: network.actions.clearCache
   }
 )(withTranslation()(App));
