@@ -16423,11 +16423,6 @@ qrcode.react@^0.9.3:
     prop-types "^15.6.0"
     qr.js "0.0.0"
 
-qs@0.6.5:
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-0.6.5.tgz#294b268e4b0d4250f6dde19b3b8b34935dff14ef"
-  integrity sha1-KUsmjksNQlD23eGbO4s0k13/FO8=
-
 qs@6.7.0:
   version "6.7.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.7.0.tgz#41dc1a015e3d581f1621776be31afb2876a9b1bc"
