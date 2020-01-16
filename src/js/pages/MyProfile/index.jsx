@@ -19,8 +19,9 @@ import ProfileButton from './components/ProfileButton';
 
 import iconTrades from '../../../images/change.svg';
 import iconOffers from '../../../images/make_admin.svg';
-import iconDisputes from '../../../images/info.svg';
-import iconBecomeArbitrator from '../../../images/arbitrator.svg';
+import iconArbitrator from '../../../images/arbitrator.svg';
+import iconDispute from '../../../images/dispute.svg';
+import iconBecomeArbi from '../../../images/becomeArbi.svg';
 import iconSettings from '../../../images/settings.svg';
 
 import "./index.scss";
@@ -103,28 +104,28 @@ class MyProfile extends Component {
                        subtitle={t('profile.nbActive', {nb: activeTrades})} active={this.props.tradeActionNeeded}/>
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title={t('profile.myOffers')}
                        subtitle={t('profile.nbActive', {nb: activeOffers})}/>
-        <ProfileButton linkTo="/profile/arbitrators" image={iconDisputes} title={t('profile.myArbitrators')}
+        <ProfileButton linkTo="/profile/arbitrators" image={iconArbitrator} title={t('profile.myArbitrators')}
                        subtitle={t('profile.requestApproval')}/>
         {!profile.isArbitrator && (
         <Fragment>
           <Separator/>
-          <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbitrator} title={t('profile.becomeArbitrator')}
+          <ProfileButton linkTo="/arbitrator/license" image={iconBecomeArbi} title={t('profile.becomeArbitrator')}
                        subtitle={t('profile.makeTokensByJudging')}/>
         </Fragment>
         )}
-                       
+
         {profile.isArbitrator && (
         <Fragment>
           <p className="text-muted mt-4">{t('profile.arbitrator')}</p>
-          <ProfileButton linkTo="/profile/disputes" image={iconDisputes} title={t('profile.disputes')}
+          <ProfileButton linkTo="/profile/disputes" image={iconDispute} title={t('profile.disputes')}
                          subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}
                          active={this.props.arbitrationActionNeeded}/>
-          <ProfileButton linkTo="/sellers" image={iconDisputes} title={t('profile.arbitratorSettings')}
+          <ProfileButton linkTo="/sellers" image={iconSettings} title={t('profile.arbitratorSettings')}
                          subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
           <Separator/>
         </Fragment>
         )}
-        
+
         <ProfileButton linkTo="/profile/settings" image={iconSettings} title={t('profile.profileSettings')}/>
       </Fragment>
     );
