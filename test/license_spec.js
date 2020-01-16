@@ -2,7 +2,6 @@
 
 const License = require('Embark/contracts/License');
 const SNT = require('Embark/contracts/SNT');
-const StakingPool = require('Embark/contracts/StakingPool');
 
 let accounts;
 
@@ -10,34 +9,36 @@ const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 
 config({
   contracts: {
-    "MiniMeToken": { "deploy": false },
-    "MiniMeTokenFactory": {
+    deploy: {
+      "MiniMeToken": { "deploy": false },
+      "MiniMeTokenFactory": {
 
-    },
-    "SNT": {
-      "instanceOf": "MiniMeToken",
-      "args": [
-        "$MiniMeTokenFactory",
-        "0x0000000000000000000000000000000000000000",
-        0,
-        "TestMiniMeToken",
-        18,
-        "STT",
-        true
-      ]
-    },
-    License: {
-      args: ["$SNT", 10, BURN_ADDRESS]
+      },
+      "SNT": {
+        "instanceOf": "MiniMeToken",
+        "args": [
+          "$MiniMeTokenFactory",
+          "0x0000000000000000000000000000000000000000",
+          0,
+          "TestMiniMeToken",
+          18,
+          "STT",
+          true
+        ]
+      },
+      License: {
+        args: ["$SNT", 10, BURN_ADDRESS]
+      }
+
+      /*
+      ,
+      StakingPool: {
+        file: 'staking-pool/contracts/StakingPool.sol',
+        args: ["$SNT"]
+      }
+      */
+
     }
-    
-    /*
-    ,
-    StakingPool: {
-      file: 'staking-pool/contracts/StakingPool.sol',
-      args: ["$SNT"]
-    }
-    */
-   
   }
 }, (_err, web3_accounts) => {
   accounts = web3_accounts;
@@ -61,7 +62,7 @@ contract("License", function () {
       await SNT.methods.approve(License.options.address, 5).send();
       await License.methods.buy().send({from: accounts[0]});
     } catch(error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert Unsuccessful token transfer");
+      assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Unsuccessful token transfer");
     }
   });
 
@@ -96,7 +97,7 @@ contract("License", function () {
       await SNT.methods.approve(License.options.address, 10).send({from: accounts[0]});
       await License.methods.buy().send({from: accounts[0]});
     } catch(error) {
-      assert.strictEqual(error.message, "VM Exception while processing transaction: revert License already bought");
+      assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert License already bought");
     }
   });
 

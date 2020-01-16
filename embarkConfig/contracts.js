@@ -11,67 +11,22 @@ const GAS_PRICE = "5000000000"; //5 gwei
 
 const dataMigration = require('./data.js');
 
-let secret = {};
-try {
-  secret = require('../.secret.json');
-} catch(err) {
-  console.dir("warning: .secret.json file not found; this is only needed to deploy to testnet or livenet etc..");
-}
-
 module.exports = {
-  // default applies to all environments
   default: {
-    // Blockchain node to deploy the contracts
-    deployment: {
-      host: "localhost", // Host of the blockchain node
-      port: 8546, // Port of the blockchain node
-      type: "ws" // Type of connection (ws or rpc),
-      // Accounts to use instead of the default account to populate your wallet
-      // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-      /*,accounts: [
-        {
-          privateKey: "your_private_key",
-          balance: "5 ether"  // You can set the balance of the account in the dev environment
-                              // Balances are in Wei, but you can specify the unit with its name
-        },
-        {
-          privateKeyFile: "path/to/file", // Either a keystore or a list of keys, separated by , or ;
-          password: "passwordForTheKeystore" // Needed to decrypt the keystore file
-        },
-        {
-          mnemonic: "12 word mnemonic",
-          addressIndex: "0", // Optionnal. The index to start getting the address
-          numAddresses: "1", // Optionnal. The number of addresses to get
-          hdpath: "m/44'/60'/0'/0/" // Optionnal. HD derivation path
-        },
-        {
-          "nodeAccounts": true // Uses the Ethereum node's accounts
-        }
-      ]*/
-    },
-    // order of connections the dapp should connect to
     dappConnection: [
-      "$WEB3",  // uses pre existing web3 object if available (e.g in Mist)
+      "$EMBARK",
+      "$WEB3",
       "ws://localhost:8546",
       "http://localhost:8545"
     ],
 
-    // Automatically call `ethereum.enable` if true.
-    // If false, the following code must run before sending any transaction: `await EmbarkJS.enableEthereum();`
-    // Default value is true.
     dappAutoEnable: false,
 
     gas: "auto",
 
-    // Strategy for the deployment of the contracts:
-    // - implicit will try to deploy all the contracts located inside the contracts directory
-    //            or the directory configured for the location of the contracts. This is default one
-    //            when not specified
-    // - explicit will only attempt to deploy the contracts that are explicity specified inside the
-    //            contracts section.
     strategy: 'explicit',
 
-    contracts: {
+    deploy: {
       Proxy: {
         deploy: false
       },
@@ -132,8 +87,8 @@ module.exports = {
         instanceOf: "Proxy",
         args: ["0x", "$Escrow"]
       },
-      "MiniMeToken": { "deploy": false },
-      "MiniMeTokenFactory": { },
+      "MiniMeToken": {"deploy": false},
+      "MiniMeTokenFactory": {},
       "Fees": {
         "deploy": false
       },
@@ -159,70 +114,36 @@ module.exports = {
       },
       */
 
-      KyberNetworkProxy: {
-      },
+      KyberNetworkProxy: {},
       KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
         args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000", "300"]
       }
     }
   },
 
-  // default environment, merges with the settings in default
-  // assumed to be the intended environment by `embark run`
   development: {
-    contracts: {
-      StandardToken: { },
-      DAI: { instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"] },
-      MKR: { instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"] }
-    },
-    deployment: {
-      // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-      accounts: [
-        {
-          nodeAccounts: true
-        },
-        {
-          mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
-          balance: "5 ether",
-          numAddresses: "10"
-        }
-      ]
+    deploy: {
+      StandardToken: {},
+      DAI: {instanceOf: "StandardToken", onDeploy: ["DAI.methods.mint('$accounts[0]', '20000000000000000000').send()"]},
+      MKR: {instanceOf: "StandardToken", onDeploy: ["MKR.methods.mint('$accounts[0]', '20000000000000000000').send()"]}
     },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, null)
   },
 
-  // merges with the settings in default
-  // used with "embark run privatenet"
-  privatenet: {
-  },
+  privatenet: {},
 
-  // merges with the settings in default
-  // used with "embark run testnet"
   testnet: {
     gasPrice: GAS_PRICE,
     tracking: 'shared.rinkeby.json',
-    deployment: {
-      accounts: [
-        {
-          mnemonic: secret.mnemonic,
-          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
-          numAddresses: "10"
-        }
-      ],
-      host: `rinkeby.infura.io/v3/${secret.infuraKey}`,
-      port: false,
-      protocol: 'https',
-      type: "rpc"
-    },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, FALLBACK_ARBITRATOR),
     dappConnection: [
       "$WEB3",
       "https://rinkeby.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
     ],
-    contracts: {
-      StandardToken: { deploy: false },
-      DAI: { deploy: false },
-      MKR: { deploy: false },
+    deploy: {
+      StandardToken: {deploy: false},
+      DAI: {deploy: false},
+      MKR: {deploy: false},
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Rinkeby/
         address: "0xF77eC7Ed5f5B9a5aee4cfa6FFCaC6A4C315BaC76"
@@ -239,7 +160,7 @@ module.exports = {
   ropsten: {
     gasPrice: "10000000000",
     tracking: 'shared.ropsten.json',
-    contracts: {
+    deploy: {
       SNT: {
         address: "0xc55cf4b03948d7ebc8b9e8bad92643703811d162"
       },
@@ -257,19 +178,6 @@ module.exports = {
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
       }
     },
-    deployment: {
-      accounts: [
-        {
-          mnemonic: secret.mnemonic,
-          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
-          numAddresses: "10"
-        }
-      ],
-      host: `ropsten.infura.io/${secret.infuraKey}`,
-      port: false,
-      protocol: 'https',
-      type: "rpc"
-    },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
     dappConnection: ["$WEB3"]
   },
@@ -279,40 +187,70 @@ module.exports = {
   livenet: {
     gasPrice: GAS_PRICE,
     tracking: 'shared.mainnet.json',
-    deployment: {
-      accounts: [
-        {
-          mnemonic: secret.mnemonic,
-          hdpath: secret.hdpath || "m/44'/60'/0'/0/",
-          numAddresses: "10"
-        }
-      ],
-      host: `mainnet.infura.io/v3/${secret.infuraKey}`,
-      port: false,
-      protocol: 'https',
-      type: "rpc"
-    },
     afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
     dappConnection: [
       "$WEB3",
       "https://mainnet.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
     ],
-    contracts: {
-      StandardToken: { deploy: false },
-      DAI: { deploy: false },
-      MKR: { deploy: false },
+    deploy: {
+      StandardToken: {deploy: false},
+      DAI: {deploy: false},
+      MKR: {deploy: false},
       SNT: {
         address: "0x744d70fdbe2ba4cf95131626614a1763df805b9e"
       },
-      "RLPReader": { deploy: false },
+      "RLPReader": {deploy: false},
       "RelayHub": {
         address: "0xd216153c06e857cd7f72665e0af1d7d82172f494"
       },
-      "MiniMeTokenFactory": { deploy: false },
+      "MiniMeTokenFactory": {deploy: false},
       KyberNetworkProxy: {
         // https://developer.kyber.network/docs/Environments-Mainnet/
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+      },
+      SellerLicense: {
+        address: "0xD0fBD1a8D663B3D31312e0cb24910be82387266A"
+      },
+      SellerLicenseProxy: {
+        instanceOf: "Proxy",
+        address: "0x18C8e4570DE4D1FA07E2ad8BE4bc0Fe8B2C2dc4d"
+      },
+      ArbitrationLicense: {
+        address: "0x7e571b13aeb1a6abcfc470b7d033a6838e53f440"
+      },
+      ArbitrationLicenseProxy: {
+        instanceOf: "Proxy",
+        address: "0x3e7fc31b9bd5fafde828acc1fd7b7b3dd7c1d927"
+      },
+      UserStore: {
+        address: "0x0ab611f28165a5b694959c1454c0a9027eae536d"
+      },
+      OfferStore: {
+        address: "0xe7d367bd57e8457e23f0432fc84b3beaab41cad1"
+      },
+      UserStoreProxy: {
+        instanceOf: "Proxy",
+        address: "0x61fbacebcef64e726ff5b848da5dff0c44c199f5"
+      },
+      OfferStoreProxy: {
+        instanceOf: "Proxy",
+        address: "0xf0dfd170aedf576717b7de14dac257c832a364e2"
+      },
+      EscrowRelay: {
+        address: "0xd53A5F60bAb07898a295579f0e17E8746B7B857F"
+      },
+      Escrow: {
+        address: "0x727bF4BAed69265bBaFD39f0ab6e508F6fA118a7"
+      },
+      EscrowProxy: {
+        instanceOf: "Proxy",
+        address: "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
+      },
+      KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
+        address: "0x7702CaaE3D8feE750c4464d80FCb14Ce05e00743"
       }
+
+
     }
   }
 };
