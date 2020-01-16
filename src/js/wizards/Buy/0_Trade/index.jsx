@@ -49,7 +49,7 @@ class Trade extends Component {
 
     this.setState({ready: true});
 
-    if(addressCompare(this.props.offer.arbitrator, this.props.address)){
+    if(addressCompare(this.props.offer.arbitrator, this.props.address) || addressCompare(this.props.offer.user.address, this.props.address)){
       this.props.footer.hide();
     }
 

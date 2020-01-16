@@ -19,6 +19,7 @@ import disputeImg from "../../../../../images/dispute.svg";
 import questionIcon from "../../../../../images/question-mark.svg";
 import {formatArbitratorName, renderContactDetails} from '../../../../utils/strings';
 import { zeroAddress, addressCompare } from '../../../../utils/address';
+import infoRedIcon from "../../../../../images/info-red.svg";
 
 import './index.scss';
 
@@ -46,6 +47,7 @@ class OfferTrade extends Component {
     return false;
   };
 
+// eslint-disable-next-line complexity
   render() {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
@@ -59,6 +61,8 @@ class OfferTrade extends Component {
     const isETH = addressCompare(assetAddress, zeroAddress);
     const isETHorSNT = (isETH || addressCompare(assetAddress, tokens.SNT.address));
     const limitlessMaxFiat = (maxToken * price).toFixed(8);
+    const isArbitrator = addressCompare(arbitratorAddress, address);
+    const isOwner = addressCompare(seller.address, address);
 
     return <Fragment>
       <Row noGutters className="offerTrade">
@@ -84,7 +88,11 @@ class OfferTrade extends Component {
             </div>
             {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
           </div>
-      {addressCompare(arbitratorAddress, address) && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
+          {(isArbitrator || isOwner) && <p className="text-danger text-small m-0">
+            {isArbitrator && t('offer.isArbitrator')}
+            {isOwner && t('offer.isOwner')}
+            <RoundedIcon className="d-inline-block ml-2" image={infoRedIcon} bgColor="red" size="sm"/>
+          </p>}
 
           <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
           <p className="mt-2 font-weight-medium mb-1">
@@ -98,7 +106,7 @@ class OfferTrade extends Component {
             <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
           </p>
         </Col>
-        {!addressCompare(arbitratorAddress, address) && <Col xs="12" className="mt-4">
+        {!isArbitrator && !isOwner && <Col xs="12" className="mt-4">
           <h3>{t('escrow.detail.amount')}</h3>
           <Form className="text-center" onSubmit={(e) => e.preventDefault()}>
             <FormGroup>

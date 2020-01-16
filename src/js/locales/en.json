@@ -294,7 +294,8 @@
     "buyFor": "Buy for {{price}} {{currency}}",
     "disabledBecauseArbi": "Offer disabled because you are the seller or the arbitrator",
     "disabledBecausePrice": "Offer disabled because we failed to fetch the token prices. Check back later.",
-    "andMore": "and more"
+    "andMore": "and more",
+    "isOwner": "You are the owner of this offer"
   },
   "filter": {
     "clearSelection": "Clear selection",
