@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {Card, CardBody, CardTitle, CardFooter} from 'reactstrap';
 import Reputation from '../Reputation';
-import {truncateTwo, limitDecimals, formatFiatPrice} from '../../utils/numbers';
+import {limitDecimals, formatFiatPrice} from '../../utils/numbers';
 import {calculateEscrowPrice} from '../../utils/transaction';
 import classnames from 'classnames';
 import {addressCompare, zeroAddress} from '../../utils/address';
@@ -17,8 +17,11 @@ import {getTokenImage} from "../../utils/images";
 import RoundedIcon from "../../ui/RoundedIcon";
 import {stringToContact} from "../../utils/strings";
 
+import infoRedIcon from "../../../images/info-red.svg";
+
 import './index.scss';
 
+// eslint-disable-next-line complexity
 const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommunicationMethod, numberPaymentMethodsShown, paymentMethodFilter}) => {
   const isOwner = addressCompare(userAddress, offer.owner);
   const isArbitrator = addressCompare(userAddress, offer.arbitrator);
@@ -47,10 +50,7 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
   return (<Card className="mb-3 shadow border-0 offer-card clickable" onClick={() => offerClick(offer.id)}>
     <CardBody>
-      <CardTitle className={classnames('seller-name', {
-        'text-black': !isOwner,
-        'text-success': isOwner
-      })}>
+      <CardTitle className="seller-name">
         {offer.user.username}
       </CardTitle>
       <div>
@@ -93,8 +93,12 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
           {stringToContact(offer.user.contactData).method}
         </p>}
 
-        {isArbitrator > 0 && <p className="text-warning text-small m-0">{t('offer.isArbitrator')}</p>}
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
+        {(isOwner || isArbitrator) && <p className="text-danger text-right mb-2">
+          {isOwner && t('offer.isOwner')}
+          {isArbitrator && t('offer.isArbitrator')}
+          <RoundedIcon className="d-inline-block ml-2" image={infoRedIcon} bgColor="red" size="sm"/>
+        </p>}
 
         <span className="offer-reputation">
           <Reputation reputation={{averageCount: offer.user.averageCountBase10}} size="s"/>
@@ -104,7 +108,6 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
     {withDetail && prices && !prices.error &&
     <CardFooter className={classnames('bg-white text-right border-0 pt-0 clickable', {
-                  'text-warning': isArbitrator,
                   'text-dark': !isArbitrator && !noArbitrator,
                   'text-danger': noArbitrator
                 })}>

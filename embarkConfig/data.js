@@ -16,6 +16,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     const addresses = await deps.web3.eth.getAccounts();
     const main = addresses[0];
     const sendTrxAccount0 = estimateAndSend(main, gasPrice);
+    const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     {
       console.log("Verifying if data script has been run already...");
@@ -228,6 +229,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const sendTrxAccount8 = estimateAndSend(addresses[8], gasPrice);
 
       await sendTrxAccountArbi(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
+      await sendTrxAccountArbi(deps.contracts.UserStore.methods.addOrUpdateUser(CONTACT_DATA, "Montreal", "Fake Arbitrator"));
 
       await sendTrxAccount8(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
 
@@ -278,7 +280,6 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     const buyerAddress = addresses[offerStartIndex];
     const escrowStartIndex = offerStartIndex + 1;
     let receipt, hash, signature, nonce, created, escrowId;
-    const CONTACT_DATA = "Status:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 
     await async.eachOfLimit(addresses.slice(escrowStartIndex, escrowStartIndex + 1), 1, async (creatorAddress, idx) => {
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
@@ -338,11 +339,9 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const ethBalance = await deps.web3.eth.getBalance(address);
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();
       const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
-      let user = {};
       let offers = [];
-      const isUser = await deps.contracts.UserStore.methods.users(address).call();
-      if (isUser) {
-        user = await deps.contracts.UserStore.methods.users(address).call();
+      const user = await deps.contracts.UserStore.methods.users(address).call();
+      if (user) {
         const offerIds = await deps.contracts.OfferStore.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (
           deps.contracts.OfferStore.methods.offer(offerId).call()
@@ -351,7 +350,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       return {
         address,
         isLicenseOwner,
-        isUser,
+        isUser: !!user,
         user,
         offers,
         ethBalance: deps.web3.utils.fromWei(ethBalance),
