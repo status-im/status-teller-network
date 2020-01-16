@@ -118,13 +118,15 @@
     "helpText": "Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer."
   },
   "sellerFiatContainer": {
-    "title": "What local currency do you want to trade with?"
+    "title": "What local currency do you want to trade with?",
+    "noPrices": "Prices not loaded for {{token}} yet. Please wait or try reloading"
   },
   "fiatSelectorForm": {
     "selectValid": "Select a valid currency to move to the next page",
     "placeholder": "Search local currencies",
     "continue": "Next",
-    "emptyLabel": "No matches found."
+    "emptyLabel": "No matches found.",
+    "localCurrency": "Local currency"
   },
   "sellerArbitratorContainer": {
     "title": "Select an arbitrator for this offer"
@@ -330,7 +332,8 @@
       "sellerBalance": "This is the current balance of the seller. This is why it is the maximum",
       "limits": "Limits: {{min}} {{symbol}} to <5>{{max}} {{symbol}}</5>",
       "amountWarning": "Amount is greater than the seller's balance",
-      "newOrderDelay": "New orders can be created for free in {{time}}"
+      "newOrderDelay": "New orders can be created for free in {{time}}",
+      "noPrice": "The price for the current asset has not been loaded yet. Please wait or try to reload the page."
     }
   },
   "contactForm": {
@@ -398,7 +401,7 @@
   "noWeb3Dialog": {
     "title": "Your browser is not supported",
     "subtitle": "Use one of the following Web3 browsers:",
-    "mobileBrowsers": "Mobile Web3 browsers and wallets", 
+    "mobileBrowsers": "Mobile Web3 browsers and wallets",
     "desktopBrowsers": "Desktop Web3 browsers and wallets"
   },
   "errorInformation": {

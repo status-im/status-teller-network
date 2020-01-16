@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation} from 'react-i18next';
 import {connect} from 'react-redux';
@@ -36,7 +36,7 @@ class Currency extends Component {
     this.props.footer.enableNext();
   }
 
-  changeCurrency= (currency) => {
+  changeCurrency = (currency) => {
     if (!currency) {
       currency = '';
     }
@@ -48,10 +48,20 @@ class Currency extends Component {
     if (!this.state.ready) {
       return <Loading page/>;
     }
+    const noPrices = !this.props.prices || !this.props.prices[this.props.token.symbol];
 
-    return (<FiatSelectorForm value={this.state.currency}
-                              currencies={CURRENCY_DATA.filter(x => this.props.prices[this.props.token.symbol][x.id]).map(x => ({id: x.id, label: `${x.id} - ${x.label}. ${x.symbol}`}))}
-                              changeCurrency={this.changeCurrency}/>);
+    return (<Fragment>
+        <h2>{this.props.t('sellerFiatContainer.title')}</h2>
+        {noPrices && <p>{this.props.t('sellerFiatContainer.noPrices', {token: this.props.token.name})}</p>}
+        {!noPrices &&
+        <FiatSelectorForm value={this.state.currency}
+                          currencies={CURRENCY_DATA.filter(x => this.props.prices[this.props.token.symbol][x.id]).map(x => ({
+                            id: x.id,
+                            label: `${x.id} - ${x.label}. ${x.symbol}`
+                          }))}
+                          changeCurrency={this.changeCurrency}/>}
+      </Fragment>
+    );
   }
 }
 

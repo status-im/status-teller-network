@@ -81,10 +81,10 @@ class Home extends Component {
     const loading = !hasPrices && !priceError;
 
     const offers = this.props.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress));
-    
+
     return (
       <div className="home px-4">
-        <LandingHeader loading={!hasPrices && !priceError}/>
+        <LandingHeader loading={loading}/>
         <div className="home-headline-container">
           <Row className="home-headline">
             <Col xs={12}>
