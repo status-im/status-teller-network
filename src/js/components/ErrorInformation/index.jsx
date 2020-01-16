@@ -7,7 +7,7 @@ import {Button} from 'reactstrap';
 import errorImage from '../../../images/error.png';
 import './index.scss';
 
-const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry, message, cancel, customErrorTitle, customErrorTip, cancelText, CTAText, r}) => (
+const ErrorInformation = ({t, provider, network, transaction, sntTokenError, retry, message, cancel, customErrorTitle, customErrorTip, cancelText, CTAText}) => (
   <div className={classnames("error-information with-tip mt-5", {'with-button': !!retry})}>
     <img src={errorImage} alt="error"/>
     <h2 className="mt-5">
