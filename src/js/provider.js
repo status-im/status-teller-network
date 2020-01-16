@@ -31,7 +31,7 @@ class Provider {
 
   async isEthOrSNT(web3, data){
     if(!data || data.length < 74) return false;
-    const offerId = web3.utils.hexToNumber(data.substr(10, 64));
+    const offerId = web3.utils.hexToNumber('0x' + data.substr(10, 64));
     const offer = await OfferStore.methods.offers(offerId).call();
     return addressCompare(offer.asset, SNT.options.address) || addressCompare(offer.asset, zeroAddress);    
   }
@@ -39,7 +39,7 @@ class Provider {
   startProvider(web3) {
     this.origProvider = web3.currentProvider;
     this.origProviderSend = (this.origProvider['sendAsync'] || this.origProvider['send']).bind(this.origProvider);
-    
+
     const fSend = (payload, callback) => {
       if(!payload.params || payload.params.length === 0) return this.origProviderSend(payload, callback);
 
@@ -56,6 +56,12 @@ class Provider {
       (async () => {
         const balance = await web3.eth.getBalance(web3.eth.defaultAccount);
         const gasPrice = await web3.eth.getGasPrice();
+        const gsnBalance = await web3.eth.getBalance(EscrowRelay.options.address);
+
+        if (checkNotEnoughETH(gasPrice, gsnBalance)) {
+          this.origProviderSend(payload, callback);
+          return;
+        }
 
         if (checkNotEnoughETH(gasPrice, balance) || operation === VALID_OPERATIONS[RATE_TRANSACTION]) {
 
