@@ -4,6 +4,8 @@ import {tradeStates} from '../../features/escrow/helpers';
 import RoundedIcon from "../../ui/RoundedIcon";
 import infoIconRed from "../../../images/exclamation-circle.png";
 import infoIconGray from "../../../images/small-info.svg";
+import iconGreen from "../../../images/green-check.svg";
+
 import classnames from "classnames";
 import {limitDecimals} from '../../utils/numbers';
 import PropTypes from 'prop-types';
@@ -20,8 +22,9 @@ const PriceWarning = ({t, hideDefaultText, isBuyer = true, escrowStatus = tradeS
 
   const shouldWarnSeller = !isBuyer && currentOfferPrice < currentPriceForCurrency && rateCurrentAndSellPrice > PERCENTAGE_THRESHOLD;
   const shouldWarnBuyer = isBuyer && escrowAssetPrice > currentPriceForCurrency && rateCurrentAndBuyerPrice > PERCENTAGE_THRESHOLD;
+  const greatPriceForBuyer = isBuyer && escrowAssetPrice < currentPriceForCurrency && rateCurrentAndBuyerPrice < -PERCENTAGE_THRESHOLD;
 
-  return <Fragment>
+return <Fragment>
     {escrowStatus === tradeStates.waiting && isBuyer && currentPriceForCurrency &&
     <Fragment>
       {shouldWarnBuyer && <p className="text-danger mb-0 text-small">
@@ -34,17 +37,34 @@ const PriceWarning = ({t, hideDefaultText, isBuyer = true, escrowStatus = tradeS
         })}
       </p>}
       
-      {(!hideDefaultText || shouldWarnBuyer) && <p className={classnames("text-small", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
+      {((!hideDefaultText && !greatPriceForBuyer) || shouldWarnBuyer) && <p className={classnames("text-small", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
         <RoundedIcon image={shouldWarnBuyer ? infoIconRed : infoIconGray}
                      bbgColor={shouldWarnBuyer ? "red" : "secondary"} className="float-left mr-1" size="sm"/>
         <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
       </p>}
     </Fragment>}
 
+    {greatPriceForBuyer && <Fragment>
+      <p className="text-success mb-0 text-small">
+        {t('priceWarning.belowWarning', {
+          price: limitDecimals(escrowAssetPrice, 4),
+          fiatSymbol,
+          margin: limitDecimals(rateCurrentAndBuyerPrice, 2),
+          tokenSymbol,
+          currentPrice: limitDecimals(currentPriceForCurrency, 4)
+        })}
+      </p>
+      <p className={classnames("text-small",'text-success')}>
+        <RoundedIcon image={iconGreen}
+                     bbgColor={"green"} className="float-left mr-1" size="sm"/>
+        <span className="pt-2">This is a great price</span>
+      </p>
+    </Fragment>}
+
     {escrowStatus === tradeStates.waiting && !isBuyer && currentPriceForCurrency &&
     <Fragment>
       {shouldWarnSeller && <p className="text-danger text-small mb-0">
-        {t('priceWarning.aboveWarning', {
+        {t('priceWarning.belowWarning', {
           price: limitDecimals(escrowAssetPrice, 4),
           fiatSymbol,
           margin: limitDecimals(rateCurrentAndBuyerPrice, 2),
@@ -70,7 +90,7 @@ PriceWarning.defaultProps = {
 
 PriceWarning.propTypes = {
   t: PropTypes.func,
-  showDefaultText: PropTypes.bool,
+  hideDefaultText: PropTypes.bool,
   isBuyer: PropTypes.bool,
   escrowStatus: PropTypes.string,
   fiatAmount: PropTypes.oneOfType([

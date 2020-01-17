@@ -103,7 +103,7 @@ class OfferTrade extends Component {
           
           <PriceWarning
                 currentPrice={currentPrice}
-                fiatAmount={price}
+                fiatAmount={price * 100}
                 fiatSymbol={currency.id}
                 margin={margin}
                 tokenAmount={1}
