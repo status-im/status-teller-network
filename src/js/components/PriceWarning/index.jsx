@@ -22,7 +22,7 @@ const PriceWarning = ({t, hideDefaultText, isBuyer = true, escrowStatus = tradeS
 
   const shouldWarnSeller = !isBuyer && currentOfferPrice < currentPriceForCurrency && rateCurrentAndSellPrice > PERCENTAGE_THRESHOLD;
   const shouldWarnBuyer = isBuyer && escrowAssetPrice > currentPriceForCurrency && rateCurrentAndBuyerPrice > PERCENTAGE_THRESHOLD;
-  const greatPriceForBuyer = isBuyer && escrowAssetPrice < currentPriceForCurrency && rateCurrentAndBuyerPrice < -PERCENTAGE_THRESHOLD;
+  const greatPriceForBuyer = isBuyer && escrowAssetPrice < currentPriceForCurrency && rateCurrentAndBuyerPrice <= 1;
 
 return <Fragment>
     {escrowStatus === tradeStates.waiting && isBuyer && currentPriceForCurrency &&
