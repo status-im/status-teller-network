@@ -11,7 +11,7 @@ import escrow from "../../../../features/escrow";
 import RoundedIcon from "../../../../ui/RoundedIcon";
 import ModalDialog from "../../../../components/ModalDialog";
 import Identicon from "../../../../components/UserInformation/Identicon";
-import infoIcon from "../../../../../images/small-info.svg";
+import PriceWarning from "../../../../components/PriceWarning";
 import upvoteImg from "../../../../../images/upvote.svg";
 import downvoteImg from "../../../../../images/downvote.svg";
 import arbitratorImg from "../../../../../images/arbitrator.svg";
@@ -52,7 +52,7 @@ class OfferTrade extends Component {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address
+      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address, margin, currentPrice
     } = this.props;
 
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
@@ -100,11 +100,15 @@ class OfferTrade extends Component {
           </p>
 
           {!price && <p className="text-danger">{t('buyer.offerTrade.noPrice')}</p>}
-
-          <p className="text-muted text-small mt-2">
-            <RoundedIcon image={infoIcon} bgColor="secondary" className="float-left mr-1" size="sm"/>
-            <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
-          </p>
+          
+          <PriceWarning
+                currentPrice={currentPrice}
+                fiatAmount={price}
+                fiatSymbol={currency.id}
+                margin={margin}
+                tokenAmount={1}
+                tokenSymbol={asset}
+              />
         </Col>
         {!isArbitrator && !isOwner && <Col xs="12" className="mt-4">
           <h3>{t('escrow.detail.amount')}</h3>

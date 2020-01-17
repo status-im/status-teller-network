@@ -167,9 +167,11 @@ class Trade extends Component {
                   arbitratorAddress={this.props.offer.arbitrator}
                   minToken={minToken}
                   maxToken={maxToken}
+                  margin={this.props.offer.margin}
                   limitless={limitless}
                   limitL={this.props.offer.limitL}
                   limitU={this.props.offer.limitU}
+                  currentPrice={this.props.price}
                   price={price}
                   sellerBalance={this.props.sellerBalance}
                   asset={this.props.offer.token.symbol}
