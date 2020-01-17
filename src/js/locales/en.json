@@ -535,6 +535,12 @@
       "viewEtherscan": "View on Etherscan",
       "escrowID": "EscrowID"
     },
+    "approving": {
+      "title": "Approve tokens",
+      "needToApprove": "Please, authorize the contract to transfer {{tokenAmount}} {{tokenSymbol}} on your behalf. You are not funding the escrow yet.",
+      "approved": "Token transfer authorized. You can now fund the escrow.",
+      "approveTransfer": "Approve tokens"
+    },
     "funding": {
       "fundingEscrow": "Funding an escrow",
       "waitingForSeller": "Waiting for the seller to fund an escrow",
@@ -542,10 +548,7 @@
       "fundingDetails": "Funding {{tokenAmount}} {{tokenSymbol}} + our fee of {{feePercent}} % ({{feeAmount}} {{tokenSymbol}})",
       "notEnoughBalance": "Not enough balance",
       "tokensFunded": "Tokens funded in the escrow",
-      "approveTransfer": "Approve transfer",
-      "fundEscrow": "Fund escrow →",
-      "youNeedToApprove": "You need to approve the transfer of tokens first to allow our contract to transfer the tokens on your behalf.",
-      "doNotWorry": "Do not worry, the approval is only for the amount in this escrow."
+      "fundEscrow": "Fund escrow →"
     },
     "waiting": {
       "title": "Waiting for the confirmations from the miners"

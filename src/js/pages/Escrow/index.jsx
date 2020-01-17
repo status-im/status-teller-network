@@ -44,6 +44,7 @@ import {withTranslation, Trans} from "react-i18next";
 import ConnectWallet from '../../components/ConnectWallet';
 
 import "./index.scss";
+import ApproveTokenRow from "./components/ApproveTokenRow";
 
 const {toBN} = web3.utils;
 
@@ -270,16 +271,30 @@ class Escrow extends Component {
       </div>
 
       <div className={classnames("escrow", {'escrow-disabled': arbitrationDetails.open})}>
+        {!isETH && !isBuyer &&
+        <ApproveTokenRow
+          isActive={!showFundButton && escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting}
+          disabled={arbitrationDetails.open}
+          isDone={showFundButton || escrow.fundStatus === States.success || escrow.status === escrowF.helpers.tradeStates.funded ||
+          escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
+          enoughBalance={enoughBalance}
+          tokenAmount={escrow.tokenAmount.toString()}
+          tokenSymbol={escrow.token.symbol}
+          action={this.showApproveScreen}/>}
+
         <FundingEscrow
-          isActive={escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting}
-          isBuyer={isBuyer} disabled={arbitrationDetails.open}
+          isActive={showFundButton && escrow.fundStatus !== States.success && escrow.status === escrowF.helpers.tradeStates.waiting}
+          isBuyer={isBuyer}
+          disabled={arbitrationDetails.open}
           isDone={escrow.fundStatus === States.success || escrow.status === escrowF.helpers.tradeStates.funded ||
           escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
           needsApproval={!showFundButton}
-          enoughBalance={enoughBalance} feePercent={feePercent.toString()}
+          enoughBalance={enoughBalance}
+          feePercent={feePercent.toString()}
           feeAmount={fromTokenDecimals(feeAmount, escrow.token.decimals).toString()}
-          tokenAmount={escrow.tokenAmount.toString()} tokenSymbol={escrow.token.symbol}
-          action={!showFundButton ? this.showApproveScreen : () => fundEscrow(escrow)}/>
+          tokenAmount={escrow.tokenAmount.toString()}
+          tokenSymbol={escrow.token.symbol}
+          action={() => fundEscrow(escrow)}/>
 
         <SendMoney
           isDone={escrow.status === escrowF.helpers.tradeStates.paid || escrow.status === escrowF.helpers.tradeStates.released}
