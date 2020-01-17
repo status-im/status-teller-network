@@ -4,8 +4,6 @@ import {Card, Row, Col, CardBody, CardFooter} from 'reactstrap';
 import {withTranslation} from 'react-i18next';
 import {tradeStates, tradeStatesFormatted, completedStates} from "../../../features/escrow/helpers";
 import {addressCompare} from "../../../utils/address";
-import {formatFiatPrice} from '../../../utils/numbers';
-import {calculateEscrowPrice} from '../../../utils/transaction';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 import RoundedIcon from "../../../ui/RoundedIcon";
 import classnames from 'classnames';
@@ -124,7 +122,7 @@ class Trades extends Component {
                 <CardFooter className="bg-white text-right border-0 pt-0 clickable mt-3">
                   <p className="m-0 border-top pt-2">
                     <span className="text-black">
-                      {isBuyer ? t('general.buy') : t('general.sell')} 
+                      {isBuyer ? t('general.buy') : t('general.sell')}
                       <img src={getTokenImage(trade.token.symbol)}
                          alt={trade.token.symbol + ' icon'}
                          className="ml-1" /> {trade.tokenAmount} {trade.token.symbol}</span> {t('trades.for')} <span

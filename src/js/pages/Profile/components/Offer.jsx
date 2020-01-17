@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Row, Col, Button, UncontrolledTooltip} from 'reactstrap';
-import {formatFiatPrice, truncateTwo} from '../../../utils/numbers';
+import {formatFiatPrice} from '../../../utils/numbers';
 import {getTokenImage} from '../../../utils/images';
 import {calculateEscrowPrice} from '../../../utils/transaction';
 import classnames from 'classnames';
