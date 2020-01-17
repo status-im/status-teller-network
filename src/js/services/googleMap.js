@@ -11,7 +11,7 @@ export function getLocation(place) {
           location: {
             latitude: results[0].geometry.location.lat(),
             longitude: results[0].geometry.location.lng()
-          }, countryCode: results[0].address_components[3].short_name
+          }, countryCode: results[0].address_components[results[0].address_components.length - 1].short_name
         });
       } else {
         return reject(new Error(`No result for location ${place}. Status: ${status}`));
