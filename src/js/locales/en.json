@@ -611,7 +611,8 @@
   "priceWarning": {
     "aboveWarning": "The price for this trade ({{price}} {{fiatSymbol}}) is {{margin}}% above the current price for {{tokenSymbol}} ({{currentPrice}} {{fiatSymbol}})",
     "belowWarning": "The price for this trade ({{price}} {{fiatSymbol}}) is {{margin}}% below the current price for {{tokenSymbol}} ({{currentPrice}} {{fiatSymbol}})",
-    "onlyContinueIf": "Only continue if you are comfortable with this price"
+    "onlyContinueIf": "Only continue if you are comfortable with this price",
+    "greatPrice": "This is a great price"
   },
   "userInfo": {
     "nbReleasedTrades": "{{nbReleasedTrades}} <2>trade</2>",
