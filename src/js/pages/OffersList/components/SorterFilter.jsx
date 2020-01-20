@@ -6,7 +6,6 @@ import {Typeahead, Highlighter} from "react-bootstrap-typeahead";
 import {getOptionLabel} from "react-bootstrap-typeahead/lib/utils";
 import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import Draggable from "react-draggable";
-import Separator from "../../MyProfile/components/Separator";
 import {withTranslation} from "react-i18next";
 import {getTokenImage} from "../../../utils/images";
 
@@ -83,7 +82,9 @@ class SorterFilter extends Component {
           placeholder={t('filter.searchCryptos')}
           value={this.props.tokenFilter}
           onChange={this.props.setTokenFilter}
-          ref={(typeahead) => this.typeahead = typeahead}
+          ref={(typeahead) => {
+            this.typeahead = typeahead;
+          }}
           onFocus={() => { this.isTokenFilterActive = true; }}
           renderMenuItemChildren={(option, props, idx) => {
             const symbol = getOptionLabel(option, props.labelKey);

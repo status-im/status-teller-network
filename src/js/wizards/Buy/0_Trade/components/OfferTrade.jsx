@@ -62,7 +62,7 @@ class OfferTrade extends Component {
     const isETHorSNT = (isETH || addressCompare(assetAddress, tokens.SNT.address));
     const limitlessMaxFiat = (maxToken * price).toFixed(8);
     const isArbitrator = addressCompare(arbitratorAddress, address);
-    const isOwner = addressCompare(seller.address, address);
+    const isOwner = addressCompare(sellerAddress, address);
 
     return <Fragment>
       <Row noGutters className="offerTrade">
