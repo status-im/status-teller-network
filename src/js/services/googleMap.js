@@ -1,9 +1,48 @@
-/*global google*/
+import {Loader} from 'google-maps';
+
 export const API_KEY = 'AIzaSyBudXYUykxdQZ7ljEdw9wCBpGNzofNWs7Q'; // Caution: this is used in index.html too
-const geocoder = new google.maps.Geocoder();
+
+class GoogleLoader {
+  async loadGoogle() {
+    if (this.googleObj) {
+      return this.googleObj;
+    }
+    if (this.loading) {
+      return new Promise((resolve, reject) => {
+        const interval = setInterval(() => {
+          if (this.googleObj) {
+            clearInterval(interval);
+            return resolve(this.googleObj);
+          }
+          if (this.error) {
+            clearInterval(interval);
+            reject(this.error);
+          }
+        });
+      });
+    }
+
+    try {
+      const loader = new Loader(API_KEY, {});
+
+      this.loading = true;
+      this.googleObj = await loader.load();
+      this.loading = false;
+      return this.googleObj;
+    } catch (e) {
+      this.error = e;
+      throw e;
+    }
+  }
+}
+
+const googleLoader = new GoogleLoader();
 
 export function getLocation(place) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    const googleObj = await googleLoader.loadGoogle();
+
+    const geocoder = new googleObj.maps.Geocoder();
 
     geocoder.geocode({address: place}, (results, status) => {
       if (status === 'OK') {
