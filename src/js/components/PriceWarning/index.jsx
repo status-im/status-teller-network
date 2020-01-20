@@ -56,7 +56,7 @@ return <Fragment>
       </p>
       <p className={classnames("text-small",'text-success')}>
         <RoundedIcon image={iconGreen}
-                     bbgColor={"green"} className="float-left mr-1" size="sm"/>
+                     bgColor={"green"} className="float-left mr-1" size="sm"/>
         <span className="pt-2">This is a great price</span>
       </p>
     </Fragment>}
