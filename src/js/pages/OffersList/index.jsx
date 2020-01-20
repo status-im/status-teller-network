@@ -105,7 +105,7 @@ class OffersList extends Component {
   };
 
   calculateDistance = (userCoords) => {
-    return Math.sqrt(Math.pow(userCoords.lat - this.state.locationCoords.lat, 2) + Math.pow(userCoords.lng - this.state.locationCoords.lng, 2));
+    return Math.sqrt(Math.pow(userCoords.latitude - this.state.locationCoords.latitude, 2) + Math.pow(userCoords.longitude - this.state.locationCoords.longitude, 2));
   };
 
   changeCurrency= (currency) => {
