@@ -6,6 +6,15 @@ exports[`LicenseInfo should render correctly 1`] = `
 >
   <Row
     tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+      ]
+    }
   >
     <Col
       tag="div"

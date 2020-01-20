@@ -6,6 +6,7 @@ exports[`SellerPosition should render correctly 1`] = `
     What location do you want to display
   </h2>
   <Form
+    onSubmit={[Function]}
     tag="form"
   >
     <FormGroup
@@ -34,6 +35,31 @@ exports[`SellerPosition should render correctly 1`] = `
         type="text"
         value=""
       />
+      <FormGroup
+        check={true}
+        className="mt-3"
+        tag="div"
+      >
+        <Label
+          check={true}
+          tag="label"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          <Input
+            onClick={[Function]}
+            type="checkbox"
+          />
+          Hide location
+        </Label>
+      </FormGroup>
     </FormGroup>
   </Form>
 </Fragment>
