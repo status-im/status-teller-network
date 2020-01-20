@@ -259,7 +259,7 @@ class Escrow extends Component {
           </Col>
         </Row>}
 
-        {escrow.status === escrowF.helpers.tradeStates.canceled && <Row className="mt-4">
+        {escrow.status === escrowF.helpers.tradeStates.canceled && arbitrationDetails.result !== arbitrationF.constants.ARBITRATION_SOLVED_SELLER  && <Row className="mt-4">
           <Col xs="2">
             <RoundedIcon image={canceledIcon} bgColor="red"/>
           </Col>
