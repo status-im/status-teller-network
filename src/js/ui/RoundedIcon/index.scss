@@ -22,6 +22,11 @@
     width: 20px;
     height: 20px;
     line-height: 20px;
+
+    svg {
+      width: 10px;
+      height: 10px;
+    }
   }
 
   .text-icon {
@@ -33,6 +38,12 @@
   svg {
     fill: $blue;
     margin: auto;
+  }
+
+  &.white-icon {
+    svg {
+      fill: $white;
+    }
   }
 }
 
