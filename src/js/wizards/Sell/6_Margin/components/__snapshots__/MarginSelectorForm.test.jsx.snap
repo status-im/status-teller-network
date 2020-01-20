@@ -1,18 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MarginSelectorForm should render correctly 1`] = `
-<Form(t)>
-  <h2 />
+<Form(t)
+  onSubmit={[Function]}
+>
+  <h2
+    className="mb-4"
+  />
+  <span>
+    Selling Price
+  </span>
+  <p
+    className="font-weight-bold"
+  >
+    1 
+    SNT
+     = 
+    140.0000
+     
+    USD
+  </p>
   <FormGroup
     className="mb-0"
     tag="div"
   >
     <Row
       tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
     >
       <Col
         md={9}
-        sm={8}
+        sm={9}
         tag="div"
         widths={
           Array [
@@ -23,12 +49,12 @@ exports[`MarginSelectorForm should render correctly 1`] = `
             "xl",
           ]
         }
-        xs={7}
+        xs={8}
       >
         <ComponentEnhancer(undefined)
           activeDotStyle={Object {}}
           className="mb-3 p-4"
-          defaultValue={0}
+          defaultValue={1}
           disabled={false}
           dotStyle={Object {}}
           dots={false}
@@ -47,6 +73,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
           onChange={[Function]}
           prefixCls="rc-slider"
           railStyle={Object {}}
+          reverse={false}
           step={1}
           trackStyle={
             Array [
@@ -58,6 +85,8 @@ exports[`MarginSelectorForm should render correctly 1`] = `
         />
       </Col>
       <Col
+        md={3}
+        sm={3}
         tag="div"
         widths={
           Array [
@@ -68,6 +97,7 @@ exports[`MarginSelectorForm should render correctly 1`] = `
             "xl",
           ]
         }
+        xs={4}
       >
         <InputGroup
           className="full-width-input margin-input"
@@ -75,12 +105,12 @@ exports[`MarginSelectorForm should render correctly 1`] = `
         >
           <Control(s)
             className="form-control prepend"
-            data-maxvalue={100}
-            data-minvalue={-100}
+            data-maxvalue={32767}
+            data-minvalue={-99}
             id="margin"
             name="margin"
             onChange={[Function]}
-            placeholder="0"
+            placeholder="1"
             type="number"
             validations={
               Array [
@@ -105,23 +135,126 @@ exports[`MarginSelectorForm should render correctly 1`] = `
         </InputGroup>
       </Col>
     </Row>
-    <p
-      className="text-muted"
-    >
-      A negative margin means you sell assets for less than what they are worth
-    </p>
   </FormGroup>
-  <h3 />
   <div
-    className="border rounded p-3"
+    className="infos-and-warnings mt-4"
   >
-    1 
-    SNT
-     = 
-    140.0000
-     
-    USD
+    <Row
+      noGutters={true}
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <RoundedIcon
+          bgColor="secondary"
+          className="mr-2 float-left"
+          image="test-file-stub"
+          size="sm"
+        />
+        <p
+          className="info text-muted"
+        >
+          A positive margin means you sell assets for more than they are worth.
+        </p>
+      </Col>
+    </Row>
+    <Row
+      className="mt-1"
+      noGutters={true}
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <RoundedIcon
+          bgColor="secondary"
+          className="mr-2 float-left"
+          image="test-file-stub"
+          size="sm"
+        />
+        <p
+          className="info text-muted"
+        >
+          Sellers typically choose a margin of roughly 2% above the market price.
+        </p>
+      </Col>
+    </Row>
+    <Row
+      className="mt-1"
+      noGutters={true}
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <RoundedIcon
+          bgColor="secondary"
+          className="mr-2 float-left"
+          image="test-file-stub"
+          size="sm"
+        />
+        <p
+          className="info text-muted"
+        >
+          Prices come from www.cryptocompare.com
+        </p>
+      </Col>
+    </Row>
   </div>
-  <small />
 </Form(t)>
 `;

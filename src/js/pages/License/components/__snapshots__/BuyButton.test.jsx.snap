@@ -4,6 +4,15 @@ exports[`LicenseBuy should render correctly when disabled 1`] = `
 <Row
   className="mt-2"
   tag="div"
+  widths={
+    Array [
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl",
+    ]
+  }
 >
   <Col
     className="text-center"
@@ -33,6 +42,15 @@ exports[`LicenseBuy should render correctly when enabled 1`] = `
 <Row
   className="mt-2"
   tag="div"
+  widths={
+    Array [
+      "xs",
+      "sm",
+      "md",
+      "lg",
+      "xl",
+    ]
+  }
 >
   <Col
     className="text-center"
