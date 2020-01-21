@@ -15,5 +15,4 @@ install:
   - yarn install
 script:
   - yarn lint
-  - yarn test:unit
   - yarn test:contracts
