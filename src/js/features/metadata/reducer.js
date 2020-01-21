@@ -54,7 +54,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         eip1102Enabled: true,
-       defaultProvider: action.accounts === undefined
+       defaultProvider: action.accounts === undefined || !action.accounts.length
       };
     case ENABLE_ETHEREUM_FAILED:
       return {
