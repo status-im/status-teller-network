@@ -522,7 +522,7 @@ contract("Escrow", function() {
       receipt = await Escrow.methods.release(escrowId).send({from: accounts[0]});
       const buyerBalanceAfterEscrow = await web3.eth.getBalance(accounts[7]);
 
-      assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)), buyerBalanceAfterEscrow, "Invalid buyer balance");
+      assert.equal(toBN(escrow.tokenAmount).add(toBN(buyerBalanceBeforeEscrow)).toString(), buyerBalanceAfterEscrow, "Invalid buyer balance");
     });
 
     it("Released escrow cannot be released again", async() => {
