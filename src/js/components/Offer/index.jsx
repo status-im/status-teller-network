@@ -95,9 +95,9 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
 
         {noArbitrator > 0 && <NoArbitratorWarning arbitrator={zeroAddress} label={t('offer.noArbitrator')}/>}
         {(isOwner || isArbitrator) && <p className="text-danger text-right mb-2">
+          <RoundedIcon className="d-inline-block mr-2" image={infoRedIcon} bgColor="red" size="sm"/>
           {isOwner && t('offer.isOwner')}
           {isArbitrator && t('offer.isArbitrator')}
-          <RoundedIcon className="d-inline-block ml-2" image={infoRedIcon} bgColor="red" size="sm"/>
         </p>}
 
         <span className="offer-reputation">
