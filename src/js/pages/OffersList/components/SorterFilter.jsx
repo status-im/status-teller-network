@@ -77,6 +77,7 @@ class SorterFilter extends Component {
         <img src={cryptoIcons} alt="crypto icons" className="crypto-icons"/>
         <Typeahead
           id="tokenFilter"
+          clearButton
           className="filter-modal"
           options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
           placeholder={t('filter.searchCryptos')}
@@ -110,20 +111,21 @@ class SorterFilter extends Component {
             );
           }}
         />
+        {(!this.props.tokenFilter || this.props.tokenFilter.length === 0) &&
         <img src={ArrowDown} alt="" className="arrow-down clickable"
-          onClick={() => {
-            if(this.typeahead){
-              if(this.isTokenFilterActive){
-                this.typeahead.blur();
-                this.isTokenFilterActive = false;
-              } else {
-                this.typeahead.focus();
-                this.typeahead.getInput().click();
-                this.isTokenFilterActive = true;
-              }
-            }
-          }}
-        />
+             onClick={() => {
+               if (this.typeahead) {
+                 if (this.isTokenFilterActive) {
+                   this.typeahead.blur();
+                   this.isTokenFilterActive = false;
+                 } else {
+                   this.typeahead.focus();
+                   this.typeahead.getInput().click();
+                   this.isTokenFilterActive = true;
+                 }
+               }
+             }}
+        />}
       </div>
       <div className="filter-menu-slider-container position-relative">
         <Draggable
