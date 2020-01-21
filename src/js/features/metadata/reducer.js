@@ -62,7 +62,7 @@ function reducer(state = DEFAULT_STATE, action) {
         eip1102Enabled: false,
         defaultProvider: false
       };
-    case RESET_PROVIDER_VERIFICATION: 
+    case RESET_PROVIDER_VERIFICATION:
       return {
         ...state,
         defaultProvider: false
@@ -214,7 +214,12 @@ function reducer(state = DEFAULT_STATE, action) {
       }
 
       // Calculate new average from the percentage of votes the original average had vs the new vote
-      user.averageCount = (user.averageCount * ((user.voteCount - 1) / user.voteCount)) + (parseInt(action.rating, 10) / user.voteCount);
+      if (isNaN(user.averageCount)) {
+        user.averageCount = action.rating;
+      } else {
+        user.averageCount = (user.averageCount * ((user.voteCount - 1) / user.voteCount)) + (parseInt(action.rating, 10) / user.voteCount);
+      }
+
       user.averageCountBase10 = ((user.averageCount * 10) / 5);
 
       return {
