@@ -7,7 +7,7 @@ class UpdateButton extends Component {
   render() {
     const t = this.props.t;
     return (
-      <Row className="mt-5">
+      <Row className="mt-4">
         <Col xs={12} className="text-center">
           <Button color="primary" onClick={this.props.onClick} disabled={this.props.disabled}>{t('updateUser.button')}</Button>
         </Col>
