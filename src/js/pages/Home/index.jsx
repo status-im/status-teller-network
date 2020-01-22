@@ -76,11 +76,9 @@ class Home extends Component {
   };
 
   render() {
-    const {hasPrices, t, priceError, networkId, mainnetWarningShowed, prices, address} = this.props;
+    const {hasPrices, t, priceError, networkId, mainnetWarningShowed, prices, address, offers} = this.props;
 
     const loading = !hasPrices && !priceError;
-
-    const offers = this.props.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress));
 
     return (
       <div className="home px-4">

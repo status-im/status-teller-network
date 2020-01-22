@@ -1,5 +1,5 @@
 import {PAYMENT_METHODS} from './constants';
-import {addressCompare, toChecksumAddress} from '../../utils/address';
+import {addressCompare, toChecksumAddress, zeroAddress} from '../../utils/address';
 
 const emptyToken = {
   address: "?",
@@ -63,7 +63,7 @@ export const getOfferById = (state, id) => {
 };
 
 export const getOffersWithUser = (state) => {
-  return Object.values(state.metadata.offers).filter(x => !x.deleted).map((offer) => ({
+  return Object.values(state.metadata.offers).filter(x => !x.deleted && !addressCompare(x.arbitrator, zeroAddress)).map((offer) => ({
     ...enhanceOffer(state, offer),
     user: state.metadata.users[offer.owner] || {}
   }));
