@@ -34,6 +34,9 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
     mapping(address => uint256[]) public addressToOffers;
     mapping(address => mapping (uint256 => bool)) public offerWhitelist;
 
+    uint public maxOffers = 10;
+    mapping(address => uint) public offerCnt;
+
     event OfferAdded(
         address owner,
         uint256 offerId,
@@ -84,6 +87,7 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         burnAddress = _burnAddress;
 
         basePrice = 0.01 ether;
+        maxOffers = 10;
 
         _setOwner(msg.sender);
     }
@@ -95,7 +99,7 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
     event LicensesChanged(address sender, address oldSellingLicenses, address newSellingLicenses, address oldArbitrationLicenses, address newArbitrationLicenses);
 
     /**
-     * @dev Initialize contract (used with proxy). Can only be called once
+     * @dev Change license addresses
      * @param _sellingLicenses Sellers licenses contract address
      * @param _arbitrationLicenses Arbitrators licenses contract address
      */
@@ -107,6 +111,19 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
 
         sellingLicenses = License(_sellingLicenses);
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
+    }
+
+    event MaxOffersChanged(address sender, uint oldMax, uint newMax);
+
+    /**
+     * @dev Change max offers allowed per seller
+     * @param _newMax New max offers amount
+     */
+    function setMaxOffers(
+        uint _newMax
+    ) public onlyOwner {
+        emit MaxOffersChanged(msg.sender, maxOffers, _newMax);
+        maxOffers = _newMax;
     }
 
     /**
@@ -135,8 +152,8 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         address payable _arbitrator
     ) public payable {
         //require(sellingLicenses.isLicenseOwner(msg.sender), "Not a license owner");
-        // @TODO: limit number of offers if the sender is unlicensed?
 
+        require(offerCnt[msg.sender] < maxOffers, "Exceeds the max number of offers");
         require(arbitrationLicenses.isAllowed(msg.sender, _arbitrator), "Arbitrator does not allow this transaction");
 
         require(_limitL <= _limitU, "Invalid limits");
@@ -164,6 +181,7 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         uint256 offerId = offers.push(newOffer) - 1;
         offerWhitelist[msg.sender][offerId] = true;
         addressToOffers[msg.sender].push(offerId);
+        offerCnt[msg.sender]++;
 
         emit OfferAdded(
             msg.sender,
@@ -191,6 +209,8 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         offers[_offerId].deleted = true;
         offerWhitelist[msg.sender][_offerId] = false;
         emit OfferRemoved(msg.sender, _offerId);
+
+        offerCnt[msg.sender]--;
 
         _unstake(_offerId);
     }

@@ -42,6 +42,8 @@ export const getProfile = (state, address) => {
   };
 };
 
+export const getMaxOffers = (state) => state.metadata.maxOffers;
+
 export const nextOfferPrice = (state) => state.metadata.offerPrice;
 
 export const getAddOfferStatus = (state) => state.metadata.addOfferStatus;
