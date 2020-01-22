@@ -86,12 +86,12 @@ class OfferTrade extends Component {
               <Identicon seed={arbitratorAddress} className="rounded-circle border mr-1 float-left" scale={5}/>
               {formatArbitratorName(arbitrator, arbitratorAddress)}
             </div>
-            {renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
+            {arbitrator && renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
           </div>
           {(isArbitrator || isOwner) && <p className="text-danger text-small m-0">
+            <RoundedIcon className="d-inline-block mr-2" image={infoRedIcon} bgColor="red" size="sm"/>
             {isArbitrator && t('offer.isArbitrator')}
             {isOwner && t('offer.isOwner')}
-            <RoundedIcon className="d-inline-block ml-2" image={infoRedIcon} bgColor="red" size="sm"/>
           </p>}
 
           <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
@@ -100,7 +100,7 @@ class OfferTrade extends Component {
           </p>
 
           {!price && <p className="text-danger">{t('buyer.offerTrade.noPrice')}</p>}
-          
+
           <PriceWarning
                 currentPrice={currentPrice}
                 fiatAmount={price * 100}

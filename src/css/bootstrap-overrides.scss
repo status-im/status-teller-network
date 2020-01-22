@@ -27,6 +27,12 @@
   background-color: $primary;
   border-color: $primary;
   color: $white;
+
+  &:disabled, &.disabled {
+    background-color: $secondary;
+    color: $dark;
+    opacity: 1;
+  }
 }
 
 .btn-secondary {

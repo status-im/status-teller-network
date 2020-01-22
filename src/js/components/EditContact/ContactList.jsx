@@ -54,6 +54,15 @@ class EditContactList extends Component {
     this.props.changeContactMethod(method);
   }
 
+  renderRow(text, image, color) {
+    return <Row noGutters className="mt-2 mb-3 flex-row flex-nowrap">
+      <span>
+        <RoundedIcon image={image} bgColor={color} size="sm" className="m-0 mr-2"/>
+      </span>
+      <span className="info text-muted">{text}</span>
+    </Row>;
+  }
+
   render() {
     const {t, contactCode, isStatus, ensError, contactMethod} = this.props;
     const selectedMethod = this.contactMethods.find(method => method.name === (contactMethod || STATUS));
@@ -100,28 +109,13 @@ class EditContactList extends Component {
         </Form>
 
         <div className="infos-and-warnings mt-4">
-          <Row noGutters>
-            <Col>
-              <RoundedIcon image={checkCircleImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted">
-                <Trans i18nKey="contactForm.recommendedPlatform">
-                  <a href="https://status.im">Status</a> is the recommended chat platform
-                </Trans>
-              </p>
-            </Col>
-          </Row>
-          <Row noGutters className="mt-1">
-            <Col>
-              <RoundedIcon image={infoImageRed} bgColor="red" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted">{t('contactForm.contactDetailsWarning')}</p>
-            </Col>
-          </Row>
-          <Row noGutters className="mt-1">
-            <Col>
-              <RoundedIcon image={infoImage} bgColor="secondary" size="sm" className="mr-2 float-left"/>
-              <p className="info text-muted">{t('contactForm.consider')}</p>
-            </Col>
-          </Row>
+          {this.renderRow(<Trans i18nKey="contactForm.recommendedPlatform">
+            <a href="https://status.im">Status</a> is the recommended chat platform
+          </Trans>, checkCircleImage, 'secondary')}
+
+          {this.renderRow(t('contactForm.contactDetailsWarning'), infoImageRed, 'red')}
+
+          {this.renderRow(t('contactForm.consider'), infoImage, 'secondary')}
         </div>
       </Fragment>
     );

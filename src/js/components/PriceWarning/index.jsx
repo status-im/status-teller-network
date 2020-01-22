@@ -2,7 +2,7 @@
 import React, {Fragment} from 'react';
 import {tradeStates} from '../../features/escrow/helpers';
 import RoundedIcon from "../../ui/RoundedIcon";
-import infoIconRed from "../../../images/exclamation-circle.png";
+import infoIconRed from "../../../images/info-red.svg";
 import infoIconGray from "../../../images/small-info.svg";
 import iconGreen from "../../../images/green-check.svg";
 
@@ -36,11 +36,11 @@ return <Fragment>
           currentPrice: limitDecimals(currentPriceForCurrency, 4)
         })}
       </p>}
-      
-      {((!hideDefaultText && !greatPriceForBuyer) || shouldWarnBuyer) && <p className={classnames("text-small", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
+
+      {((!hideDefaultText && !greatPriceForBuyer) || shouldWarnBuyer) && <p className={classnames("text-small v-align-center mt-1", {"text-danger": shouldWarnBuyer, "text-muted": !shouldWarnBuyer})}>
         <RoundedIcon image={shouldWarnBuyer ? infoIconRed : infoIconGray}
-                     bbgColor={shouldWarnBuyer ? "red" : "secondary"} className="float-left mr-1" size="sm"/>
-        <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
+                     bgColor={shouldWarnBuyer ? "red" : "secondary"} className="float-left mr-2" size="sm"/>
+        <span>{t('priceWarning.onlyContinueIf')}</span>
       </p>}
     </Fragment>}
 
@@ -73,10 +73,10 @@ return <Fragment>
         })}
       </p>}
 
-      
-      {(!hideDefaultText || shouldWarnSeller) && <p className={classnames("text-small", {"text-danger": shouldWarnSeller, "text-muted": !shouldWarnSeller})}>
+
+      {(!hideDefaultText || shouldWarnSeller) && <p className={classnames("text-small v-align-center mt-2", {"text-danger": shouldWarnSeller, "text-muted": !shouldWarnSeller})}>
         <RoundedIcon image={shouldWarnSeller ? infoIconRed : infoIconGray}
-                     bbgColor={shouldWarnSeller ? "red" : "secondary"} className="float-left mr-1" size="sm"/>
+                     bgColor={shouldWarnSeller ? "red" : "secondary"} className="float-left mr-1" size="sm"/>
         <span className="pt-2">{t('priceWarning.onlyContinueIf')}</span>
       </p>}
 

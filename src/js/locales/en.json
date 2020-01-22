@@ -347,7 +347,7 @@
     "resolveENS": "Resolve ENS name",
     "autofill": "Autofill",
     "nicknamePlaceholder": "Set nickname",
-    "consider": "Consider which method you choose as buyers and arbitrators will contact you using it",
+    "consider": "Consider which method you choose as trade participants will contact you using it",
     "recommendedPlatform": "<0>Status</0> is the recommended chat platform"
   },
   "contactDialog": {
