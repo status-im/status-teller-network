@@ -2,7 +2,7 @@
 
 After running embark run to deploy the missing contract, execute the following in the embark console
 
-```
+```js
 OfferStore.options.address = OfferStoreProxy.options.address;
 OfferStore.methods.updateCode(OfferStoreV2.options.address).send({gas: 1000000, from: web3.eth.defaultAccount});
 OfferStoreV2.options.address = OfferStoreProxy.options.address;

@@ -36,6 +36,7 @@ contract OfferStoreV2 is OfferStore, USDStakable {
         _initializedV2 = true;
         medianizer = Medianizer(_medianizer);
         maxOffers = 10;
+        basePrice = 1 ether;
     }
 
     event MaxOffersChanged(address sender, uint oldMax, uint newMax);
