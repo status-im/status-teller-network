@@ -87,7 +87,7 @@
 }
 
 .rounded-icon__green {
-  background-color: $success;
+  background-color: rgba($success, .1);
   .rounded-icon--icon {
     color: $white;
   }

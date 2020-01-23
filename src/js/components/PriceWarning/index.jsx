@@ -45,7 +45,7 @@ return <Fragment>
     </Fragment>}
 
     {greatPriceForBuyer && <Fragment>
-      <p className="text-success mb-0 text-small">
+      <p className="text-success mb-1 text-small mt-2">
         {t('priceWarning.belowWarning', {
           price: limitDecimals(escrowAssetPrice, 4),
           fiatSymbol,
