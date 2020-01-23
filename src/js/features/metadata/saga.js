@@ -36,7 +36,10 @@ import {
   GET_OFFER_PRICE_SUCCEEDED,
   GET_OFFER_PRICE_FAILED,
   SET_CURRENT_USER,
-  CHECK_ACCOUNT_CHANGE
+  CHECK_ACCOUNT_CHANGE,
+  GET_MAX_OFFERS,
+  GET_MAX_OFFERS_SUCCEEDED,
+  GET_MAX_OFFERS_FAILED
 } from './constants';
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
@@ -306,6 +309,19 @@ export function *getOfferPrice() {
   }
 }
 
+export function *getMaxOffers() {
+  try {
+    const maxOffers = yield OfferStore.methods.maxOffers().call();
+    yield put({type: GET_MAX_OFFERS_SUCCEEDED, maxOffers});
+  } catch(err){
+    yield put({type: GET_MAX_OFFERS_FAILED, error: err.message});
+  }
+}
+
+export function *onGetMaxOffers() {
+  yield takeEvery(GET_MAX_OFFERS, getMaxOffers);
+}
+
 export function *onGetOfferPrice() {
   yield takeEvery(GET_OFFER_PRICE, getOfferPrice);
 }
@@ -324,5 +340,6 @@ export default [
   fork(onDeleteOffer),
   fork(onEnabledEthereum),
   fork(onGetOfferPrice),
-  fork(onAccountChange)
+  fork(onAccountChange),
+  fork(onGetMaxOffers)
 ];

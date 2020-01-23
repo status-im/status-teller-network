@@ -135,4 +135,29 @@ contract("MetadataStore", function () {
     assert.strictEqual(offerRemoved.returnValues.owner, accounts[0], "Invalid seller");
     assert.strictEqual(offerRemoved.returnValues.offerId, offerId, "Invalid offer");
   });
+
+  it("should not allow adding more than 10 offers", async function () {
+
+    let offerCount = await OfferStore.methods.offerCnt(accounts[0]).call();
+    let offerId;
+    for(let i = 0; i < 10 - offerCount; i++){
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      const receipt = await OfferStore.methods.addOffer(SNT.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send({value: amountToStake});
+      const offerAdded = receipt.events.OfferAdded;
+      offerId = offerAdded.returnValues.offerId;
+    }
+
+    try {
+      const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
+      await OfferStore.methods.addOffer(SNT.address, CONTACT_DATA, "London", "USD", "Iuri", [0], 0, 0, 1, accounts[9]).send({value: amountToStake});
+      assert.fail('should have reverted before');
+    } catch (error) {
+      assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Exceeds the max number of offers");
+    }
+
+    await OfferStore.methods.removeOffer(offerId).send();
+
+    offerCount = await OfferStore.methods.offerCnt(accounts[0]).call();
+    assert.strictEqual(offerCount, '9');
+  });
 });

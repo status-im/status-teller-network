@@ -8,7 +8,8 @@ import {
   ENABLE_ETHEREUM_FAILED, ENABLE_ETHEREUM_SUCCEEDED,  SET_MAINNET_WARNING_SHOWED,
   RESET_PROVIDER_VERIFICATION,
   GET_OFFER_PRICE,
-  GET_OFFER_PRICE_SUCCEEDED
+  GET_OFFER_PRICE_SUCCEEDED,
+  GET_MAX_OFFERS_SUCCEEDED
 } from './constants';
 import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED, RATE_TRANSACTION_SUCCEEDED} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
@@ -27,7 +28,8 @@ const DEFAULT_STATE = {
   users: {},
   offers: {},
   deleteOfferStatus: States.none,
-  offerPrice: ''
+  offerPrice: '',
+  maxOffers: 0
 };
 
 function formatOffer(offer) {
@@ -286,6 +288,10 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_OFFER_PRICE_SUCCEEDED:
       return {
         ...state, offerPrice: action.price
+      };
+    case GET_MAX_OFFERS_SUCCEEDED:
+      return {
+        ...state, maxOffers: action.maxOffers
       };
     default:
       return state;
