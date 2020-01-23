@@ -79,7 +79,7 @@ class App extends Component {
       this.props.fetchExchangeRates();
     }, PRICE_FETCH_INTERVAL);
 
-    setInterval(this.props.checkAccountChange, 1000);
+    this.props.checkAccountChange();
 
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();

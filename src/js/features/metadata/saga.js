@@ -4,7 +4,8 @@ import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import {fork, takeEvery, put, all, call, select} from 'redux-saga/effects';
+import {eventChannel} from 'redux-saga';
+import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
   LOAD,
   LOAD_USER,
@@ -102,16 +103,39 @@ export function *onLoadLocation() {
   yield takeEvery(LOAD_USER_LOCATION, loadLocation);
 }
 
+function countdown(_expiration) {
+  return eventChannel(emitter => {
+      const iv = setInterval(() => {
+        emitter(1)
+      }, 1000);
+      // The subscriber must return an unsubscribe function
+      return () => {
+        clearInterval(iv)
+      }
+    }
+  )
+}
+
 export function *verifyAccountChange() {
-  const accounts = yield web3.eth.getAccounts();
-  const currAddress = yield select((state) => state.network.address);
-  if(currAddress === null) return;
-  if(currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))){
-    yield put(network.actions.clearCache(
-      setTimeout(() => {
-        window.location.reload();
-      }, 500)
-    ));
+  const chan = yield call(countdown, 99);
+  let currAddress = yield select((state) => state.network.address);
+  try {
+    while (true) {
+      yield take(chan);
+      if (!currAddress) {
+        currAddress = yield select((state) => state.network.address);
+      }
+      const accounts = yield web3.eth.getAccounts();
+      if (currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))) {
+        yield put(network.actions.clearCache(
+          setTimeout(() => {
+            window.location.reload();
+          }, 500)
+        ));
+      }
+    }
+  } finally {
+    // Interval terminated, not much to do here
   }
 }
 
