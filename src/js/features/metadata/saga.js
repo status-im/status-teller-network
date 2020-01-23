@@ -137,6 +137,8 @@ export function *verifyAccountChange() {
         ));
       }
     }
+  } catch (e) {
+    console.error('Error getting accounts', e);
   } finally {
     // Interval terminated, not much to do here
   }

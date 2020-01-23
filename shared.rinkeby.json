@@ -268,6 +268,18 @@
       "0x4d0401074cd8f28f2afdb8c42cdc3e398eeab55c4d68038f4f7eb7b20ba1c330": {
         "name": "EscrowRelay",
         "address": "0x07e2D7755e4Cf203393d490a0C167c1849381913"
+      },
+      "0x5c6be61391e65c70e4719bb4bcb71283e6a920b5ee7dbf8f7da8edfc5f54fdb6": {
+        "name": "OfferStore",
+        "address": "0x689E28c0494c7f30eC853A451326a1Cb134Dbc95"
+      },
+      "0xa5edd63599edfbbb49d6ffb29ba1e6c1a048178ae86e7bdee83f9ea41849d43d": {
+        "name": "Escrow",
+        "address": "0xac133CA2fB8a095eF319214c62903945C3528243"
+      },
+      "0x0fa00ed209ca3095f4a66f9402229630ad2f7afb85e6d94b58562ba02e0254bc": {
+        "name": "EscrowRelay",
+        "address": "0x9CF40726A612Ba11c5d5E96b7e59e9142fdd8622"
       }
     }
   }
