@@ -214,7 +214,11 @@ contract OfferStore is USDStakable, SecuredFunctions, Proxiable {
         offerWhitelist[msg.sender][_offerId] = false;
         emit OfferRemoved(msg.sender, _offerId);
 
-        offerCnt[msg.sender]--;
+        if(offerCnt[msg.sender] - 1 > offerCnt[msg.sender]){
+            offerCnt[msg.sender] = 0;
+        } else {
+            offerCnt[msg.sender]--;
+        }
 
         _unstake(_offerId);
     }
