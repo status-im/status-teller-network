@@ -162,7 +162,7 @@
     "asset": "Asset",
     "modal": {
       "title": "Final Step",
-      "p1": "Almost there! As a way to protect teller from spams, each offer is under a stake condition. The stake is as small as 0.01 ETH.",
+      "p1": "Almost there! As a way to protect teller from spams, each offer is under a stake condition. The stake is as small as 1 USD",
       "p2": "The stake will be returned to you as soon as you 1) Delete this offer, or 2) successfully finish a trade.",
       "stake": "Stake",
       "button": "Sign & Post the offer"

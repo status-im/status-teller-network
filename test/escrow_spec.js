@@ -71,8 +71,11 @@ config({
       UserStore: {
         args: ["$SellerLicense", "$ArbitrationLicense"]
       },
+      Medianizer: {
+
+      },
       OfferStore: {
-        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS],
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS, "$Medianizer"],
         onDeploy: ["UserStore.methods.setAllowedContract('$OfferStore', true).send()"]
       },
       Escrow: {
