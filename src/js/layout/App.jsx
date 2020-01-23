@@ -79,8 +79,6 @@ class App extends Component {
       this.props.fetchExchangeRates();
     }, PRICE_FETCH_INTERVAL);
 
-    this.props.checkAccountChange();
-
     if (this.props.profile && this.props.profile.offers) {
       this.watchTradesForOffers();
     }
@@ -101,11 +99,15 @@ class App extends Component {
       this.props.loadOffers();
     }
     if (!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) {
+      this.props.checkAccountChange();
       if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
         this.props.resetState();
       }
       this.props.loadProfile(this.props.address);
       this.props.setCurrentUser(web3.eth.defaultAccount);
+    }
+    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.isReady) {
+      this.props.checkAccountChange();
     }
     if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
       this.watchTradesForOffers();
