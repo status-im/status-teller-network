@@ -53,8 +53,9 @@ class ConfirmTrade extends Component {
     this.props.createEscrow(this.props.username, this.props.assetQuantity, this.props.currencyQuantity, this.props.contactData, this.props.offer);
   };
 
-  cancelTrade = () => {
-    return this.props.history.push('/buy');
+  resetTradeError = () => {
+    this.props.resetCreateStatus();
+    this.props.footer.show();
   };
 
   _calcPrice = () => {
@@ -88,7 +89,7 @@ class ConfirmTrade extends Component {
       case States.pending:
         return <Loading mining txHash={this.props.txHash}/>;
       case States.failed:
-        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.cancelTrade}/>;
+        return <ErrorInformation transaction retry={this.postEscrow} cancel={this.resetTradeError}/>;
       case States.none: {
         return (<div className="confirmTrade">
           {this.state.notificationAccepted === null && <Alert color="info">
