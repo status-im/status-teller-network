@@ -130,7 +130,7 @@ class OffersList extends Component {
   };
 
   render() {
-    let filteredOffers = this.props.offers.filter(x => !addressCompare(x.arbitrator, zeroAddress));
+    let filteredOffers = this.props.offers;
 
     if (this.state.locationCoords) {
       filteredOffers = filteredOffers.filter((offer) =>  this.calculateDistance(offer.user.coords) < 0.25);
