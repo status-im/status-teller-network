@@ -28,8 +28,12 @@ const LandingFooter = ({t}) => (
         <h5>Status Network</h5>
         <ul>
           <li><a target="_blank" rel="noopener noreferrer" href="https://status.im">Status</a></li>
-          <li><a target="_blank" rel="noopener noreferrer" href="https://embark.status.im">Embark</a></li>
           <li><a target="_blank" rel="noopener noreferrer" href="https://keycard.status.im">Keycard</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://dap.ps/">dap.ps</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://assemble.fund/">Assemble</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://embark.status.im">Embark</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://subspace.embarklabs.io/">Subspace</a></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://vac.dev/">Vac</a></li>
           <li><a target="_blank" rel="noopener noreferrer" href="https://nimbus.status.im">Nimbus</a></li>
         </ul>
       </Col>
