@@ -59,8 +59,11 @@ module.exports = {
       UserStore: {
         args: ["$SellerLicense", "$ArbitrationLicense"]
       },
+      Medianizer: {
+
+      },
       OfferStore: {
-        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS, "$Medianizer"]
       },
       UserStoreProxy: {
         instanceOf: "Proxy",
@@ -225,6 +228,9 @@ module.exports = {
       UserStore: {
         address: "0x0ab611f28165a5b694959c1454c0a9027eae536d"
       },
+      Medianizer: {
+        address: "0x729D19f657BD0614b4985Cf1D82531c67569197B"
+      },
       OfferStore: {
         address: "0xe7d367bd57e8457e23f0432fc84b3beaab41cad1"
       },
@@ -246,11 +252,9 @@ module.exports = {
         instanceOf: "Proxy",
         address: "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
       },
-      KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
+      KyberFeeBurner: {
         address: "0x7702CaaE3D8feE750c4464d80FCb14Ce05e00743"
       }
-
-
     }
   }
 };

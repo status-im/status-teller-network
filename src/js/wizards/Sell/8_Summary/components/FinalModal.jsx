@@ -11,7 +11,7 @@ import './FinalModal.scss';
 
 const FinalModal = ({isOpen, hide, postOffer, stake, prices, t}) => {
   const ETHAmount = web3.utils.fromWei(stake || '0', "ether");
-  const ETHPrice = parseFloat(prices.ETH.USD) * parseFloat(ETHAmount);
+  const ETHPrice = parseFloat(prices.ETH.USD) * parseFloat(ETHAmount) * 1.05; // Add 5% for price variations while a block is mined
 
   return (
   <Modal isOpen={isOpen} toggle={hide} className="final-step-modal">

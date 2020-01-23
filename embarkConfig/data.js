@@ -103,7 +103,8 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
         deps.contracts.UserStore.options.address,
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
-        burnAddress
+        burnAddress,
+        deps.contracts.Medianizer.options.address
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }

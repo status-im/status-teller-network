@@ -4,7 +4,8 @@ import "./UserStore.sol";
 import "./License.sol";
 import "./ArbitrationLicense.sol";
 import "../common/SecuredFunctions.sol";
-import "../common/Stakable.sol";
+import "../common/USDStakable.sol";
+import "../common/Medianizer.sol";
 import "../proxy/Proxiable.sol";
 
 
@@ -12,7 +13,7 @@ import "../proxy/Proxiable.sol";
 * @title OfferStore
 * @dev Offers registry
 */
-contract OfferStore is Stakable, SecuredFunctions, Proxiable {
+contract OfferStore is USDStakable, SecuredFunctions, Proxiable {
 
     struct Offer {
         int16 margin;
@@ -57,11 +58,12 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
      * @param _sellingLicenses Sellers licenses contract address
      * @param _arbitrationLicenses Arbitrators licenses contract address
      * @param _burnAddress Address to send slashed offer funds
+     * @param _medianizer DAI medianizer to obtain USD price
      */
-    constructor(address _userStore, address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress) public
-        Stakable(_burnAddress)
+    constructor(address _userStore, address _sellingLicenses, address _arbitrationLicenses, address payable _burnAddress, address _medianizer) public
+        USDStakable(_burnAddress, _medianizer)
     {
-        init(_userStore, _sellingLicenses, _arbitrationLicenses, _burnAddress);
+        init(_userStore, _sellingLicenses, _arbitrationLicenses, _burnAddress, _medianizer);
     }
 
     /**
@@ -75,7 +77,8 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         address _userStore,
         address _sellingLicenses,
         address _arbitrationLicenses,
-        address payable _burnAddress
+        address payable _burnAddress,
+        address _medianizer
     ) public {
         assert(_initialized == false);
 
@@ -86,8 +89,9 @@ contract OfferStore is Stakable, SecuredFunctions, Proxiable {
         arbitrationLicenses = ArbitrationLicense(_arbitrationLicenses);
         burnAddress = _burnAddress;
 
-        basePrice = 0.01 ether;
         maxOffers = 10;
+        basePrice = 1 ether; // 1 USD
+        medianizer = Medianizer(_medianizer);
 
         _setOwner(msg.sender);
     }

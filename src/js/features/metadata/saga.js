@@ -258,6 +258,9 @@ export function *onLoad() {
 
 export function *addOffer({user, offer}) {
   const price = yield call(getOfferPrice);
+  const priceInEther = parseFloat(web3.utils.fromWei(price, "ether")) * 1.05; // 5% for price variations while mining
+  const valueInWei = web3.utils.toWei(priceInEther.toString());
+
   const toSend = OfferStore.methods.addOffer(
     offer.asset,
     user.contactData,
@@ -274,7 +277,7 @@ export function *addOffer({user, offer}) {
     user,
     offer: Object.assign(offer, {limitH: offer.limitU}),
     toSend,
-    value: price
+    value: valueInWei
   });
 }
 
