@@ -232,7 +232,7 @@ module.exports = {
         address: "0x729D19f657BD0614b4985Cf1D82531c67569197B"
       },
       OfferStore: {
-        address: "0xe7d367bd57e8457e23f0432fc84b3beaab41cad1"
+        address: "0x5EaE5D9Fc2F38d18D9F3Bfa584700801850670D0"
       },
       UserStoreProxy: {
         instanceOf: "Proxy",
