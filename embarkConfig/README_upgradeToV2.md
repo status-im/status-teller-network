@@ -1,6 +1,6 @@
 ### For upgrading on rinkeby:
 
-After running embark run to deploy the missing contract, execute the following in the embark console
+After running `embark reset` and `embark run testnet` to deploy the missing contract, execute the following in the embark console
 
 ```js
 OfferStore.options.address = OfferStoreProxy.options.address;
@@ -13,8 +13,8 @@ OfferStoreV2.methods.initV2(Medianizer.options.address).send({gas: 1000000, from
 
 ### For upgrading on mainnet:
 
-1. Execute `embark run` to deploy the OfferStoreV2 contract.
-2. Save the address in `contracts.json` in the `mainnet` section.
+1. Execute `embark reset` and `embark run livenet` to deploy the OfferStoreV2 contract.
+2. Save the address in `contracts.json` in the `mainnet` section.  
 3. Transfer the ownership of the base contract to the multisig
 ```js
 OfferStoreV2.methods.transferOwnership("0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95").send({gas: 1000000, from: web3.eth.defaultAccount});

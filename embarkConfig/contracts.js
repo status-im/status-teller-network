@@ -4,7 +4,7 @@ const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 const MAINNET_OWNER = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
 const FALLBACK_ARBITRATOR = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
-const GAS_PRICE = "5000000000"; //5 gwei
+const GAS_PRICE = "1000000000"; //5 gwei
 
 // TODO: extract this to .env?
 
@@ -236,6 +236,9 @@ module.exports = {
       },
       OfferStore: {
         address: "0xe7d367bd57e8457e23f0432fc84b3beaab41cad1"
+      },
+      OfferStoreV2: {
+        address: "0x5EaE5D9Fc2F38d18D9F3Bfa584700801850670D0"
       },
       UserStoreProxy: {
         instanceOf: "Proxy",
