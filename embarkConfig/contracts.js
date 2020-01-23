@@ -63,6 +63,9 @@ module.exports = {
 
       },
       OfferStore: {
+        args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS]
+      },
+      OfferStoreV2: {
         args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS, "$Medianizer"]
       },
       UserStoreProxy: {
@@ -84,7 +87,7 @@ module.exports = {
         deps: ['RelayHub']
       },
       Escrow: {
-        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$OfferStoreV2", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "Proxy",

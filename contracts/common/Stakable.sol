@@ -6,6 +6,9 @@ import "../token/SafeTransfer.sol";
 
 
 contract Stakable is Ownable, SafeTransfer {
+
+    uint public basePrice = 0.01 ether;
+
     address payable public burnAddress;
 
     struct Stake {
@@ -18,6 +21,7 @@ contract Stakable is Ownable, SafeTransfer {
     mapping(address => uint) public stakeCounter;
 
     event BurnAddressChanged(address sender, address prevBurnAddress, address newBurnAddress);
+    event BasePriceChanged(address sender, uint prevPrice, uint newPrice);
 
     event Staked(uint indexed itemId, address indexed owner, uint amount);
     event Unstaked(uint indexed itemId, address indexed owner, uint amount);
@@ -36,28 +40,49 @@ contract Stakable is Ownable, SafeTransfer {
         burnAddress = _burnAddress;
     }
 
-    
+    /**
+     * @dev Changes the base price
+     * @param _basePrice New burn address
+     */
+    function setBasePrice(uint _basePrice) external onlyOwner {
+        emit BasePriceChanged(msg.sender, basePrice, _basePrice);
+        basePrice = _basePrice;
+    }
 
     function _stake(uint _itemId, address payable _owner, address _tokenAddress) internal {
         require(stakes[_itemId].owner == address(0), "Already has/had a stake");
 
-        uint stakeAmount = getAmountToStake(msg.sender);
-        require(msg.value >= stakeAmount, "More ETH is required");
-
         stakeCounter[_owner]++;
+
+        uint stakeAmount = basePrice * stakeCounter[_owner] * stakeCounter[_owner]; // y = basePrice * x^2
+
         // Using only ETH as stake for phase 0
         _tokenAddress = address(0);
+        require(msg.value == stakeAmount, "ETH amount is required");
 
+        // Uncomment to support tokens
+        /*
+        if (_tokenAddress != address(0)) {
+            require(msg.value == 0, "Cannot send ETH with token address different from 0");
+            ERC20Token tokenToPay = ERC20Token(_tokenAddress);
+            require(_safeTransferFrom(tokenToPay, _owner, address(this), stakeAmount), "Unsuccessful token transfer");
+        } else {
+            require(msg.value == stakeAmount, "ETH amount is required");
+        }
+        */
 
-        stakes[_itemId].amount = msg.value;
+        stakes[_itemId].amount = stakeAmount;
         stakes[_itemId].owner = _owner;
         stakes[_itemId].token = _tokenAddress;
 
         emit Staked(_itemId,  _owner, stakeAmount);
     }
 
-    function getAmountToStake(address _owner) public view returns(uint){return 1;}
-    
+    function getAmountToStake(address _owner) public view returns(uint){
+        uint stakeCnt = stakeCounter[_owner] + 1;
+        return basePrice * stakeCnt * stakeCnt; // y = basePrice * x^2
+    }
+
     function _unstake(uint _itemId) internal {
         Stake storage s = stakes[_itemId];
 

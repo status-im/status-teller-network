@@ -1,14 +1,14 @@
 pragma solidity >=0.5.0 <0.6.0;
 
-import "./Stakable.sol";
+import "./Stakable.v2.sol";
 import "./Medianizer.sol";
 
 
-contract USDStakable is Stakable {
+contract USDStakable is StakableV2 {
     Medianizer public medianizer;
     uint public basePrice;
 
-    constructor(address payable _burnAddress, address _medianizer) public Stakable(_burnAddress) {
+    constructor(address payable _burnAddress, address _medianizer) public StakableV2(_burnAddress) {
         burnAddress = _burnAddress;
         basePrice = 1 ether;  // 1 usd
         medianizer = Medianizer(_medianizer);
