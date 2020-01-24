@@ -7677,7 +7677,7 @@ embarkjs-ens@5.1.0-nightly.2, embarkjs-ens@^5.1.0-nightly.2:
     eth-ens-namehash "2.0.8"
     web3 "1.2.4"
 
-embarkjs-ipfs@5.1.0-nightly.2, embarkjs-ipfs@^5.1.0-nightly.1:
+embarkjs-ipfs@5.1.0-nightly.1, embarkjs-ipfs@^5.1.0-nightly.1:
   version "5.1.0-nightly.1"
   resolved "https://registry.yarnpkg.com/embarkjs-ipfs/-/embarkjs-ipfs-5.1.0-nightly.1.tgz#672a7dfb9e99e9bca20ae7e86ecfbdbd8cb86508"
   integrity sha512-gOHabGedNWR7FlubSEaPqeGYSgvKyoSEHLIRCu3kJ2QgrAf9/i78fCZ9vRn7aoaosLrAuedhBMLmDTPJOgC2cA==
@@ -7686,7 +7686,7 @@ embarkjs-ipfs@5.1.0-nightly.2, embarkjs-ipfs@^5.1.0-nightly.1:
     core-js "3.4.3"
     ipfs-http-client "40.0.0"
 
-embarkjs-swarm@5.1.0-nightly.2, embarkjs-swarm@^5.1.0-nightly.1:
+embarkjs-swarm@5.1.0-nightly.1, embarkjs-swarm@^5.1.0-nightly.1:
   version "5.1.0-nightly.1"
   resolved "https://registry.yarnpkg.com/embarkjs-swarm/-/embarkjs-swarm-5.1.0-nightly.1.tgz#64ba46d115c4af2c9ff45267a47e2b097aa95e67"
   integrity sha512-mfmbca2HHyBaYG3GdeC0XrYRVDpZhpYxJsyBdcjSLYGuUOOtdP3T0CSbeOXvDiEw9jBrnpOJg9VhwOcRasl8rg==
@@ -7696,7 +7696,7 @@ embarkjs-swarm@5.1.0-nightly.2, embarkjs-swarm@^5.1.0-nightly.1:
     swarm-api "0.1.2"
     web3 "1.2.4"
 
-embarkjs-web3@5.1.0-nightly.2, embarkjs-web3@^5.1.0-nightly.1:
+embarkjs-web3@5.1.0-nightly.1, embarkjs-web3@^5.1.0-nightly.1:
   version "5.1.0-nightly.1"
   resolved "https://registry.yarnpkg.com/embarkjs-web3/-/embarkjs-web3-5.1.0-nightly.1.tgz#a93fc2fd86aca1f4782011dbae1b8d7ff1f3c60f"
   integrity sha512-n36QdLjfl96mPdP0D12ygG5CcUk8Fstr17+p9nxyTWcT0YSktl5NSeksUXHfLBoV/0XXChK+OIcPjdVoxRNc/w==
@@ -7705,7 +7705,7 @@ embarkjs-web3@5.1.0-nightly.2, embarkjs-web3@^5.1.0-nightly.1:
     core-js "3.4.3"
     web3 "1.2.4"
 
-embarkjs-whisper@5.1.0-nightly.2, embarkjs-whisper@^5.1.0-nightly.1:
+embarkjs-whisper@5.1.0-nightly.1, embarkjs-whisper@^5.1.0-nightly.1:
   version "5.1.0-nightly.1"
   resolved "https://registry.yarnpkg.com/embarkjs-whisper/-/embarkjs-whisper-5.1.0-nightly.1.tgz#f51e2164ca7530636967c2a269b35c260f298f4d"
   integrity sha512-paDt3aG2hsRTN33JEvnmFjA7UCXakAtbUgyV/M/9VWXVOEwS/7XO3iHeO6vf3MUp06is33cW2Mh2UcgAl2kAGA==
@@ -13141,16 +13141,6 @@ loglevel@^1.4.1:
   version "1.6.6"
   resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.6.6.tgz#0ee6300cc058db6b3551fa1c4bf73b83bb771312"
   integrity sha512-Sgr5lbboAUBo3eXCSPL4/KoVz3ROKquOjcctxmHIt+vol2DrqTQe3SwkKKuYhEiWB5kYa13YyopJ69deJ1irzQ==
-
-logrocket-react@^3.0.0:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/logrocket-react/-/logrocket-react-3.0.1.tgz#fed9d04f89e1ff94972daf356ab23dae97ccf453"
-  integrity sha512-xRkeQIZxaP+Mzqh20X7c1Urxv2mEES877eIumgB2e2BDhICGngHyK8NqNHeDLiMej+unus9svKZxAWH5e+BAGQ==
-
-logrocket@^1.0.1:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/logrocket/-/logrocket-1.0.5.tgz#9f4f63bcc1b23fc43d62b36dbfabc4217df6c98c"
-  integrity sha512-zCD03t9TH/FrNlXFxetghwjyDUERbRMBAB5+VQDV4/gbL21KV5MOzpquejEwoudn8cYlmWMxalbfvzWJqwwQxQ==
 
 lolex@^4.1.0, lolex@^4.2.0:
   version "4.2.0"

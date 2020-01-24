@@ -7,9 +7,6 @@ import { LastLocationProvider } from 'react-router-last-location';
 import i18n from './js/i18n';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
-
 import './css/fonts/Inter/inter.css';
 import './css/bootstrap-overrides.scss';
 import 'flag-icon-css/css/flag-icon.min.css';
@@ -19,11 +16,6 @@ import './css/Form.scss';
 import App from './js/layout/App';
 import history from './js/history';
 import {store, persistor} from './js/store';
-
-if (!process || !process.env || process.env.NODE_ENV !== 'development') {
-  LogRocket.init('lqnuu9/teller-network');
-  setupLogRocketReact(LogRocket);
-}
 
 ReactDOM.render(
   <Provider store={store}>
