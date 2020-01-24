@@ -105,6 +105,9 @@ class OffersList extends Component {
   };
 
   calculateDistance = (userCoords) => {
+    if (!userCoords) {
+      return 99999;
+    }
     return Math.sqrt(Math.pow(userCoords.latitude - this.state.locationCoords.latitude, 2) + Math.pow(userCoords.longitude - this.state.locationCoords.longitude, 2));
   };
 
