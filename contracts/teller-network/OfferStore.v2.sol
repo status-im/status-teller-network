@@ -31,7 +31,7 @@ contract OfferStoreV2 is OfferStore, USDStakable {
      */
     function initV2(
         address _medianizer
-    ) public {
+    ) public onlyOwner {
         assert(_initializedV2 == false);
         _initializedV2 = true;
         medianizer = Medianizer(_medianizer);
