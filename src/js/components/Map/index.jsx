@@ -111,7 +111,7 @@ export class Map extends Component {
           return (<Marker
           key={`marker-${marker.address}`}
           onClick={() => this.onMarkerClick(marker.address)}
-          position={{lat: marker.lat, lng: marker.lng}}
+          position={{lat: marker.latitude, lng: marker.longitude}}
           icon={dot}
           >{activeMarkers[marker.address] && !markerOnly &&
         <CustomInfoWindow onClose={() => this.onClose(marker.address)} name={marker.name} assets={marker.assets}
