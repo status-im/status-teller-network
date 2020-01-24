@@ -52,7 +52,7 @@ export const getUpdateUserStatus = (state) => state.metadata.updateUserStatus;
 
 export const currentUser = (state) => state.metadata.currentUser;
 
-export const isEip1102Enabled = (state) => state.metadata.eip1102Enabled;
+export const isEip1102Enabled = (state) => state.metadata.eip1102Enabled || !!state.network.address;
 
 export const mainnetWarningShowed = (state) => state.metadata.mainnetWarningShowed;
 
