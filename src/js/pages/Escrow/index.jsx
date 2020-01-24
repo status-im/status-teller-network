@@ -326,6 +326,7 @@ class Escrow extends Component {
                     arbitrationDetails={arbitrationDetails}
                     isBuyer={isBuyer}
                     onClickChat={this.displayDialog}
+                    isStatus={isStatus}
                     currentPrice={this.props.assetCurrentPrice} />
 
       <ModalDialog display={!!this.state.displayDialog} onClose={this.displayDialog(false)} hideButton>

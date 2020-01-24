@@ -3,17 +3,19 @@ import {Row, Col, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
 import moment from "moment";
 import Identicon from "../../../components/UserInformation/Identicon";
-import {formatArbitratorName, renderContactData,stringToContact} from '../../../utils/strings';
+import {formatArbitratorName, renderContactData, stringToContact} from '../../../utils/strings';
 import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import PriceWarning from '../../../components/PriceWarning';
 import Address from '../../../components/UserInformation/Address';
 import {withTranslation} from "react-i18next";
 import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
 
-const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat}) => {
+const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat, isStatus}) => {
   if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
 
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
+  const otherUserInfo = isBuyer ?  escrow.seller : escrow.buyerInfo;
+  const otherUserContactObj = stringToContact(otherUserInfo.contactData);
 
   return <div className="escrowDetails">
       <h2 className="mt-5">{t('escrow.detail.title')}</h2>
@@ -52,47 +54,30 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
         {escrow.escrowId}
       </p>
 
-    {isBuyer && <Fragment>
-      <h3 className="mt-4 font-weight-normal">{t('general.seller')}</h3>
+    <Fragment>
+      <h3 className="mt-4 font-weight-normal">{isBuyer ? t('general.seller') : t('general.buyer')}</h3>
       <Row noGutters>
         <Col xs={9}>
           <div className="mt-2 font-weight-medium">
-            <Identicon seed={escrow.offer.owner} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
-            {escrow.seller.username}
-            {renderContactData(escrow.seller.contactData, 'mb-0')}
+            <Identicon seed={isBuyer ? escrow.offer.owner : escrow.buyer} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
+            {otherUserInfo.username}
+            {renderContactData(otherUserInfo.contactData, 'mb-0')}
             <p className="text-muted text-small addr m-0">
-              {t('general.address')}: <Address disableHover address={escrow.offer.owner} length={6}/>
+              {t('general.address')}: <Address disableHover address={isBuyer ? escrow.offer.owner : escrow.buyer} length={6}/>
             </p>
           </div>
         </Col>
         <Col xs={3} className="pt-3">
-          <Button color="primary" size="sm" onClick={onClickChat(isBuyer ? 'seller' : 'buyer')}>
+          {isStatus && otherUserContactObj.method === 'Status' && <a href={"https://get.status.im/user/" + otherUserContactObj.userId}
+                          rel="noopener noreferrer" target="_blank" className="btn btn-primary btn-sm">
             {t('escrow.openChat.chat')}
-          </Button>
+          </a>}
+          {(!isStatus || otherUserContactObj.method !== 'Status') && <Button color="primary" size="sm" onClick={onClickChat(isBuyer ? 'seller' : 'buyer')}>
+            {t('escrow.openChat.chat')}
+          </Button>}
         </Col>
       </Row>
-    </Fragment>}
-
-    {!isBuyer && <Fragment>
-      <h3 className="mt-4 font-weight-normal">{t('general.buyer')}</h3>
-      <Row noGutters>
-        <Col xs={9}>
-          <div className="mt-2 font-weight-medium">
-            <Identicon seed={escrow.buyer} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
-            {escrow.buyerInfo.username}
-            {renderContactData(escrow.buyerInfo.contactData, 'mb-0')}
-            <p className="text-muted text-small addr m-0">
-              {t('general.address')}: <Address disableHover address={escrow.buyer} length={6}/>
-            </p>
-          </div>
-        </Col>
-        <Col xs={3} className="pt-3">
-          <Button color="primary" size="sm" onClick={onClickChat(isBuyer ? 'seller' : 'buyer')}>
-            {t('escrow.openChat.chat')}
-          </Button>
-        </Col>
-      </Row>
-    </Fragment>}
+    </Fragment>
 
     {escrow.arbitratorInfo && <Fragment>
       <h3 className="font-weight-normal">{t('general.arbitrator')}</h3>
@@ -144,6 +129,7 @@ EscrowDetail.propTypes = {
   escrow: PropTypes.object,
   currentPrice: PropTypes.object,
   isBuyer: PropTypes.bool,
+  isStatus: PropTypes.bool,
   onClickChat: PropTypes.func
 };
 
