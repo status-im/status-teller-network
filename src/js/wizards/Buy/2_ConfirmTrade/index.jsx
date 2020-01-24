@@ -14,7 +14,8 @@ import {limitDecimals} from '../../../utils/numbers';
 import {Alert} from "reactstrap";
 import {askPermission} from '../../../utils/notifUtils';
 import {withTranslation} from "react-i18next";
-import { formatArbitratorName, renderContactDetails } from '../../../utils/strings';
+import DOMPurify from "dompurify";
+import {formatArbitratorName, renderContactDetails, stringToContact} from '../../../utils/strings';
 import PriceWarning from '../../../components/PriceWarning';
 
 import './index.scss';
@@ -36,6 +37,10 @@ class ConfirmTrade extends Component {
   componentDidMount() {
     if (!this.props.price || !this.props.currencyQuantity || !this.props.assetQuantity) {
       return this.props.wizard.previous();
+    }
+    if (this.props.profile && (!this.props.username || !this.props.contactData)) {
+      const contactObject = stringToContact(this.props.profile && this.props.profile.contactData);
+      this.props.setContactInfo({username: DOMPurify.sanitize(this.props.profile.username), contactMethod: DOMPurify.sanitize(contactObject.method), contactUsername: DOMPurify.sanitize(contactObject.userId)});
     }
 
     this.props.footer.enableNext();
@@ -143,11 +148,13 @@ ConfirmTrade.propTypes = {
   contactData: PropTypes.string,
   wizard: PropTypes.object,
   footer: PropTypes.object,
+  profile: PropTypes.object,
   username: PropTypes.string,
   statusContactCode: PropTypes.string,
   resetCreateStatus: PropTypes.func,
   resetNewBuy: PropTypes.func,
   createEscrow: PropTypes.func,
+  setContactInfo: PropTypes.func,
   createEscrowStatus: PropTypes.string,
   price: PropTypes.number,
   escrowId: PropTypes.string,
@@ -165,6 +172,7 @@ ConfirmTrade.propTypes = {
 
 const mapStateToProps = state => {
   const offerId = newBuy.selectors.offerId(state);
+  const address = network.selectors.getAddress(state);
 
   return {
     txHash: escrow.selectors.txHash(state),
@@ -178,6 +186,7 @@ const mapStateToProps = state => {
     offer: metadata.selectors.getOfferById(state, offerId),
     assetQuantity: newBuy.selectors.assetQuantity(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
+    profile: metadata.selectors.getProfile(state, address),
     offerId
   };
 };
@@ -186,6 +195,7 @@ export default connect(
   mapStateToProps,
   {
     createEscrow: escrow.actions.createEscrow,
+    setContactInfo: newBuy.actions.setContactInfo,
     resetCreateStatus: escrow.actions.resetCreateStatus,
     resetNewBuy: newBuy.actions.resetNewBuy
   }
