@@ -709,18 +709,4 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
             escrowId := mload(add(_data, 36))
         }
     }
-
-    /**
-     * @dev Withdraws funds to the sellers in case of emergency
-     *      Requires contract to be paused.
-     *      Can be executed by anyone
-     *      Transaction must not be canceled or released
-     * @param _escrowId Id of the Escrow
-     */
-    function withdraw_emergency(uint _escrowId) external whenPaused {
-        EscrowTransaction storage trx = transactions[_escrowId];
-        require(trx.status == EscrowStatus.FUNDED, "Cannot withdraw from escrow in a stage different from FUNDED. Open a case");
-
-        _cancel(_escrowId, trx, false);
-    }
 }
