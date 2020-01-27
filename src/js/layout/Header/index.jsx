@@ -17,7 +17,7 @@ import iconCloseProfile from "../../../images/close_profile.svg";
 import "./index.scss";
 
 function goBack(history, lastLocation) {
-  if (lastLocation && lastLocation.hash.includes('profile')) {
+  if (!lastLocation || lastLocation.hash.includes('profile')) {
     return history.push('/buy');
   }
   history.go(-1);

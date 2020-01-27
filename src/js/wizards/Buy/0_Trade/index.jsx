@@ -68,7 +68,7 @@ class Trade extends Component {
   }
 
   componentDidUpdate(oldProps) {
-    if ((this.props.offer && !oldProps.offer) || (this.props.offer.token && !oldProps.offer.token)) {
+    if ((this.props.offer && !oldProps.offer) || (this.props.offer && this.props.offer.token && !oldProps.offer.token)) {
       this.getSellerBalance();
     }
   }
