@@ -230,7 +230,7 @@ const mapStateToProps = state => {
   return {
     address: network.selectors.getAddress(state) || '',
     offers: metadata.selectors.getOffersWithUser(state),
-    tokens: network.selectors.getTokens(state),
+    tokens: network.selectors.getTokensWithNbOffers(state),
     prices: prices.selectors.getPrices(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH')

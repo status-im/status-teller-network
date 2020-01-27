@@ -14,26 +14,36 @@ class CurrencyModal extends Component {
     super(props);
     this.currentValue = null;
     this.lastKeyIsArrow = false;
+    this.currencies = {};
+
+    this.calculateNbOffers();
+  }
+
+  calculateNbOffers() {
+    this.props.currencies.forEach(currency => {
+      currency.nbOffers = 0;
+      this.props.offers.forEach(offer => {
+        if (offer.currency === currency.id) {
+          currency.nbOffers++;
+        }
+      });
+      this.currencies[currency.id] = currency;
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.offers.length !== this.props.offers.length) {
+      this.calculateNbOffers();
+    }
   }
 
   render() {
-    const {t, onClose, selected, currencies, changeCurrency, offers} = this.props;
+    const {t, onClose, selected, currencies, changeCurrency} = this.props;
     const defaultSelectedValue = [];
     if (selected) {
       const currency = currencies.find(x => x.id === selected);
       defaultSelectedValue.push(currency);
     }
-
-    const theCurrencies = {};
-    currencies.forEach(currency => {
-      currency.nbOffers = 0;
-      offers.forEach(offer => {
-        if (offer.currency === currency.id) {
-          currency.nbOffers++;
-        }
-      });
-      theCurrencies[currency.id] = currency;
-    });
 
     return (
       <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
@@ -55,7 +65,7 @@ class CurrencyModal extends Component {
                        }
                        this.lastKeyIsArrow = e.key === 'ArrowDown' || e.key === 'ArrowUp';
                      }}
-                     options={Object.values(theCurrencies).sort(sortByNbOffers)}
+                     options={Object.values(this.currencies).sort(sortByNbOffers)}
                      labelKey="id"
                      placeholder={t("fiatSelectorForm.placeholder")}
                      onInputChange={(text) => {
@@ -75,7 +85,7 @@ class CurrencyModal extends Component {
                         {option.label}
                      </span>
                          <span className="text-muted float-right mt-1">
-                       ({theCurrencies[currency].nbOffers})
+                       ({this.currencies[currency].nbOffers})
                      </span>
                          {idx !== currencies.length - 1 && <Separator/>}
                        </div>);

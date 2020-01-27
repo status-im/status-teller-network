@@ -73,15 +73,6 @@ class SorterFilter extends Component {
 
   render() {
     const {t, tokens} = this.props;
-
-    Object.keys(tokens).forEach(symbol => {
-      tokens[symbol].nbOffers = 0;
-      this.props.offers.forEach(offer => {
-        if (offer.token.symbol === symbol) {
-          tokens[symbol].nbOffers++;
-        }
-      });
-    });
     const tokensArray = Object.values(tokens);
 
     return (<Fragment>
@@ -194,7 +185,7 @@ SorterFilter.propTypes = {
   t: PropTypes.func,
   paymentMethods: PropTypes.array,
   sortTypes: PropTypes.array,
-  tokens: PropTypes.array,
+  tokens: PropTypes.object,
   location: PropTypes.string,
   setLocation: PropTypes.func,
   setTokenFilter: PropTypes.func,
