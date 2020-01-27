@@ -152,10 +152,11 @@ class OffersList extends Component {
       filteredOffers = filteredOffers.filter(offer => offer.currency === this.state.currency);
     }
     if (this.state.amountFilter !== -1) {
+      const filter = parseFloat(this.state.amountFilter);
       filteredOffers = filteredOffers.filter(offer => {
-        const limitU = parseFloat(offer.limitU);
-        const limitL = parseFloat(offer.limitL);
-        return (limitU === 0 || limitU >= this.state.amountFilter) && (limitL === 0 || limitL <= this.state.amountFilter);
+        const limitU = parseFloat(offer.limitU) / 100;
+        const limitL = parseFloat(offer.limitL) / 100;
+        return (limitU === 0 || limitU >= filter) && (limitL === 0 || limitL <= filter);
       });
     }
 
