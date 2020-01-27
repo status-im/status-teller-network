@@ -22,6 +22,7 @@ import { zeroAddress, addressCompare } from '../../../../utils/address';
 import infoRedIcon from "../../../../../images/info-red.svg";
 
 import './index.scss';
+import {Link} from "react-router-dom";
 
 class OfferTrade extends Component {
 
@@ -69,8 +70,10 @@ class OfferTrade extends Component {
         <Col xs="12">
           <h3 className="mt-4 font-weight-normal">{t('general.seller')}</h3>
           <div className="row d-flex flex-wrap align-items-center m-0">
-            <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
-            <p className="font-weight-medium mb-1 name">{seller.username}</p>
+            <Link to={`/profile/${sellerAddress}`}>
+              <Identicon seed={sellerAddress} className="rounded-circle border mr-2" scale={7}/>
+              <span className="font-weight-medium mb-1 name d-inline-block text-black">{seller.username}</span>
+            </Link>
           </div>
           {renderContactDetails(t, seller.contactData, sellerAddress, 'mb-0 seller-info')}
           <p className="reputation">{seller.nbReleasedTrades} <span
@@ -82,10 +85,10 @@ class OfferTrade extends Component {
                                                                                   className="clickable"><RoundedIcon
             image={questionIcon} bgColor="blue" size="sm" className="d-inline info-btn"/></span></h3>
           <div className="mt-2 font-weight-medium mb-1 overflow-hidden">
-            <div className="row d-flex flex-wrap align-items-center m-0">
-              <Identicon seed={arbitratorAddress} className="rounded-circle border mr-1 float-left" scale={5}/>
+            <Link to={`/profile/${arbitratorAddress}`} className="row d-flex flex-wrap align-items-center m-0 text-black">
+              <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
               {formatArbitratorName(arbitrator, arbitratorAddress)}
-            </div>
+            </Link>
             {arbitrator && renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
           </div>
           {(isArbitrator || isOwner) && <p className="text-danger text-small m-0">
@@ -230,6 +233,14 @@ OfferTrade.propTypes = {
   ]),
   assetAddress: PropTypes.string,
   sellerBalance: PropTypes.string,
+  margin: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
+  currentPrice: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ]),
   onCurrencyChange: PropTypes.func,
   onAssetChange: PropTypes.func,
   disabled: PropTypes.bool,

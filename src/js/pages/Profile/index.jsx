@@ -46,7 +46,7 @@ class Profile extends Component {
         <UserInformation username={profile.username} reputation={profile.reputation}
                          identiconSeed={profile.address} nbCreatedTrades={profile.nbCreatedTrades}
                          nbReleasedTrades={profile.nbReleasedTrades}/>
-        {profile.coords && <Map coords={{latitude: profile.coords.lat, longitude: profile.coords.lng}} markerOnly={true}
+        {profile.coords && <Map coords={{latitude: profile.coords.latitude, longitude: profile.coords.longitude}} markerOnly={true}
                                 markers={[profile.coords]}/>}
         <p className="text-muted mt-2">{profile.location}</p>
         {filteredOffers.length > 0 && <Row>
