@@ -166,7 +166,7 @@ class SorterFilter extends Component {
       {this.state.paymentMethodOpen &&
       <PaymentMethodModal onClose={this.closeMenu}
                           paymentMethodFilter={this.props.paymentMethodFilter}
-                          setPaymentMethodFilter={this.props.setPaymentMethodFilter}/>}
+                          setPaymentMethodFilter={this.props.setPaymentMethodFilter} offers={this.props.offers}/>}
 
       {this.state.currencyModalOpen &&
       <CurrencyModal onClose={this.closeMenu} changeCurrency={this.props.changeCurrency} offers={this.props.offers}
