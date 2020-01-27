@@ -34,7 +34,6 @@ import {sortByRating} from "../../utils/sorters";
 
 import "./index.scss";
 import 'aos/dist/aos.css';
-import { addressCompare, zeroAddress } from '../../utils/address';
 
 class Home extends Component {
   constructor(props) {

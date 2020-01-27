@@ -13,7 +13,7 @@ import Loading from '../../components/Loading';
 import {sortByRating, sortByMargin} from '../../utils/sorters';
 import './index.scss';
 import {withTranslation} from "react-i18next";
-import {addressCompare, zeroAddress} from "../../utils/address";
+import {addressCompare} from "../../utils/address";
 import newBuy from "../../features/newBuy";
 import {withRouter} from "react-router-dom";
 import {stringToContact} from "../../utils/strings";

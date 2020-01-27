@@ -1,6 +1,6 @@
 export const DAPP_ID = 'teller-network';
 export const EMAIL_SERVER_ENDPOINT = `https://cryptolife.status.im/api/${DAPP_ID}`;
-export const EMAIL_SERVER_ENDPOINT_WITHOUT_DAPP_ID = 'https://cryptolife.status.im/api/';
+export const EMAIL_SERVER_ENDPOINT_WITHOUT_DAPP_ID = 'https://cryptolife.status.im/api';
 export const OK = 'OK';
 
 export const CHECK_EMAIL_SUBSCRIPTION = 'CHECK_EMAIL_SUBSCRIPTION';
