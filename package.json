@@ -56,7 +56,7 @@
     "css-loader": "^2.1.0",
     "dompurify": "^2.0.1",
     "elliptic": "^6.5.0",
-    "embark": "5.1.0-nightly.5",
+    "embark": "5.1.0-nightly.6",
     "embark-solc": "5.1.0-nightly.1",
     "embark-solium": "0.1.0",
     "embarkjs": "5.1.0-nightly.5",
