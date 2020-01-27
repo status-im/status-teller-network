@@ -640,7 +640,6 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         if (_releaseFunds) {
             _release(_escrowId, trx, true);
-            offerStore.slashStake(trx.offerId);
         } else {
             _cancel(_escrowId, trx, true);
             _releaseFee(trx.arbitrator, trx.tokenAmount, trx.token, true);
