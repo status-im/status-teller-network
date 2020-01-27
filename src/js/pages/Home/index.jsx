@@ -173,7 +173,10 @@ Home.propTypes = {
   prices: PropTypes.object,
   hasPrices: PropTypes.bool,
   address: PropTypes.string,
-  priceError: PropTypes.bool,
+  priceError: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool
+  ]),
   resetNewOfferData: PropTypes.func,
   resetNewBuy: PropTypes.func,
   setMainnetWarningShowed: PropTypes.func,
