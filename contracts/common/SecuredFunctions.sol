@@ -2,6 +2,7 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "../common/Ownable.sol";
 
+
 contract SecuredFunctions is Ownable {
 
     mapping(address => bool) public allowedContracts;
@@ -20,7 +21,8 @@ contract SecuredFunctions is Ownable {
     function setAllowedContract (
         address _contract,
         bool _allowed
-    ) public onlyOwner {
+    ) public onlyOwner
+    {
         allowedContracts[_contract] = _allowed;
     }
 }
