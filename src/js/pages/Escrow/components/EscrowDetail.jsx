@@ -42,7 +42,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
       </p>
 
       <h3 className="font-weight-normal mt-4">{t('escrow.detail.contract')}</h3>
-      <p className="font-weight-medium mb-0">
+      <p className="font-weight-medium mb-0 text-break">
         {EscrowProxy.options.address}
       </p>
       <span className="mb-1">

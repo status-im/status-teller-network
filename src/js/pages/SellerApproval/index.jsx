@@ -69,6 +69,10 @@ class SellerApproval extends Component {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
 
+    if (!profile) {
+      return 'Loading...';
+    }
+
     if(!profile.isArbitrator) {
       return <ErrorInformation message={t('sellerApproval.onlyForArbis')}/>;
     }
