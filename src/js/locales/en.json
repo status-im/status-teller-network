@@ -333,8 +333,10 @@
       "sellerBalance": "This is the current balance of the seller. This is why it is the maximum",
       "limits": "Limits: {{min}} {{symbol}} to <5>{{max}} {{symbol}}</5>",
       "amountWarning": "Amount is greater than the seller's balance",
+      "amountWarningLimitless": "You can still open the trade, but know that the Seller might not be able to fund it",
       "newOrderDelay": "New orders can be created for free in {{time}}",
-      "noPrice": "The price for the current asset has not been loaded yet. Please wait or try to reload the page."
+      "noPrice": "The price for the current asset has not been loaded yet. Please wait or try to reload the page.",
+      "noLimit": "No Limit"
     }
   },
   "contactForm": {

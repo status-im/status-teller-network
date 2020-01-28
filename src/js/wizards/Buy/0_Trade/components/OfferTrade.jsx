@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation, Trans} from "react-i18next";
-import {Row, Col, FormGroup, UncontrolledTooltip, FormFeedback} from 'reactstrap';
+import {Row, Col, FormGroup, FormFeedback} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan, higherThan} from "../../../../validators";
@@ -20,6 +20,7 @@ import questionIcon from "../../../../../images/question-mark.svg";
 import {formatArbitratorName, renderContactDetails} from '../../../../utils/strings';
 import { zeroAddress, addressCompare } from '../../../../utils/address';
 import infoRedIcon from "../../../../../images/info-red.svg";
+import classnames from 'classnames';
 
 import './index.scss';
 import {Link} from "react-router-dom";
@@ -121,7 +122,7 @@ class OfferTrade extends Component {
                 <Col xs={12} sm={12}>
                   <Input type="text" name="fiat" className="form-control" value={currencyQuantity}
                          disabled={!price}
-                         data-maxvalue={limitless ? limitlessMaxFiat : maxFiat}
+                         data-maxvalue={limitless ? Infinity : maxFiat}
                          data-minvalue={limitless ? 0 : minFiat}
                          validations={[isNumber, lowerEqThan, limitless ? higherThan : higherEqThan]}
                          id="fiat-quantity-input"
@@ -146,25 +147,13 @@ class OfferTrade extends Component {
                 </Col>
               </Row>
             </FormGroup>
-            {limitless && <p className="mt-3 limits">
-              <Trans
-                i18nKey="buyer.offerTrade.limits"
-                values={{
-                  min: limitDecimals(minToken),
-                  max: limitDecimals(maxToken),
-                  symbol: asset
-                }}
-              >
-                Limits: {{min: limitDecimals(minToken)}} {{symbol: asset}} to <span
-                id="max-token">{{max: limitDecimals(maxToken)}} {{symbol: asset}}</span>
-              </Trans>
-              <UncontrolledTooltip placement="right" target="max-token">
-                {t('buyer.offerTrade.sellerBalance')}
-              </UncontrolledTooltip>
-            </p>}
+            {amountGreaterThanBalance &&
+            <FormFeedback className={classnames("d-block", {'text-warning': limitless})}>
+              <p className="m-0">{t('buyer.offerTrade.amountWarning')}</p>
+              {limitless && <p className="m-0">{t('buyer.offerTrade.amountWarningLimitless')}</p>}
+            </FormFeedback>}
+            {limitless && <p className="mt-3 limits">{t('buyer.offerTrade.noLimit')}</p>}
             {!limitless && <Fragment>
-              {amountGreaterThanBalance &&
-              <FormFeedback className="d-block">{t('buyer.offerTrade.amountWarning')}</FormFeedback>}
               <p className="mt-3 limits">
                 <Trans
                   i18nKey="buyer.offerTrade.limits"
