@@ -35,6 +35,9 @@ import MyDisputes from '../pages/MyDisputes';
 import ProfileSettings from '../pages/ProfileSettings';
 import NotificationSettings from '../pages/NotificationSettings';
 
+import FallbackDisputes from '../pages/FallbackDisputes';
+import FallbackArbitration from '../pages/FallbackArbitration';
+
 import SubscribeToEmails from '../pages/SubscribeToEmails';
 import ValidateEmail from '../pages/ValidateEmail';
 
@@ -192,6 +195,8 @@ class App extends Component {
                 <Route exact path="/profile/offers" component={MyOffers} />
                 <Route exact path="/profile/trades" component={MyTrades} />
                 <Route exact path="/profile/disputes" component={MyDisputes} />
+                <Route exact path="/fallback/disputes" component={FallbackDisputes} />
+                <Route exact path="/fallback/arbitration/:id" component={FallbackArbitration} />
                 <Route exact path="/profile/arbitrators" component={Arbitrators} />
                 <Route exact path="/profile/:address" component={Profile}/>
 

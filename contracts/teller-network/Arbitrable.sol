@@ -31,10 +31,10 @@ contract Arbitrable {
         ArbitrationMotive motive;
     }
 
-    event ArbitratorChanged(uint escrowId, address sender, address ogArbitrator, address newArbitrator);
-    event ArbitrationCanceled(uint escrowId);
-    event ArbitrationRequired(uint escrowId, uint timeout);
-    event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
+    event ArbitratorChanged(uint indexed escrowId, address sender, address indexed ogArbitrator, address indexed newArbitrator);
+    event ArbitrationCanceled(uint indexed escrowId);
+    event ArbitrationRequired(uint indexed escrowId, uint timeout, address indexed arbitrator);
+    event ArbitrationResolved(uint indexed escrowId, ArbitrationResult result, address indexed arbitrator);
 
     /**
      * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
@@ -121,7 +121,7 @@ contract Arbitrable {
             motive: ArbitrationMotive(_motive)
         });
 
-        emit ArbitrationRequired(_escrowId, timeout);
+        emit ArbitrationRequired(_escrowId, timeout, arbitratorAddress);
     }
 
     /**

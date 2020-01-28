@@ -31,7 +31,7 @@ import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 Escrow.options.address = EscrowProxy.options.address;
 
-export const getDisputedEscrows = () => ({type: GET_DISPUTED_ESCROWS});
+export const getDisputedEscrows = (fallbackDisputes = false) => ({type: GET_DISPUTED_ESCROWS, fallbackDisputes});
 
 export const resolveDispute = (escrowId, result) => {
   if (result === ARBITRATION_UNSOLVED) {

@@ -1,0 +1,15 @@
+.topCircle {
+  z-index: 90;
+  position: relative;
+}
+
+.bottomCircle {
+  z-index: 80;
+  position: relative;
+  left: -10px;
+}
+
+.profile-button span,
+.profile-button h6 {
+  font-size: 15px;
+}
