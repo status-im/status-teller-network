@@ -220,3 +220,15 @@ $input-icon-height: 20px;
     }
   }
 }
+
+.rbt {
+  position: relative;
+
+  .rbt-close {
+    position: absolute;
+    z-index: 900;
+    right: 0;
+    top: 0;
+    padding: 13px;
+  }
+}

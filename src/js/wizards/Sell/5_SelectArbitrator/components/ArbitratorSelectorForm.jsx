@@ -38,13 +38,14 @@ class ArbitratorSelectorForm extends Component {
         <h2>{t('sellerArbitratorContainer.title')}</h2>
         <FormGroup>
           <Typeahead className="my-3"
-            id="fiatSelector"
-            onChange={this.onChange}
-            options={arbitratorStrings}
-            placeholder={t("arbitratorSelectorForm.placeholder")}
-            submitFormOnEnter={true}
-            emptyLabel={t("arbitratorSelectorForm.emptyLabel")}
-            defaultSelected={defaultSelectedValue}
+                     id="fiatSelector"
+                     clearButton
+                     onChange={this.onChange}
+                     options={arbitratorStrings}
+                     placeholder={t("arbitratorSelectorForm.placeholder")}
+                     submitFormOnEnter={true}
+                     emptyLabel={t("arbitratorSelectorForm.emptyLabel")}
+                     defaultSelected={defaultSelectedValue}
           />
           {!this.props.value && <p className="text-muted">{t("arbitratorSelectorForm.selectValid")}</p>}
         </FormGroup>
