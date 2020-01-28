@@ -138,17 +138,10 @@ class Arbitration extends Component {
   }
 
   render() {
-    const {t, escrow, address, buyerInfo, sellerInfo, isStatus} = this.props;
+    const {t, escrow, buyerInfo, sellerInfo, isStatus} = this.props;
 
     if (!escrow || !buyerInfo || !sellerInfo) {
       return <Loading/>;
-    }
-
-    if (addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) {
-      return <ErrorInformation message={t('arbitration.ownDispute')}/>;
-    }
-    if (!addressCompare(escrow.arbitrator, address)) {
-      return <ErrorInformation message={t('arbitration.notYours')}/>;
     }
 
     const status = this.getArbitrationStatus(escrow.arbitration.result);

@@ -33,10 +33,6 @@ class MyDisputes extends Component {
     const {profile, address} = this.props;
     if (!profile) return <Loading page={true}/>;
 
-    if (!profile.isArbitrator) {
-      return <NoLicense arbitratorPage/>;
-    }
-
     return (
       <Fragment>
         <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address))} open={true} showDate={true} />
