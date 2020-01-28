@@ -149,7 +149,7 @@ contract Arbitrable {
         if (msg.sender == fallbackArbitrator) {
             require(block.timestamp > arbitrationCases[_escrowId].arbitratorTimeout, "Arbitration is still active");
             if (arbitrationCases[_escrowId].arbitrator != msg.sender) {
-                emit ArbitratorChanged(_escrowId, arbitrationCases[_escrowId].arbitrator, msg.sender);
+                emit ArbitratorChanged(_escrowId, msg.sender, arbitrationCases[_escrowId].arbitrator, msg.sender);
                 arbitrationCases[_escrowId].arbitrator = msg.sender;
             }
         } else {

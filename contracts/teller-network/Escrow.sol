@@ -111,8 +111,8 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @dev Update proxy implementation. Can only be called by owner
      * @param _newCode New contract implementation address
      */
-    function updateCode(address newCode) public onlyOwner {
-        updateCodeAddress(newCode);
+    function updateCode(address _newCode) public onlyOwner {
+        updateCodeAddress(_newCode);
     }
 
     /**

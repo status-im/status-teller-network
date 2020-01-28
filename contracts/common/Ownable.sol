@@ -12,14 +12,6 @@ contract Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(isOwner(), "Only the contract's owner can invoke this function");
-        _;
-    }
-
-    /**
      * @dev The Ownable constructor sets the original `owner` of the contract to the sender
      * account.
      */
@@ -32,8 +24,16 @@ contract Ownable {
      * @dev is sender the owner of the contract?
      * @return true if `msg.sender` is the owner of the contract.
      */
-    function isOwner() external view returns (bool) {
+    function isOwner() public view returns (bool) {
         return msg.sender == _owner;
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(isOwner(), "Only the contract's owner can invoke this function");
+        _;
     }
 
     /**
