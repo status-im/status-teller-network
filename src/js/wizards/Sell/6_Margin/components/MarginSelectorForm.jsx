@@ -6,10 +6,12 @@ import {withTranslation} from 'react-i18next';
 import Form from 'react-validation/build/form';
 import {isInteger, required, lowerThan, higherEqThan} from '../../../../validators';
 import Slider from 'rc-slider/lib/Slider';
-import 'rc-slider/assets/index.css';
-import './MarginSelectorForm.scss';
+
 import infoIcon from '../../../../../images/small-info.svg';
 import RoundedIcon from "../../../../ui/RoundedIcon";
+
+import 'rc-slider/assets/index.css';
+import './MarginSelectorForm.scss';
 
 class MarginSelectorForm extends Component {
   onMarginChange = (value) => {
@@ -53,10 +55,10 @@ class MarginSelectorForm extends Component {
         <FormGroup className="mb-0">
           <Row>
             <Col md={9} sm={9} xs={8}>
-              <Slider className="mb-3 p-4" min={-99} max={100} defaultValue={1}
+              <Slider className="mb-3 py-4" min={-99} max={100} defaultValue={1}
                       onChange={(value) => this.onMarginChange(value)} value={sliderValue}/>
             </Col>
-            <Col md={3} sm={3} xs={4}>
+            <Col md={3} sm={3} xs={4} className="pl-0">
               <InputGroup className="full-width-input margin-input">
                 <Input type="number"
                        name="margin"
