@@ -62,7 +62,6 @@ class OfferTrade extends Component {
     const amountGreaterThanBalance = parseFloat(assetQuantity) > parseFloat(sellerBalance);
     const isETH = addressCompare(assetAddress, zeroAddress);
     const isETHorSNT = (isETH || addressCompare(assetAddress, tokens.SNT.address));
-    const limitlessMaxFiat = (maxToken * price).toFixed(8);
     const isArbitrator = addressCompare(arbitratorAddress, address);
     const isOwner = addressCompare(sellerAddress, address);
 
@@ -149,7 +148,7 @@ class OfferTrade extends Component {
             </FormGroup>
             {amountGreaterThanBalance &&
             <FormFeedback className={classnames("d-block", {'text-warning': limitless})}>
-              <p className="m-0">{t('buyer.offerTrade.amountWarning')}</p>
+              <p className="m-0">{t('buyer.offerTrade.amountWarning', {balance: sellerBalance, symbol: asset})}</p>
               {limitless && <p className="m-0">{t('buyer.offerTrade.amountWarningLimitless')}</p>}
             </FormFeedback>}
             {limitless && <p className="mt-3 limits">{t('buyer.offerTrade.noLimit')}</p>}
