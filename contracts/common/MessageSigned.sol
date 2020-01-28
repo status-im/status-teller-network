@@ -3,6 +3,7 @@
 
 pragma solidity >=0.5.0 <0.6.0;
 
+
 /**
  * @dev Uses ethereum signed messages
  */
@@ -24,7 +25,12 @@ contract MessageSigned {
         bytes32 r;
         bytes32 s;
         (v,r,s) = signatureSplit(_messageSignature);
-        return ecrecover(_signHash, v, r, s);
+        return ecrecover(
+            _signHash,
+            v,
+            r,
+            s
+        );
     }
 
     /**

@@ -4,11 +4,19 @@ import "./Stakable.sol";
 import "./Medianizer.sol";
 
 
+/**
+ * @title USDStakable
+ * @dev Staking contract that is integrated with MakerDAO's medianizer to obtain stake prices in USD, with initial price being always ~1USD
+ */
 contract USDStakable is Stakable {
     Medianizer public medianizer;
     uint public basePrice;
 
-    constructor(address payable _burnAddress, address _medianizer) public Stakable(_burnAddress) {
+    /**
+     * @param _burnAddress Address where the slashed stakes are going to be sent
+     * @param _medianizer Medianizer contract address
+     */
+    constructor(address payable _burnAddress, address _medianizer) internal Stakable(_burnAddress) {
         burnAddress = _burnAddress;
         basePrice = 1 ether;  // 1 usd
         medianizer = Medianizer(_medianizer);
@@ -36,7 +44,12 @@ contract USDStakable is Stakable {
         medianizer = Medianizer(_medianizer);
     }
 
-    function getAmountToStake(address _owner) public view returns(uint){
+    /**
+     * @notice Get amount to stake for the next offer
+     * @param _owner Address for which the stake amount will be calculated
+     * @return Amount to stake in wei
+     */
+    function getAmountToStake(address _owner) public view returns(uint) {
         uint stakeCnt = stakeCounter[_owner] + 1;
 
         uint mweiPrice = basePrice * 1000000;

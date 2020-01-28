@@ -1,5 +1,6 @@
 pragma solidity >=0.5.0 <0.6.0;
 
+
 /**
  * @title Ownable
  * @dev The Ownable contract has an owner address, and provides basic authorization control
@@ -11,6 +12,14 @@ contract Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(isOwner(), "Only the contract's owner can invoke this function");
+        _;
+    }
+
+    /**
      * @dev The Ownable constructor sets the original `owner` of the contract to the sender
      * account.
      */
@@ -20,34 +29,10 @@ contract Ownable {
     }
 
     /**
-     * @dev Get the contract's owner
-     * @return the address of the owner.
-     */
-    function owner() public view returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(isOwner(), "Only the contract's owner can invoke this function");
-        _;
-    }
-
-     /**
-      * @dev Sets an owner address
-      * @param _newOwner new owner address
-      */
-    function _setOwner(address _newOwner) internal {
-        _owner = _newOwner;
-    }
-
-    /**
      * @dev is sender the owner of the contract?
      * @return true if `msg.sender` is the owner of the contract.
      */
-    function isOwner() public view returns (bool) {
+    function isOwner() external view returns (bool) {
         return msg.sender == _owner;
     }
 
@@ -71,12 +56,28 @@ contract Ownable {
     }
 
     /**
+     * @dev Get the contract's owner
+     * @return the address of the owner.
+     */
+    function owner() public view returns (address) {
+        return _owner;
+    }
+
+    /**
      * @dev Transfers control of the contract to a newOwner.
      * @param _newOwner The address to transfer ownership to.
      */
     function _transferOwnership(address _newOwner) internal {
         require(_newOwner != address(0), "New owner cannot be address(0)");
         emit OwnershipTransferred(_owner, _newOwner);
+        _owner = _newOwner;
+    }
+
+    /**
+     * @dev Sets an owner address
+     * @param _newOwner new owner address
+     */
+    function _setOwner(address _newOwner) internal {
         _owner = _newOwner;
     }
 }
