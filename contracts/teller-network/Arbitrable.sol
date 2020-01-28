@@ -3,6 +3,7 @@ pragma solidity >=0.5.0 <0.6.0;
 
 import "./ArbitrationLicense.sol";
 
+
 /**
  * Arbitrable
  * @dev Utils for management of disputes
@@ -19,6 +20,8 @@ contract Arbitrable {
 
     address public fallbackArbitrator;
 
+    uint public arbitrationTimeout;
+
     struct ArbitrationCase {
         bool open;
         address openBy;
@@ -28,17 +31,19 @@ contract Arbitrable {
         ArbitrationMotive motive;
     }
 
-    event ArbitratorChanged(address arbitrator);
+    event ArbitratorChanged(uint escrowId, address sender, address ogArbitrator, address newArbitrator);
     event ArbitrationCanceled(uint escrowId);
     event ArbitrationRequired(uint escrowId, uint timeout);
     event ArbitrationResolved(uint escrowId, ArbitrationResult result, address arbitrator);
 
     /**
      * @param _arbitratorLicenses Address of the Arbitrator Licenses contract
+     * @param _fallbackArbitrator Address of the fallback arbitrator in case the original arbitrator does not work on a dispute
      */
     constructor(address _arbitratorLicenses, address _fallbackArbitrator) public {
         arbitratorLicenses = ArbitrationLicense(_arbitratorLicenses);
         fallbackArbitrator = _fallbackArbitrator;
+        arbitrationTimeout = 5 days;
     }
 
     /**
@@ -83,8 +88,8 @@ contract Arbitrable {
      */
     function cancelArbitration(uint _escrowId) external {
         require(arbitrationCases[_escrowId].openBy == msg.sender, "Arbitration can only be canceled by the opener");
-        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open,
-                "Arbitration already solved or not open");
+        require(arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED && arbitrationCases[_escrowId].open, 
+            "Arbitration already solved or not open");
 
         delete arbitrationCases[_escrowId];
 
@@ -105,7 +110,7 @@ contract Arbitrable {
 
         require(arbitratorAddress != address(0), "Arbitrator is required");
 
-        uint timeout = block.timestamp + 5 days;
+        uint timeout = block.timestamp + arbitrationTimeout;
 
         arbitrationCases[_escrowId] = ArbitrationCase({
             open: true,
@@ -120,6 +125,18 @@ contract Arbitrable {
     }
 
     /**
+     * @notice Allow participants to escalate dispute to fallback arbitrator after timeout
+     * @param _escrowId Id of the Escrow that is being disputed
+     */
+    function escalateDispute(uint _escrowId) external {
+        require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED, "Case must be open and unsolved");
+        require(block.timestamp > arbitrationCases[_escrowId].arbitratorTimeout, "Arbitration is still active");
+
+        emit ArbitratorChanged(_escrowId, msg.sender, arbitrationCases[_escrowId].arbitrator, fallbackArbitrator);
+        arbitrationCases[_escrowId].arbitrator = fallbackArbitrator;
+    }
+
+    /**
      * @notice Set arbitration result in favour of the buyer or seller and transfer funds accordingly
      * @param _escrowId Id of the escrow
      * @param _result Result of the arbitration
@@ -128,11 +145,15 @@ contract Arbitrable {
         require(arbitrationCases[_escrowId].open && arbitrationCases[_escrowId].result == ArbitrationResult.UNSOLVED,
                 "Case must be open and unsolved");
         require(_result != ArbitrationResult.UNSOLVED, "Arbitration does not have result");
-        require(arbitratorLicenses.isLicenseOwner(msg.sender), "Only arbitrators can invoke this function");
 
-        if (block.timestamp > arbitrationCases[_escrowId].arbitratorTimeout) {
-            require(arbitrationCases[_escrowId].arbitrator == msg.sender || msg.sender == fallbackArbitrator, "Invalid escrow arbitrator");
+        if (msg.sender == fallbackArbitrator) {
+            require(block.timestamp > arbitrationCases[_escrowId].arbitratorTimeout, "Arbitration is still active");
+            if (arbitrationCases[_escrowId].arbitrator != msg.sender) {
+                emit ArbitratorChanged(_escrowId, arbitrationCases[_escrowId].arbitrator, msg.sender);
+                arbitrationCases[_escrowId].arbitrator = msg.sender;
+            }
         } else {
+            require(arbitratorLicenses.isLicenseOwner(msg.sender), "Only arbitrators can invoke this function");
             require(arbitrationCases[_escrowId].arbitrator == msg.sender, "Invalid escrow arbitrator");
         }
 
@@ -141,7 +162,7 @@ contract Arbitrable {
 
         emit ArbitrationResolved(_escrowId, _result, msg.sender);
 
-        if(_result == ArbitrationResult.BUYER){
+        if (_result == ArbitrationResult.BUYER) {
             _solveDispute(_escrowId, true, msg.sender);
         } else {
             _solveDispute(_escrowId, false, msg.sender);

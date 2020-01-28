@@ -94,9 +94,23 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         feeDestination = _feeDestination;
         feeMilliPercent = _feeMilliPercent;
         paused = false;
+        arbitrationTimeout = 5 days;
+
         _setOwner(msg.sender);
     }
+    
+    /**
+     * @dev Update arbitration timeout. Can only be called by owner
+     * @param _newTimeout new timeout in seconds
+     */
+    function updateArbitrationTimeout(uint _newTimeout) public onlyOwner {
+        arbitrationTimeout = _newTimeout;
+    }
 
+    /**
+     * @dev Update proxy implementation. Can only be called by owner
+     * @param _newCode New contract implementation address
+     */
     function updateCode(address newCode) public onlyOwner {
         updateCodeAddress(newCode);
     }
