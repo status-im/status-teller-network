@@ -82,7 +82,11 @@ contract UserStore is MessageSigned, SecuredFunctions, Proxiable {
      * @return bytes32 to sign
      */
     function _dataHash(string memory _username, string memory _contactData, uint _nonce) internal view returns (bytes32) {
-        return keccak256(abi.encodePacked(address(this), _username, _contactData, _nonce));
+        uint256 cid;
+        assembly { 
+		    cid := chainid()
+		}
+        return keccak256(abi.encodePacked(address(this), _username, _contactData, _nonce, cid));
     }
 
     /**

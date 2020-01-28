@@ -5,7 +5,7 @@
   "buildDir": "dist/",
   "config": "embarkConfig/",
   "versions": {
-    "solc": "0.5.10"
+    "solc": "0.5.16"
   },
   "plugins": {
     "embark-solium": {},
