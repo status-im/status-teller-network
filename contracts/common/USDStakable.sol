@@ -54,9 +54,14 @@ contract USDStakable is Stakable {
 
         uint mweiPrice = basePrice * 1000000;
         uint daiPrice = uint256(medianizer.read());
-
         uint oneUsdEth = (mweiPrice / daiPrice) * 1 szabo;
 
-        return oneUsdEth * stakeCnt * stakeCnt; // y = basePrice * x^2
+        uint amountToStake = oneUsdEth * (stakeCnt * stakeCnt) / 17; // y = basePrice * x^2/17
+
+        if (amountToStake < basePrice) {
+            return basePrice;
+        }
+
+        return amountToStake;
     }
 }
