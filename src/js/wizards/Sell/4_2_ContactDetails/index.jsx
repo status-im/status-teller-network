@@ -71,10 +71,10 @@ class Contact extends Component {
   };
 
   getContactCode = () => {
-    if(!this.props.statusContactCode){
+    if (!this.props.statusContactCode) {
       this.props.getContactCode();
     } else {
-      this.setState({ contactCode: this.props.statusContactCode });
+      this.changeContactCode(this.props.statusContactCode);
     }
   };
 

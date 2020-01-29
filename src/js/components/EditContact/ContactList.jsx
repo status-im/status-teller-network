@@ -81,7 +81,7 @@ class EditContactList extends Component {
 
             <Label for="contactCode" className="d-block mt-3">{selectedMethod.label}</Label>
             <Row noGutters>
-              <Col xs={isStatus ? 9 : 12}>
+              <Col xs={contactMethod === STATUS && isStatus ? 9 : 12}>
                 <Input type="text"
                        name="contactCode"
                        id="contactCode"
@@ -95,7 +95,7 @@ class EditContactList extends Component {
                 {ensError && (<div className="d-block invalid-feedback">{ensError}</div>)}
 
               </Col>
-              {isStatus && <Col xs={3}>
+              {contactMethod === STATUS && isStatus && <Col xs={3}>
                 <Button className="px-3 float-right" color="primary"
                         onClick={(_e) => this.props.getContactCode()}>{t('contactForm.autofill')}</Button>
               </Col>}

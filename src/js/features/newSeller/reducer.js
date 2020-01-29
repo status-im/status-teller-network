@@ -63,7 +63,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         username: action.username,
-        contactData: action.contactMethod && action.contactUsername ? getContactData(action.contactMethod, action.contactUsername) : ''
+        contactData: action.contactMethod && action.contactUsername ? getContactData(action.contactMethod, action.contactUsername) : state.contactData
       };
     case SET_LIMITS:
       return {

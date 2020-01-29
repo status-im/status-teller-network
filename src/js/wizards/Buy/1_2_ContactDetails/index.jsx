@@ -85,7 +85,7 @@ class ContactDetails extends Component {
     if(!this.props.apiContactCode){
       this.props.getContactCode();
     } else {
-      this.setState({ contactUsername: this.props.apiContactCode });
+      this.changeContactCode(this.props.apiContactCode);
     }
   };
 
