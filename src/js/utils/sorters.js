@@ -14,6 +14,12 @@ export function sortByDate(a, b) {
   return 0;
 }
 
+export function sortByNbOffers(a, b) {
+  if (a.nbOffers > b.nbOffers) return -1;
+  if (a.nbOffers < b.nbOffers) return 1;
+  return 0;
+}
+
 export const sortByMargin = (SNT) => {
   SNT = web3.utils.toChecksumAddress(SNT);
 

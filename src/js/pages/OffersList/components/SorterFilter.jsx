@@ -8,6 +8,7 @@ import {PAYMENT_METHODS} from '../../../features/metadata/constants';
 import Draggable from "react-draggable";
 import {withTranslation} from "react-i18next";
 import {getTokenImage} from "../../../utils/images";
+import {sortByNbOffers} from "../../../utils/sorters";
 
 import SorterModal from "./Modals/SortModal";
 import CurrencyModal from "./Modals/CurrencyModal";
@@ -71,7 +72,9 @@ class SorterFilter extends Component {
   };
 
   render() {
-    const t = this.props.t;
+    const {t, tokens} = this.props;
+    const tokensArray = Object.values(tokens);
+
     return (<Fragment>
       <div className="tokenFilter-container position-relative">
         <img src={cryptoIcons} alt="crypto icons" className="crypto-icons"/>
@@ -79,7 +82,7 @@ class SorterFilter extends Component {
           id="tokenFilter"
           clearButton
           className="filter-modal"
-          options={this.props.tokens.map((token) => ({value: token.address, label: token.symbol}))}
+          options={tokensArray.sort(sortByNbOffers).map(token => ({value: token.address, label: token.symbol}))}
           placeholder={t('filter.searchCryptos')}
           value={this.props.tokenFilter}
           onChange={this.props.setTokenFilter}
@@ -89,23 +92,17 @@ class SorterFilter extends Component {
           onFocus={() => { this.isTokenFilterActive = true; }}
           renderMenuItemChildren={(option, props, idx) => {
             const symbol = getOptionLabel(option, props.labelKey);
-            let nbOffersForToken = 0;
-            this.props.offers.forEach(offer => {
-              if (offer.token.symbol === symbol) {
-                nbOffersForToken++;
-              }
-            });
             return (
-              <div className={classnames("mt-2", {'border-bottom pb-2': idx !== this.props.tokens.length - 1})}>
+              <div className={classnames("mt-2", {'border-bottom pb-2': idx !== tokensArray.length - 1})}>
                 <img src={getTokenImage(symbol)} alt={symbol + ' icon'} className="asset-image mr-2 float-left"/>
-                {this.props.tokens.find(token => token.symbol === symbol).name}
+                {tokens[symbol].name}
                 <span className="text-muted ml-2 d-inline-block mb-2">
               <Highlighter search={props.text}>
                 {symbol}
               </Highlighter>
               </span>
                 <span className="text-muted float-right">
-                ({nbOffersForToken})
+                ({tokens[symbol].nbOffers})
               </span>
               </div>
             );
@@ -169,7 +166,7 @@ class SorterFilter extends Component {
       {this.state.paymentMethodOpen &&
       <PaymentMethodModal onClose={this.closeMenu}
                           paymentMethodFilter={this.props.paymentMethodFilter}
-                          setPaymentMethodFilter={this.props.setPaymentMethodFilter}/>}
+                          setPaymentMethodFilter={this.props.setPaymentMethodFilter} offers={this.props.offers}/>}
 
       {this.state.currencyModalOpen &&
       <CurrencyModal onClose={this.closeMenu} changeCurrency={this.props.changeCurrency} offers={this.props.offers}
@@ -188,7 +185,7 @@ SorterFilter.propTypes = {
   t: PropTypes.func,
   paymentMethods: PropTypes.array,
   sortTypes: PropTypes.array,
-  tokens: PropTypes.array,
+  tokens: PropTypes.object,
   location: PropTypes.string,
   setLocation: PropTypes.func,
   setTokenFilter: PropTypes.func,

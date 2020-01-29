@@ -7,21 +7,44 @@ import RoundedIcon from "../../../../ui/RoundedIcon";
 import Separator from "../../../MyProfile/components/Separator";
 import PropTypes from "prop-types";
 import {withTranslation} from "react-i18next";
+import {sortByNbOffers} from "../../../../utils/sorters";
 
 class CurrencyModal extends Component {
   constructor(props) {
     super(props);
     this.currentValue = null;
     this.lastKeyIsArrow = false;
+    this.currencies = {};
+
+    this.calculateNbOffers();
+  }
+
+  calculateNbOffers() {
+    this.props.currencies.forEach(currency => {
+      currency.nbOffers = 0;
+      this.props.offers.forEach(offer => {
+        if (offer.currency === currency.id) {
+          currency.nbOffers++;
+        }
+      });
+      this.currencies[currency.id] = currency;
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.offers.length !== this.props.offers.length) {
+      this.calculateNbOffers();
+    }
   }
 
   render() {
-    const {t, onClose, selected, currencies, changeCurrency, offers} = this.props;
+    const {t, onClose, selected, currencies, changeCurrency} = this.props;
     const defaultSelectedValue = [];
     if (selected) {
       const currency = currencies.find(x => x.id === selected);
       defaultSelectedValue.push(currency);
     }
+
     return (
       <Modal isOpen={true} toggle={onClose} backdrop={true} className="filter-modal">
         <ClearButton t={t} onClear={() => changeCurrency('')} close={onClose}/>
@@ -42,7 +65,7 @@ class CurrencyModal extends Component {
                        }
                        this.lastKeyIsArrow = e.key === 'ArrowDown' || e.key === 'ArrowUp';
                      }}
-                     options={currencies}
+                     options={Object.values(this.currencies).sort(sortByNbOffers)}
                      labelKey="id"
                      placeholder={t("fiatSelectorForm.placeholder")}
                      onInputChange={(text) => {
@@ -53,14 +76,6 @@ class CurrencyModal extends Component {
                      defaultSelected={defaultSelectedValue}
                      renderMenuItemChildren={(option, _props, idx) => {
                        const currency = getOptionLabel(option, _props.labelKey);
-                       let nbOffersForCurrency = 0;
-
-                       offers.forEach(offer => {
-                         if (offer.currency === currency) {
-                           nbOffersForCurrency++;
-                         }
-                       });
-
                        return (<div className="mt-2">
                          <RoundedIcon bgColor="blue" text={option.symbol} className="d-inline-block mr-3" size="md"/>
                          <Highlighter search={_props.text}>
@@ -70,7 +85,7 @@ class CurrencyModal extends Component {
                         {option.label}
                      </span>
                          <span className="text-muted float-right mt-1">
-                       ({nbOffersForCurrency})
+                       ({this.currencies[currency].nbOffers})
                      </span>
                          {idx !== currencies.length - 1 && <Separator/>}
                        </div>);

@@ -163,7 +163,7 @@ class OffersList extends Component {
     // Sort
     let sortFunction;
     switch (this.state.sortType) {
-      case 1: sortFunction = sortByMargin(this.props.tokens.find(x => x.symbol === "SNT").address); break;
+      case 1: sortFunction = sortByMargin(Object.values(this.props.tokens).find(x => x.symbol === "SNT").address); break;
       default: sortFunction = sortByRating;
     }
     filteredOffers.sort(sortFunction);
@@ -216,7 +216,7 @@ OffersList.propTypes = {
   t: PropTypes.func,
   resetNewBuy: PropTypes.func,
   offers: PropTypes.array,
-  tokens: PropTypes.array,
+  tokens: PropTypes.object,
   prices: PropTypes.object,
   address: PropTypes.string,
   gasPrice: PropTypes.string,
@@ -230,7 +230,7 @@ const mapStateToProps = state => {
   return {
     address: network.selectors.getAddress(state) || '',
     offers: metadata.selectors.getOffersWithUser(state),
-    tokens: Object.values(network.selectors.getTokens(state)),
+    tokens: network.selectors.getTokensWithNbOffers(state),
     prices: prices.selectors.getPrices(state),
     gasPrice: network.selectors.getNetworkGasPrice(state),
     ethBalance: network.selectors.getBalance(state, 'ETH')

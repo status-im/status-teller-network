@@ -71,6 +71,12 @@ export const getOffersWithUser = (state) => {
   }));
 };
 
+export const geEnhancedOffers = (state) => {
+  return Object.values(state.metadata.offers).filter(x => !x.deleted && !addressCompare(x.arbitrator, zeroAddress)).map((offer) => ({
+    ...enhanceOffer(state, offer)
+  }));
+};
+
 export const getUsersWithOffers = (state) => {
   return Object.keys(state.metadata.users).map((address) => ({
     ...state.metadata.users[address],
