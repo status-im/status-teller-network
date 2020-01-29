@@ -51,6 +51,7 @@ class CurrencyModal extends Component {
         <ModalBody>
           <Typeahead className="mb-3 mt-5"
                      id="fiatSelector"
+                     clearButton
                      onChange={(items) => {
                        if (items.length) {
                          const item = items[0];

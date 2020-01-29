@@ -33,6 +33,7 @@ class FiatSelectorForm extends Component {
         <Typeahead className="mb-3"
                    id="fiatSelector"
                    onChange={this.onChange}
+                   clearButton
                    options={this.props.currencies}
                    placeholder={t("fiatSelectorForm.placeholder")}
                    onInputChange={this.onInputChange}

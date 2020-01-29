@@ -15,16 +15,12 @@ $filter-modal-padding: 16px;
     left: 10px;
   }
 
-  .arrow-down, .rbt-close {
+  .arrow-down {
     position: absolute;
     z-index: 900;
     padding: 25px;
     right: 0;
     top: 0;
-  }
-
-  .rbt-close {
-    padding: 13px;
   }
 
   .rbt-input-main {
