@@ -109,14 +109,14 @@ export function *onLoadLocation() {
 function countdown(_expiration) {
   return eventChannel(emitter => {
       const iv = setInterval(() => {
-        emitter(1)
+        emitter(1);
       }, 1000);
       // The subscriber must return an unsubscribe function
       return () => {
-        clearInterval(iv)
-      }
+        clearInterval(iv);
+      };
     }
-  )
+  );
 }
 
 export function *verifyAccountChange() {
@@ -129,7 +129,7 @@ export function *verifyAccountChange() {
         currAddress = yield select((state) => state.network.address);
       }
       const accounts = yield web3.eth.getAccounts();
-      if (currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))) {
+      if (currAddress && (!accounts.length || !addressCompare(web3.eth.defaultAccount, currAddress))) {
         yield put(network.actions.clearCache(
           setTimeout(() => {
             window.location.reload();
