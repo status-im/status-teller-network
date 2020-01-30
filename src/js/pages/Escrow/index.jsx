@@ -76,6 +76,7 @@ class Escrow extends Component {
     this.props.updateBalances();
     this.props.getLastActivity(this.props.address);
     this.props.getFeeMilliPercent();
+    this.props.getFallbackArbitrator();
 
     if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset);
   }
@@ -147,7 +148,7 @@ class Escrow extends Component {
   };
 
   render() {
-    let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
+    let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fallbackArbitrator,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus, arbitratorScore,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash, isEip1102Enabled, enableEthereum } = this.props;
 
@@ -323,6 +324,7 @@ class Escrow extends Component {
       </div>
 
       <EscrowDetail escrow={escrow}
+                    fallbackArbitrator={fallbackArbitrator}
                     arbitratorScore={arbitratorScore}
                     arbitrationDetails={arbitrationDetails}
                     isBuyer={isBuyer}
@@ -421,7 +423,9 @@ Escrow.propTypes = {
   isStatus: PropTypes.bool,
   isEip1102Enabled: PropTypes.bool,
   enableEthereum: PropTypes.func,
-  arbitratorScore: PropTypes.number
+  arbitratorScore: PropTypes.number,
+  fallbackArbitrator: PropTypes.string,
+  getFallbackArbitrator: PropTypes.func
 };
 
 const mapStateToProps = (state, props) => {
@@ -458,7 +462,8 @@ const mapStateToProps = (state, props) => {
     gasPrice: network.selectors.getNetworkGasPrice(state),
     feeMilliPercent: escrowF.selectors.feeMilliPercent(state),
     ethBalance: network.selectors.getBalance(state, 'ETH'),
-    isSubscribed: emailNotifications.selectors.isSubscribed(state)
+    isSubscribed: emailNotifications.selectors.isSubscribed(state),
+    fallbackArbitrator: arbitrationF.selectors.fallbackArbitrator(state)
   };
 };
 
@@ -484,6 +489,7 @@ export default connect(
     getLastActivity: escrowF.actions.getLastActivity,
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
     setRedirectTarget: emailNotifications.actions.setRedirectTarget,
-    enableEthereum: metadata.actions.enableEthereum
+    enableEthereum: metadata.actions.enableEthereum,
+    getFallbackArbitrator: arbitrationF.actions.getFallbackArbitrator
   }
 )(withRouter(withTranslation()(Escrow)));

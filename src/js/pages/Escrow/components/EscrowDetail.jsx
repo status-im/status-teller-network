@@ -10,13 +10,15 @@ import PriceWarning from '../../../components/PriceWarning';
 import Address from '../../../components/UserInformation/Address';
 import {withTranslation} from "react-i18next";
 import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
+import { addressCompare } from '../../../utils/address';
 
-const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat, isStatus, arbitratorScore}) => {
+const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, fallbackArbitrator, onClickChat, isStatus, arbitratorScore}) => {
   if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
 
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
   const otherUserInfo = isBuyer ?  escrow.seller : escrow.buyerInfo;
   const otherUserContactObj = stringToContact(otherUserInfo.contactData);
+  const isFallbackArbitrator = addressCompare(fallbackArbitrator, arbitrationDetails.arbitrator);
 
   return <div className="escrowDetails">
       <h2 className="mt-5">{t('escrow.detail.title')}</h2>
@@ -80,24 +82,24 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
       </Row>
     </Fragment>
 
-    {escrow.arbitratorInfo && <Fragment>
+    {(escrow.arbitratorInfo || isFallbackArbitrator) && <Fragment>
       <h3 className="font-weight-normal">{t('general.arbitrator')}</h3>
       <Row noGutters>
         <Col xs={9}>
           <div className="mt-2 font-weight-medium">
-            <Identicon seed={escrow.arbitrator} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
-            {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator, arbitratorScore)}
-            {arbitrationDetails.open && renderContactData(escrow.arbitratorInfo.contactData, 'mb-0') }
-            {!arbitrationDetails.open && <p className="text-muted text-small m-0">{t('general.contactMethod')}: {stringToContact(escrow.arbitratorInfo.contactData).method}</p> }
+            <Identicon seed={isFallbackArbitrator ? fallbackArbitrator: escrow.arbitrator} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
+            {isFallbackArbitrator ? 'Fallback Arbitrator' : formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator, arbitratorScore)}
+            {arbitrationDetails.open && !isFallbackArbitrator && renderContactData(escrow.arbitratorInfo.contactData, 'mb-0') }
+            {!arbitrationDetails.open && !isFallbackArbitrator && <p className="text-muted text-small m-0">{t('general.contactMethod')}: {stringToContact(escrow.arbitratorInfo.contactData).method}</p> }
             <p className="text-muted text-small addr m-0">
-              {t('general.address')}: <Address disableHover address={escrow.arbitrator} length={6}/>
+              {t('general.address')}: <Address disableHover address={isFallbackArbitrator ? fallbackArbitrator: escrow.arbitrator} length={6}/>
             </p>
           </div>
         </Col>
         <Col xs={3}>
-          <Button color={arbitrationDetails.open ? 'primary': 'secondary'} disabled={!arbitrationDetails.open} size="sm" onClick={onClickChat('arbitrator')}>
+          {!isFallbackArbitrator && <Button color={arbitrationDetails.open ? 'primary': 'secondary'} disabled={!arbitrationDetails.open} size="sm" onClick={onClickChat('arbitrator')}>
             {t('escrow.openChat.chat')}
-          </Button>
+          </Button>}
         </Col>
       </Row>
     </Fragment>}
@@ -126,6 +128,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
 
 EscrowDetail.propTypes = {
   t: PropTypes.func,
+  fallbackArbitrator: PropTypes.string,
   arbitrationDetails: PropTypes.object,
   escrow: PropTypes.object,
   currentPrice: PropTypes.object,
