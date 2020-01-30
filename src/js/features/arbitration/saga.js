@@ -1,11 +1,11 @@
-/* global web3 */
+/* global web3, subspace */
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
-import {eventChannel} from "redux-saga";
+import {eventChannel, channel} from "redux-saga";
 import {fork, takeEvery, call, put, take, all} from 'redux-saga/effects';
 import {addressCompare} from '../../utils/address';
 import {
@@ -25,7 +25,7 @@ import {
   REJECT_ARBITRATOR_REQUEST, REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS, REJECT_ARBITRATOR_REQUEST_SUCCEEDED, REJECT_ARBITRATOR_REQUEST_FAILED,
   BLACKLIST_SELLER, BLACKLIST_SELLER_PRE_SUCCESS, BLACKLIST_SELLER_FAILED, BLACKLIST_SELLER_SUCCEEDED,
   UNBLACKLIST_SELLER, UNBLACKLIST_SELLER_FAILED, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED,
-  GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED
+  GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED, LOAD_ARBITRATOR_SCORES, RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE
 } from './constants';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
@@ -45,6 +45,21 @@ export function *onOpenDispute() {
 
 export function *onCancelDispute() {
   yield takeEvery(CANCEL_DISPUTE, doTransaction.bind(null, CANCEL_DISPUTE_PRE_SUCCESS, CANCEL_DISPUTE_SUCCEEDED, CANCEL_DISPUTE_FAILED));
+}
+
+export function *doLoadArbitratorScores() {
+  yield put({type: RESET_ARBITRATOR_SCORES});
+
+  const TrackableEscrow = subspace.contract(Escrow);
+  const myArbitration$ = yield TrackableEscrow.events.ArbitrationResolved.track();
+ 
+  const arbChannel = channel();
+  myArbitration$.subscribe(x => arbChannel.put(x.arbitrator));
+
+  while (true) {
+    const arbitrator = yield take(arbChannel);
+    yield put({type: ADD_ARBITRATOR_SCORE, arbitrator});
+  }
 }
 
 export function *doGetArbitrators({address, includeAll}) {
@@ -282,6 +297,10 @@ export function *onUnBlacklistSeller() {
   yield takeEvery(UNBLACKLIST_SELLER, doTransaction.bind(null, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_FAILED));
 }
 
+export function *onLoadArbitratorScores(){
+  yield takeEvery(LOAD_ARBITRATOR_SCORES, doLoadArbitratorScores);
+}
+
 export default [
   fork(onGetEscrows),
   fork(onResolveDispute),
@@ -299,5 +318,6 @@ export default [
   fork(onAcceptRequest),
   fork(onBlacklistSeller),
   fork(onUnBlacklistSeller),
-  fork(onRejectRequest)
+  fork(onRejectRequest),
+  fork(onLoadArbitratorScores)
 ];

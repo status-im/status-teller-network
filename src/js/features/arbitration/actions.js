@@ -18,6 +18,7 @@ import {
   ACCEPT_ARBITRATOR_REQUEST,
   REJECT_ARBITRATOR_REQUEST,
   BLACKLIST_SELLER,
+  LOAD_ARBITRATOR_SCORES,
   UNBLACKLIST_SELLER,
   GET_BLACKLISTED_SELLERS
 } from './constants';
@@ -81,3 +82,5 @@ export const getBlacklistedSellers = () => ({type: GET_BLACKLISTED_SELLERS});
 export const blacklistSeller = (sellerAddress) => ({type: BLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicense.methods.blacklistSeller(sellerAddress)});
 
 export const unBlacklistSeller = (sellerAddress) => ({type: UNBLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicense.methods.unBlacklistSeller(sellerAddress)});
+
+export const loadArbitratorScores = () => ({type: LOAD_ARBITRATOR_SCORES});
