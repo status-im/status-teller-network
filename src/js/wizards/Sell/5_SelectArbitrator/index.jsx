@@ -75,6 +75,7 @@ class SelectArbitrator extends Component {
     return (
       <Fragment>
         <ArbitratorSelectorForm
+          getArbitratorScore={this.props.getArbitratorScore}
           value={this.state.selectedArbitrator}
           arbitrators={Object.keys(this.props.arbitrators).filter(x => !addressCompare(x, this.props.address))}
           changeArbitrator={this.changeArbitrator} users={this.props.users}
@@ -96,7 +97,8 @@ SelectArbitrator.propTypes = {
   getUser: PropTypes.func,
   profile: PropTypes.object,
   setContactInfo: PropTypes.func,
-  setLocation: PropTypes.func
+  setLocation: PropTypes.func,
+  getArbitratorScore: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -104,8 +106,8 @@ const mapStateToProps = state => ({
   seller: newSeller.selectors.getNewSeller(state),
   arbitrators: arbitration.selectors.arbitrators(state),
   users: metadata.selectors.getAllUsers(state),
-  profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount)
-
+  profile: metadata.selectors.getProfile(state, web3.eth.defaultAccount),
+  getArbitratorScore: arbitration.selectors.arbitratorScore(state)
 });
 
 export default connect(

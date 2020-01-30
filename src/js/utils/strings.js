@@ -3,9 +3,9 @@ import {STATUS} from "../constants/contactMethods";
 import Address from "../components/UserInformation/Address";
 import React, {Fragment} from "react";
 
-export const formatArbitratorName = (user, address, noUsernameLabel, index) => {
+export const formatArbitratorName = (user, address, score, noUsernameLabel, index) => {
   if (!user) return `${index >= 0 ? index + 1 + ' - ' : ""}` + address + ' - Loading...';
-  return `${index >= 0 ? index + 1 + ' - ' : ""}${user.username || (noUsernameLabel ? noUsernameLabel : "No username available")} (${compactAddress(address, 3)})  ${user.location ? ' from ' + user.location : ''} - ${user.upCount || 0}↑  ${user.downCount || 0}↓`;
+  return `${index >= 0 ? index + 1 + ' - ' : ""}${user.username || (noUsernameLabel ? noUsernameLabel : "No username available")} (${compactAddress(address, 3)})  ${user.location ? ' from ' + user.location : ''} - ${score || 0} disputes resolved`;
 };
 
 export const stringToContact = (contactData) => {

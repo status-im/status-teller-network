@@ -42,7 +42,7 @@ class Arbitrators extends Component {
   };
 
   render(){
-    const {t, arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions} = this.props;
+    const {t, arbitrators, users, loading, error, txHash, address, cancelArbitratorsActions, getArbitratorScore} = this.props;
     if(error) {
       return <ErrorInformation transaction message={error} cancel={cancelArbitratorsActions}/>;
     }
@@ -69,7 +69,7 @@ class Arbitrators extends Component {
           const enableDate = parseInt(arbitrators[arb].request.date, 10) + (86400 * 3) + 20;
           const isDisabled = (Date.now() / 1000) < enableDate;
 
-          const text = formatArbitratorName(users[arb], arb) + (isUser ? ` (${t('general.you')})` : "");
+          const text = formatArbitratorName(users[arb], arb, getArbitratorScore(arb)) + (isUser ? ` (${t('general.you')})` : "");
 
           return <ListGroupItem key={i}>
             <Row>
@@ -114,7 +114,8 @@ Arbitrators.propTypes = {
   getUser: PropTypes.func,
   requestArbitrator: PropTypes.func,
   cancelArbitratorsActions: PropTypes.func,
-  cancelArbitratorRequest: PropTypes.func
+  cancelArbitratorRequest: PropTypes.func,
+  getArbitratorScore: PropTypes.func
 };
 
 
@@ -126,7 +127,8 @@ const mapStateToProps = state => {
     users: metadata.selectors.getAllUsers(state),
     loading: arbitration.selectors.isLoading(state),
     error: arbitration.selectors.errorGet(state),
-    txHash: arbitration.selectors.txHash(state)
+    txHash: arbitration.selectors.txHash(state),
+    getArbitratorScore: arbitration.selectors.arbitratorScore(state)
   };
 };
 

@@ -58,8 +58,8 @@ contract USDStakable is Stakable {
 
         uint amountToStake = oneUsdEth * (stakeCnt * stakeCnt) / 17; // y = basePrice * x^2/17
 
-        if (amountToStake < basePrice) {
-            return basePrice;
+        if (amountToStake < oneUsdEth) {
+            return oneUsdEth;
         }
 
         return amountToStake;

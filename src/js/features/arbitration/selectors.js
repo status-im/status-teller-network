@@ -1,5 +1,5 @@
 import { fromTokenDecimals } from '../../utils/numbers';
-import {addressCompare} from '../../utils/address';
+import {addressCompare, toChecksumAddress} from '../../utils/address';
 
 export const receipt = state => state.arbitration.receipt;
 export const error = state => state.arbitration.error;
@@ -8,6 +8,7 @@ export const errorGet = state => state.arbitration.errorGet;
 export const loading = state => state.arbitration.loading;
 export const txHash = state => state.arbitration.txHash;
 export const arbitrators = state => state.arbitration.arbitrators;
+export const arbitratorScore = state => arbitrator => state.arbitration.arbitratorScores[toChecksumAddress(arbitrator)];
 
 export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;
@@ -33,3 +34,4 @@ export const getArbitratorRequests = state => state.arbitration.arbitratorReques
 export const getBlacklistedSellers = state => state.arbitration.blacklistedSellers;
 
 export const actionNeeded = state => state.arbitration.actionNeeded;
+

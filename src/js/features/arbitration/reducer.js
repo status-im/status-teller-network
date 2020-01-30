@@ -56,7 +56,8 @@ import {
   REJECTED,
   ACCEPTED,
   GET_BLACKLISTED_SELLERS_SUCCEEDED, GET_BLACKLISTED_SELLERS_FAILED,
-  BLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_SUCCEEDED
+  BLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_SUCCEEDED,
+  RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
@@ -69,7 +70,8 @@ const DEFAULT_STATE = {
   loading: false,
   error: '',
   arbitratorRequests: [],
-  blacklistedSellers: []
+  blacklistedSellers: [],
+  arbitratorScores: {}
 };
 
 function isActionNeeded(escrows) {
@@ -322,6 +324,22 @@ function reducer(state = DEFAULT_STATE, action) {
         };
 
       }
+    case RESET_ARBITRATOR_SCORES: {
+      return {
+        ...state,
+        arbitratorScores: {}
+      };
+    }
+    case ADD_ARBITRATOR_SCORE: {
+      const arbitrator = toChecksumAddress(action.arbitrator);
+      return {
+        ...state,
+        arbitratorScores: {
+          ...state.arbitratorScores,
+          [arbitrator]: (state.arbitratorScores[arbitrator] || 0) + 1
+        }
+      };
+    }
     case RESET_STATE: {
       return Object.assign({}, state, {
         arbitration: null,

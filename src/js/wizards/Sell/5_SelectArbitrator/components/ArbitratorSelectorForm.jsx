@@ -25,8 +25,8 @@ class ArbitratorSelectorForm extends Component {
 
       if(!user || !user.username) return null;
 
-      let text = formatArbitratorName(user, arbitratorAddr, compactAddress(arbitratorAddr, 3), index);
-
+      let text = formatArbitratorName(user, arbitratorAddr, this.props.getArbitratorScore(arbitratorAddr), compactAddress(arbitratorAddr, 3), index);
+      
       if (value && value === arbitratorAddr) {
         defaultSelectedValue.push(text);
       }
@@ -67,7 +67,8 @@ ArbitratorSelectorForm.propTypes = {
   value: PropTypes.string,
   arbitrators: PropTypes.array,
   users: PropTypes.object,
-  changeArbitrator: PropTypes.func
+  changeArbitrator: PropTypes.func,
+  getArbitratorScore: PropTypes.func
 };
 
 export default withTranslation()(ArbitratorSelectorForm);

@@ -3,6 +3,7 @@ import EmbarkJS from '../../embarkArtifacts/embarkjs';
 import {contactCodeRegExp} from '../utils/address';
 import TellerProvider from '../provider';
 import tabookey from 'tabookey-gasless';
+import Subspace from '@embarklabs/subspace';
 
 export function onReady() {
   return new Promise((resolve, reject) => {
@@ -15,7 +16,8 @@ export function onReady() {
       const customProvider = new TellerProvider(relayProvider);
       customProvider.startProvider(web3);
 
-      resolve();
+      global.subspace = new Subspace(web3.currentProvider);
+      global.subspace.init().then(resolve); 
     });
   });
 }
