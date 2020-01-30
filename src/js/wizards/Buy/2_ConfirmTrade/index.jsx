@@ -3,6 +3,7 @@ import {withRouter} from "react-router-dom";
 import PropTypes from 'prop-types';
 import newBuy from "../../../features/newBuy";
 import network from "../../../features/network";
+import arbitration from "../../../features/arbitration";
 import {connect} from "react-redux";
 import metadata from "../../../features/metadata";
 import {States} from "../../../utils/transaction";
@@ -112,7 +113,7 @@ class ConfirmTrade extends Component {
           <h3 className="mt-4 font-weight-normal">Arbitrator</h3>
           <div className="mt-2 font-weight-medium mb-1">
             <Identicon seed={this.props.offer.arbitrator} className="rounded-circle border mr-2 mb-4 float-left" scale={5}/>
-            <p className="font-weight-medium mb-0 name">{formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator)}</p>
+            <p className="font-weight-medium mb-0 name">{formatArbitratorName(this.props.offer.arbitratorData, this.props.offer.arbitrator, this.props.arbitratorScore)}</p>
             {renderContactDetails(t, this.props.offer.arbitratorData.contactData, this.props.offer.arbitrator, 'mb-0')}
           </div>
 
@@ -167,12 +168,15 @@ ConfirmTrade.propTypes = {
     PropTypes.string,
     PropTypes.number
   ]),
-  offer: PropTypes.object
+  offer: PropTypes.object,
+  arbitratorScore: PropTypes.number
 };
 
 const mapStateToProps = state => {
   const offerId = newBuy.selectors.offerId(state);
   const address = network.selectors.getAddress(state);
+  const offer = metadata.selectors.getOfferById(state, offerId);
+  const arbitratorScore =  arbitration.selectors.arbitratorScore(state)(offer.arbitrator);
 
   return {
     txHash: escrow.selectors.txHash(state),
@@ -183,7 +187,8 @@ const mapStateToProps = state => {
     ensError: network.selectors.getENSError(state),
     createEscrowStatus: escrow.selectors.getCreateEscrowStatus(state),
     price: newBuy.selectors.price(state),
-    offer: metadata.selectors.getOfferById(state, offerId),
+    offer,
+    arbitratorScore,
     assetQuantity: newBuy.selectors.assetQuantity(state),
     currencyQuantity: newBuy.selectors.currencyQuantity(state),
     profile: metadata.selectors.getProfile(state, address),

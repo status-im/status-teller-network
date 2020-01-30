@@ -4,6 +4,7 @@ import {connect} from "react-redux";
 import {withRouter} from "react-router-dom";
 import { checkNotEnoughETH } from '../../../utils/transaction';
 import newBuy from "../../../features/newBuy";
+import arbitration from "../../../features/arbitration";
 import escrow from '../../../features/escrow';
 import prices from '../../../features/prices';
 import metadata from '../../../features/metadata';
@@ -165,6 +166,7 @@ class Trade extends Component {
                   sellerAddress={this.props.offer.owner}
                   arbitrator={this.props.offer.arbitratorData}
                   arbitratorAddress={this.props.offer.arbitrator}
+                  arbitratorScore={this.props.arbitratorScore}
                   minToken={minToken}
                   maxToken={maxToken}
                   margin={this.props.offer.margin}
@@ -222,7 +224,8 @@ Trade.propTypes = {
   updateBalances: PropTypes.func,
   tokens: PropTypes.object,
   isEip1102Enabled: PropTypes.bool,
-  enableEthereum: PropTypes.func
+  enableEthereum: PropTypes.func,
+  arbitratorScore: PropTypes.number
 };
 
 const mapStateToProps = (state) => {
@@ -232,7 +235,7 @@ const mapStateToProps = (state) => {
   }
   const offer = metadata.selectors.getOfferById(state, offerId);
   const priceData = prices.selectors.getPrices(state);
-
+  const arbitratorScore =  arbitration.selectors.arbitratorScore(state)(offer.arbitrator);
   const price =  priceData && priceData[offer.token.symbol] ? priceData[offer.token.symbol][offer.currency] : null;
 
   return {
@@ -249,7 +252,8 @@ const mapStateToProps = (state) => {
     tokens: network.selectors.getTokens(state),
     offer,
     offerId,
-    price
+    price,
+    arbitratorScore
   };
 };
 

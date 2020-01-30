@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import React, {Fragment} from 'react';
 import {Row, Col, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
@@ -10,7 +11,7 @@ import Address from '../../../components/UserInformation/Address';
 import {withTranslation} from "react-i18next";
 import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
 
-const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat, isStatus}) => {
+const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onClickChat, isStatus, arbitratorScore}) => {
   if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
 
   const escrowAssetPrice = (escrow.fiatAmount / 100) / escrow.tokenAmount;
@@ -85,7 +86,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
         <Col xs={9}>
           <div className="mt-2 font-weight-medium">
             <Identicon seed={escrow.arbitrator} className="rounded-circle border mr-2 float-left mb-5" scale={5}/>
-            {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator)}
+            {formatArbitratorName(escrow.arbitratorInfo, escrow.arbitrator, arbitratorScore)}
             {arbitrationDetails.open && renderContactData(escrow.arbitratorInfo.contactData, 'mb-0') }
             {!arbitrationDetails.open && <p className="text-muted text-small m-0">{t('general.contactMethod')}: {stringToContact(escrow.arbitratorInfo.contactData).method}</p> }
             <p className="text-muted text-small addr m-0">
@@ -130,7 +131,8 @@ EscrowDetail.propTypes = {
   currentPrice: PropTypes.object,
   isBuyer: PropTypes.bool,
   isStatus: PropTypes.bool,
-  onClickChat: PropTypes.func
+  onClickChat: PropTypes.func,
+  arbitratorScore: PropTypes.number
 };
 
 export default withTranslation()(EscrowDetail);

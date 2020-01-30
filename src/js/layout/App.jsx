@@ -60,6 +60,7 @@ import prices from '../features/prices';
 import network from '../features/network';
 import metadata from '../features/metadata';
 import escrow from '../features/escrow';
+import arbitration from '../features/arbitration';
 import {withTranslation} from "react-i18next";
 
 const PRICE_FETCH_INTERVAL = 61000;
@@ -97,6 +98,7 @@ class App extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.isReady && this.props.isReady) {
       this.props.loadOffers();
+      this.props.loadArbitratorScores();
     }
     if (!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) {
       this.props.checkAccountChange();
@@ -256,7 +258,8 @@ App.propTypes = {
   isEip1102Enabled: PropTypes.bool,
   checkAccountChange: PropTypes.func,
   network: PropTypes.object,
-  environment: PropTypes.string
+  environment: PropTypes.string,
+  loadArbitratorScores: PropTypes.func
 };
 
 const mapStateToProps = (state) => {
@@ -288,6 +291,7 @@ export default connect(
     setCurrentUser: metadata.actions.setCurrentUser,
     watchEscrowCreations: escrow.actions.watchEscrowCreations,
     loadOffers: metadata.actions.loadOffers,
-    clearCache: network.actions.clearCache
+    clearCache: network.actions.clearCache,
+    loadArbitratorScores: arbitration.actions.loadArbitratorScores
   }
 )(withTranslation()(App));

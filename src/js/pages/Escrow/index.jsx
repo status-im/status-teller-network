@@ -148,7 +148,7 @@ class Escrow extends Component {
 
   render() {
     let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
-      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus,
+      cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus, arbitratorScore,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash, isEip1102Enabled, enableEthereum } = this.props;
 
       if (!isEip1102Enabled || !address) {
@@ -323,6 +323,7 @@ class Escrow extends Component {
       </div>
 
       <EscrowDetail escrow={escrow}
+                    arbitratorScore={arbitratorScore}
                     arbitrationDetails={arbitrationDetails}
                     isBuyer={isBuyer}
                     onClickChat={this.displayDialog}
@@ -419,7 +420,8 @@ Escrow.propTypes = {
   setRedirectTarget: PropTypes.func,
   isStatus: PropTypes.bool,
   isEip1102Enabled: PropTypes.bool,
-  enableEthereum: PropTypes.func
+  enableEthereum: PropTypes.func,
+  arbitratorScore: PropTypes.number
 };
 
 const mapStateToProps = (state, props) => {
@@ -428,12 +430,15 @@ const mapStateToProps = (state, props) => {
   const escrowId = props.match.params.id.toString();
   const theEscrow = escrowF.selectors.getEscrowById(state, escrowId);
   const address =  network.selectors.getAddress(state) || "";
+  const arbitration = arbitrationF.selectors.getArbitration(state) || {};
+
   return {
     address,
     isStatus: network.selectors.isStatus(state),
     escrowId:  escrowId,
     escrow: theEscrow,
-    arbitration: arbitrationF.selectors.getArbitration(state) || {},
+    arbitration,
+    arbitratorScore: arbitration ? arbitrationF.selectors.arbitratorScore(state)(arbitration.arbitrator) : 0,
     arbitrationTxHash: arbitrationF.selectors.txHash(state),
     sntAllowance: approval.selectors.getSNTAllowance(state),
     tokenAllowance: approval.selectors.getTokenAllowance(state),

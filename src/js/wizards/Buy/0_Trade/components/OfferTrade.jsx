@@ -52,7 +52,7 @@ class OfferTrade extends Component {
 // eslint-disable-next-line complexity
   render() {
     const {
-      seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress,
+      seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress, arbitratorScore,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
       limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address, margin, currentPrice
     } = this.props;
@@ -87,7 +87,7 @@ class OfferTrade extends Component {
           <div className="mt-2 font-weight-medium mb-1 overflow-hidden">
             <Link to={`/profile/${arbitratorAddress}`} className="row d-flex flex-wrap align-items-center m-0 text-black">
               <Identicon seed={arbitratorAddress} className="rounded-circle border mr-2 float-left" scale={5}/>
-              {formatArbitratorName(arbitrator, arbitratorAddress)}
+              {formatArbitratorName(arbitrator, arbitratorAddress, arbitratorScore)}
             </Link>
             {arbitrator && renderContactDetails(t, arbitrator.contactData, arbitratorAddress, 'mb-0 arbitrator-info')}
           </div>
@@ -242,6 +242,7 @@ OfferTrade.propTypes = {
   sellerAddress: PropTypes.string,
   sellerContactData: PropTypes.string,
   arbitratorAddress: PropTypes.string,
+  arbitratorScore: PropTypes.number,
   arbitratorContactData: PropTypes.string,
   tokens: PropTypes.object
 };
