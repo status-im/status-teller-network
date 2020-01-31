@@ -112,9 +112,9 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
                   'text-danger': noArbitrator
                 })}>
       <p className="m-0 border-top pt-2">
-        Buy <span className="text-black"><img
+        {t('general.buy')} <span className="text-black"><img
         src={getTokenImage(offer.token.symbol)}
-        alt={offer.token.symbol + ' icon'}/> {offer.token.symbol}</span> at <span
+        alt={offer.token.symbol + ' icon'}/> 1 {offer.token.symbol}</span> {t('trades.at')} <span
         className="font-weight-bold text-black">{formatFiatPrice(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
       </p>
     </CardFooter>}
