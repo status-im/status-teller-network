@@ -204,16 +204,16 @@ class Arbitration extends Component {
   }
 
   render() {
-    const {t, escrow, address, loading, buyerInfo, sellerInfo, isStatus} = this.props;
+    const {t, escrow, address, loading, isFallbackDispute, buyerInfo, sellerInfo, isStatus} = this.props;
 
     if (!escrow || !buyerInfo || !sellerInfo) {
       return <Loading/>;
     }
 
-    if (addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address)) {
+    if (!isFallbackDispute && (addressCompare(escrow.buyer, address) || addressCompare(escrow.seller, address))) {
       return <ErrorInformation message={t('arbitration.ownDispute')}/>;
     }
-    if (!addressCompare(escrow.arbitrator, address)) {
+    if (!isFallbackDispute && !addressCompare(escrow.arbitrator, address)) {
       return <ErrorInformation message={t('arbitration.notYours')}/>;
     }
 
@@ -247,9 +247,11 @@ class Arbitration extends Component {
         <EscrowDetail escrow={escrow}/>
 
         <h3 className="mt-4">{t('arbitration.participants')}</h3>
-        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true}
+        <TradeParticipant address={escrow.buyer} profile={buyerInfo} isBuyer={true} multisigInfo={isFallbackDispute}
+                          escrowId={escrow.escrowId}
                           winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_BUYER}/>
-        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false}
+        <TradeParticipant address={escrow.seller} profile={sellerInfo} isBuyer={false} multisigInfo={isFallbackDispute}
+                          escrowId={escrow.escrowId}
                           winner={escrow.arbitration.result.toString() === ARBITRATION_SOLVED_SELLER}/>
 
         {this.renderContactDialog()}
@@ -257,7 +259,7 @@ class Arbitration extends Component {
         <ContactUser userInfo={buyerInfo} isBuyer={true} isStatus={isStatus} onClick={this.displayContactDialog('buyer')} />
         <ContactUser userInfo={sellerInfo} isBuyer={false} isStatus={isStatus} onClick={this.displayContactDialog('seller')} />
 
-        {(escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
+        {!isFallbackDispute && (escrow.arbitration.open || escrow.arbitration.result.toString() === "0") && (
           <Fragment>
             <Row className="mt-4">
               <Col xs={3} />
@@ -294,7 +296,8 @@ Arbitration.propTypes = {
   getProfile: PropTypes.func,
   resolveDispute: PropTypes.func,
   loading: PropTypes.bool,
-  isStatus: PropTypes.bool
+  isStatus: PropTypes.bool,
+  isFallbackDispute: PropTypes.bool
 };
 
 
@@ -307,7 +310,8 @@ const mapStateToProps = (state, props) => {
     escrow: escrow,
     sellerInfo: escrow ? metadata.selectors.getProfile(state, escrow.seller) : null,
     buyerInfo: escrow ? metadata.selectors.getProfile(state, escrow.buyer) : null,
-    loading: arbitration.selectors.isLoading(state)
+    loading: arbitration.selectors.isLoading(state),
+    isFallbackDispute:  !!props.match.params.isFallbackDispute
   };
 };
 

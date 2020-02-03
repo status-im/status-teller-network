@@ -20,7 +20,7 @@ class Dispute extends Component {
   }
 
   render() {
-    const {dispute, buyerInfo, sellerInfo, enabled} = this.props;
+    const {dispute, buyerInfo, sellerInfo, enabled, isFallbackDispute} = this.props;
 
     if (!buyerInfo || !sellerInfo) {
       return <Loading />;
@@ -29,7 +29,7 @@ class Dispute extends Component {
     return (<Card body className={classnames("py-2", "px-3", "mb-3", "shadow-sm", "border-0", {'card-transparent': !enabled})}>
         <div className="d-flex my-1">
             <span className="flex-fill align-self-center">
-              <Link to={"/arbitration/" + dispute.escrowId}>
+              <Link to={"/arbitration/" + dispute.escrowId + (isFallbackDispute ? '/fallback' : '') }>
                  <Identicon seed={dispute.buyer} scale={5} className="align-middle rounded-circle topCircle border"/>
                  <Identicon seed={dispute.seller} scale={5} className="align-middle rounded-circle bottomCircle border"/>
                 <span className="ml-2">{buyerInfo.username} & {sellerInfo.username}</span>
@@ -49,7 +49,8 @@ Dispute.propTypes = {
   sellerInfo: PropTypes.object,
   buyerInfo: PropTypes.object,
   loadProfile: PropTypes.func,
-  enabled: PropTypes.bool
+  enabled: PropTypes.bool,
+  isFallbackDispute: PropTypes.string
 };
 
 const mapStateToProps = (state, props) => {

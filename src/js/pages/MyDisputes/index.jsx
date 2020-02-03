@@ -37,7 +37,7 @@ class MyDisputes extends Component {
 
 
   render() {
-    const {profile, address} = this.props;
+    const {profile, address, includeFallbackDisputes} = this.props;
     if (!profile) return <Loading page={true}/>;
 
     if (!profile.isArbitrator) {
@@ -46,8 +46,8 @@ class MyDisputes extends Component {
 
     return (
       <Fragment>
-        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} />
-        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} />
+        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
       </Fragment>
     );
   }
@@ -59,15 +59,17 @@ MyDisputes.propTypes = {
   profile: PropTypes.object,
   disputes: PropTypes.array,
   loadProfile: PropTypes.func,
-  getDisputedEscrows: PropTypes.func
+  getDisputedEscrows: PropTypes.func,
+  includeFallbackDisputes: PropTypes.bool
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   const address = network.selectors.getAddress(state) || '';
   const profile = metadata.selectors.getProfile(state, address) || NULL_PROFILE;
   return {
     address,
     profile,
+    includeFallbackDisputes:  !!props.match.params.includeFallbackDisputes,
     disputes: arbitration.selectors.escrows(state)
   };
 };
