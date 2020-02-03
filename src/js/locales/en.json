@@ -263,7 +263,7 @@
     "find": "Find offer",
     "noActiveTrades": "No active trades at the moment",
     "noPastTrades": "No past trades",
-    "noFilteredTrades": "No trades with that filter",
+    "noTrades": "No trades",
     "mining": "Mining",
     "actionNeeded": "Action needed",
     "at": "at",

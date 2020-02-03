@@ -137,7 +137,7 @@ class Trades extends Component {
             if (trades.every(trade => trade === null)) {
               return (
                 <Row className="my-1 border-bottom shadow-sm p-2 mb-3">
-                  <Col className="align-self-center pt-3 pb-3 text-center text-muted">{t('trades.noFilteredTrades')}</Col>
+                  <Col className="align-self-center pt-3 pb-3 text-center text-muted">{t('trades.noTrades')}</Col>
                 </Row>
               );
             }
