@@ -9,6 +9,7 @@ export const loading = state => state.arbitration.loading;
 export const txHash = state => state.arbitration.txHash;
 export const arbitrators = state => state.arbitration.arbitrators;
 export const arbitratorScore = state => arbitrator => state.arbitration.arbitratorScores[toChecksumAddress(arbitrator)];
+export const fallbackArbitrator = state => state.arbitration.fallbackArbitrator;
 
 export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;
@@ -34,4 +35,3 @@ export const getArbitratorRequests = state => state.arbitration.arbitratorReques
 export const getBlacklistedSellers = state => state.arbitration.blacklistedSellers;
 
 export const actionNeeded = state => state.arbitration.actionNeeded;
-

@@ -25,6 +25,7 @@ import {
   REJECT_ARBITRATOR_REQUEST, REJECT_ARBITRATOR_REQUEST_PRE_SUCCESS, REJECT_ARBITRATOR_REQUEST_SUCCEEDED, REJECT_ARBITRATOR_REQUEST_FAILED,
   BLACKLIST_SELLER, BLACKLIST_SELLER_PRE_SUCCESS, BLACKLIST_SELLER_FAILED, BLACKLIST_SELLER_SUCCEEDED,
   UNBLACKLIST_SELLER, UNBLACKLIST_SELLER_FAILED, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED,
+  GET_FALLBACK_ARBITRATOR, GET_FALLBACK_ARBITRATOR_FAILED, GET_FALLBACK_ARBITRATOR_SUCCEEDED,
   GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED, LOAD_ARBITRATOR_SCORES, RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE
 } from './constants';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
@@ -199,6 +200,22 @@ export function *doGetArbitratorBlacklist() {
   }
 }
 
+export function *onGetFallbackArbitrator() {
+  yield takeEvery(GET_FALLBACK_ARBITRATOR, doGetFallbackArbitrator);
+}
+
+export function *doGetFallbackArbitrator() {
+  try {
+    const fallbackArbitrator = yield call(Escrow.methods.fallbackArbitrator().call);
+    yield put({type: GET_FALLBACK_ARBITRATOR_SUCCEEDED, fallbackArbitrator});
+
+  } catch (error) {
+    console.error(error);
+    yield put({type: GET_FALLBACK_ARBITRATOR_FAILED, error: error.message});
+  }
+}
+
+
 export function *doBuyLicense() {
   try {
     const price = yield call(ArbitrationLicense.methods.price().call);
@@ -319,5 +336,6 @@ export default [
   fork(onBlacklistSeller),
   fork(onUnBlacklistSeller),
   fork(onRejectRequest),
-  fork(onLoadArbitratorScores)
+  fork(onLoadArbitratorScores),
+  fork(onGetFallbackArbitrator)
 ];
