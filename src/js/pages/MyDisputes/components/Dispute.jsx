@@ -50,7 +50,7 @@ Dispute.propTypes = {
   buyerInfo: PropTypes.object,
   loadProfile: PropTypes.func,
   enabled: PropTypes.bool,
-  isFallbackDispute: PropTypes.string
+  isFallbackDispute: PropTypes.bool
 };
 
 const mapStateToProps = (state, props) => {
