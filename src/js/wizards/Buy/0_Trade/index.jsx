@@ -162,7 +162,7 @@ class Trade extends Component {
              <ConnectWallet enableEthereum={this.props.enableEthereum} />
           </ModalDialog>
         )}
-        <OfferTrade seller={this.props.offer.user}
+      <OfferTrade seller={this.props.offer.user}
                   sellerAddress={this.props.offer.owner}
                   arbitrator={this.props.offer.arbitratorData}
                   arbitratorAddress={this.props.offer.arbitrator}
@@ -190,6 +190,7 @@ class Trade extends Component {
                   assetAddress={this.props.offer.asset}
                   lastActivity={this.props.lastActivity}
                   address={this.props.address}
+                  loadPrice={this.props.loadPrice}
       />
     </Fragment>
     );
@@ -225,6 +226,7 @@ Trade.propTypes = {
   tokens: PropTypes.object,
   isEip1102Enabled: PropTypes.bool,
   enableEthereum: PropTypes.func,
+  loadPrice: PropTypes.func,
   arbitratorScore: PropTypes.number
 };
 
@@ -265,6 +267,7 @@ export default connect(
     updateBalances: network.actions.updateBalances,
     updateBalance: network.actions.updateBalance,
     loadOffers: metadata.actions.loadOffers,
-    getLastActivity: escrow.actions.getLastActivity
+    getLastActivity: escrow.actions.getLastActivity,
+    loadPrice: prices.actions.loadPriceForAssetAndCurrency
   }
 )(withRouter(Trade));

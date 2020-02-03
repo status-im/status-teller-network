@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {withTranslation, Trans} from "react-i18next";
-import {Row, Col, FormGroup, FormFeedback} from 'reactstrap';
+import {Row, Col, FormGroup, FormFeedback, Button} from 'reactstrap';
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import {isNumber, lowerEqThan, higherEqThan, higherThan} from "../../../../validators";
@@ -54,7 +54,8 @@ class OfferTrade extends Component {
     const {
       seller, minToken, maxToken, currency, asset, lastActivity, limitless, tokens, assetAddress, arbitratorScore,
       assetQuantity, currencyQuantity, onCurrencyChange, onAssetChange, disabled, t, notEnoughETH, canRelay,
-      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address, margin, currentPrice
+      limitU, limitL, sellerBalance, price, arbitrator, sellerAddress, arbitratorAddress, address, margin, currentPrice,
+      loadPrice
     } = this.props;
 
     const minFiat = (parseFloat(limitL) / 100).toFixed(2);
@@ -99,10 +100,14 @@ class OfferTrade extends Component {
 
           <h3 className="font-weight-normal mt-4">{t('escrow.detail.price')}</h3>
           <p className="mt-2 font-weight-medium mb-1">
-            1 {asset} = {price.toFixed(4)} {currency.id}
+            1 {asset} = {price === -1 || price === 0 ? t('general.loading') : price.toFixed(4)} {currency.id}
           </p>
-
-          {!price && <p className="text-danger">{t('buyer.offerTrade.noPrice')}</p>}
+          {(price === -1 || price === 0) && <p className="text-warning">
+            {t('offer.priceNotLoaded')}&nbsp;
+            <Button color="link" className="p-0 d-md-inline-block" onClick={() => loadPrice(asset, currency.id)}>
+              {t('offer.load')} {asset}
+            </Button>
+          </p>}
 
           <PriceWarning
                 currentPrice={currentPrice}
@@ -244,7 +249,8 @@ OfferTrade.propTypes = {
   arbitratorAddress: PropTypes.string,
   arbitratorScore: PropTypes.number,
   arbitratorContactData: PropTypes.string,
-  tokens: PropTypes.object
+  tokens: PropTypes.object,
+  loadPrice: PropTypes.func
 };
 
 export default withTranslation()(OfferTrade);

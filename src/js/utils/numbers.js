@@ -19,6 +19,9 @@ export function limitDecimals(input, numDecimals = 6) {
 }
 
 export function formatFiatPrice(price) {
+  if (price === -1 || price === 0) {
+    return 'Loading...';
+  }
   if (price < 0.0001) {
     return '< 0.0001';
   }

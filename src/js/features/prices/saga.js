@@ -5,7 +5,8 @@ import {
   FETCH_PRICES_FAILED,
   FETCH_EXCHANGE_RATE,
   SAVE_COIN_GECKO_IDS,
-  FETCH_EXCHANGE_RATE_FALLBACK
+  FETCH_EXCHANGE_RATE_FALLBACK,
+  LOAD_PRICE_FOR_ASSET_AND_CURRENCY
 } from './constants';
 import {getGeckoIds} from "./selectors";
 import merge from 'merge';
@@ -45,16 +46,23 @@ function symbolBinarySearch(arr, symbolToFind, nameToCompare) {
   return false;
 }
 
-function *fetchAllTokenPricesFallback() {
-  let tokens = yield select(network.selectors.getTokens); // <-- get the project
-
-  const symbols = Object.keys(tokens);
-  let data = {};
-
+function *fetchAllTokenPricesFallback({asset, currency: curr}) {
   try {
+    let symbols;
+    if (asset && curr) {
+      symbols = [asset];
+    } else {
+      let tokens = yield select(network.selectors.getTokens); // <-- get the project
+      symbols = Object.keys(tokens);
+    }
+
+    const currencies = (asset && curr) ? [{id: curr}] : CURRENCY_DATA;
+
+    let data = {};
     const size = 20;
-    for (let i = 0; i < CURRENCY_DATA.length; i += size) { // Query 20 currencies at a time
-      const fiat = CURRENCY_DATA.slice(i, i + size).map(x => x.id);
+
+    for (let i = 0; i < currencies.length; i += size) { // Query 20 currencies at a time
+      const fiat = currencies.slice(i, i + size).map(x => x.id);
       const prices = yield call(cc.priceMulti, symbols, fiat);
       data = merge.recursive(true, prices, data);
       yield put({type: FETCH_PRICES_SUCCEEDED, data});
@@ -70,14 +78,14 @@ export function *onFetchPricesFallback() {
   yield takeEvery(FETCH_EXCHANGE_RATE_FALLBACK, fetchAllTokenPricesFallback);
 }
 
-function *fetchAllTokenPrices() {
+function *fetchAllTokenPrices({asset, currency: curr}) {
   let data = {};
 
   try {
     const ping = yield call(axios.get, COIN_GECKO_API_PING);
     if (!ping || ping.status !== 200) {
       console.warn('Coin Gecko API seems down. Trying Crypto Compare');
-      return yield put({type: FETCH_EXCHANGE_RATE_FALLBACK});
+      return yield put({type: FETCH_EXCHANGE_RATE_FALLBACK, asset, currency: curr});
     }
 
     try {
@@ -100,12 +108,17 @@ function *fetchAllTokenPrices() {
         });
         yield put({type: SAVE_COIN_GECKO_IDS, coinGeckoIds});
       }
-      const keys = Object.keys(coinGeckoIds);
+      let id;
+      if (asset && curr) {
+        id = Object.keys(coinGeckoIds).find(key => coinGeckoIds[key] === asset);
+      }
+      const keys = asset && curr ? [id] : Object.keys(coinGeckoIds);
       const ids = keys.join(',');
       let currency;
+      const currencies = (asset && curr) ? [{id: curr}] : CURRENCY_DATA;
 
-      for (let i = 0; i < CURRENCY_DATA.length; i++) {
-        currency = CURRENCY_DATA[i].id;
+      for (let i = 0; i < currencies.length; i++) {
+        currency = currencies[i].id;
         const response = yield call(axios.get, `${COIN_GECKO_API_MARKETS}?vs_currency=${currency.toLowerCase()}&ids=${ids}&order=market_cap_desc&per_page=${keys.length}&sparkline=false`);
         if (response.status !== 200) {
           console.error('Error getting price data for', currency, response.data || response.error);
@@ -124,7 +137,7 @@ function *fetchAllTokenPrices() {
     } catch (e) {
       console.error('Error with Coingecko', e);
       console.error('Fallbacking to other market API');
-      yield put({type: FETCH_EXCHANGE_RATE_FALLBACK});
+      yield put({type: FETCH_EXCHANGE_RATE_FALLBACK, asset, currency: curr});
     }
   } catch (error) {
     console.error(error);
@@ -136,4 +149,8 @@ export function *onFetchPrices() {
   yield takeEvery(FETCH_EXCHANGE_RATE, fetchAllTokenPrices);
 }
 
-export default [fork(onFetchPrices), fork(onFetchPricesFallback)];
+export function *onLoadPriceForAsset() {
+  yield takeEvery(LOAD_PRICE_FOR_ASSET_AND_CURRENCY, fetchAllTokenPrices);
+}
+
+export default [fork(onFetchPrices), fork(onFetchPricesFallback), fork(onLoadPriceForAsset)];
