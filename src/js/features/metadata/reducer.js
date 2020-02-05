@@ -11,7 +11,12 @@ import {
   GET_OFFER_PRICE_SUCCEEDED,
   GET_MAX_OFFERS_SUCCEEDED
 } from './constants';
-import {USER_RATING_SUCCEEDED, CREATE_ESCROW_SUCCEEDED, RATE_TRANSACTION_SUCCEEDED} from '../escrow/constants';
+import {
+  USER_RATING_SUCCEEDED,
+  CREATE_ESCROW_SUCCEEDED,
+  RATE_TRANSACTION_SUCCEEDED,
+  RELEASE_ESCROW_SUCCEEDED
+} from '../escrow/constants';
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
 import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
@@ -171,6 +176,21 @@ function reducer(state = DEFAULT_STATE, action) {
           }
         }
       };
+    case RELEASE_ESCROW_SUCCEEDED: {
+      if (!action.receipt || !action.receipt.from) {
+        return state;
+      }
+      const address = toChecksumAddress(action.receipt.from);
+      return {
+        ...state, users: {
+          ...state.users,
+          [toChecksumAddress(action.address)]: {
+            ...state.users[address],
+            nbReleasedTrades: state.users[address].nbReleasedTrades ? state.users[address].nbReleasedTrades++ : 1
+          }
+        }
+      };
+    }
     case LOAD_USER_LOCATION_SUCCEEDED:
       return {
         ...state, users: {
