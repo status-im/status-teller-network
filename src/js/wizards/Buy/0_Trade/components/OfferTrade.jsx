@@ -154,7 +154,7 @@ class OfferTrade extends Component {
             {amountGreaterThanBalance &&
             <FormFeedback className={classnames("d-block", {'text-warning': limitless})}>
               <p className="m-0">{t('buyer.offerTrade.amountWarning', {balance: sellerBalance, symbol: asset})}</p>
-              {limitless && <p className="m-0">{t('buyer.offerTrade.amountWarningLimitless')}</p>}
+              <p className="m-0">{t('buyer.offerTrade.amountWarningLimitless')}</p>
             </FormFeedback>}
             {limitless && <p className="mt-3 limits">{t('buyer.offerTrade.noLimit')}</p>}
             {!limitless && <Fragment>
