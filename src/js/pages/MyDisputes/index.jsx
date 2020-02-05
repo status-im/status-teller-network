@@ -26,7 +26,7 @@ class MyDisputes extends Component {
 
   componentDidMount() {
     this.props.loadProfile(this.props.address);
-    this.props.getDisputedEscrows();
+    this.props.getDisputedEscrows(this.props.includeFallbackDisputes);
   }
 
   componentDidUpdate() {
@@ -40,14 +40,14 @@ class MyDisputes extends Component {
     const {profile, address, includeFallbackDisputes} = this.props;
     if (!profile) return <Loading page={true}/>;
 
-    if (!profile.isArbitrator) {
+    if (!profile.isArbitrator && !includeFallbackDisputes) {
       return <NoLicense arbitratorPage/>;
     }
 
     return (
       <Fragment>
-        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
-        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && (includeFallbackDisputes || !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address)))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && (includeFallbackDisputes || !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address)))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
       </Fragment>
     );
   }
