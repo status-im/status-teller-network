@@ -295,7 +295,9 @@
     "disabledBecauseArbi": "Offer disabled because you are the seller or the arbitrator",
     "disabledBecausePrice": "Offer disabled because we failed to fetch the token prices. Check back later.",
     "andMore": "and more",
-    "isOwner": "You are the owner of this offer"
+    "isOwner": "You are the owner of this offer",
+    "priceNotLoaded": "The price for this asset has not loaded yet. Click here to try again:",
+    "load": "Load"
   },
   "filter": {
     "clearSelection": "Clear selection",
