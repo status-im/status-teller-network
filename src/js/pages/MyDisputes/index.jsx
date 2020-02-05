@@ -46,8 +46,8 @@ class MyDisputes extends Component {
 
     return (
       <Fragment>
-        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && (includeFallbackDisputes || !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address)))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
-        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && (includeFallbackDisputes || !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address)))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
       </Fragment>
     );
   }
