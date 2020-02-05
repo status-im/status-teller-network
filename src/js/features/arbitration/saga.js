@@ -86,9 +86,14 @@ export function *doGetArbitrators({address, includeAll}) {
   }
 }
 
-export function *doGetEscrows() {
+export function *doGetEscrows({includeFallbackDisputes}) {
   try {
-    const events = yield Escrow.getPastEvents('ArbitrationRequired', {fromBlock: 1});
+    const filter = {};
+    if(!includeFallbackDisputes){
+      filter.arbitrator = web3.eth.defaultAccount;
+    }
+
+    const events = yield Escrow.getPastEvents('ArbitrationRequired', {filter, fromBlock: 1});
 
     let escrows = [];
     for (let i = 0; i < events.length; i++) {
@@ -103,7 +108,9 @@ export function *doGetEscrows() {
       escrow.arbitration.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
 
       if(escrow.arbitration.open || escrow.arbitration.result !== 0) {
-        escrows.push(escrow);
+        if((includeFallbackDisputes && escrow.arbitration.arbitratorTimeout < (Date.now()/1000)) || addressCompare(escrow.arbitrator, web3.eth.defaultAccount)){
+          escrows.push(escrow);
+        }
       }
     }
 

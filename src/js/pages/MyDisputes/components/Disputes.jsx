@@ -8,7 +8,7 @@ import classnames from 'classnames';
 class Disputes extends Component {
   renderTrades(enabled) {
     return (
-        this.props.disputes.map((dispute, index) => <Dispute key={'dispute-' + index} enabled={enabled} dispute={dispute} showDate={this.props.showDate}/>)
+        this.props.disputes.map((dispute, index) => <Dispute key={'dispute-' + index} enabled={enabled} dispute={dispute} showDate={this.props.showDate} isFallbackDispute={this.props.includeFallbackDisputes}/>)
     );
   }
 
@@ -38,7 +38,8 @@ Disputes.propTypes = {
   t: PropTypes.func,
   disputes: PropTypes.array,
   showDate: PropTypes.bool,
-  open: PropTypes.bool
+  open: PropTypes.bool,
+  includeFallbackDisputes: PropTypes.bool
 };
 
 export default withTranslation()(Disputes);

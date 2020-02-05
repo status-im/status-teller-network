@@ -191,17 +191,15 @@ class App extends Component {
                 <Route exact path="/profile/settings/cache" component={CacheSettings}/>
                 <Route exact path="/profile/offers" component={MyOffers} />
                 <Route exact path="/profile/trades" component={MyTrades} />
-                <Route exact path="/profile/disputes" component={MyDisputes} />
+                <Route exact path="/profile/disputes/:includeFallbackDisputes?" component={MyDisputes} />
                 <Route exact path="/profile/arbitrators" component={Arbitrators} />
                 <Route exact path="/profile/:address" component={Profile}/>
-
                 <Route exact path="/email-subscribe" component={SubscribeToEmails}/>
                 <Route exact path="/verify-email/:token" component={ValidateEmail}/>
-
                 <Route exact path="/arbitrator/license" component={ArbitrationLicense}/>
                 <Route exact path="/license" component={License}/>
                 <Route exact path="/escrow/:id" component={Escrow}/>
-                <Route exact path="/arbitration/:id" component={Arbitration}/>
+                <Route exact path="/arbitration/:id/:isFallbackDispute?" component={Arbitration}/>
                 <Route exact path="/sellers" component={SellerApproval} />
                 <Route exact path="/openCase/:id" component={OpenDispute}/>
 
