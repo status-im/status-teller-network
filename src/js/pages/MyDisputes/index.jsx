@@ -26,7 +26,7 @@ class MyDisputes extends Component {
 
   componentDidMount() {
     this.props.loadProfile(this.props.address);
-    this.props.getDisputedEscrows(this.props.includeFallbackDisputes);
+    this.props.getDisputedEscrows(this.props.includeFallbackDisputes, true);
   }
 
   componentDidUpdate() {
