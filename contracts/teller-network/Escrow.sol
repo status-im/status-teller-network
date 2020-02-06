@@ -291,7 +291,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
         require(mStatus == EscrowStatus.FUNDED || mStatus == EscrowStatus.CREATED || mStatus == EscrowStatus.PAID,
                 "Only transactions in created, funded or paid state can have their destination updated");
 
-        require(trx.buyer == msg.sender || trx.destination == msg.sender, "Only the buyer or the destination address can invoke this function");
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
 
         trx.destination = _destination;
 
