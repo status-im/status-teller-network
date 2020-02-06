@@ -63,7 +63,8 @@ class Summary extends Component {
 
   cancel = () => {
     this.props.resetAddOfferStatus();
-    this.props.footer.onNext(this.postOffer);
+    this.setState({showFinalModal: false});
+    this.props.footer.onNext(this.showFinalModal);
     this.props.footer.show();
   };
 
