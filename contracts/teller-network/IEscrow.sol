@@ -30,6 +30,8 @@ contract IEscrow {
         string calldata _username
     ) external returns(uint escrowId);
 
+  function updateDestination(uint _escrowId, address payable _destination) external;
+
   function pay(uint _escrowId) external;
 
   function pay_relayed(address _sender, uint _escrowId) external;

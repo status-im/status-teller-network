@@ -34,7 +34,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
     event Paid(uint indexed escrowId, address indexed seller);
     event Released(uint indexed escrowId, address indexed seller, address indexed buyer, address destination, bool isDispute);
     event Canceled(uint indexed escrowId, address indexed seller, address indexed buyer, bool isDispute);
-    
+    event DestinationUpdated(uint indexed escrowId, address indexed buyer, address newAddress);
     event Rating(uint indexed offerId, address indexed participant, uint indexed escrowId, uint rating, bool ratingSeller);
 
     /**
@@ -103,7 +103,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
      * @dev Update arbitration timeout. Can only be called by owner
      * @param _newTimeout new timeout in seconds
      */
-    function updateArbitrationTimeout(uint _newTimeout) public onlyOwner {
+    function setArbitrationTimeout(uint _newTimeout) public onlyOwner {
         arbitrationTimeout = _newTimeout;
     }
 
@@ -282,6 +282,20 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
 
         userStore.addOrUpdateUser(_sender, _contactData, _location, _username);
         escrowId = _createTransaction(_sender, _destination,  _offerId, _tokenAmount, _fiatAmount);
+    }
+
+    function updateDestination(uint _escrowId, address payable _destination) external whenNotPaused {
+        EscrowTransaction storage trx = transactions[_escrowId];
+
+        EscrowStatus mStatus = trx.status;
+        require(mStatus == EscrowStatus.FUNDED || mStatus == EscrowStatus.CREATED || mStatus == EscrowStatus.PAID,
+                "Only transactions in created, funded or paid state can have their destination updated");
+
+        require(trx.buyer == _sender, "Only the buyer can invoke this function");
+
+        trx.destination = _destination;
+
+        emit DestinationUpdated(_escrowId, trx.buyer, _destination);
     }
 
     /**
