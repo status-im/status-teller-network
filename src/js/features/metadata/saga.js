@@ -1,10 +1,10 @@
-/* global web3 */
+/* global web3, ethereum */
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import {eventChannel} from 'redux-saga';
+import {channel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
   LOAD,
@@ -36,7 +36,7 @@ import {
   GET_OFFER_PRICE_SUCCEEDED,
   GET_OFFER_PRICE_FAILED,
   SET_CURRENT_USER,
-  CHECK_ACCOUNT_CHANGE,
+  CHECK_ETHEREUM_CHANGE,
   GET_MAX_OFFERS,
   GET_MAX_OFFERS_SUCCEEDED,
   GET_MAX_OFFERS_FAILED
@@ -106,41 +106,45 @@ export function *onLoadLocation() {
   yield takeEvery(LOAD_USER_LOCATION, loadLocation);
 }
 
-function countdown(_expiration) {
-  return eventChannel(emitter => {
-      const iv = setInterval(() => {
-        emitter(1);
-      }, 1000);
-      // The subscriber must return an unsubscribe function
-      return () => {
-        clearInterval(iv);
-      };
+export function *verifyChainChange() {
+  const chainChannel = channel();
+  ethereum.on('chainChanged', chainId => {
+    chainChannel.put(chainId);
+  });
+
+  while (true) {
+    const chainId = yield take(chainChannel);
+    const currChain = yield select((state) => state.network.network);
+    if (currChain && currChain.id !== chainId) {
+      yield put(network.actions.clearCache(
+        setTimeout(() => {
+          window.location.reload();
+        }, 500)
+      ));
     }
-  );
+  }
 }
 
 export function *verifyAccountChange() {
-  const chan = yield call(countdown, 99);
-  let currAddress = yield select((state) => state.network.address);
-  try {
-    while (true) {
-      yield take(chan);
-      if (!currAddress) {
-        currAddress = yield select((state) => state.network.address);
-      }
-      const accounts = yield web3.eth.getAccounts();
-      if (currAddress && (!accounts.length || !addressCompare(web3.eth.defaultAccount, currAddress))) {
-        yield put(network.actions.clearCache(
-          setTimeout(() => {
-            window.location.reload();
-          }, 500)
-        ));
-      }
+  const accountsChannel = channel();
+
+  ethereum.on('accountsChanged', accounts => {
+    accountsChannel.put(accounts);
+  });
+
+  while (true) {
+    const accounts = yield take(accountsChannel);
+    if(accounts.length){
+      web3.eth.defaultAccount = accounts[0];
     }
-  } catch (e) {
-    console.error('Error getting accounts', e);
-  } finally {
-    // Interval terminated, not much to do here
+    const currAddress = yield select((state) => state.network.address);
+    if (currAddress && (!accounts.length || !addressCompare(accounts[0], currAddress))) {
+      yield put(network.actions.clearCache(
+        setTimeout(() => {
+          window.location.reload();
+        }, 500)
+      ));
+    }
   }
 }
 
@@ -331,8 +335,9 @@ export function *onGetOfferPrice() {
   yield takeEvery(GET_OFFER_PRICE, getOfferPrice);
 }
 
-export function *onAccountChange() {
-  yield takeEvery(CHECK_ACCOUNT_CHANGE, verifyAccountChange);
+export function *onEthereumChange() {
+  yield takeEvery(CHECK_ETHEREUM_CHANGE, verifyChainChange);
+  yield takeEvery(CHECK_ETHEREUM_CHANGE, verifyAccountChange);
 }
 
 export default [
@@ -345,6 +350,6 @@ export default [
   fork(onDeleteOffer),
   fork(onEnabledEthereum),
   fork(onGetOfferPrice),
-  fork(onAccountChange),
+  fork(onEthereumChange),
   fork(onGetMaxOffers)
 ];

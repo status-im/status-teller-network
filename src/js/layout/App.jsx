@@ -84,6 +84,8 @@ class App extends Component {
       this.watchTradesForOffers();
     }
 
+    this.props.checkEthereumChanges();
+
     window.addEventListener('hashchange', () => {
       if (this.state.isHome !== this.isHome()) {
         this.setState({isHome: this.isHome()});
@@ -101,16 +103,10 @@ class App extends Component {
       this.props.loadArbitratorScores();
     }
     if (!prevProps.isReady && this.props.isReady && this.props.isEip1102Enabled) {
-      this.props.checkAccountChange();
-      if (this.props.currentUser && this.props.currentUser !== web3.eth.defaultAccount) {
-        this.props.resetState();
-      }
       this.props.loadProfile(this.props.address);
       this.props.setCurrentUser(web3.eth.defaultAccount);
     }
-    if (!prevProps.isEip1102Enabled && this.props.isEip1102Enabled && this.props.isReady) {
-      this.props.checkAccountChange();
-    }
+    
     if (!this.watchingTrades && ((!prevProps.profile && this.props.profile && this.props.profile.offers) || (prevProps.profile && !prevProps.profile.offers && this.props.profile.offers))) {
       this.watchTradesForOffers();
     }
@@ -254,7 +250,7 @@ App.propTypes = {
   watchEscrowCreations: PropTypes.func,
   loadOffers: PropTypes.func,
   isEip1102Enabled: PropTypes.bool,
-  checkAccountChange: PropTypes.func,
+  checkEthereumChanges: PropTypes.func,
   network: PropTypes.object,
   environment: PropTypes.string,
   loadArbitratorScores: PropTypes.func
@@ -280,7 +276,7 @@ const mapStateToProps = (state) => {
 export default connect(
   mapStateToProps,
   {
-    checkAccountChange: metadata.actions.checkAccountChange,
+    checkEthereumChanges: metadata.actions.checkEthereumChanges,
     fetchExchangeRates: prices.actions.fetchExchangeRates,
     getGasPrice: network.actions.getGasPrice,
     init: network.actions.init,

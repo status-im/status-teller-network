@@ -2,7 +2,7 @@ import {
   LOAD, ADD_OFFER, RESET_ADD_OFFER_STATUS, SET_CURRENT_USER,
   UPDATE_USER, RESET_UPDATE_USER_STATUS, LOAD_OFFERS, LOAD_USER,
   DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
-  GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE, RESET_PROVIDER_VERIFICATION, GET_MAX_OFFERS
+  GET_OFFER_PRICE, CHECK_ETHEREUM_CHANGE, RESET_PROVIDER_VERIFICATION, GET_MAX_OFFERS
 } from './constants';
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
@@ -57,8 +57,8 @@ export const updateUser = (user) => ({
   user
 });
 
-export const checkAccountChange = () => ({
-  type: CHECK_ACCOUNT_CHANGE
+export const checkEthereumChanges = () => ({
+  type: CHECK_ETHEREUM_CHANGE
 });
 
 export const resetUpdateUserStatus = () => ({
