@@ -297,7 +297,8 @@
     "andMore": "and more",
     "isOwner": "You are the owner of this offer",
     "priceNotLoaded": "The price for this asset has not loaded yet. Click here to try again:",
-    "load": "Load"
+    "load": "Load",
+    "noLocation": "Hidden location"
   },
   "filter": {
     "clearSelection": "Clear selection",
