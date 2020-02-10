@@ -452,7 +452,7 @@ contract Escrow is IEscrow, Pausable, MessageSigned, Fees, Arbitrable, Proxiable
             (bool success, ) = _trx.destination.call.value(_trx.tokenAmount)("");
             require(success, "Transfer failed.");
         } else {
-            require(_safeTransfer(ERC20Token(token), _trx.buyer, _trx.tokenAmount), "Couldn't transfer funds");
+            require(_safeTransfer(ERC20Token(token), _trx.destination, _trx.tokenAmount), "Couldn't transfer funds");
         }
 
         _releaseFee(_trx.arbitrator, _trx.tokenAmount, token, _isDispute);
