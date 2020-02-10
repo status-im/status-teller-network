@@ -3,7 +3,9 @@ const ARB_LICENSE_PRICE = "1000000000000000000"; // 10 * Math.pow(10, 18)
 const FEE_MILLI_PERCENT = "1000"; // 1 percent
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 const MAINNET_OWNER = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
-const FALLBACK_ARBITRATOR = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
+const RINKEBY_OWNER = "0xa019702a5743aFdd607c61321A90C43a8C1c69d9";
+const FALLBACK_ARBITRATOR_MAINNET = "0x35f7C96C392cD70ca5DBaeDB2005a946A82e8a95";
+const FALLBACK_ARBITRATOR_RINKEBY = "0xa019702a5743aFdd607c61321A90C43a8C1c69d9";
 const GAS_PRICE = "5000000000"; //5 gwei
 
 // TODO: extract this to .env?
@@ -84,7 +86,7 @@ module.exports = {
         deps: ['RelayHub']
       },
       Escrow: {
-        args: ["$accounts[0]", FALLBACK_ARBITRATOR, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
+        args: ["$accounts[0]", FALLBACK_ARBITRATOR_MAINNET, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
       EscrowProxy: {
         instanceOf: "Proxy",
@@ -138,7 +140,7 @@ module.exports = {
   testnet: {
     gasPrice: GAS_PRICE,
     tracking: 'shared.rinkeby.json',
-    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, null, FALLBACK_ARBITRATOR),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, RINKEBY_OWNER, RINKEBY_OWNER),
     dappConnection: [
       "$WEB3",
       "https://rinkeby.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
@@ -181,7 +183,7 @@ module.exports = {
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
       }
     },
-    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR_RINKEBY),
     dappConnection: ["$WEB3"]
   },
 
@@ -190,7 +192,7 @@ module.exports = {
   livenet: {
     gasPrice: GAS_PRICE,
     tracking: 'shared.mainnet.json',
-    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR),
+    afterDeploy: dataMigration.bind(null, GAS_PRICE, LICENSE_PRICE, ARB_LICENSE_PRICE, FEE_MILLI_PERCENT, BURN_ADDRESS, MAINNET_OWNER, FALLBACK_ARBITRATOR_MAINNET),
     dappConnection: [
       "$WEB3",
       "https://mainnet.infura.io/v3/c26e9ab0df094a4f99bd1ea030eb7d50"
