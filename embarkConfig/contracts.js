@@ -12,6 +12,7 @@ const GAS_PRICE = "5000000000"; //5 gwei
 
 
 const dataMigration = require('./data.js');
+const GNOSIS_ABI = [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}];
 
 module.exports = {
   default: {
@@ -163,7 +164,7 @@ module.exports = {
       },
       GnosisSafe: {
         address: FALLBACK_ARBITRATOR_RINKEBY,
-        abiDefinition: [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}]
+        abiDefinition: GNOSIS_ABI
       }
     }
   },
@@ -265,7 +266,7 @@ module.exports = {
       },
       GnosisSafe: {
         address: FALLBACK_ARBITRATOR_MAINNET,
-        abiDefinition: [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}]
+        abiDefinition: GNOSIS_ABI
       }
     }
   }
