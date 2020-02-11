@@ -264,7 +264,7 @@ module.exports = {
         address: "0x7702CaaE3D8feE750c4464d80FCb14Ce05e00743"
       },
       GnosisSafe: {
-        address: FALLBACK_ARBITRATOR_RINKEBY,
+        address: FALLBACK_ARBITRATOR_MAINNET,
         abiDefinition: [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}]
       }
     }
