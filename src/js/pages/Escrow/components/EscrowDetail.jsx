@@ -11,6 +11,7 @@ import Address from '../../../components/UserInformation/Address';
 import {withTranslation} from "react-i18next";
 import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
 import { addressCompare } from '../../../utils/address';
+import {tradeStates} from "../../../features/escrow/helpers";
 
 const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, fallbackArbitrator, onClickChat, isStatus, arbitratorScore}) => {
   if(!escrow.seller || !escrow.buyerInfo || !escrow.arbitratorInfo) return null;
@@ -106,7 +107,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, fal
 
     <Row className="mt-4">
       <Col xs="12">
-      {escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">{t('escrow.detail.expirationTime')} {moment(escrow.expirationTime * 1000).calendar()}</p>}
+      {isBuyer && escrow.status === tradeStates.funded &&  escrow.expirationTime && escrow.expirationTime !== '0' && <p className="text-dark m-0">{t('escrow.detail.expirationTime')} {moment(escrow.expirationTime * 1000).calendar()}</p>}
 
       <PriceWarning
         currentPrice={(currentPrice && currentPrice[escrow.offer.currency]) || '0.00'}
