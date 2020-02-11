@@ -122,6 +122,8 @@ module.exports = {
       KyberNetworkProxy: {},
       KyberFeeBurner: { // TODO: replace BURN_ADDRESS with "$StakingPool"
         args: ["$SNT", BURN_ADDRESS, "$KyberNetworkProxy", "0x0000000000000000000000000000000000000000", "300"]
+      },
+      GnosisSafe: {
       }
     }
   },
@@ -158,6 +160,10 @@ module.exports = {
       },
       RelayHub: {
         address: '0xd216153c06e857cd7f72665e0af1d7d82172f494'
+      },
+      GnosisSafe: {
+        address: FALLBACK_ARBITRATOR_RINKEBY,
+        abiDefinition: [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}]
       }
     }
   },
@@ -256,6 +262,10 @@ module.exports = {
       },
       KyberFeeBurner: {
         address: "0x7702CaaE3D8feE750c4464d80FCb14Ce05e00743"
+      },
+      GnosisSafe: {
+        address: FALLBACK_ARBITRATOR_RINKEBY,
+        abiDefinition: [{"constant":true,"inputs":[{"name":"owner","type":"address"}],"name":"isOwner","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"}]
       }
     }
   }
