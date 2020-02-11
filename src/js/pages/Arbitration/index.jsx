@@ -204,7 +204,7 @@ class Arbitration extends Component {
   }
 
   render() {
-    const {t, escrow, address, loading, isFallbackDispute, buyerInfo, sellerInfo, isStatus} = this.props;
+    const {t, escrow, address, loading, isFallbackDispute, buyerInfo, sellerInfo, isStatus, isFallbackArbitrator} = this.props;
 
     if (!escrow || !buyerInfo || !sellerInfo) {
       return <Loading/>;
@@ -215,6 +215,10 @@ class Arbitration extends Component {
     }
     if (!isFallbackDispute && !addressCompare(escrow.arbitrator, address)) {
       return <ErrorInformation message={t('arbitration.notYours')}/>;
+    }
+
+    if(isFallbackDispute && !isFallbackArbitrator){
+      return <ErrorInformation message={t('arbitration.notAuthorized')}/>;
     }
 
     if (loading) {
@@ -297,7 +301,8 @@ Arbitration.propTypes = {
   resolveDispute: PropTypes.func,
   loading: PropTypes.bool,
   isStatus: PropTypes.bool,
-  isFallbackDispute: PropTypes.bool
+  isFallbackDispute: PropTypes.bool,
+  isFallbackArbitrator: PropTypes.bool
 };
 
 
@@ -311,7 +316,8 @@ const mapStateToProps = (state, props) => {
     sellerInfo: escrow ? metadata.selectors.getProfile(state, escrow.seller) : null,
     buyerInfo: escrow ? metadata.selectors.getProfile(state, escrow.buyer) : null,
     loading: arbitration.selectors.isLoading(state),
-    isFallbackDispute:  !!props.match.params.isFallbackDispute
+    isFallbackDispute:  !!props.match.params.isFallbackDispute,
+    isFallbackArbitrator: arbitration.selectors.isFallbackArbitrator(state)
   };
 };
 

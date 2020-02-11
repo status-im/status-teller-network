@@ -38,10 +38,10 @@ class MyDisputes extends Component {
 
 
   render() {
-    const {profile, address, includeFallbackDisputes, fallbackArbitrator, network} = this.props;
+    const {profile, address, includeFallbackDisputes, fallbackArbitrator, network, isFallbackArbitrator} = this.props;
     if (!profile) return <Loading page={true}/>;
 
-    if (!profile.isArbitrator && !includeFallbackDisputes) {
+    if (!profile.isArbitrator && !isFallbackArbitrator) {
       return <NoLicense arbitratorPage/>;
     }
     
@@ -67,6 +67,7 @@ MyDisputes.propTypes = {
   includeFallbackDisputes: PropTypes.bool,
   getFallbackArbitrator: PropTypes.func,
   fallbackArbitrator: PropTypes.string,
+  isFallbackArbitrator: PropTypes.bool,
   network: PropTypes.object
 };
 
@@ -79,7 +80,8 @@ const mapStateToProps = (state, props) => {
     includeFallbackDisputes:  !!props.match.params.includeFallbackDisputes,
     disputes: arbitration.selectors.escrows(state),
     fallbackArbitrator: arbitration.selectors.fallbackArbitrator(state),
-    network: network.selectors.getNetwork(state)
+    network: network.selectors.getNetwork(state),
+    isFallbackArbitrator: arbitration.selectors.isFallbackArbitrator(state)
   };
 };
 

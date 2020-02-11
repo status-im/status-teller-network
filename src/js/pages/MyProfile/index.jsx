@@ -54,6 +54,10 @@ class MyProfile extends Component {
       this.load();
     }
 
+    if(!oldProps.isFallbackArbitrator && this.props.isFallbackArbitrator) {
+      this.props.getDisputedEscrows(true);
+    }
+
     if(this.props.profile && this.props.profile.isArbitrator && !this.props.profile.contactData){
       return this.props.history.push("/profile/settings/contact");
     }
@@ -65,9 +69,10 @@ class MyProfile extends Component {
 
   load() {
     this.props.loadProfile(this.props.address);
-    this.props.getDisputedEscrows();
+    this.props.getDisputedEscrows(this.props.isFallbackArbitrator);
     this.props.getArbitratorRequests();
     this.props.resetNotificationWarnings();
+    this.props.checkIfFallbackArbitrator();
   }
 
   watchEscrows() {
@@ -83,7 +88,7 @@ class MyProfile extends Component {
   }
 
   render() {
-    const {t, profile, address, requests, trades, enableEthereum} = this.props;
+    const {t, profile, address, requests, trades, enableEthereum, isFallbackArbitrator} = this.props;
 
     if (!this.props.isEip1102Enabled || !this.props.address) {
       return <ConnectWallet enableEthereum={enableEthereum} />;
@@ -94,11 +99,12 @@ class MyProfile extends Component {
     const activeOffers = profile.offers.filter(x => !x.deleted && !addressCompare(x.arbitrator, zeroAddress)).length;
     const pendingRequests = requests.reduce((a, b) => a + (b.status === arbitration.constants.AWAIT ? 1 : 0), 0);
     const openDisputes = this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address));
+    const openFallbackDisputes = this.props.disputes.filter(x => x.isFallback && x.arbitration.open);
     const activeTrades = trades.filter(x => !escrow.helpers.completedStates.includes(x.status)).length;
-
+    
     return (
       <Fragment>
-        <UserInformation isArbitrator={profile.isArbitrator} reputation={profile.reputation}
+        <UserInformation isArbitrator={profile.isArbitrator} isFallbackArbitrator={isFallbackArbitrator} reputation={profile.reputation}
                          identiconSeed={profile.address} username={profile.username}/>
         <ProfileButton linkTo="/profile/trades" image={iconTrades} title={t('profile.myTrades')}
                        subtitle={t('profile.nbActive', {nb: activeTrades})} active={this.props.tradeActionNeeded}/>
@@ -122,6 +128,16 @@ class MyProfile extends Component {
                          active={this.props.arbitrationActionNeeded}/>
           <ProfileButton linkTo="/sellers" image={iconSettings} title={t('profile.arbitratorSettings')}
                          subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
+          <Separator/>
+        </Fragment>
+        )}
+
+        {isFallbackArbitrator && (
+          <Fragment>
+          <p className="text-muted mt-4">{t('profile.fallbackArbitrator')}</p>
+          <ProfileButton linkTo="/profile/disputes/fallback" image={iconDispute} title={t('profile.fallbackDisputes')}
+                         subtitle={t('profile.disputesToResolve', {nbDisputes: openFallbackDisputes.length})}
+                         active={true}/>
           <Separator/>
         </Fragment>
         )}
@@ -150,7 +166,9 @@ MyProfile.propTypes = {
   requests: PropTypes.array,
   enableEthereum: PropTypes.func,
   getArbitratorRequests: PropTypes.func,
-  resetNotificationWarnings: PropTypes.func
+  resetNotificationWarnings: PropTypes.func,
+  checkIfFallbackArbitrator: PropTypes.func,
+  isFallbackArbitrator: PropTypes.bool
 };
 
 const mapStateToProps = state => {
@@ -166,7 +184,8 @@ const mapStateToProps = state => {
     requests: arbitration.selectors.getArbitratorRequests(state),
     isEip1102Enabled: metadata.selectors.isEip1102Enabled(state),
     tradeActionNeeded: escrow.selectors.actionNeeded(state),
-    arbitrationActionNeeded: arbitration.selectors.actionNeeded(state)
+    arbitrationActionNeeded: arbitration.selectors.actionNeeded(state),
+    isFallbackArbitrator: arbitration.selectors.isFallbackArbitrator(state)
   };
 };
 
@@ -174,6 +193,7 @@ export default connect(
   mapStateToProps,
   {
     loadProfile: metadata.actions.load,
+    checkIfFallbackArbitrator: arbitration.actions.checkIfFallbackArbitrator,
     getDisputedEscrows: arbitration.actions.getDisputedEscrows,
     watchEscrow: escrow.actions.watchEscrow,
     getArbitratorRequests: arbitration.actions.getArbitratorRequests,
