@@ -42,7 +42,7 @@
         "address": "0x37c74fCA9Aaf9BE823B2B47afE913Af210E01809"
       },
       "0x888b76b47575a44e8fcbfd79224a0199e389478c37a06e15278990eee61afa9b": {
-        "name": "UserStoreProxy",
+        "name": "UserStoreInstance",
         "address": "0x5C2b2845d3A201E3a088077f97e59AcC43e4F456"
       },
       "0x2d3077746938087d268eb3fdb2127958fd9824961b2bdac0fe960c1b7db805af": {

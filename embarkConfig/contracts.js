@@ -68,8 +68,9 @@ module.exports = {
       OfferStore: {
         args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS, "$Medianizer"]
       },
-      UserStoreProxy: {
+      UserStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "UserStore",
         args: ["0x", "$UserStore"]
       },
       OfferStoreProxy: {
@@ -244,8 +245,9 @@ module.exports = {
       OfferStore: {
         address: "0x5EaE5D9Fc2F38d18D9F3Bfa584700801850670D0"
       },
-      UserStoreProxy: {
+      UserStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "UserStore",
         address: "0x61fbacebcef64e726ff5b848da5dff0c44c199f5"
       },
       OfferStoreProxy: {

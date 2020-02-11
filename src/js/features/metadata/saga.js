@@ -1,9 +1,10 @@
 /* global web3 */
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
+import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 import {eventChannel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
@@ -50,11 +51,8 @@ import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicense
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import {enableEthereum} from '../../services/embarkjs';
 import network from '../../features/network';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
 
 OfferStore.options.address = OfferStoreProxy.options.address;
-UserStore.options.address = UserStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 SellerLicense.options.address = SellerLicenseProxy.options.address;
 
@@ -72,7 +70,7 @@ export function *loadUser({address}) {
       isSeller
     };
 
-    const user = Object.assign(userLicenses, yield UserStore.methods.users(address).call({from: defaultAccount}));
+    const user = Object.assign(userLicenses, yield UserStoreInstance.methods.users(address).call({from: defaultAccount}));
 
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
@@ -190,7 +188,7 @@ export function *loadOffers({address}) {
       const offer = yield OfferStore.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        offer.arbitratorData = yield UserStore.methods.users(offer.arbitrator).call({from: defaultAccount});
+        offer.arbitratorData = yield UserStoreInstance.methods.users(offer.arbitrator).call({from: defaultAccount});
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -286,7 +284,7 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = UserStore.methods['addOrUpdateUser(string,string,string)'](
+  const toSend = UserStoreInstance.methods['addOrUpdateUser(string,string,string)'](
     getContactData(user.contactMethod, user.contactData),
     user.location,
     user.username

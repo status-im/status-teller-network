@@ -54,7 +54,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.transferOwnership(mainnetOwner));
       console.log('- 4/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 5/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner));
       console.log('- 6/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -88,8 +88,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the initial UserStore template calling the init() function");
-      deps.contracts.UserStore.options.address = deps.contracts.UserStoreProxy.options.address;
-      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.init(
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address
       ));
@@ -100,7 +99,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log("Setting the initial OfferStore template calling the init() function");
       deps.contracts.OfferStore.options.address = deps.contracts.OfferStoreProxy.options.address;
       const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.init(
-        deps.contracts.UserStore.options.address,
+        deps.contracts.UserStoreInstance.options.address,
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         burnAddress,
@@ -116,7 +115,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         deps.contracts.OfferStore.options.address,
-        deps.contracts.UserStore.options.address,
+        deps.contracts.UserStoreInstance.options.address,
         deps.contracts.KyberFeeBurner.options.address, // TODO: replace with StakingPool address
         feeMilliPercent
       ));
@@ -125,13 +124,13 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the Offer store proxy address in UserStore");
-      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.setAllowedContract(deps.contracts.OfferStore.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.setAllowedContract(deps.contracts.OfferStore.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     {
       console.log("Setting the escrow proxy address in UserStore");
-      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -143,7 +142,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the EscrowRelay address in UserStore");
-      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -165,7 +164,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 3/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.transferOwnership(mainnetOwner));
       console.log('- 4/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
     }
 
@@ -229,7 +228,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const sendTrxAccount8 = estimateAndSend(addresses[8], gasPrice);
 
       await sendTrxAccountArbi(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
-      await sendTrxAccountArbi(deps.contracts.UserStore.methods.addOrUpdateUser(CONTACT_DATA, "Montreal", "Fake Arbitrator"));
+      await sendTrxAccountArbi(deps.contracts.UserStoreInstance.methods.addOrUpdateUser(CONTACT_DATA, "Montreal", "Fake Arbitrator"));
 
       await sendTrxAccount8(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
 
@@ -287,9 +286,9 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       // const token = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.asset;
 
       // Create
-      hash = await deps.contracts.UserStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
+      hash = await deps.contracts.UserStoreInstance.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
-      nonce = await deps.contracts.UserStore.methods.user_nonce(buyerAddress).call();
+      nonce = await deps.contracts.UserStoreInstance.methods.user_nonce(buyerAddress).call();
 
       const sendTrxAccount = estimateAndSend(creatorAddress, gasPrice);
 
@@ -316,9 +315,9 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const ethOfferId = offerReceipts[idx - offerStartIndex + escrowStartIndex].events.OfferAdded.returnValues.offerId;
       let receipt;
 
-      hash = await deps.contracts.UserStore.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
+      hash = await deps.contracts.UserStoreInstance.methods.getDataHash(usernames[offerStartIndex], CONTACT_DATA).call({from: buyerAddress});
       signature = await deps.web3.eth.sign(hash, buyerAddress);
-      nonce = await deps.contracts.UserStore.methods.user_nonce(buyerAddress).call();
+      nonce = await deps.contracts.UserStoreInstance.methods.user_nonce(buyerAddress).call();
 
       receipt = await sendTrxAccount(deps.contracts.EscrowInstance.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
 
@@ -340,7 +339,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();
       const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
       let offers = [];
-      const user = await deps.contracts.UserStore.methods.users(address).call();
+      const user = await deps.contracts.UserStoreInstance.methods.users(address).call();
       if (user) {
         const offerIds = await deps.contracts.OfferStore.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (

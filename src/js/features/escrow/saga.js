@@ -1,10 +1,9 @@
 /*global web3*/
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
+import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
@@ -31,7 +30,6 @@ import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED, LOAD_USER} from "../metadata/constants";
 
 OfferStore.options.address = OfferStoreProxy.options.address;
-UserStore.options.address = UserStoreProxy.options.address;
 
 const { toBN } = web3.utils;
 
@@ -193,17 +191,17 @@ export function *doLoadEscrows({address}) {
 
       let sellerInfo = yield select(state => state.metadata.users[escrow.offer.owner]);
       if(!sellerInfo) {
-        sellerInfo = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+        sellerInfo = yield UserStoreInstance.methods.users(escrow.offer.owner).call({from: defaultAccount});
       }
 
       let buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
       if(!buyerInfo){
-        buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
+        buyerInfo = yield UserStoreInstance.methods.users(escrow.buyer).call({from: defaultAccount});
       }
 
       let arbitratorInfo = yield select(state => state.metadata.users[escrow.arbitrator]);
       if(!arbitratorInfo){
-        arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+        arbitratorInfo = yield UserStoreInstance.methods.users(escrow.arbitrator).call({from: defaultAccount});
       }
 
       escrow.seller = sellerInfo;
@@ -230,9 +228,9 @@ export function *doGetEscrow({escrowId}) {
     const escrow = yield EscrowInstance.methods.transactions(escrowId).call({from: defaultAccount});
     escrow.escrowId = escrowId;
     escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
-    escrow.seller = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
-    escrow.buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
-    escrow.arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+    escrow.seller = yield UserStoreInstance.methods.users(escrow.offer.owner).call({from: defaultAccount});
+    escrow.buyerInfo = yield UserStoreInstance.methods.users(escrow.buyer).call({from: defaultAccount});
+    escrow.arbitratorInfo = yield UserStoreInstance.methods.users(escrow.arbitrator).call({from: defaultAccount});
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);
