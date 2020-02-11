@@ -21,7 +21,8 @@ import {
   LOAD_ARBITRATOR_SCORES,
   UNBLACKLIST_SELLER,
   GET_BLACKLISTED_SELLERS,
-  GET_FALLBACK_ARBITRATOR
+  GET_FALLBACK_ARBITRATOR,
+  IS_FALLBACK_ARBITRATOR
 } from './constants';
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
@@ -87,3 +88,5 @@ export const unBlacklistSeller = (sellerAddress) => ({type: UNBLACKLIST_SELLER, 
 export const loadArbitratorScores = () => ({type: LOAD_ARBITRATOR_SCORES});
 
 export const getFallbackArbitrator = () => ({type: GET_FALLBACK_ARBITRATOR});
+
+export const checkIfFallbackArbitrator = () => ({type: IS_FALLBACK_ARBITRATOR});

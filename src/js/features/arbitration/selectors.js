@@ -10,6 +10,7 @@ export const txHash = state => state.arbitration.txHash;
 export const arbitrators = state => state.arbitration.arbitrators;
 export const arbitratorScore = state => arbitrator => state.arbitration.arbitratorScores[toChecksumAddress(arbitrator)];
 export const fallbackArbitrator = state => state.arbitration.fallbackArbitrator;
+export const isFallbackArbitrator = state => state.arbitration.isFallbackArbitrator;
 
 export const getArbitration = (state) => {
   const arbitration = state.arbitration.arbitration;
