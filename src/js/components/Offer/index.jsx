@@ -22,6 +22,7 @@ import earthIcon from "../../../images/earthIcon.svg";
 import unknownIcon from "../../../images/unknownIcon.svg";
 
 import './index.scss';
+import LoadingRectangle from "../../ui/LoadingRectangle";
 
 // eslint-disable-next-line complexity
 const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommunicationMethod, numberPaymentMethodsShown, paymentMethodFilter}) => {
@@ -117,12 +118,17 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
     <CardFooter className={classnames('bg-white text-right border-0 pt-0 clickable', {
                   'text-dark': !isArbitrator && !noArbitrator,
                   'text-danger': noArbitrator
-                })}>
+    })}>
       <p className="m-0 border-top pt-2">
-        {t('general.buy')} <span className="text-black"><img
-        src={getTokenImage(offer.token.symbol)}
-        alt={offer.token.symbol + ' icon'}/> 1 {offer.token.symbol}</span> {t('trades.at')} <span
-        className="font-weight-bold text-black">{formatFiatPrice(calculateEscrowPrice(offer, prices))} {offer.currency}</span>
+        {t('general.buy')} <span className="text-black mr-1">
+        <img src={getTokenImage(offer.token.symbol)} alt={offer.token.symbol + ' icon'} className="mr-1"/>
+        1 {offer.token.symbol}
+        </span>
+        {t('trades.at')}
+        {!prices[offer.token.symbol] && <LoadingRectangle className="ml-1 v-align-center"/>}
+        {prices[offer.token.symbol] && <span className="font-weight-bold text-black ml-1">
+          {formatFiatPrice(calculateEscrowPrice(offer, prices))} {offer.currency}
+        </span>}
       </p>
     </CardFooter>}
   </Card>);
