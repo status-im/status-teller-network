@@ -2,6 +2,7 @@
 import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
+import GnosisSafe from '../../../embarkArtifacts/contracts/GnosisSafe';
 import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
@@ -26,7 +27,8 @@ import {
   BLACKLIST_SELLER, BLACKLIST_SELLER_PRE_SUCCESS, BLACKLIST_SELLER_FAILED, BLACKLIST_SELLER_SUCCEEDED,
   UNBLACKLIST_SELLER, UNBLACKLIST_SELLER_FAILED, UNBLACKLIST_SELLER_PRE_SUCCESS, UNBLACKLIST_SELLER_SUCCEEDED,
   GET_FALLBACK_ARBITRATOR, GET_FALLBACK_ARBITRATOR_FAILED, GET_FALLBACK_ARBITRATOR_SUCCEEDED,
-  GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED, LOAD_ARBITRATOR_SCORES, RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE
+  GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED, LOAD_ARBITRATOR_SCORES, RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE,
+  IS_FALLBACK_ARBITRATOR, IS_FALLBACK_ARBITRATOR_SUCCEEDED, IS_FALLBACK_ARBITRATOR_FAILED
 } from './constants';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
@@ -113,6 +115,7 @@ export function *doGetEscrows({includeFallbackDisputes, isArbitrator}) {
           addressCompare(escrow.arbitrator, web3.eth.defaultAccount) ||
           (addressCompare(escrow.buyer, web3.eth.defaultAccount) || addressCompare(escrow.seller, web3.eth.defaultAccount))
           ){
+          escrow.isFallback = includeFallbackDisputes && escrow.arbitration.arbitratorTimeout < (Date.now()/1000);
           escrows.push(escrow);
         }
       }
@@ -208,6 +211,28 @@ export function *doGetArbitratorBlacklist() {
   } catch (error) {
     console.error(error);
     yield put({type: GET_BLACKLISTED_SELLERS_FAILED, error: error.message});
+  }
+}
+
+export function *onIsFallbackArbitrator() {
+  yield takeEvery(IS_FALLBACK_ARBITRATOR, doCheckFallbackArbitrator);
+}
+
+
+export function *doCheckFallbackArbitrator() {
+  try {
+    const fallbackArbitrator = yield call(Escrow.methods.fallbackArbitrator().call);
+    const code = yield call(web3.eth.getCode, fallbackArbitrator);
+    let isFallbackArbitrator = false;
+    if(code === '0x'){
+      isFallbackArbitrator = addressCompare(fallbackArbitrator, web3.eth.defaultAccount);
+    } else {
+      isFallbackArbitrator = yield call(GnosisSafe.methods.isOwner(web3.eth.defaultAccount).call);
+    }
+    yield put({type: IS_FALLBACK_ARBITRATOR_SUCCEEDED, isFallbackArbitrator});
+  } catch (error) {
+    console.error(error);
+    yield put({type: IS_FALLBACK_ARBITRATOR_FAILED, error: error.message});
   }
 }
 
@@ -348,5 +373,6 @@ export default [
   fork(onUnBlacklistSeller),
   fork(onRejectRequest),
   fork(onLoadArbitratorScores),
-  fork(onGetFallbackArbitrator)
+  fork(onGetFallbackArbitrator),
+  fork(onIsFallbackArbitrator)
 ];

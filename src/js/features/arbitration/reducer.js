@@ -57,7 +57,7 @@ import {
   ACCEPTED,
   GET_BLACKLISTED_SELLERS_SUCCEEDED, GET_BLACKLISTED_SELLERS_FAILED,
   BLACKLIST_SELLER_SUCCEEDED, UNBLACKLIST_SELLER_SUCCEEDED,
-  RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE, GET_FALLBACK_ARBITRATOR_FAILED, GET_FALLBACK_ARBITRATOR_SUCCEEDED
+  RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE, GET_FALLBACK_ARBITRATOR_FAILED, GET_FALLBACK_ARBITRATOR_SUCCEEDED, IS_FALLBACK_ARBITRATOR_FAILED, IS_FALLBACK_ARBITRATOR_SUCCEEDED
 } from './constants';
 import { fromTokenDecimals } from '../../utils/numbers';
 import {RESET_STATE, PURGE_STATE} from "../network/constants";
@@ -72,7 +72,8 @@ const DEFAULT_STATE = {
   arbitratorRequests: [],
   blacklistedSellers: [],
   arbitratorScores: {},
-  fallbackArbitrator: ''
+  fallbackArbitrator: '',
+  isFallbackArbitrator: false
 };
 
 function isActionNeeded(escrows) {
@@ -152,6 +153,7 @@ function reducer(state = DEFAULT_STATE, action) {
     case ACCEPT_ARBITRATOR_REQUEST_FAILED:
     case REJECT_ARBITRATOR_REQUEST_FAILED:
     case GET_BLACKLISTED_SELLERS_FAILED:
+    case IS_FALLBACK_ARBITRATOR_FAILED:
       return {
         ...state, ...{
           errorGet: action.error,
@@ -199,6 +201,11 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         fallbackArbitrator: action.fallbackArbitrator
+      };
+    case IS_FALLBACK_ARBITRATOR_SUCCEEDED: 
+      return {
+        ...state,
+        isFallbackArbitrator: action.isFallbackArbitrator
       };
     case GET_ARBITRATORS_SUCCEEDED:
       return {

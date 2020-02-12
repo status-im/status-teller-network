@@ -6,11 +6,13 @@ import Address from './Address';
 import Identicon from "./Identicon";
 import {withTranslation} from "react-i18next";
 
-const UserInformation = ({t, identiconSeed, username, reputation, isArbitrator, nbReleasedTrades, nbCreatedTrades}) => (
+const UserInformation = ({t, identiconSeed, isFallbackArbitrator, username, reputation, isArbitrator, nbReleasedTrades, nbCreatedTrades}) => (
   <Row className="m-0 text-center mb-4">
     <Col xs="12">
       <Identicon seed={identiconSeed} className="rounded-circle border" scale={8} />
-      {isArbitrator && <span className="icon-badge">{t('general.arbitrator')}</span>}
+      {isArbitrator && !isFallbackArbitrator && <span className="icon-badge">{t('general.arbitrator')}</span>}
+      {isFallbackArbitrator && <span className="icon-badge">{t('profile.fallbackArbitrator')}</span>}
+
     </Col>
     <Col xs="12">
       <h4 className="font-weight-bold">{username}</h4>
@@ -32,7 +34,8 @@ UserInformation.propTypes = {
   reputation: PropTypes.object,
   isArbitrator: PropTypes.bool,
   nbReleasedTrades: PropTypes.number,
-  nbCreatedTrades: PropTypes.number
+  nbCreatedTrades: PropTypes.number,
+  isFallbackArbitrator: PropTypes.bool
 };
 
 export default withTranslation()(UserInformation);

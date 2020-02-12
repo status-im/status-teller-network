@@ -81,7 +81,9 @@
     "disputesToResolve": "{{nbDisputes}} disputes to resolve",
     "arbitratorSettings": "Arbitrator settings",
     "pendingRequests": "{{nbRequests}} pending requests",
-    "profileSettings": "Profile settings"
+    "profileSettings": "Profile settings",
+    "fallbackDisputes": "Fallback disputes",
+    "fallbackArbitrator": "Fallback Arbitrator"
   },
   "sellerApproval": {
     "title": "Seller Management",
@@ -448,6 +450,7 @@
     "stake2": "for arbitrator license",
     "ownDispute": "You cannot arbitrate your own disputes",
     "notYours": "You are not the arbitrator of this dispute",
+    "notAuthorized": "You are not authorized to see this page",
     "yourDecision": "Your decision",
     "goesTo": "{{tokenAmount}} {{tokenSymbol}} goes to:",
     "resolve": "Resolve dispute",
