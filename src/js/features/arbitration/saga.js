@@ -1,6 +1,5 @@
 /* global web3, subspace */
-import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
-import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
+import ArbitrationLicenseInstance from '../../../embarkArtifacts/contracts/ArbitrationLicenseInstance';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
@@ -32,8 +31,6 @@ import {
   IS_FALLBACK_ARBITRATOR, IS_FALLBACK_ARBITRATOR_SUCCEEDED, IS_FALLBACK_ARBITRATOR_FAILED
 } from './constants';
 
-ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
 }
@@ -63,18 +60,18 @@ export function *doLoadArbitratorScores() {
 
 export function *doGetArbitrators({address, includeAll}) {
   try {
-    const cnt = yield call(ArbitrationLicense.methods.getNumLicenseOwners().call);
+    const cnt = yield call(ArbitrationLicenseInstance.methods.getNumLicenseOwners().call);
     const arbitrators = {};
     for(let i = 0; i < cnt; i++){
-      const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
-      const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
-      const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(arbitrator).call);
+      const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicenseInstance.methods.licenseOwners(i).call));
+      const isAllowed = yield call(ArbitrationLicenseInstance.methods.isAllowed(address, arbitrator).call);
+      const isLicenseOwner = yield call(ArbitrationLicenseInstance.methods.isLicenseOwner(arbitrator).call);
 
       if(isLicenseOwner && (isAllowed || includeAll)) {
         const id = web3.utils.soliditySha3(arbitrator, address);
-        arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
+        arbitrators[arbitrator] = yield call(ArbitrationLicenseInstance.methods.arbitratorlicenseDetails(arbitrator).call);
         arbitrators[arbitrator].isAllowed = isAllowed;
-        arbitrators[arbitrator].request = yield call(ArbitrationLicense.methods.requests(id).call);
+        arbitrators[arbitrator].request = yield call(ArbitrationLicenseInstance.methods.requests(id).call);
       }
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
@@ -167,10 +164,10 @@ export function *onGetArbitratorApprovalRequests() {
 
 export function *doGetArbitratorApprovalRequests() {
   try {
-    const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const events = yield ArbitrationLicenseInstance.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
     const requests = yield all(events.map(function *(event) {
       const request = event.returnValues;
-      const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
+      const requestDetail = yield ArbitrationLicenseInstance.methods.requests(request.id).call();
 
       if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator, web3.eth.defaultAccount)) return null;
 
@@ -192,9 +189,9 @@ export function *onGetArbitratorBlacklist() {
 
 export function *doGetArbitratorBlacklist() {
   try {
-    const events = yield ArbitrationLicense.getPastEvents('BlacklistSeller', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const events = yield ArbitrationLicenseInstance.getPastEvents('BlacklistSeller', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
     const sellers = yield all(events.map(function *(event) {
-      const isBlacklisted = yield ArbitrationLicense.methods.blacklist(event.returnValues.seller).call();
+      const isBlacklisted = yield ArbitrationLicenseInstance.methods.blacklist(event.returnValues.seller).call();
 
       if (!isBlacklisted) {
         return null;
@@ -250,9 +247,9 @@ export function *doGetFallbackArbitrator() {
 
 export function *doBuyLicense() {
   try {
-    const price = yield call(ArbitrationLicense.methods.price().call);
-    const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
-    const toSend = SNT.methods.approveAndCall(ArbitrationLicense.options.address, price, encodedCall);
+    const price = yield call(ArbitrationLicenseInstance.methods.price().call);
+    const encodedCall = ArbitrationLicenseInstance.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(ArbitrationLicenseInstance.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 2000});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
@@ -280,7 +277,7 @@ export function *onBuyLicense() {
 
 export function *loadPrice() {
   try {
-    const price = yield call(ArbitrationLicense.methods.price().call);
+    const price = yield call(ArbitrationLicenseInstance.methods.price().call);
     yield put({type: LOAD_PRICE_SUCCEEDED, price});
   } catch (error) {
     console.error(error);
@@ -296,8 +293,8 @@ export function *doCheckLicenseOwner() {
   if(!web3.eth.defaultAccount) return;
 
   try {
-    const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
-    const licenseDetails = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
+    const isLicenseOwner = yield call(ArbitrationLicenseInstance.methods.isLicenseOwner(web3.eth.defaultAccount).call);
+    const licenseDetails = yield call(ArbitrationLicenseInstance.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
     yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner, acceptAny: licenseDetails.acceptAny});
   } catch (error) {
     console.error(error);
@@ -315,7 +312,7 @@ export function *onRequestArbitrator() {
 
 export function *doCancelArbitratorRequest({arbitrator}){
   const id = web3.utils.soliditySha3(arbitrator, web3.eth.defaultAccount);
-  const toSend = ArbitrationLicense.methods.cancelRequest(id);
+  const toSend = ArbitrationLicenseInstance.methods.cancelRequest(id);
   yield doTransaction(CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, {
     arbitrator,
     toSend

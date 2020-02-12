@@ -22,7 +22,7 @@
         "address": "0xD0fBD1a8D663B3D31312e0cb24910be82387266A"
       },
       "0x7838d40774f79e4b65d55111a3ce90c6272ef1cda077ea43a6b60cab8bdb01b5": {
-        "name": "ArbitrationLicenseProxy",
+        "name": "ArbitrationLicenseInstance",
         "address": "0x75b2e33927Bb5476Abe37A81840d574c5D88d355"
       },
       "0x6130980fa41a9de00b86901a9edceec277386c25d85b342de6f4fc33ee91033c": {
@@ -54,7 +54,7 @@
         "address": "0x0ab611F28165A5b694959C1454c0a9027Eae536D"
       },
       "0x9e013e766512eaeb4a12f5b259804135ef6aa34304fdf063f8f465ca4de94d06": {
-        "name": "ArbitrationLicenseProxy",
+        "name": "ArbitrationLicenseInstance",
         "address": "0x3e7fc31b9bd5FaFdE828AcC1FD7b7b3dD7c1D927"
       },
       "0x6a8ab201c0a00914ac65c01f74f7d0e8f7a72c6591fd3cdcb379e1e4f3c5ab50": {

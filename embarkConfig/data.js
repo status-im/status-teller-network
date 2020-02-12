@@ -50,7 +50,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 1/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -76,8 +76,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the initial ArbitrationLicense template calling the init() function");
-      deps.contracts.ArbitrationLicense.options.address = deps.contracts.ArbitrationLicenseProxy.options.address;
-      const receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicenseInstance.methods.init(
         deps.contracts.SNT.options.address,
         arbitrationLicensePrice,
         deps.contracts.KyberFeeBurner.options.address
@@ -89,7 +88,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log("Setting the initial UserStore template calling the init() function");
       const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.init(
         deps.contracts.SellerLicenseInstance.options.address,
-        deps.contracts.ArbitrationLicenseProxy.options.address
+        deps.contracts.ArbitrationLicenseInstance.options.address
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
@@ -99,7 +98,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.init(
         deps.contracts.UserStoreInstance.options.address,
         deps.contracts.SellerLicenseInstance.options.address,
-        deps.contracts.ArbitrationLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseInstance.options.address,
         burnAddress,
         deps.contracts.Medianizer.options.address
       ));
@@ -111,7 +110,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       const receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.init(
         fallbackArbitrator || main,
         deps.contracts.EscrowRelay.options.address,
-        deps.contracts.ArbitrationLicenseProxy.options.address,
+        deps.contracts.ArbitrationLicenseInstance.options.address,
         deps.contracts.OfferStoreInstance.options.address,
         deps.contracts.UserStoreInstance.options.address,
         deps.contracts.KyberFeeBurner.options.address, // TODO: replace with StakingPool address
@@ -158,7 +157,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 1/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 2/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 3/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -220,18 +219,18 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     console.log("Buy arbitration licenses");
     {
-      const buyLicense = deps.contracts.ArbitrationLicense.methods.buy().encodeABI();
+      const buyLicense = deps.contracts.ArbitrationLicenseInstance.methods.buy().encodeABI();
 
       const sendTrxAccountArbi = estimateAndSend(arbitrator, gasPrice);
       const sendTrxAccount8 = estimateAndSend(addresses[8], gasPrice);
 
-      await sendTrxAccountArbi(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
+      await sendTrxAccountArbi(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicenseInstance._address, arbitrationLicensePrice, buyLicense));
       await sendTrxAccountArbi(deps.contracts.UserStoreInstance.methods.addOrUpdateUser(CONTACT_DATA, "Montreal", "Fake Arbitrator"));
 
-      await sendTrxAccount8(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicense._address, arbitrationLicensePrice, buyLicense));
+      await sendTrxAccount8(deps.contracts.SNT.methods.approveAndCall(deps.contracts.ArbitrationLicenseInstance._address, arbitrationLicensePrice, buyLicense));
 
       // Accepting everyone
-      await sendTrxAccountArbi(deps.contracts.ArbitrationLicense.methods.changeAcceptAny(true));
+      await sendTrxAccountArbi(deps.contracts.ArbitrationLicenseInstance.methods.changeAcceptAny(true));
     }
 
     console.log('Buy Licenses...');
