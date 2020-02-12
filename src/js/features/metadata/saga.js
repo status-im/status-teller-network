@@ -1,9 +1,9 @@
 /* global web3 */
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
-import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
+import SellerLicenseInstance from '../../../embarkArtifacts/contracts/SellerLicenseInstance';
 import {eventChannel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
@@ -46,13 +46,11 @@ import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
 import { zeroAddress, addressCompare } from '../../utils/address';
 import {getContactData} from '../../utils/strings';
-import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import {enableEthereum} from '../../services/embarkjs';
 import network from '../../features/network';
 
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-SellerLicense.options.address = SellerLicenseProxy.options.address;
 
 export function *loadUser({address}) {
   if(!address) return;
@@ -61,7 +59,7 @@ export function *loadUser({address}) {
 
   try {
     const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
-    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
+    const isSeller = yield SellerLicenseInstance.methods.isLicenseOwner(address).call({from: defaultAccount});
 
     let userLicenses = {
       isArbitrator,

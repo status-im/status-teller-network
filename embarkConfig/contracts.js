@@ -44,8 +44,9 @@ module.exports = {
           "$KyberFeeBurner"  // TODO: replace with "$StakingPool"
         ]
       },
-      SellerLicenseProxy: {
+      SellerLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'SellerLicense',
         args: ["0x", "$SellerLicense"]
       },
       ArbitrationLicense: {
@@ -226,8 +227,9 @@ module.exports = {
       SellerLicense: {
         address: "0xD0fBD1a8D663B3D31312e0cb24910be82387266A"
       },
-      SellerLicenseProxy: {
+      SellerLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'SellerLicense',
         address: "0x18C8e4570DE4D1FA07E2ad8BE4bc0Fe8B2C2dc4d"
       },
       ArbitrationLicense: {

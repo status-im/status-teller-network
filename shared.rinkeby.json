@@ -26,7 +26,7 @@
         "address": "0x8c4ac6e5D470DA6C6326172D605fC6415781e5E4"
       },
       "0x7b7e886f7d2cdd565ed5479caa55a2967a3e80258d05e67b742aed762fc833e0": {
-        "name": "SellerLicenseProxy",
+        "name": "SellerLicenseInstance",
         "address": "0xfA3267C2b73E30861c2E4630276923E5F1969783"
       },
       "0xe3fa4eae4eaf6b4cb1082ccbd74c2178c67d375051417c7fc483929a5118e0b7": {

@@ -1,5 +1,5 @@
 /*global web3*/
-import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
+import SellerLicenseInstance from '../../../embarkArtifacts/contracts/SellerLicenseInstance';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import {fork, takeEvery, call, put, take} from 'redux-saga/effects';
 import {
@@ -13,16 +13,14 @@ import {
 } from './constants';
 import {promiseEventEmitter} from '../../utils/saga';
 import {eventChannel} from "redux-saga";
-import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
-SellerLicense.options.address = SellerLicenseProxy.options.address;
 
 window.SNT = SNT;
 
 export function *doBuyLicense() {
   try {
-    const price = yield call(SellerLicense.methods.price().call);
-    const encodedCall = SellerLicense.methods.buy().encodeABI();
-    const toSend = SNT.methods.approveAndCall(SellerLicense.options.address, price, encodedCall);
+    const price = yield call(SellerLicenseInstance.methods.price().call);
+    const encodedCall = SellerLicenseInstance.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(SellerLicenseInstance.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 2000});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
@@ -50,7 +48,7 @@ export function *onBuyLicense() {
 
 export function *loadPrice() {
   try {
-    const price = yield call(SellerLicense.methods.price().call);
+    const price = yield call(SellerLicenseInstance.methods.price().call);
     yield put({type: LOAD_PRICE_SUCCEEDED, price});
   } catch (error) {
     console.error(error);
@@ -64,7 +62,7 @@ export function *onLoadPrice() {
 
 export function *doCheckLicenseOwner() {
   try {
-    const isLicenseOwner = yield call(SellerLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
+    const isLicenseOwner = yield call(SellerLicenseInstance.methods.isLicenseOwner(web3.eth.defaultAccount).call);
     yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner});
   } catch (error) {
     console.error(error);
@@ -78,7 +76,7 @@ export function *onCheckLicenseOwner() {
 
 export function *doGetLicenseOwners() {
   try {
-    const events = yield SellerLicense.getPastEvents('Bought', {fromBlock: 1});
+    const events = yield SellerLicenseInstance.getPastEvents('Bought', {fromBlock: 1});
     const licenseOwners = events.map(event => {
       return {address: event.returnValues.buyer};
     });

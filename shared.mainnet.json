@@ -30,7 +30,7 @@
         "address": "0x4Cbc628FEb1fEA3010592D0f71818E5cdfE00820"
       },
       "0x65d7f237d4046b4fe8f2acdb8618fa105aadf75243f7c4473eeab1ae1460de67": {
-        "name": "SellerLicenseProxy",
+        "name": "SellerLicenseInstance",
         "address": "0x18C8e4570DE4D1FA07E2ad8BE4bc0Fe8B2C2dc4d"
       },
       "0xe542267821df1fb702d0732a2e293964ad72eca9942d1d21cb652bf91c9ebf76": {

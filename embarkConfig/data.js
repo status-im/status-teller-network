@@ -48,7 +48,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       let receipt;
       receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 1/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -65,8 +65,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the initial SellerLicense template calling the init() function");
-      deps.contracts.SellerLicense.options.address = deps.contracts.SellerLicenseProxy.options.address;
-      const receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.init(
         deps.contracts.SNT.options.address,
         licensePrice,
         deps.contracts.KyberFeeBurner.options.address
@@ -89,7 +88,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     {
       console.log("Setting the initial UserStore template calling the init() function");
       const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.init(
-        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.SellerLicenseInstance.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address
       ));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
@@ -99,7 +98,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log("Setting the initial OfferStore template calling the init() function");
       const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.init(
         deps.contracts.UserStoreInstance.options.address,
-        deps.contracts.SellerLicenseProxy.options.address,
+        deps.contracts.SellerLicenseInstance.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
         burnAddress,
         deps.contracts.Medianizer.options.address
@@ -157,7 +156,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       let receipt;
       receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 1/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 2/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 3/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -236,10 +235,10 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     }
 
     console.log('Buy Licenses...');
-    const buyLicense = deps.contracts.SellerLicense.methods.buy().encodeABI();
+    const buyLicense = deps.contracts.SellerLicenseInstance.methods.buy().encodeABI();
     await async.eachLimit(addresses.slice(1, 7), 1, async (address) => {
       const sendTrxAccount = estimateAndSend(address, gasPrice);
-      return sendTrxAccount(deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicense._address, licensePrice, buyLicense));
+      return sendTrxAccount(deps.contracts.SNT.methods.approveAndCall(deps.contracts.SellerLicenseInstance._address, licensePrice, buyLicense));
     });
 
     console.log('Generating Offers...');
@@ -336,7 +335,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     const accounts = await async.mapLimit(addresses, 1, async (address) => {
       const ethBalance = await deps.web3.eth.getBalance(address);
       const sntBalance = await deps.contracts.SNT.methods.balanceOf(address).call();
-      const isLicenseOwner = await deps.contracts.SellerLicense.methods.isLicenseOwner(address).call();
+      const isLicenseOwner = await deps.contracts.SellerLicenseInstance.methods.isLicenseOwner(address).call();
       let offers = [];
       const user = await deps.contracts.UserStoreInstance.methods.users(address).call();
       if (user) {
