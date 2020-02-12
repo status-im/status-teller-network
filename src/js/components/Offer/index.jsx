@@ -18,6 +18,8 @@ import RoundedIcon from "../../ui/RoundedIcon";
 import {stringToContact} from "../../utils/strings";
 
 import infoRedIcon from "../../../images/info-red.svg";
+import earthIcon from "../../../images/earthIcon.svg";
+import unknownIcon from "../../../images/unknownIcon.svg";
 
 import './index.scss';
 
@@ -54,9 +56,14 @@ const Offer = ({offer, withDetail, prices, userAddress, t, offerClick, showCommu
         {offer.user.username}
       </CardTitle>
       <div>
-        {offer.user.countryCode && offer.user.location && <p className="text-black m-0 mt-2 clearfix data-item">
-          <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>
+        {offer.user.location && <p className="text-black m-0 mt-2 clearfix data-item">
+          {offer.user.countryCode && <span className={`mr-2 ml-1 flag-icon flag-icon-${offer.user.countryCode.toLowerCase()}`}/>}
+          {!offer.user.countryCode && <img className="mr-2 ml-1" src={earthIcon} alt="earth icon"/>}
           {offer.user.location}
+        </p>}
+        {!offer.user.location && <p className="text-black m-0 mt-2 clearfix data-item">
+          <img src={unknownIcon} className="mr-2 ml-1" alt="unknown icon" width={20} height={15}/>
+          {t('offer.noLocation')}
         </p>}
         <p className="text-black m-0 mt-2 clearfix data-item">
           <RoundedIcon image={bankIcon} size="sm" bgColor="blue" className="mr-2 float-left"/>
