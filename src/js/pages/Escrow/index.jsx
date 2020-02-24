@@ -221,9 +221,12 @@ class Escrow extends Component {
 
     return (<Fragment>
       {!this.props.isSubscribed && !this.state.hideNotifBox && !this.props.refusedEmailNotifications &&
-      <div className="rounded shadow p-3 position-relative clickable" onClick={this.goToEmailPage}>
+      <div className="rounded shadow p-3 position-relative clickable mb-3" onClick={this.goToEmailPage}>
         <img alt="close" src={closeIcon} className="close-email-notification-box clickable" width={25} height={25}
-             onClick={() => this.setState({hideNotifBox: true})}/>
+             onClick={() => {
+               this.props.refuseEmailNotifications();
+               this.setState({hideNotifBox: true});
+             }}/>
         <RoundedIcon image={bellIcon} bgColor="blue" className="float-left mr-3"/>
         <p className="font-weight-medium mb-0">{t('escrow.page.emailNotif')}</p>
         <p className="text-muted mb-0 text-small">{t('escrow.page.getNotifs')}</p>
@@ -270,6 +273,8 @@ class Escrow extends Component {
           </Col>
         </Row>}
       </div>
+
+      <h3 className="mb-0 mt-2">{t('escrow.page.title')}</h3>
 
       <div className={classnames("escrow", {'escrow-disabled': arbitrationDetails.open})}>
         {!isETH && !isBuyer &&
@@ -408,6 +413,7 @@ Escrow.propTypes = {
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
   loadArbitration: PropTypes.func,
+  refuseEmailNotifications: PropTypes.func,
   watchEscrow: PropTypes.func,
   escrowEvents: PropTypes.object,
   assetCurrentPrice: PropTypes.object,
@@ -488,6 +494,7 @@ export default connect(
     watchEscrow: escrowF.actions.watchEscrow,
     getLastActivity: escrowF.actions.getLastActivity,
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
+    refuseEmailNotifications: emailNotifications.actions.refuseEmailNotifications,
     setRedirectTarget: emailNotifications.actions.setRedirectTarget,
     enableEthereum: metadata.actions.enableEthereum,
     getFallbackArbitrator: arbitrationF.actions.getFallbackArbitrator
