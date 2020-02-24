@@ -2,10 +2,9 @@
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import GnosisSafe from '../../../embarkArtifacts/contracts/GnosisSafe';
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel, channel} from "redux-saga";
@@ -33,7 +32,6 @@ import {
   IS_FALLBACK_ARBITRATOR, IS_FALLBACK_ARBITRATOR_SUCCEEDED, IS_FALLBACK_ARBITRATOR_FAILED
 } from './constants';
 
-OfferStore.options.address = OfferStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 
 export function *onResolveDispute() {
@@ -100,7 +98,7 @@ export function *doGetEscrows({includeFallbackDisputes, isArbitrator}) {
       const escrowId = events[i].returnValues.escrowId;
       const block = yield web3.eth.getBlock(events[0].blockNumber);
       const escrow = yield call(EscrowInstance.methods.transactions(escrowId).call);
-      const offer = yield OfferStore.methods.offers(escrow.offerId).call();
+      const offer = yield OfferStoreInstance.methods.offers(escrow.offerId).call();
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
@@ -142,7 +140,7 @@ export function *onGetEscrows() {
 export function *doLoadArbitration({escrowId}) {
   try {
     const escrow = yield call(EscrowInstance.methods.transactions(escrowId).call);
-    const offer = yield OfferStore.methods.offers(escrow.offerId).call();
+    const offer = yield OfferStoreInstance.methods.offers(escrow.offerId).call();
 
     const events = yield EscrowInstance.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
     const block = yield web3.eth.getBlock(events[0].blockNumber);

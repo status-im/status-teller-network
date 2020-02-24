@@ -73,8 +73,9 @@ module.exports = {
         proxyFor: "UserStore",
         args: ["0x", "$UserStore"]
       },
-      OfferStoreProxy: {
+      OfferStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "OfferStore",
         args: ["0x", "$OfferStore"]
       },
       "RLPReader": {
@@ -84,7 +85,7 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       EscrowRelay: {
-        args: ["$OfferStoreProxy", "$EscrowInstance", "$SNT"],
+        args: ["$OfferStoreInstance", "$EscrowInstance", "$SNT"],
         deps: ['RelayHub']
       },
       Escrow: {
@@ -250,8 +251,9 @@ module.exports = {
         proxyFor: "UserStore",
         address: "0x61fbacebcef64e726ff5b848da5dff0c44c199f5"
       },
-      OfferStoreProxy: {
+      OfferStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "OfferStore",
         address: "0xf0dfd170aedf576717b7de14dac257c832a364e2"
       },
       EscrowRelay: {

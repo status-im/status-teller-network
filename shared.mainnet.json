@@ -42,7 +42,7 @@
         "address": "0x6b422AEea68c967D4e9Fcbb9b76bbc5050C341dA"
       },
       "0xfddd1e075996e316d20007a69153a6a83ae3908733ae55efb7bf716f35ffd0b7": {
-        "name": "OfferStoreProxy",
+        "name": "OfferStoreInstance",
         "address": "0x8B18a1C9D5e1085C00C6B8dE7C508DdC5a17A456"
       },
       "0x14ddfe2488e52e2a8c20e8f7a6314fbdbc8f621e0f4c3ae1ddb460c861087378": {
@@ -66,7 +66,7 @@
         "address": "0x61FBACebCEf64e726fF5B848dA5DFF0c44c199f5"
       },
       "0x61436adc5d8e8f386f67037f11c40989703708b6b2a1cbcd0ab50849d881b5c4": {
-        "name": "OfferStoreProxy",
+        "name": "OfferStoreInstance",
         "address": "0xf0DFd170AEDf576717b7DE14dAC257c832A364e2"
       },
       "0x3f7854262da0c46d0f1fe604a8c14085914f075246c37f5d567a047b2b7f1928": {

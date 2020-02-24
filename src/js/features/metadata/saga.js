@@ -1,9 +1,8 @@
 /* global web3 */
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 import {eventChannel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
@@ -52,7 +51,6 @@ import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/Arbitrat
 import {enableEthereum} from '../../services/embarkjs';
 import network from '../../features/network';
 
-OfferStore.options.address = OfferStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 SellerLicense.options.address = SellerLicenseProxy.options.address;
 
@@ -167,9 +165,9 @@ export function *loadOffers({address}) {
 
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     if (address) {
-      offerIds = yield OfferStore.methods.getOfferIds(address).call({from: defaultAccount});
+      offerIds = yield OfferStoreInstance.methods.getOfferIds(address).call({from: defaultAccount});
     } else {
-      const size = yield OfferStore.methods.offersSize().call({from: defaultAccount});
+      const size = yield OfferStoreInstance.methods.offersSize().call({from: defaultAccount});
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
     const loadedUsers = [];
@@ -185,7 +183,7 @@ export function *loadOffers({address}) {
     const nbCreatedTradesObject = {};
 
     const offers = yield all(offerIds.map(function *(id) {
-      const offer = yield OfferStore.methods.offer(id).call({from: defaultAccount});
+      const offer = yield OfferStoreInstance.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
         offer.arbitratorData = yield UserStoreInstance.methods.users(offer.arbitrator).call({from: defaultAccount});
@@ -259,7 +257,7 @@ export function *addOffer({user, offer}) {
   const priceInEther = parseFloat(web3.utils.fromWei(price, "ether")) * 1.05; // 5% for price variations while mining
   const valueInWei = web3.utils.toWei(priceInEther.toString());
 
-  const toSend = OfferStore.methods.addOffer(
+  const toSend = OfferStoreInstance.methods.addOffer(
     offer.asset,
     user.contactData,
     user.location,
@@ -302,7 +300,7 @@ export function *onDeleteOffer() {
 
 export function *getOfferPrice() {
   try {
-    const price = yield OfferStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+    const price = yield OfferStoreInstance.methods.getAmountToStake(web3.eth.defaultAccount).call();
     yield put({type: GET_OFFER_PRICE_SUCCEEDED, price});
     return price;
   } catch(err){
@@ -312,7 +310,7 @@ export function *getOfferPrice() {
 
 export function *getMaxOffers() {
   try {
-    const maxOffers = yield OfferStore.methods.maxOffers().call();
+    const maxOffers = yield OfferStoreInstance.methods.maxOffers().call();
     yield put({type: GET_MAX_OFFERS_SUCCEEDED, maxOffers});
   } catch(err){
     yield put({type: GET_MAX_OFFERS_FAILED, error: err.message});

@@ -1,8 +1,7 @@
 /*global web3*/
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
 import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
@@ -28,8 +27,6 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED, LOAD_USER} from "../metadata/constants";
-
-OfferStore.options.address = OfferStoreProxy.options.address;
 
 const { toBN } = web3.utils;
 
@@ -185,7 +182,7 @@ export function *doLoadEscrows({address}) {
     const escrows = yield all(events.map(function *(ev) {
       const escrow = yield EscrowInstance.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
-      escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+      escrow.offer = yield OfferStoreInstance.methods.offer(escrow.offerId).call({from: defaultAccount});
       escrow.currency = escrow.offer.currency;
       escrow.margin = escrow.offer.margin;
 
@@ -227,7 +224,7 @@ export function *doGetEscrow({escrowId}) {
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     const escrow = yield EscrowInstance.methods.transactions(escrowId).call({from: defaultAccount});
     escrow.escrowId = escrowId;
-    escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+    escrow.offer = yield OfferStoreInstance.methods.offer(escrow.offerId).call({from: defaultAccount});
     escrow.seller = yield UserStoreInstance.methods.users(escrow.offer.owner).call({from: defaultAccount});
     escrow.buyerInfo = yield UserStoreInstance.methods.users(escrow.buyer).call({from: defaultAccount});
     escrow.arbitratorInfo = yield UserStoreInstance.methods.users(escrow.arbitrator).call({from: defaultAccount});

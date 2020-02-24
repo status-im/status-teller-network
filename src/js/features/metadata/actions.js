@@ -4,10 +4,7 @@ import {
   DELETE_OFFER, ENABLE_ETHEREUM, SET_MAINNET_WARNING_SHOWED,
   GET_OFFER_PRICE, CHECK_ACCOUNT_CHANGE, RESET_PROVIDER_VERIFICATION, GET_MAX_OFFERS
 } from './constants';
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-
-OfferStore.options.address = OfferStoreProxy.options.address;
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 
 export const load = (address) => ({type: LOAD, address});
 export const loadUserOnly = (address) => ({type: LOAD_USER, address});
@@ -68,7 +65,7 @@ export const resetUpdateUserStatus = () => ({
 export const deleteOffer = (offerId) => ({
   type: DELETE_OFFER,
   offerId,
-  toSend: OfferStore.methods.removeOffer(offerId)
+  toSend: OfferStoreInstance.methods.removeOffer(offerId)
 });
 
 export const resetProviderVerification = () => ({

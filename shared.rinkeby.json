@@ -50,7 +50,7 @@
         "address": "0x0b4292a941a9a2A17d81D6A82cb542486627a5fc"
       },
       "0x0d9751078a80a6389a451c6de3d17f4e803b3117be139285232894f1f021735b": {
-        "name": "OfferStoreProxy",
+        "name": "OfferStoreInstance",
         "address": "0x0ECB5b538EE3edE7b3410956415645d1775eBA24"
       },
       "0x6f4d89f2b73e5707892da5337423aa937eaf299201a1ca1386de651a911108c1": {

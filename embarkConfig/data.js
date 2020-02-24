@@ -52,7 +52,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 5/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -97,8 +97,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the initial OfferStore template calling the init() function");
-      deps.contracts.OfferStore.options.address = deps.contracts.OfferStoreProxy.options.address;
-      const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.init(
         deps.contracts.UserStoreInstance.options.address,
         deps.contracts.SellerLicenseProxy.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
@@ -114,7 +113,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
         fallbackArbitrator || main,
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
-        deps.contracts.OfferStore.options.address,
+        deps.contracts.OfferStoreInstance.options.address,
         deps.contracts.UserStoreInstance.options.address,
         deps.contracts.KyberFeeBurner.options.address, // TODO: replace with StakingPool address
         feeMilliPercent
@@ -124,7 +123,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the Offer store proxy address in UserStore");
-      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.setAllowedContract(deps.contracts.OfferStore.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.setAllowedContract(deps.contracts.OfferStoreInstance.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -136,7 +135,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the escrow proxy address in OfferStore");
-      const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -148,7 +147,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the EscrowRelay address in OfferStore");
-      const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -162,7 +161,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log('- 2/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 3/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 4/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -254,9 +253,9 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     const offerReceipts = await async.mapLimit(addresses.slice(offerStartIndex, offerStartIndex + 5), 1, async (address) => {
       const sendTrxAccount = estimateAndSend(address, gasPrice);
 
-      const amountToStake = await deps.contracts.OfferStore.methods.getAmountToStake(address).call();
+      const amountToStake = await deps.contracts.OfferStoreInstance.methods.getAmountToStake(address).call();
 
-      return sendTrxAccount(deps.contracts.OfferStore.methods.addOffer(
+      return sendTrxAccount(deps.contracts.OfferStoreInstance.methods.addOffer(
         tokens[1],
         // TODO un hardcode token and add `approve` in the escrow creation below
         // tokens[Math.floor(Math.random() * tokens.length)],
@@ -341,9 +340,9 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       let offers = [];
       const user = await deps.contracts.UserStoreInstance.methods.users(address).call();
       if (user) {
-        const offerIds = await deps.contracts.OfferStore.methods.getOfferIds(address).call();
+        const offerIds = await deps.contracts.OfferStoreInstance.methods.getOfferIds(address).call();
         offers = await Promise.all(offerIds.map(async(offerId) => (
-          deps.contracts.OfferStore.methods.offer(offerId).call()
+          deps.contracts.OfferStoreInstance.methods.offer(offerId).call()
         )));
       }
       return {
