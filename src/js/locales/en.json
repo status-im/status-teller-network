@@ -600,6 +600,13 @@
       "moneyTransferred": "Money transferred",
       "markAsReceived": "Mark as received",
       "markAsPaid": "Mark as paid →"
+    },
+    "dispute": {
+      "getInTouch": "Please, get in touch with arbitrator and explain what is the issue with the trade.",
+      "deadline": "Deadline for arbitrator to resolve the dispute",
+      "whatIfInactive": "What if an arbitrator is inactive?",
+      "noWorries": "No worries, after the time is out and your dispute is still not resolved, a fallback arbitrator will take over the trade.",
+      "ok": "OK, got it"
     }
   },
   "notifications": {

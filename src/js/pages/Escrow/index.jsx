@@ -42,9 +42,10 @@ import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 import {withTranslation, Trans} from "react-i18next";
 import ConnectWallet from '../../components/ConnectWallet';
+import ApproveTokenRow from "./components/ApproveTokenRow";
+import DisputeWarning from "./components/DisputeWarning";
 
 import "./index.scss";
-import ApproveTokenRow from "./components/ApproveTokenRow";
 
 const {toBN} = web3.utils;
 
@@ -233,14 +234,7 @@ class Escrow extends Component {
       </div>}
 
       <div className="escrow-warnings-and-infos">
-        {arbitrationDetails.open && <Row className="mt-4">
-          <Col xs="2">
-            <RoundedIcon image={exclamationCircle} bgColor="red"/>
-          </Col>
-          <Col xs="10 my-auto text-danger">
-            <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
-          </Col>
-        </Row>}
+        {arbitrationDetails.open && <DisputeWarning arbitrationTimeout={parseInt(arbitration?.arbitration?.arbitratorTimeout, 10)}/>}
 
         {((!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
           (isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
