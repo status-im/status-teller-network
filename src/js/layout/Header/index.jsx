@@ -11,7 +11,6 @@ import arbitration from "../../features/arbitration";
 
 import logoWhite from "../../../images/teller-logo-white.svg";
 import iconProfile from "../../../images/profile.svg";
-import iconProfileActionNeeded from "../../../images/profile-action-needed.svg";
 import iconCloseProfile from "../../../images/close_profile.svg";
 
 import "./index.scss";
@@ -56,7 +55,8 @@ const Header = ({t, location, history, actionNeeded, lastLocation}) => {
               <NavItem>
                 {!isProfile &&
                 <NavLink tag={Link} to="/profile" className="mt-1">
-                  <img src={actionNeeded ? iconProfileActionNeeded : iconProfile}
+                  {!!actionNeeded && <span className="action-needed-badge">{actionNeeded}</span>}
+                  <img src={iconProfile}
                        alt="Profile"
                        width="22"
                        height="19"/>
@@ -80,11 +80,11 @@ Header.propTypes = {
   history: PropTypes.object,
   location: PropTypes.object,
   lastLocation: PropTypes.object,
-  actionNeeded: PropTypes.bool
+  actionNeeded: PropTypes.number
 };
 
 const mapStateToProps = (state) => ({
-  actionNeeded: escrow.selectors.actionNeeded(state) || arbitration.selectors.actionNeeded(state)
+  actionNeeded: escrow.selectors.actionNeeded(state) + arbitration.selectors.actionNeeded(state)
 });
 
 export default withRouter(connect(

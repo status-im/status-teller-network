@@ -4,9 +4,10 @@ import RoundedIcon from "../../../ui/RoundedIcon";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import classnames from 'classnames';
-import actionNeededIcon from '../../../../images/action-needed.svg';
 
-const ProfileButton = ({linkTo, image, imageComponent, title, subtitle, active}) => (
+import './ProfileButton.scss';
+
+const ProfileButton = ({linkTo, image, imageComponent, title, subtitle, actionNeeded}) => (
   <Link to={linkTo} className="profile-button">
     <Row className="mt-4 mb-4">
       <Col xs="12 my-auto">
@@ -15,7 +16,7 @@ const ProfileButton = ({linkTo, image, imageComponent, title, subtitle, active})
         </span>
         <h6 className={classnames("m-0 font-weight-normal profile-button-title", {'line-height-40': !subtitle})}>
           {title}
-          {active && <img alt="action needed icon" src={actionNeededIcon} className="ml-2"/>}
+          {!!actionNeeded && <span className="action-needed-badge ml-1">{actionNeeded}</span>}
         </h6>
         {subtitle && <span className="text-muted text-small">{subtitle}</span>}
       </Col>
@@ -29,7 +30,7 @@ ProfileButton.propTypes = {
   imageComponent: PropTypes.func,
   title: PropTypes.string,
   subtitle: PropTypes.string,
-  active: PropTypes.bool
+  actionNeeded: PropTypes.number
 };
 
 export default ProfileButton;

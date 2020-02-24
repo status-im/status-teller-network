@@ -24,31 +24,33 @@ const DEFAULT_STATE = {
   escrows: {},
   createEscrowStatus: States.none,
   lastActivity: 0,
+  actionNeeded: 0,
   newEscrow: null,
   changedEscrow: null,
   feeMilliPercent: null,
   feeMilliPercentError: null
 };
 
-function isActionNeeded(escrows) {
+function nbActionNeeded(escrows) {
   if(!web3.eth.defaultAccount) return false;
-  
+
   const defaultAccount = toChecksumAddress(web3.eth.defaultAccount);
   // Check the trade status to see if there are actions needed
-  const actionNeeded = Object.values(escrows).find(trade => {
+  let nbActionNeeded = 0;
+  Object.values(escrows).forEach(trade => {
     const isBuyer = defaultAccount === toChecksumAddress(trade.buyer);
     if (!isBuyer && defaultAccount !== toChecksumAddress(trade.offer.owner)) {
       // not buyer nor seller
       return false;
     }
     switch (trade.status) {
-      case escrowStatus.CREATED: return !isBuyer;
-      case escrowStatus.FUNDED: return isBuyer;
-      case escrowStatus.PAID: return !isBuyer;
+      case escrowStatus.CREATED: nbActionNeeded += !isBuyer ? 1 : 0; break;
+      case escrowStatus.FUNDED: nbActionNeeded += isBuyer ? 1 : 0; break;
+      case escrowStatus.PAID: nbActionNeeded += !isBuyer ? 1 : 0; break;
       default: return false;
     }
   });
-  return !!actionNeeded;
+  return nbActionNeeded;
 }
 
 // eslint-disable-next-line complexity
@@ -84,7 +86,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: escrowsClone,
-        actionNeeded: isActionNeeded(escrowsClone)
+        actionNeeded: nbActionNeeded(escrowsClone)
       };
     case PAY_ESCROW_PRE_SUCCESS:
     case CANCEL_ESCROW_PRE_SUCCESS:
@@ -113,7 +115,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: escrowsClone,
-        actionNeeded: isActionNeeded(escrowsClone)
+        actionNeeded: nbActionNeeded(escrowsClone)
       };
     case RELEASE_ESCROW_FAILED:
       escrowsClone[escrowId].releaseStatus = States.failed;
@@ -133,7 +135,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: escrowsClone,
-        actionNeeded: isActionNeeded(escrowsClone)
+        actionNeeded: nbActionNeeded(escrowsClone)
       };
     case PAY_ESCROW_FAILED:
       escrowsClone[escrowId].payStatus = States.failed;
@@ -187,7 +189,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: escrows,
-        actionNeeded: isActionNeeded(escrows)
+        actionNeeded: nbActionNeeded(escrows)
       };
     }
     case GET_LAST_ACTIVITY_SUCCEEDED:
@@ -207,7 +209,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         escrows: escrowsClone,
-        actionNeeded: isActionNeeded(escrowsClone)
+        actionNeeded: nbActionNeeded(escrowsClone)
       };
     }
     case CANCEL_ESCROW_FAILED:

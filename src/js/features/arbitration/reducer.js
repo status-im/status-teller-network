@@ -73,19 +73,21 @@ const DEFAULT_STATE = {
   blacklistedSellers: [],
   arbitratorScores: {},
   fallbackArbitrator: '',
+  actionNeeded: 0,
   isFallbackArbitrator: false
 };
 
-function isActionNeeded(escrows) {
+function nbActionNeeded(escrows) {
   const defaultAccount = web3.eth.defaultAccount;
+  let nbActionNeeded = 0;
   // Check the trade status to see if there are actions needed
-  const actionNeeded = Object.values(escrows).find(escrow => {
+  Object.values(escrows).forEach(escrow => {
     if (toChecksumAddress(defaultAccount) !== toChecksumAddress(escrow.arbitration.arbitrator)) {
       return false;
     }
-    return escrow.arbitration.open;
+    nbActionNeeded += escrow.arbitration.open ? 1 : 0;
   });
-  return !!actionNeeded;
+  return nbActionNeeded;
 }
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -115,7 +117,7 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state, ...{
           escrows: action.escrows,
           loading: false,
-          actionNeeded: isActionNeeded(action.escrows)
+          actionNeeded: nbActionNeeded(action.escrows)
         }
       };
     case CANCEL_DISPUTE_SUCCEEDED:
@@ -189,7 +191,7 @@ function reducer(state = DEFAULT_STATE, action) {
           errorGet: '',
           loading: false
         },
-        actionNeeded: isActionNeeded(escrowsClone)
+        actionNeeded: nbActionNeeded(escrowsClone)
       };
     }
     case LOAD_ARBITRATION_SUCCEEDED:
@@ -197,12 +199,12 @@ function reducer(state = DEFAULT_STATE, action) {
         ...state,
         arbitration: action.escrow
       };
-    case GET_FALLBACK_ARBITRATOR_SUCCEEDED: 
+    case GET_FALLBACK_ARBITRATOR_SUCCEEDED:
       return {
         ...state,
         fallbackArbitrator: action.fallbackArbitrator
       };
-    case IS_FALLBACK_ARBITRATOR_SUCCEEDED: 
+    case IS_FALLBACK_ARBITRATOR_SUCCEEDED:
       return {
         ...state,
         isFallbackArbitrator: action.isFallbackArbitrator

@@ -101,13 +101,13 @@ class MyProfile extends Component {
     const openDisputes = this.props.disputes.filter(x => x.arbitration.open && !addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address));
     const openFallbackDisputes = this.props.disputes.filter(x => x.isFallback && x.arbitration.open);
     const activeTrades = trades.filter(x => !escrow.helpers.completedStates.includes(x.status)).length;
-    
+
     return (
       <Fragment>
         <UserInformation isArbitrator={profile.isArbitrator} isFallbackArbitrator={isFallbackArbitrator} reputation={profile.reputation}
                          identiconSeed={profile.address} username={profile.username}/>
         <ProfileButton linkTo="/profile/trades" image={iconTrades} title={t('profile.myTrades')}
-                       subtitle={t('profile.nbActive', {nb: activeTrades})} active={this.props.tradeActionNeeded}/>
+                       subtitle={t('profile.nbActive', {nb: activeTrades})} actionNeeded={this.props.tradeActionNeeded}/>
         <ProfileButton linkTo="/profile/offers" image={iconOffers} title={t('profile.myOffers')}
                        subtitle={t('profile.nbActive', {nb: activeOffers})}/>
         <ProfileButton linkTo="/profile/arbitrators" image={iconArbitrator} title={t('profile.myArbitrators')}
@@ -125,7 +125,7 @@ class MyProfile extends Component {
           <p className="text-muted mt-4">{t('profile.arbitrator')}</p>
           <ProfileButton linkTo="/profile/disputes" image={iconDispute} title={t('profile.disputes')}
                          subtitle={t('profile.disputesToResolve', {nbDisputes: openDisputes.length})}
-                         active={this.props.arbitrationActionNeeded}/>
+                         actionNeeded={this.props.arbitrationActionNeeded}/>
           <ProfileButton linkTo="/sellers" image={iconSettings} title={t('profile.arbitratorSettings')}
                          subtitle={t('profile.pendingRequests', {nbRequests: pendingRequests})}/>
           <Separator/>
@@ -161,8 +161,8 @@ MyProfile.propTypes = {
   watchEscrow: PropTypes.func,
   deleteOffer: PropTypes.func,
   isEip1102Enabled: PropTypes.bool,
-  tradeActionNeeded: PropTypes.bool,
-  arbitrationActionNeeded: PropTypes.bool,
+  tradeActionNeeded: PropTypes.number,
+  arbitrationActionNeeded: PropTypes.number,
   requests: PropTypes.array,
   enableEthereum: PropTypes.func,
   getArbitratorRequests: PropTypes.func,
