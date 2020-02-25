@@ -28,7 +28,7 @@ const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, classNam
     {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
     {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon" width={sizePx}
                    height={sizePx}/>}
-    {imageComponent && imageComponent()}
+    {imageComponent && imageComponent.render()}
   </span>);
 };
 
@@ -39,7 +39,7 @@ FundingEscrow.defaultProps = {
 RoundedIcon.propTypes = {
   icon: PropTypes.object,
   image: PropTypes.string,
-  imageComponent: PropTypes.func,
+  imageComponent: PropTypes.object,
   text: PropTypes.string,
   bgColor: PropTypes.string,
   size: PropTypes.string,

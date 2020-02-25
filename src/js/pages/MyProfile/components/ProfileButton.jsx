@@ -26,7 +26,7 @@ const ProfileButton = ({linkTo, image, imageComponent, title, subtitle, active})
 ProfileButton.propTypes = {
   linkTo: PropTypes.string,
   image: PropTypes.string,
-  imageComponent: PropTypes.func,
+  imageComponent: PropTypes.object,
   title: PropTypes.string,
   subtitle: PropTypes.string,
   active: PropTypes.bool
