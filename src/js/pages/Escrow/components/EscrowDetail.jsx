@@ -120,10 +120,10 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
         <RoundedIcon bgColor="red" image={infoRedIcon} size="md" className="float-left mr-2"/>
         <span className="text-danger">{t('escrow.dispute.dontCommunicate')}</span>
       </p>
-      <p>
+      {arbitrationDetails.open && <p>
         <RoundedIcon bgColor="green" image={greenCheckIcon} size="md" className="float-left mr-2"/>
         <span className="text-muted">{t('escrow.dispute.waitForFallback')}</span>
-      </p>
+      </p>}
     </>}
 
     {isBuyer && escrow.status === tradeStates.funded && escrow.expirationTime && escrow.expirationTime !== '0' &&

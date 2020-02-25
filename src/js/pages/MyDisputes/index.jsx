@@ -44,14 +44,20 @@ class MyDisputes extends Component {
     if (!profile.isArbitrator && !isFallbackArbitrator) {
       return <NoLicense arbitratorPage/>;
     }
-    
+
     return (
       <Fragment>
         {includeFallbackDisputes && <p>
-          Multisig: <a href={"https://" + (network.name == "rinkeby" ? "rinkeby." : "") + "gnosis-safe.io/safes/" + fallbackArbitrator} target="_blank" rel="noopener noreferrer">{fallbackArbitrator}</a>
+          Multisig: <a href={"https://" + (network.name === "rinkeby" ? "rinkeby." : "") + "gnosis-safe.io/safes/" + fallbackArbitrator} target="_blank" rel="noopener noreferrer">{fallbackArbitrator}</a>
         </p>}
-        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open={true} showDate={true} includeFallbackDisputes={includeFallbackDisputes} />
-        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes} />
+        <Disputes disputes={this.props.disputes.filter(x => x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open showDate includeFallbackDisputes={includeFallbackDisputes}/>
+        <Disputes disputes={this.props.disputes.filter(x => !x.arbitration.open && (includeFallbackDisputes || (!addressCompare(x.seller, address) && !addressCompare(x.buyer, address) && addressCompare(x.arbitrator, address))))} open={false} showDate={false} includeFallbackDisputes={includeFallbackDisputes}/>
+        {!includeFallbackDisputes && <Disputes disputes={this.props.disputes.filter(x => {
+          return !addressCompare(x.seller, address) &&
+            !addressCompare(x.buyer, address) &&
+            !addressCompare(x.arbitrator, address) &&
+            Date.now() - (parseInt(x.arbitration.arbitratorTimeout || 0, 10) * 1000) > 0;
+        })} open={false} unresolved showDate={false}/>}
       </Fragment>
     );
   }
