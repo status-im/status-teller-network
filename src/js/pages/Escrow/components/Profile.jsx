@@ -8,11 +8,9 @@ import {withTranslation} from "react-i18next";
 
 const Profile = ({t, address, withBuyer}) => (
   <Row className="mt-4" tag={Link} to={"/profile/" + address} >
-    <Col xs="2">
-      <RoundedIcon image={ProfileIcon} bgColor="blue"/>
-    </Col>
-    <Col xs="10 my-auto">
-      <h6 className="m-0 font-weight-normal">{t('escrow.profile.title', {person: withBuyer ? t('general.buyer') : t('general.seller')})}</h6>
+    <Col xs="12">
+      <RoundedIcon image={ProfileIcon} bgColor="blue" className="float-left mr-2"/>
+      <h6 className="font-weight-normal mt-2">{t('escrow.profile.title', {person: withBuyer ? t('general.buyer') : t('general.seller')})}</h6>
     </Col>
   </Row>
 );

@@ -17,7 +17,8 @@ class DisputeWarning extends Component {
   }
 
   render() {
-    const {t, arbitrationTimeout} = this.props;
+    const {t, arbitrationTimeout, isExpired} = this.props;
+
     return (<div className="mt-2">
       <Row className="mb-3">
         <Col xs="2">
@@ -27,22 +28,38 @@ class DisputeWarning extends Component {
           <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
         </Col>
       </Row>
-      <p className="mb-3">{t('escrow.dispute.getInTouch')}</p>
-      {arbitrationTimeout && <p>{t('escrow.dispute.deadline')}
-        <span className="font-weight-medium d-block">
-          {moment(arbitrationTimeout * 1000).toNow(true)}
-        </span>
-      </p>}
-      <p className="mb-4">
-        {t('escrow.dispute.whatIfInactive')}
-        <RoundedIcon image={questionIcon} className="d-inline-block clickable ml-2" bgColor="blue" size="sm"
-                     onClick={() => this.displayDialog(true)}/>
-      </p>
 
-      <ModalDialog display={this.state.showArbitratorDetailsModal} onClose={() => this.displayDialog(false)} hideButton>
+      {isExpired && <>
+        <p className="mb-3">{t('escrow.dispute.dueToInactivity')}</p>
+        {arbitrationTimeout && <p>{t('escrow.dispute.pleaseWait')}</p>}
+        <p className="mb-4">
+          {t('escrow.dispute.whoIsFallback')}
+          <RoundedIcon image={questionIcon} className="d-inline-block clickable ml-2" bgColor="blue" size="sm"
+                       onClick={() => this.displayDialog(true)}/>
+        </p>
+      </>}
+
+      {!isExpired && <>
+        <p className="mb-3">{t('escrow.dispute.getInTouch')}</p>
+        {arbitrationTimeout && <p>{t('escrow.dispute.deadline')}
+          <span className="font-weight-medium d-block">
+          {moment(arbitrationTimeout).toNow(true)}
+        </span>
+        </p>}
+        <p className="mb-4">
+          {t('escrow.dispute.whatIfInactive')}
+          <RoundedIcon image={questionIcon} className="d-inline-block clickable ml-2" bgColor="blue" size="sm"
+                       onClick={() => this.displayDialog(true)}/>
+        </p>
+      </>}
+
+
+      <ModalDialog display={this.state.showArbitratorDetailsModal} onClose={() => this.displayDialog(false)}
+                   hideButton>
         <RoundedIcon image={arbitratorIcon} bgColor="blue" className="mb-2"/>
-        <h3>{t('escrow.dispute.whatIfInactive')}</h3>
-        <p className="text-muted">{t('escrow.dispute.noWorries')}</p>
+        <h3>{isExpired ? t('escrow.dispute.fallbackArbitrator') : t('escrow.dispute.whatIfInactive')}</h3>
+        <p
+          className="text-muted">{isExpired ? t('escrow.dispute.fallbackDescription') : t('escrow.dispute.noWorries')}</p>
         <Button color="primary" onClick={() => this.displayDialog(false)}>{t('escrow.dispute.ok')}</Button>
       </ModalDialog>
     </div>);
@@ -51,7 +68,8 @@ class DisputeWarning extends Component {
 
 DisputeWarning.propTypes = {
   t: PropTypes.func,
-  arbitrationTimeout: PropTypes.number
+  arbitrationTimeout: PropTypes.number.isRequired,
+  isExpired: PropTypes.bool
 };
 
 export default withTranslation()(DisputeWarning);

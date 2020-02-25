@@ -128,7 +128,7 @@ class Trades extends Component {
                          className="ml-1" /> {trade.tokenAmount} {trade.token.symbol}</span> {t('trades.for')} <span
                     className="font-weight-bold text-black">{(trade.fiatAmount / 100).toFixed(2)} {trade.currency}</span>
                   </p>
-                  <p>
+                  <p className="mb-0">
                     1 {trade.token.symbol} = {escrowAssetPrice.toFixed(4)}  {trade.currency}
                   </p>
                 </CardFooter>

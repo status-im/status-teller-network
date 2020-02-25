@@ -606,7 +606,14 @@
       "deadline": "Deadline for arbitrator to resolve the dispute",
       "whatIfInactive": "What if an arbitrator is inactive?",
       "noWorries": "No worries, after the time is out and your dispute is still not resolved, a fallback arbitrator will take over the trade.",
-      "ok": "OK, got it"
+      "ok": "OK, got it",
+      "dueToInactivity": "Due to the assigned arbitrator's inactivity, the fallback arbitrator took over the investigation.",
+      "pleaseWait": "Please wait for fallback arbitrator to contact you.",
+      "whoIsFallback": "Who is a fallback arbitrator?",
+      "fallbackArbitrator": "Fallback arbitrator",
+      "fallbackDescription": "Fallback arbitrators are part of a group of trusted people that are investigating the trade when the arbitrator was called off from the trade.",
+      "dontCommunicate": "Don’t communicate with the arbitrator as he was called off from this trade.",
+      "waitForFallback": "Wait for the fallback arbitrator to contact you."
     }
   },
   "notifications": {
