@@ -220,7 +220,7 @@ class Escrow extends Component {
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
 
     const arbitrationTimeout = parseInt(arbitration?.arbitration?.arbitratorTimeout || 0, 10) * 1000;
-    const arbitrationExpired = arbitrationTimeout === 0 || (Date.now() - arbitrationTimeout) > 0;
+    const arbitrationExpired = arbitrationTimeout !== 0 && (Date.now() - arbitrationTimeout) > 0;
 
     return (<Fragment>
       {!this.props.isSubscribed && !this.state.hideNotifBox && !this.props.refusedEmailNotifications &&
