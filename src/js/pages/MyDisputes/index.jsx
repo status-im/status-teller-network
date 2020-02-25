@@ -55,7 +55,7 @@ class MyDisputes extends Component {
         {!includeFallbackDisputes && <Disputes disputes={this.props.disputes.filter(x => {
           return !addressCompare(x.seller, address) &&
             !addressCompare(x.buyer, address) &&
-            !addressCompare(x.arbitrator, address) &&
+            addressCompare(x.arbitrator, address) &&
             Date.now() - (parseInt(x.arbitration.arbitratorTimeout || 0, 10) * 1000) > 0;
         })} open={false} unresolved showDate={false}/>}
       </Fragment>
