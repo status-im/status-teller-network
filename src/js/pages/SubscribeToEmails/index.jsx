@@ -25,6 +25,7 @@ class SubscribeToEmails extends Component {
 
   hideSuccess = () => {
     this.props.hideSuccess();
+    this.moveToNextPage();
   };
 
   subscribe = (email) => {
@@ -60,9 +61,8 @@ class SubscribeToEmails extends Component {
       </div>
 
       {error && <Alert color="danger" toggle={this.hideError}>{t('general.error')}: {error}</Alert>}
-      {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>{t('emailNotifications.success')}</Alert>}
 
-      {!subscribeSuccess && !isSubscribed && <NotificationForm working={working} subscribe={this.subscribe}/>}
+      {!isSubscribed && <NotificationForm working={working} subscribe={this.subscribe} subscribeSuccess={subscribeSuccess} hideSuccess={this.hideSuccess}/>}
       <div className="text-center">
         {!subscribeSuccess && !isSubscribed &&
         <Button color="secondary" className="mt-2" onClick={this.refuseNotifications}>

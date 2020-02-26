@@ -3,7 +3,7 @@ import {Modal, ModalBody, Button} from 'reactstrap';
 import PropTypes from 'prop-types';
 
 const ModalDialog = ({display, onClose, children, buttonText, hideButton, onClick}) => (
-  <Modal isOpen={display} toggle={onClose} backdrop={true} className="text-center modal-dialog-centered" >
+  <Modal isOpen={display} toggle={onClose} backdrop={true} className="text-center" >
     <ModalBody>
       <div className="p-4">
       {children}

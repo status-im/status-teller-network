@@ -399,7 +399,9 @@
     "signWithWallet": "Sign with wallet",
     "walletSignature": "Wallet signature",
     "willAskToSign": "Your wallet will ask you to sign a message.",
-    "dontShowAgain": "Don’t show this message again"
+    "dontShowAgain": "Don’t show this message again",
+    "ok": "Ok, got it",
+    "checkEmail": "Check your inbox for the confirmation email"
   },
   "validateEmail": {
     "title": "Validating your email address",

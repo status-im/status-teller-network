@@ -9,6 +9,7 @@ import LoadingButton from "../../ui/LoadingButton";
 import RoundedIcon from "../../ui/RoundedIcon";
 import InfoRedIcon from "../../../images/info-red.svg";
 import PencilIcon from "../../../images/pencil.svg";
+import CheckIcon from "../../../images/green-check.svg";
 import ModalDialog from "../ModalDialog";
 import {connect} from "react-redux";
 import emailNotifications from "../../features/emailNotifications";
@@ -36,7 +37,7 @@ class NotificationForm extends Component {
   }
 
   render() {
-    const {t, working, subscribe} = this.props;
+    const {t, working, subscribe, subscribeSuccess, hideSuccess} = this.props;
 
     return (<Form className="mt-4" onSubmit={(e) => e.preventDefault()}>
       <FormGroup>
@@ -46,6 +47,7 @@ class NotificationForm extends Component {
                         id="notification-email"
                         placeholder="eg. vitalik94@ethereum.org"
                         className="form-control"
+                        disabled={working}
                         value={this.state.email}
                         onChange={this.changeEmail}
                         validations={[required, isEmail]}/>
@@ -64,7 +66,7 @@ class NotificationForm extends Component {
       </div>
 
       <ModalDialog display={this.state.showDialog} buttonText={t('notificationSettings.signWithWallet')}
-                   backdrop={false} onClose={() => this.setState({showDialog: false})} onClick={() => {
+                   onClose={() => this.setState({showDialog: false})} onClick={() => {
         subscribe(this.state.email);
         this.props.setHideSignatureWarning(this.state.hideWarning);
         this.setState({showDialog: false});
@@ -79,6 +81,12 @@ class NotificationForm extends Component {
           </Label>
         </FormGroup>
       </ModalDialog>
+
+      <ModalDialog display={subscribeSuccess} buttonText={t('notificationSettings.ok')}
+                   onClose={hideSuccess} onClick={hideSuccess}>
+        <RoundedIcon image={CheckIcon} bgColor="green"/>
+        <h3>{t('notificationSettings.checkEmail')}</h3>
+      </ModalDialog>
     </Form>);
   }
 }
@@ -86,7 +94,9 @@ class NotificationForm extends Component {
 NotificationForm.propTypes = {
   t: PropTypes.func,
   working: PropTypes.bool,
+  subscribeSuccess: PropTypes.bool,
   hideSignatureWarning: PropTypes.bool,
+  hideSuccess: PropTypes.func,
   subscribe: PropTypes.func,
   setHideSignatureWarning: PropTypes.func
 };
