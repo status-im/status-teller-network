@@ -1,44 +1,37 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {Form, FormGroup, Input, Label} from 'reactstrap';
 import PropTypes from 'prop-types';
+import {withTranslation} from "react-i18next";
 
-class SellerPosition extends Component {
+const SellerPosition = ({t, changeLocation, location}) => (
+  <React.Fragment>
+    <h2>{t('sellerLocation.whatLocation')}</h2>
+    <Form onSubmit={(e) => e.preventDefault()}>
+      <FormGroup>
+        <Label className="text-small mt-3 mb-0">{t('sellerLocation.location')}</Label>
+        <Input type="text" name="location" id="location" placeholder="eg. Berlin, Germany"
+               value={location || ''} onChange={(e) => changeLocation(e.target.value)}/>
 
-  changeLocation(e) {
-    this.props.changeLocation(e.target.value);
-  }
-
-  render() {
-    return (
-      <React.Fragment>
-        <h2>What location do you want to display</h2>
-        <Form onSubmit={(e) => e.preventDefault()}>
-          <FormGroup>
-            <Label className="text-small mt-3 mb-0">Location</Label>
-            <Input type="text" name="location" id="location" placeholder="Enter location"
-                   value={this.props.location || ''} onChange={(e) => this.changeLocation(e)}/>
-
-            <FormGroup check className="mt-3">
-              <Label check>
-                <Input type="checkbox" onClick={(e) => {
-                  if (e.target.checked) {
-                    this.props.changeLocation('');
-                  }
-                }}/>
-                Hide location
-              </Label>
-            </FormGroup>
-          </FormGroup>
-        </Form>
-      </React.Fragment>
-    );
-  }
-}
+        <FormGroup check className="mt-3">
+          <Label check>
+            <Input type="checkbox" onClick={(e) => {
+              if (e.target.checked) {
+                changeLocation('');
+              }
+            }}/>
+            {t('sellerLocation.hideLocation')}
+          </Label>
+        </FormGroup>
+      </FormGroup>
+    </Form>
+  </React.Fragment>
+);
 
 SellerPosition.propTypes = {
+  t: PropTypes.func,
   changeLocation: PropTypes.func,
   location: PropTypes.string
 };
 
 
-export default SellerPosition;
+export default withTranslation()(SellerPosition);

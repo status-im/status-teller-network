@@ -39,6 +39,7 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
       };
       this.changeSubs = [];
       this.nextSubs = [];
+      this.beforeChangeHandler = null;
     }
 
     enableNext = () => {
@@ -69,20 +70,39 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
       this.nextSubs = [];
     }
 
-    next = () => {
+    async executeBeforePageChange() {
+      if (!this.beforeChangeHandler) {
+        return;
+      }
+      return new Promise((resolve) => {
+        this.beforeChangeHandler(resolve);
+        this.beforeChangeHandler = null;
+      });
+    }
+
+    next = async () => {
+      await this.executeBeforePageChange();
       this.executeChanges();
       this.executeNexts();
       wizard.next();
 
     };
 
-    previous = () => {
+    previous = async () => {
+      await this.executeBeforePageChange();
       this.executeChanges();
       wizard.previous();
     };
 
     onPageChange = (cb) => {
       this.changeSubs.push(cb);
+    };
+
+    beforePageChange = (cb) => {
+      if (this.beforeChangeHandler) {
+        console.warn('A beforePageChange handler was already defined. It will be overwritten, make sure you know what you are doing.');
+      }
+      this.beforeChangeHandler = cb;
     };
 
     onNext = (cb) => {
@@ -94,6 +114,7 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
         enableNext: this.enableNext,
         disableNext: this.disableNext,
         onPageChange: this.onPageChange,
+        beforePageChange: this.beforePageChange,
         onNext: this.onNext,
         show: this.show,
         hide: this.hide
