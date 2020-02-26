@@ -13,3 +13,5 @@ export const subscribeSuccess = state => state.emailNotifications.subscribeSucce
 export const verifySuccess = state => state.emailNotifications.verifySuccess;
 
 export const refusedEmailNotifications = state => state.emailNotifications.refusedEmailNotifications;
+
+export const hideSignatureWarning = state => state.emailNotifications.hideSignatureWarning;
