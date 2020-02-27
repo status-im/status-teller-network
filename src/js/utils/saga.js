@@ -4,6 +4,7 @@ import {call, put, take, select} from "redux-saga/effects";
 import cloneDeep from "clone-deep";
 import {acceptedTransactionWarning} from '../features/network/selectors';
 import {SHOW_TRANSACTION_WARNING} from "../features/network/constants";
+import {neverShowTransactionWarningAgain} from "../features/metadata/selectors";
 
 export function promiseEventEmitter(promiseEvent, emitter) {
   promiseEvent.on('transactionHash', function(hash) {
@@ -21,7 +22,10 @@ export function promiseEventEmitter(promiseEvent, emitter) {
 }
 
 function *waitForUserAccept() {
-  // TODO also get if it was previously accepted
+  const neverShow = yield select(neverShowTransactionWarningAgain);
+  if (neverShow) {
+    return;
+  }
   yield put({type: SHOW_TRANSACTION_WARNING});
   let stateSlice = yield select(acceptedTransactionWarning);
   while (stateSlice !== true) {
