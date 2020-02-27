@@ -20,7 +20,7 @@ import {
 import {BUY_LICENSE_SUCCEEDED} from '../license/constants';
 import {RESET_NEW_BUY} from '../newBuy/constants';
 import { States } from '../../utils/transaction';
-import {RESET_STATE, PURGE_STATE} from "../network/constants";
+import {RESET_STATE, PURGE_STATE, SET_TRANSACTION_WARNING_STATE} from "../network/constants";
 import {toChecksumAddress} from '../../utils/address';
 
 const DEFAULT_STATE = {
@@ -34,7 +34,8 @@ const DEFAULT_STATE = {
   offers: {},
   deleteOfferStatus: States.none,
   offerPrice: '',
-  maxOffers: 0
+  maxOffers: 0,
+  neverShowTransactionWarningAgain: false
 };
 
 function formatOffer(offer) {
@@ -312,6 +313,11 @@ function reducer(state = DEFAULT_STATE, action) {
     case GET_MAX_OFFERS_SUCCEEDED:
       return {
         ...state, maxOffers: action.maxOffers
+      };
+    case SET_TRANSACTION_WARNING_STATE:
+      return {
+        ...state,
+        neverShowTransactionWarningAgain: !!action.neverShowAgain
       };
     default:
       return state;

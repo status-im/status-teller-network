@@ -30,8 +30,7 @@ const DEFAULT_STATE = {
   ensError: '',
   environment: 'testnet',
   acceptedTransactionWarning: null,
-  showTransactionWarning: false,
-  neverShowAgain: false
+  showTransactionWarning: false
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -131,8 +130,7 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         acceptedTransactionWarning: !!action.acceptation,
-        showTransactionWarning: false,
-        neverShowAgain: !!action.neverShowAgain
+        showTransactionWarning: false
       };
     case SHOW_TRANSACTION_WARNING:
       return {
