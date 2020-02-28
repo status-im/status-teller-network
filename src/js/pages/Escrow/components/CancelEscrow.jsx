@@ -53,10 +53,8 @@ class CancelEscrow extends Component {
     return shouldDisplay && <Fragment>
       <div onClick={this.displayDialog(true)} className="clickable">
         <Row className={classnames("mt-4 text-primary")}>
-          <Col xs="2">
-            <RoundedIcon image={!disabled ? CancelIcon : CancelIconGray} bgColor={disabled ? "secondary" : "red"}/>
-          </Col>
-          <Col xs="10" className="my-auto ">
+          <Col xs="12">
+            <RoundedIcon image={!disabled ? CancelIcon : CancelIconGray} bgColor={disabled ? "secondary" : "red"} className="float-left mr-2"/>
             <p className={classnames("m-0 font-weight-normal", {'text-danger': !disabled, 'text-muted': disabled})}>
               {(isBuyer || (!isBuyer && trade.status === escrow.helpers.tradeStates.waiting)) && t('escrow.cancel.cancelTrade')}
               {!isBuyer && trade.status === escrow.helpers.tradeStates.funded && t('escrow.cancel.cancelAndWithdraw')}

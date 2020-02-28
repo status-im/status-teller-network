@@ -15,7 +15,7 @@ class CancelDispute extends Component {
   };
 
   displayDialog = show => (e) => {
-    if(e) e.preventDefault();
+    if (e) e.preventDefault();
     this.setState({displayDialog: show});
     return false;
   };
@@ -30,11 +30,9 @@ class CancelDispute extends Component {
     return <Fragment>
       <div onClick={this.displayDialog(true)} className="clickable">
         <Row className={classnames("mt-4 text-primary")}>
-          <Col xs="2">
-            <RoundedIcon image={CancelIcon} bgColor="red"/>
-          </Col>
-          <Col xs="10" className="my-auto ">
-            <h6 className="m-0 font-weight-normal text-danger">{t('escrow.cancel.cancelDispute')}</h6>
+          <Col xs="12">
+            <RoundedIcon image={CancelIcon} bgColor="red" className="float-left mr-2"/>
+            <h6 className="mb-0 mt-2 font-weight-normal text-danger">{t('escrow.cancel.cancelDispute')}</h6>
           </Col>
         </Row>
 

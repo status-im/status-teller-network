@@ -12,10 +12,8 @@ const OpenDispute = ({t, trade}) => {
   const shouldDisplay = trade.status === escrow.helpers.tradeStates.paid && trade.arbitrator !== zeroAddress;
   return shouldDisplay && (
     <Row className="mt-4 text-danger" tag={Link} to={"/openCase/" + trade.escrowId}>
-      <Col xs="2">
-        <RoundedIcon image={exclamationCircle} bgColor="red"/>
-      </Col>
-      <Col xs="10" className="my-auto">
+      <Col xs="12">
+        <RoundedIcon image={exclamationCircle} bgColor="red" className="float-left mr-2"/>
         <p className="m-0 font-weight-normal">{t('escrow.openDispute.open')}</p>
         <p className="m-0 text-muted">{t('escrow.openDispute.havingProblem')}</p>
       </Col>

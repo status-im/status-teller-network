@@ -22,11 +22,18 @@ class Disputes extends Component {
   }
 
   render() {
-    const {t, disputes, open} = this.props;
+    const {t, disputes, open, includeFallbackDisputes, unresolved} = this.props;
+    if (unresolved && (!disputes || !disputes.length)) {
+      return '';
+    }
     return (
       <div className="mt-3 mb-4">
         <div>
-          <h3 className="d-inline-block">{open ? t("disputes.openedDisputes") : t("disputes.resolvedDisputes")}</h3>
+          <h3 className="d-inline-block">
+            {!unresolved && <>{!includeFallbackDisputes && <>{open ? t("disputes.openedDisputes") : t("disputes.resolvedDisputes")}</>}
+            {includeFallbackDisputes && <>{open ? t("disputes.openedDisputesFallback") : t("disputes.resolvedDisputesFallback")}</>}</>}
+            {unresolved && t("disputes.unresolvedDisputes")}
+          </h3>
         </div>
         {disputes.length === 0 ? this.renderEmpty(open) : this.renderTrades(open)}
       </div>
@@ -39,6 +46,7 @@ Disputes.propTypes = {
   disputes: PropTypes.array,
   showDate: PropTypes.bool,
   open: PropTypes.bool,
+  unresolved: PropTypes.bool,
   includeFallbackDisputes: PropTypes.bool
 };
 

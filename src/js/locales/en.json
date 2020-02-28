@@ -218,7 +218,10 @@
   "disputes": {
     "noRecords": "No records available yet",
     "openedDisputes": "Opened disputes",
-    "resolvedDisputes": "Resolved disputes"
+    "resolvedDisputes": "Resolved disputes",
+    "openedDisputesFallback": "Opened fallback disputes",
+    "resolvedDisputesFallback": "Resolved fallback disputes",
+    "unresolvedDisputes": "Unresolved disputes"
   },
   "map": {
     "loading": "Loading...",
