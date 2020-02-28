@@ -136,7 +136,8 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state,
         acceptedTransactionWarning: null,
-        showTransactionWarning: true
+        showTransactionWarning: true,
+        isGSNWarning: action.isGSN
       };
     default:
       return state;
