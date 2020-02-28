@@ -119,6 +119,16 @@
     "noAssets": "You have no assets in your wallet",
     "helpText": "Add assets to your wallet to get the ability to sell it. For each asset, you need to create a separate offer."
   },
+  "sellerLocation": {
+    "whatLocation": "What is your trade location?",
+    "location": "Location",
+    "hideLocation": "Hide location",
+    "differentLocation": "Different location",
+    "associatedWithProfile": "Your location is associated with your profile, not offers.",
+    "wantToContinue": "Do you want to continue with this location and overwrite the location of your previously created offers?",
+    "yesUse": "Yes, use this location for all offers",
+    "continueWithOld": "Continue with old location ({{location}})"
+  },
   "sellerFiatContainer": {
     "title": "What local currency do you want to trade with?",
     "noPrices": "Prices not loaded for {{token}} yet. Please wait or try reloading"

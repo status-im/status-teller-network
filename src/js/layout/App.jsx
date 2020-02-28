@@ -216,7 +216,7 @@ class App extends Component {
                   {path: '/sell/asset', component: SellAsset},
                   {path: '/sell/payment-methods', component: SellPaymentMethods},
                   {path: '/sell/currency', component: SellCurrency},
-                  (!this.props.profile || !this.props.profile.location) && {path: '/sell/location', component: SellLocation},
+                  {path: '/sell/location', component: SellLocation},
                   (!this.props.profile || !this.props.profile.username) && {path: '/sell/contact', component: SellContactName},
                   (!this.props.profile || !this.props.profile.contactData) && {path: '/sell/contact-details', component: SellContactDetails},
                   {path: '/sell/arbitrator', component: SellArbitrator},
