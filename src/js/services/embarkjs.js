@@ -17,37 +17,22 @@ export function onReady() {
       customProvider.startProvider(web3);
 
       global.subspace = new Subspace(web3.currentProvider);
-      global.subspace.init().then(resolve); 
+      global.subspace.init().then(resolve);
     });
   });
 }
 
-export function getEnsAddress(name) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // TODO check if an address is not correct and we only want contact codes, we need to validate that ENS returns a contact code
-      if (contactCodeRegExp.test(name) || web3.utils.isAddress(name)) {
-        return resolve(name);
-      }
-      if (name.indexOf('.') === -1) {
-        name += '.stateofus.eth';
-      }
-      const address = await EmbarkJS.Names.resolve(name);
-      resolve(address);
-    } catch (e) {
-      console.error(e);
-      reject(e);
-    }
-  });
+export async function getEnsAddress(name) {
+  // TODO check if an address is not correct and we only want contact codes, we need to validate that ENS returns a contact code
+  if (contactCodeRegExp.test(name) || web3.utils.isAddress(name)) {
+    return name;
+  }
+  if (name.indexOf('.') === -1) {
+    name += '.stateofus.eth';
+  }
+  return EmbarkJS.Names.resolve(name);
 }
 
-export function enableEthereum() {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const accounts = await EmbarkJS.enableEthereum();
-      resolve(accounts);
-    } catch(e) {
-      reject(e);
-    }
-  });
+export async function enableEthereum() {
+  return EmbarkJS.enableEthereum();
 }

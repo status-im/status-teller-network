@@ -50,8 +50,8 @@ const store = createStore(
     applyMiddleware(
       routerMiddleware(history),
       sagaMiddleware
-    ),
-  ),
+    )
+  )
 );
 
 sagaMiddleware.run(root);

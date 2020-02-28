@@ -38,23 +38,22 @@ class GoogleLoader {
 
 const googleLoader = new GoogleLoader();
 
-export function getLocation(place) {
-  return new Promise(async (resolve, reject) => {
-    const googleObj = await googleLoader.loadGoogle();
+export async function getLocation(place) {
+  const googleObj = await googleLoader.loadGoogle();
 
-    const geocoder = new googleObj.maps.Geocoder();
+  const geocoder = new googleObj.maps.Geocoder();
 
+  return new Promise((resolve, reject) => {
     geocoder.geocode({address: place}, (results, status) => {
-      if (status === 'OK') {
-        resolve({
-          location: {
-            latitude: results[0].geometry.location.lat(),
-            longitude: results[0].geometry.location.lng()
-          }, countryCode: results[0].address_components[results[0].address_components.length - 1].short_name
-        });
-      } else {
+      if (status !== 'OK') {
         return reject(new Error(`No result for location ${place}. Status: ${status}`));
       }
+      resolve({
+        location: {
+          latitude: results[0].geometry.location.lat(),
+          longitude: results[0].geometry.location.lng()
+        }, countryCode: results[0].address_components[results[0].address_components.length - 1].short_name
+      });
     });
   });
 }
