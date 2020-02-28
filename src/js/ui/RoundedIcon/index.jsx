@@ -6,7 +6,7 @@ import classnames from "classnames";
 import './index.scss';
 import FundingEscrow from "../../pages/Escrow/components/FundingEscrow";
 
-const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, className}) => {
+const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, className, onClick}) => {
   let sizePx;
   switch (size) {
     case 'xs': sizePx = 10; break;
@@ -14,7 +14,7 @@ const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, classNam
     case 'md': sizePx = 20; break;
     default: sizePx = null;
   }
-  return (<span className={classnames("rounded-icon rounded-circle", {
+  return (<span onClick={onClick} className={classnames("rounded-icon rounded-circle", {
     'rounded-icon__grey': bgColor === 'grey',
     'rounded-icon__blue': bgColor === 'blue',
     'rounded-icon__primary': bgColor === 'primary',
@@ -28,7 +28,7 @@ const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, classNam
     {icon && <FontAwesomeIcon icon={icon} className="rounded-icon--icon" size={size}/>}
     {image && <img src={image} alt="rounded-icon" className="rounded-icon--icon" width={sizePx}
                    height={sizePx}/>}
-    {imageComponent && imageComponent()}
+    {imageComponent && imageComponent.render()}
   </span>);
 };
 
@@ -39,11 +39,12 @@ FundingEscrow.defaultProps = {
 RoundedIcon.propTypes = {
   icon: PropTypes.object,
   image: PropTypes.string,
-  imageComponent: PropTypes.func,
+  imageComponent: PropTypes.object,
   text: PropTypes.string,
   bgColor: PropTypes.string,
   size: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  onClick: PropTypes.func
 };
 
 export default RoundedIcon;

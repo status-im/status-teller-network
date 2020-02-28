@@ -42,9 +42,10 @@ import {DialogOptions as ContactMethods} from '../../constants/contactMethods';
 import { stringToContact, copyToClipboard } from '../../utils/strings';
 import {withTranslation, Trans} from "react-i18next";
 import ConnectWallet from '../../components/ConnectWallet';
+import ApproveTokenRow from "./components/ApproveTokenRow";
+import DisputeWarning from "./components/DisputeWarning";
 
 import "./index.scss";
-import ApproveTokenRow from "./components/ApproveTokenRow";
 
 const {toBN} = web3.utils;
 
@@ -76,7 +77,6 @@ class Escrow extends Component {
     this.props.updateBalances();
     this.props.getLastActivity(this.props.address);
     this.props.getFeeMilliPercent();
-    this.props.getFallbackArbitrator();
 
     if (this.props.escrow) this.props.getTokenAllowance(this.props.escrow.offer.asset);
   }
@@ -148,7 +148,7 @@ class Escrow extends Component {
   };
 
   render() {
-    let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow, fallbackArbitrator,
+    let {t, escrowId, escrow, arbitration, address, sntAllowance, tokenAllowance, loading, tokens, fundEscrow,
       cancelEscrow, releaseEscrow, payEscrow, rateTransaction, approvalTxHash, lastActivity, isStatus, arbitratorScore,
       approvalError, cancelDispute, ethBalance, gasPrice, feeMilliPercent, arbitrationTxHash, isEip1102Enabled, enableEthereum } = this.props;
 
@@ -219,25 +219,24 @@ class Escrow extends Component {
 
     const enoughBalance = toBN(escrow.token.balance ? toTokenDecimals(escrow.token.balance || 0, escrow.token.decimals) : 0).gte(totalAmount);
 
+    const arbitrationTimeout = parseInt(arbitration?.arbitration?.arbitratorTimeout || 0, 10) * 1000;
+    const arbitrationExpired = arbitrationTimeout === 0 || (Date.now() - arbitrationTimeout) > 0;
+
     return (<Fragment>
       {!this.props.isSubscribed && !this.state.hideNotifBox && !this.props.refusedEmailNotifications &&
-      <div className="rounded shadow p-3 position-relative clickable" onClick={this.goToEmailPage}>
+      <div className="rounded shadow p-3 position-relative clickable mb-3" onClick={this.goToEmailPage}>
         <img alt="close" src={closeIcon} className="close-email-notification-box clickable" width={25} height={25}
-             onClick={() => this.setState({hideNotifBox: true})}/>
+             onClick={() => {
+               this.props.refuseEmailNotifications();
+               this.setState({hideNotifBox: true});
+             }}/>
         <RoundedIcon image={bellIcon} bgColor="blue" className="float-left mr-3"/>
         <p className="font-weight-medium mb-0">{t('escrow.page.emailNotif')}</p>
         <p className="text-muted mb-0 text-small">{t('escrow.page.getNotifs')}</p>
       </div>}
 
       <div className="escrow-warnings-and-infos">
-        {arbitrationDetails.open && <Row className="mt-4">
-          <Col xs="2">
-            <RoundedIcon image={exclamationCircle} bgColor="red"/>
-          </Col>
-          <Col xs="10 my-auto text-danger">
-            <p className="m-0">{t('escrow.page.tradeInDispute')}</p>
-          </Col>
-        </Row>}
+        {arbitrationDetails.open && <DisputeWarning arbitrationTimeout={arbitrationTimeout} isExpired={arbitrationExpired}/>}
 
         {((!isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_BUYER) ||
           (isBuyer && arbitrationDetails.result === arbitrationF.constants.ARBITRATION_SOLVED_SELLER)) &&
@@ -270,6 +269,8 @@ class Escrow extends Component {
           </Col>
         </Row>}
       </div>
+
+      <h3 className="mb-0 mt-2">{t('escrow.page.title')}</h3>
 
       <div className={classnames("escrow", {'escrow-disabled': arbitrationDetails.open})}>
         {!isETH && !isBuyer &&
@@ -324,9 +325,9 @@ class Escrow extends Component {
       </div>
 
       <EscrowDetail escrow={escrow}
-                    fallbackArbitrator={fallbackArbitrator}
                     arbitratorScore={arbitratorScore}
                     arbitrationDetails={arbitrationDetails}
+                    arbitrationExpired={arbitrationExpired}
                     isBuyer={isBuyer}
                     onClickChat={this.displayDialog}
                     isStatus={isStatus}
@@ -408,6 +409,7 @@ Escrow.propTypes = {
   updateBalances: PropTypes.func,
   rateTransaction: PropTypes.func,
   loadArbitration: PropTypes.func,
+  refuseEmailNotifications: PropTypes.func,
   watchEscrow: PropTypes.func,
   escrowEvents: PropTypes.object,
   assetCurrentPrice: PropTypes.object,
@@ -423,9 +425,7 @@ Escrow.propTypes = {
   isStatus: PropTypes.bool,
   isEip1102Enabled: PropTypes.bool,
   enableEthereum: PropTypes.func,
-  arbitratorScore: PropTypes.number,
-  fallbackArbitrator: PropTypes.string,
-  getFallbackArbitrator: PropTypes.func
+  arbitratorScore: PropTypes.number
 };
 
 const mapStateToProps = (state, props) => {
@@ -462,8 +462,7 @@ const mapStateToProps = (state, props) => {
     gasPrice: network.selectors.getNetworkGasPrice(state),
     feeMilliPercent: escrowF.selectors.feeMilliPercent(state),
     ethBalance: network.selectors.getBalance(state, 'ETH'),
-    isSubscribed: emailNotifications.selectors.isSubscribed(state),
-    fallbackArbitrator: arbitrationF.selectors.fallbackArbitrator(state)
+    isSubscribed: emailNotifications.selectors.isSubscribed(state)
   };
 };
 
@@ -488,8 +487,8 @@ export default connect(
     watchEscrow: escrowF.actions.watchEscrow,
     getLastActivity: escrowF.actions.getLastActivity,
     checkEmailSubscription: emailNotifications.actions.checkEmailSubscription,
+    refuseEmailNotifications: emailNotifications.actions.refuseEmailNotifications,
     setRedirectTarget: emailNotifications.actions.setRedirectTarget,
-    enableEthereum: metadata.actions.enableEthereum,
-    getFallbackArbitrator: arbitrationF.actions.getFallbackArbitrator
+    enableEthereum: metadata.actions.enableEthereum
   }
 )(withRouter(withTranslation()(Escrow)));

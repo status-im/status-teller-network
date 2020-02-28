@@ -31,12 +31,10 @@
     "@storybook/react": "^4.1.4",
     "async": "^3.1.0",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
     "cypress": "^3.1.4",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",
-    "enzyme-to-json": "^3.3.5",
-    "jest": "^23.6.0"
+    "enzyme-to-json": "^3.3.5"
   },
   "dependencies": {
     "@embarklabs/subspace": "^1.2.0",
@@ -93,7 +91,7 @@
     "react-redux": "^6.0.0",
     "react-router-dom": "^4.3.1",
     "react-router-last-location": "^2.0.1",
-    "react-scripts": "2.1.5",
+    "react-scripts": "3.4.0",
     "react-switch": "^5.0.0",
     "react-validation": "^3.0.7",
     "reactstrap": "^8.1.1",
