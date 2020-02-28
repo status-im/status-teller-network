@@ -51,7 +51,6 @@ class NotificationSettings extends Component {
     return (<Fragment>
       <h2 className="mb-4 mt-3">{t('notificationSettings.title')}</h2>
       {error && <Alert color="danger" toggle={this.hideError}>{t('general.error')}: {error}</Alert>}
-      {subscribeSuccess && <Alert color="success" toggle={this.hideSuccess}>{t('notificationSettings.success')}</Alert>}
       <div>
         {t('notificationSettings.emailSwitcher')}
         {typeof this.state.showEmailSection === 'boolean' && <Switch onChange={this.changeNotificationParam}
@@ -68,7 +67,7 @@ class NotificationSettings extends Component {
       </div>
 
       {this.state.showEmailSection && !this.props.isSubscribed &&
-      <NotificationForm working={working} subscribe={this.subscribe}/>}
+      <NotificationForm working={working} subscribe={this.subscribe} subscribeSuccess={subscribeSuccess} hideSuccess={this.hideSuccess}/>}
     </Fragment>);
   }
 }

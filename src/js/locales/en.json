@@ -407,7 +407,14 @@
     "title": "Notifications",
     "emailSwitcher": "Email notifications",
     "saveButton": "Subscribe",
-    "success": "Success subscribing. Please check your emails to verify your subscription"
+    "infoWarning": "In order to receive email notifications we must store your signature, email and wallet address.",
+    "success": "Success subscribing. Please check your emails to verify your subscription",
+    "signWithWallet": "Sign with wallet",
+    "walletSignature": "Wallet signature",
+    "willAskToSign": "Your wallet will ask you to sign a message.",
+    "dontShowAgain": "Don’t show this message again",
+    "ok": "Ok, got it",
+    "checkEmail": "Check your inbox for the confirmation email"
   },
   "validateEmail": {
     "title": "Validating your email address",
