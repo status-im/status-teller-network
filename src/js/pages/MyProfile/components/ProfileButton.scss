@@ -1,0 +1,18 @@
+@import "../../../../css/variable-overrides.scss";
+
+.profile-button {
+  .action-needed-badge {
+    background-color: $warning;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 10px;
+    color: $white;
+    position: relative;
+    top: -1.2px;
+  }
+}
