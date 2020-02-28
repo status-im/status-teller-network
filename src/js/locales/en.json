@@ -51,7 +51,8 @@
     "address": "Address",
     "contactMethod": "Contact method",
     "noContactMethodAvailable": "No contact method for this user",
-    "trades": "Trades"
+    "trades": "Trades",
+    "dontShowAgain": "Don’t show this message again"
   },
   "header": {
     "buy": "Buy",
@@ -425,6 +426,11 @@
     "mining": "Waiting for the confirmation from miners",
     "initial": "The best and most convenient way to buy and sell crypto",
     "page": "Loading ..."
+  },
+  "transactionWarning": {
+    "signWithWallet": "Sign with wallet",
+    "blockchainInteraction": "Blockchain interaction",
+    "walletWillAsk": "Your wallet will ask you to digitally sign a transaction. Expect to pay a small transaction fee for using Ethereum blockchain."
   },
   "noWeb3Dialog": {
     "title": "Your browser is not supported",
