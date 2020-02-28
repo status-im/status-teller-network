@@ -48,4 +48,4 @@ export const getEnvironment = state => state.network.environment;
 
 export const acceptedTransactionWarning = state => state.network.acceptedTransactionWarning;
 export const showTransactionWarning = state => state.network.showTransactionWarning;
-export const isGSNWarning = state => state.network.isGSNWarning;
+export const warningType = state => state.network.warningType;

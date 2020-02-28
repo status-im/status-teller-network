@@ -7,6 +7,10 @@ import {SHOW_TRANSACTION_WARNING} from "../features/network/constants";
 import {neverShowTransactionWarningAgain} from "../features/metadata/selectors";
 import {shouldUseRelay} from "../provider";
 
+export const TX = 'tx';
+export const GSN = 'GSN';
+export const SIGN = 'SIGN';
+
 export function promiseEventEmitter(promiseEvent, emitter) {
   promiseEvent.on('transactionHash', function(hash) {
     emitter({hash});
@@ -28,15 +32,20 @@ function *waitForUserAccept(toSend) {
     return;
   }
 
-  let isGSN = false;
+  let warningType = TX;
   try {
-    isGSN = yield shouldUseRelay(toSend.encodeABI(), toSend._parent.options.address, 'eth_sendTransaction');
+    if (toSend) {
+      const isGSN = yield shouldUseRelay(toSend.encodeABI(), toSend._parent.options.address, 'eth_sendTransaction');
+      warningType = isGSN ? GSN : warningType;
+    } else {
+      warningType = SIGN;
+    }
   } catch (e) {
     // Something failed in the check, let's just show the normal modal
     console.error(e);
   }
 
-  yield put({type: SHOW_TRANSACTION_WARNING, isGSN});
+  yield put({type: SHOW_TRANSACTION_WARNING, warningType});
   let stateSlice = yield select(acceptedTransactionWarning);
   while (stateSlice !== true) {
     yield take();
@@ -78,6 +87,12 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
     console.error(error);
     yield put({type: failed, error: error.message, ...parsedPayload});
   }
+}
+
+export function *doSign(message, account) {
+  yield waitForUserAccept();
+  const signature = yield call(web3.eth.personal.sign, message, account || web3.eth.defaultAccount);
+  return signature;
 }
 
 export function contractOnceEventChannel(contract, event, filter, emitter) {
