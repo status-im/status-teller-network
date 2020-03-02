@@ -12,7 +12,7 @@ class EditContact extends Component {
     return (
       <Fragment>
         <h2 className="mb-4">{t('contactForm.yourNameTitle')}</h2>
-        <Form onSubmit={(e) => e.preventDefault()} >
+        <Form onSubmit={(e) => e.preventDefault()}>
           <FormGroup>
             <Label for="nickname">{t('contactForm.yourNameLabel')}</Label>
             <Input type="text"
