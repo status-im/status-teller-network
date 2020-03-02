@@ -9,6 +9,7 @@ import {
   UNSUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL_FAILURE, UNSUBSCRIBE_EMAIL_SUCCESS
 } from './constants';
 import axios from 'axios';
+import {doSign} from "../../utils/saga";
 
 export function *checkSubscription() {
   try {
@@ -30,13 +31,14 @@ export function *onCheckSubscription() {
 export function *subscribeToEmails({email}) {
   try {
     const address = web3.eth.defaultAccount;
-    const signature = yield call(web3.eth.personal.sign, email, address);
+    const signature = yield doSign(email, address);
     const response = yield call(axios.post, `${EMAIL_SERVER_ENDPOINT}/subscribe`, {email, signature, address});
     if (!response.data === OK) {
       throw new Error('Subscription did not return Ok');
     }
     yield put({type: SUBSCRIBE_EMAIL_SUCCESS, email});
   } catch (error) {
+    console.error(error);
     yield put({type: SUBSCRIBE_EMAIL_FAILURE, error: error.message});
   }
 }
@@ -48,7 +50,7 @@ export function *onSubscribeToEmails() {
 export function *unsubscribeToEmails() {
   try {
     const address = web3.eth.defaultAccount;
-    const signature = yield call(web3.eth.personal.sign, DAPP_ID, address);
+    const signature = yield doSign(DAPP_ID, address);
     const response = yield call(axios.post, `${EMAIL_SERVER_ENDPOINT}/unsubscribe`, {signature, address});
     if (!response.data === OK) {
       throw new Error('Un-Subscription did not return Ok');

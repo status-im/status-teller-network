@@ -94,3 +94,5 @@ export const getDeleteOfferStatus = (state) => state.metadata.deleteOfferStatus;
 export const txHash = state => state.metadata.txHash;
 
 export const usingDefaultProvider = state => state.metadata.defaultProvider;
+
+export const neverShowTransactionWarningAgain = state => state.metadata.neverShowTransactionWarningAgain;

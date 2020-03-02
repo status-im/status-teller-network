@@ -1,7 +1,15 @@
 /*global web3*/
 import {END, eventChannel} from "redux-saga";
-import {call, put, take} from "redux-saga/effects";
+import {call, put, take, select} from "redux-saga/effects";
 import cloneDeep from "clone-deep";
+import {acceptedTransactionWarning} from '../features/network/selectors';
+import {SHOW_TRANSACTION_WARNING} from "../features/network/constants";
+import {neverShowTransactionWarningAgain} from "../features/metadata/selectors";
+import {shouldUseRelay} from "../provider";
+
+export const TX = 'tx';
+export const GSN = 'GSN';
+export const SIGN = 'SIGN';
 
 export function promiseEventEmitter(promiseEvent, emitter) {
   promiseEvent.on('transactionHash', function(hash) {
@@ -18,11 +26,44 @@ export function promiseEventEmitter(promiseEvent, emitter) {
   return () => {};
 }
 
+function *waitForUserAccept(toSend) {
+  const neverShow = yield select(neverShowTransactionWarningAgain);
+  if (neverShow) {
+    return;
+  }
+
+  let warningType = TX;
+  try {
+    if (toSend) {
+      const isGSN = yield shouldUseRelay(toSend.encodeABI(), toSend._parent.options.address, 'eth_sendTransaction');
+      warningType = isGSN ? GSN : warningType;
+    } else {
+      warningType = SIGN;
+    }
+  } catch (e) {
+    // Something failed in the check, let's just show the normal modal
+    console.error(e);
+  }
+
+  yield put({type: SHOW_TRANSACTION_WARNING, warningType});
+  let stateSlice = yield select(acceptedTransactionWarning);
+  while (stateSlice !== true) {
+    yield take();
+    stateSlice = yield select(acceptedTransactionWarning);
+    if (stateSlice === false) {
+      throw new Error('Warning refused');
+    }
+  }
+}
+
 export function *doTransaction(preSuccess, success, failed, {value = 0, toSend}) {
   const parsedPayload = cloneDeep(arguments[3]);
   delete parsedPayload.toSend;
   delete parsedPayload.type;
   try {
+    // Wait for the user to accept the warning
+    yield waitForUserAccept(toSend);
+
     const estimatedGas = yield call(toSend.estimateGas, {value, from: web3.eth.defaultAccount});
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
@@ -46,6 +87,12 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
     console.error(error);
     yield put({type: failed, error: error.message, ...parsedPayload});
   }
+}
+
+export function *doSign(message, account) {
+  yield waitForUserAccept();
+  const signature = yield call(web3.eth.personal.sign, message, account || web3.eth.defaultAccount);
+  return signature;
 }
 
 export function contractOnceEventChannel(contract, event, filter, emitter) {

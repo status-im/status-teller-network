@@ -5,7 +5,7 @@ import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreIns
 import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
-import {doTransaction, contractEvent} from '../../utils/saga';
+import {doTransaction, contractEvent, doSign} from '../../utils/saga';
 import {addressCompare, zeroAddress} from '../../utils/address';
 import {
   CREATE_ESCROW, CREATE_ESCROW_FAILED, CREATE_ESCROW_SUCCEEDED, CREATE_ESCROW_PRE_SUCCESS,
@@ -78,7 +78,7 @@ export function *onFundEscrow() {
 export function *payEscrowSignature({escrowId}) {
   try {
     const messageHash = yield call(EscrowInstance.methods.paySignHash(escrowId).call, {from: web3.eth.defaultAccount});
-    const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
+    const signedMessage = yield doSign(messageHash);
     yield put({type: PAY_ESCROW_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_PAYMENT});
   } catch (error) {
     console.error(error);
@@ -93,7 +93,7 @@ export function *onPayEscrowSignature() {
 export function *openCaseSignature({escrowId}) {
   try {
     const messageHash = yield call(EscrowInstance.methods.openCaseSignHash(escrowId).call, {from: web3.eth.defaultAccount});
-    const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
+    const signedMessage = yield doSign(messageHash);
     yield put({type: OPEN_CASE_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_OPEN_CASE});
   } catch (error) {
     console.error(error);

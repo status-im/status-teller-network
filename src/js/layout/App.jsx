@@ -26,6 +26,7 @@ import ArbitrationLicense from '../pages/ArbitrationLicense';
 import OffersList from '../pages/OffersList';
 import CacheSettings from '../pages/Settings';
 import NotificationManager from '../components/NotificationManager';
+import TransactionWarning from '../components/TransactionWarning';
 
 // Profile
 import MyProfile from '../pages/MyProfile';
@@ -176,6 +177,7 @@ class App extends Component {
           <Container className="p-0" id="app-container">
             <NotificationManager/>
             <Header />
+            <TransactionWarning/>
             <div className={(this.state.isHome ? 'home-body-content ' : 'app-body-content ') + "body-content"}>
               {this.props.priceError && !this.state.hidePriceError && <Alert color="danger"  toggle={this.hidePriceError}>
                 {t('app.priceError')}
