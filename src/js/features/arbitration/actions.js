@@ -24,13 +24,11 @@ import {
   GET_FALLBACK_ARBITRATOR,
   IS_FALLBACK_ARBITRATOR
 } from './constants';
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-Escrow.options.address = EscrowProxy.options.address;
 
 export const getDisputedEscrows = (includeFallbackDisputes = null, isArbitrator = false) => ({type: GET_DISPUTED_ESCROWS, includeFallbackDisputes, isArbitrator});
 
@@ -45,13 +43,13 @@ export const resolveDispute = (escrowId, result) => {
     type: RESOLVE_DISPUTE,
     escrowId,
     result,
-    toSend: Escrow.methods.setArbitrationResult(escrowId, result)
+    toSend: EscrowInstance.methods.setArbitrationResult(escrowId, result)
   };
 };
 
-export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: Escrow.methods.openCase(escrowId, motive || '')});
+export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: EscrowInstance.methods.openCase(escrowId, motive || '')});
 
-export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: Escrow.methods.cancelArbitration(escrowId)});
+export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: EscrowInstance.methods.cancelArbitration(escrowId)});
 
 export const loadArbitration = (escrowId) => {
   return {type: LOAD_ARBITRATION, escrowId};

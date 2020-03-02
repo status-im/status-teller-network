@@ -5,13 +5,12 @@ import {Link} from "react-router-dom";
 import Reputation from '../../../components/Reputation';
 import Identicon from "../../../components/UserInformation/Identicon";
 import classnames from 'classnames';
-import EscrowProxy from '../../../../embarkArtifacts/contracts/EscrowProxy';
-import Escrow from '../../../../embarkArtifacts/contracts/Escrow';
+import EscrowInstance from '../../../../embarkArtifacts/contracts/EscrowInstance';
 import {ARBITRATION_SOLVED_BUYER, ARBITRATION_SOLVED_SELLER} from "../../../features/arbitration/constants";
 import {copyToClipboard } from '../../../utils/strings';
 
 const TradeParticipant = ({profile, escrowId, address, isBuyer, winner, multisigInfo = false}) => {
-  const data = escrowId ? Escrow.methods.setArbitrationResult(escrowId, isBuyer ?  ARBITRATION_SOLVED_BUYER :  ARBITRATION_SOLVED_SELLER).encodeABI() : '';
+  const data = escrowId ? EscrowInstance.methods.setArbitrationResult(escrowId, isBuyer ?  ARBITRATION_SOLVED_BUYER :  ARBITRATION_SOLVED_SELLER).encodeABI() : '';
   return <Row className="border bg-white rounded p-2 mr-0 ml-0 mb-2" >
     <Col className="p-0" >
       <Row tag={Link} to={`/profile/` + address}>
@@ -34,7 +33,7 @@ const TradeParticipant = ({profile, escrowId, address, isBuyer, winner, multisig
         <Col>
           To select the {isBuyer ? 'buyer' : 'seller'} as the winner of the dispute, create a custom transaction in the multisig wallet with the following parameters (click to copy):
           <ul className="p-3 text-small overflow-auto">
-            <li>Recipient: <span className="font-weight-bold clickable" onClick={() => copyToClipboard(EscrowProxy.options.address)}>{EscrowProxy.options.address}</span></li>
+            <li>Recipient: <span className="font-weight-bold clickable" onClick={() => copyToClipboard(EscrowInstance.options.address)}>{EscrowInstance.options.address}</span></li>
             <li>Value: <span className="font-weight-bold clickable" onClick={() => copyToClipboard('0')}>0</span></li>
             <li>Data (hex encoded): <span className="font-weight-bold clickable" onClick={() => copyToClipboard(data)}>{data}</span></li>
           </ul>

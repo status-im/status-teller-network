@@ -20,7 +20,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Verifying if data script has been run already...");
-      const cVerif = new deps.web3.eth.Contract(deps.contracts.Escrow.options.jsonInterface, deps.contracts.EscrowProxy.options.address);
+      const cVerif = new deps.web3.eth.Contract(deps.contracts.EscrowInstance.options.jsonInterface, deps.contracts.EscrowInstance.options.address);
       const isInitialized = await cVerif.methods.isInitialized().call();
       if (isInitialized) {
         console.log('- Data script already ran once.');
@@ -46,7 +46,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     if(mainnetOwner){
       console.log("Setting ownership of 7 contracts");
       let receipt;
-      receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 1/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -111,8 +111,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the initial Escrow template calling the init() function");
-      deps.contracts.Escrow.options.address = deps.contracts.EscrowProxy.options.address;
-      const receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.init(
+      const receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.init(
         fallbackArbitrator || main,
         deps.contracts.EscrowRelay.options.address,
         deps.contracts.ArbitrationLicenseProxy.options.address,
@@ -132,13 +131,13 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     {
       console.log("Setting the escrow proxy address in UserStore");
-      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
     {
       console.log("Setting the escrow proxy address in OfferStore");
-      const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.setAllowedContract(deps.contracts.EscrowProxy.options.address, true));
+      const receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.setAllowedContract(deps.contracts.EscrowInstance.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
@@ -158,7 +157,7 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
     if(mainnetOwner){
       console.log("Setting ownership of 5 proxy");
       let receipt;
-      receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.transferOwnership(mainnetOwner));
+      receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.transferOwnership(mainnetOwner));
       console.log('- 1/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
       receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
       console.log('- 2/5: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
@@ -294,20 +293,20 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
       const sendTrxAccount = estimateAndSend(creatorAddress, gasPrice);
 
-      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
+      receipt = await sendTrxAccount(deps.contracts.EscrowInstance.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
 
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
       // Fund
-      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.fund(escrowId), val + feeAmount);
+      receipt = await sendTrxAccount(deps.contracts.EscrowInstance.methods.fund(escrowId), val + feeAmount);
 
       // Release
-      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.release(escrowId));
+      receipt = await sendTrxAccount(deps.contracts.EscrowInstance.methods.release(escrowId));
 
       // Rate
       const rating = Math.floor(Math.random() * 5) + 1;
-      await sendTrxAccount(deps.contracts.Escrow.methods.rateTransaction(escrowId, rating));
+      await sendTrxAccount(deps.contracts.EscrowInstance.methods.rateTransaction(escrowId, rating));
     });
 
     const sendTrxAccountBuyer = estimateAndSend(buyerAddress, gasPrice);
@@ -321,19 +320,19 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       signature = await deps.web3.eth.sign(hash, buyerAddress);
       nonce = await deps.contracts.UserStore.methods.user_nonce(buyerAddress).call();
 
-      receipt = await sendTrxAccount(deps.contracts.Escrow.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
+      receipt = await sendTrxAccount(deps.contracts.EscrowInstance.methods.createEscrow(ethOfferId, val, 140, creatorAddress, CONTACT_DATA, locations[offerStartIndex], usernames[offerStartIndex], nonce, signature));
 
       created = receipt.events.Created;
       escrowId = created.returnValues.escrowId;
 
       // Fund
-      await sendTrxAccount(deps.contracts.Escrow.methods.fund(escrowId), val + feeAmount);
+      await sendTrxAccount(deps.contracts.EscrowInstance.methods.fund(escrowId), val + feeAmount);
 
       // Buyer pays
-      await sendTrxAccountBuyer(deps.contracts.Escrow.methods.pay(escrowId));
+      await sendTrxAccountBuyer(deps.contracts.EscrowInstance.methods.pay(escrowId));
 
       // Open case
-      await sendTrxAccountBuyer(deps.contracts.Escrow.methods.openCase(escrowId, '1'));
+      await sendTrxAccountBuyer(deps.contracts.EscrowInstance.methods.openCase(escrowId, '1'));
     });
 
     const accounts = await async.mapLimit(addresses, 1, async (address) => {

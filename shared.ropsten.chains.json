@@ -22,7 +22,7 @@
         "address": "0xb009e41d5c7daC38e02fCDb6ebb97f53ed6A950c"
       },
       "0x084dcee6b38fbfeacf8371e068678793efc36cf8a9a1d83427e70ef8613852d3": {
-        "name": "EscrowProxy",
+        "name": "EscrowInstance",
         "address": "0x06Ea1813Aa7CFf6D3eF109Be941C469F0c3e6cc6"
       },
       "0x33ce98f7b733f04dce6121e52d066acaedb6ca1e83be5ccc73d20391c02537f5": {

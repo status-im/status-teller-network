@@ -1,8 +1,7 @@
 /*global contract, config, it, assert, web3, before, describe, beforeEach*/
 const TestUtils = require("../utils/testUtils");
-const Escrow = require('Embark/contracts/Escrow');
+const EscrowInstance = require('Embark/contracts/EscrowInstance');
 const EscrowRelay = require('Embark/contracts/EscrowRelay');
-const Proxy = require('Embark/contracts/Proxy');
 const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
 const SNT = require('Embark/contracts/SNT');
 const UserStore = require('Embark/contracts/UserStore');
@@ -63,7 +62,15 @@ config({
       },
       */
 
+      Escrow: {
+        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
+      },
       Proxy: {
+        deploy: false
+      },
+      EscrowInstance: {
+        instanceOf: "Proxy",
+        proxyFor: "Escrow",
         args: ["0x", "$Escrow"]
       },
 
@@ -71,9 +78,6 @@ config({
         args: ["$OfferStore", "$Proxy", "$SNT"]
       },
 
-      Escrow: {
-        args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
-      },
       TestEscrowUpgrade: {
         args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
       },
@@ -91,12 +95,10 @@ contract("Escrow", function() {
   describe("Upgradeable Escrows", async () => {
 
     before(async () => {
-      Escrow.options.address = Proxy.options.address;
-
-      await UserStore.methods.setAllowedContract(Escrow.options.address, true).send();
+      await UserStore.methods.setAllowedContract(EscrowInstance.options.address, true).send();
       await UserStore.methods.setAllowedContract(EscrowRelay.options.address, true).send();
 
-      await OfferStore.methods.setAllowedContract(Escrow.options.address, true).send();
+      await OfferStore.methods.setAllowedContract(EscrowInstance.options.address, true).send();
       await OfferStore.methods.setAllowedContract(EscrowRelay.options.address, true).send();
 
 
@@ -114,7 +116,7 @@ contract("Escrow", function() {
     it("Can create initial escrow version", async () => {
 
       // Here we are setting the initial "template" by calling the init() function
-      Escrow.methods.init(
+      EscrowInstance.methods.init(
         accounts[0],
         EscrowRelay.options.address,
         ArbitrationLicense.options.address,
@@ -127,7 +129,7 @@ contract("Escrow", function() {
     });
 
     it("Can create an escrow", async () => {
-      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
+      receipt = await EscrowInstance.methods.createEscrow(ethOfferId, 123, 140, accounts[1], CONTACT_DATA, "L", "U").send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -139,7 +141,7 @@ contract("Escrow", function() {
       const signature = await web3.eth.sign(hash, accounts[1]);
       const nonce = await UserStore.methods.user_nonce(accounts[1]).call();
 
-      receipt = await Escrow.methods.createEscrow(ethOfferId, 123, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
+      receipt = await EscrowInstance.methods.createEscrow(ethOfferId, 123, 140, accounts[1], CONTACT_DATA, "L", "U", nonce, signature).send({from: accounts[1]});
       const created = receipt.events.Created;
       assert(!!created, "Created() not triggered");
       assert.strictEqual(created.returnValues.offerId, ethOfferId, "Invalid offerId");
@@ -147,8 +149,8 @@ contract("Escrow", function() {
     });
 
     it("Can upgrade contract", async () => {
-      receipt = await Escrow.methods.updateCode(TestEscrowUpgrade.options.address).send();
-      TestEscrowUpgrade.options.address = Escrow.options.address;
+      receipt = await EscrowInstance.methods.updateCode(TestEscrowUpgrade.options.address).send();
+      TestEscrowUpgrade.options.address = EscrowInstance.options.address;
     });
 
     it("Can call new contract functions", async () => {

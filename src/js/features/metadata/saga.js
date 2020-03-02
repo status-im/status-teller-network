@@ -3,7 +3,7 @@ import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
 import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 import {eventChannel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
@@ -44,7 +44,6 @@ import {
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 import { zeroAddress, addressCompare } from '../../utils/address';
 import {getContactData} from '../../utils/strings';
 import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
@@ -58,7 +57,6 @@ OfferStore.options.address = OfferStoreProxy.options.address;
 UserStore.options.address = UserStoreProxy.options.address;
 ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
 SellerLicense.options.address = SellerLicenseProxy.options.address;
-Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
   if(!address) return;
@@ -181,7 +179,7 @@ export function *loadOffers({address}) {
     let allReleased;
     let releasedEscrows;
     if (!address) {
-      allReleased = yield Escrow.getPastEvents('Released', {fromBlock: 1});
+      allReleased = yield EscrowInstance.getPastEvents('Released', {fromBlock: 1});
       releasedEscrows = allReleased.map(e => e.returnValues.escrowId);
     }
 
@@ -206,7 +204,7 @@ export function *loadOffers({address}) {
       }
 
       // Get all escrows of that offer
-      const createdTrades = yield Escrow.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
+      const createdTrades = yield EscrowInstance.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
       let nbReleasedTrades = 0;
       createdTrades.forEach(tradeEvent => {
         if (releasedEscrows.includes(tradeEvent.returnValues.escrowId)) {

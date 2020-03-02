@@ -83,14 +83,15 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       EscrowRelay: {
-        args: ["$OfferStoreProxy", "$EscrowProxy", "$SNT"],
+        args: ["$OfferStoreProxy", "$EscrowInstance", "$SNT"],
         deps: ['RelayHub']
       },
       Escrow: {
         args: ["$accounts[0]", FALLBACK_ARBITRATOR_MAINNET, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
-      EscrowProxy: {
+      EscrowInstance: {
         instanceOf: "Proxy",
+        proxyFor: "Escrow",
         args: ["0x", "$Escrow"]
       },
       "MiniMeToken": {"deploy": false},
@@ -257,8 +258,9 @@ module.exports = {
       Escrow: {
         address: "0x727bF4BAed69265bBaFD39f0ab6e508F6fA118a7"
       },
-      EscrowProxy: {
+      EscrowInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'Escrow',
         address: "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
       },
       KyberFeeBurner: {

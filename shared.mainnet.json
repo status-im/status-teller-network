@@ -74,7 +74,7 @@
         "address": "0x727bF4BAed69265bBaFD39f0ab6e508F6fA118a7"
       },
       "0x3d0b9c682dbbc1027a2e3fd54fc7bd2c6c5a4d95e3da64b40df69ee34dfe4014": {
-        "name": "EscrowProxy",
+        "name": "EscrowInstance",
         "address": "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
       },
       "0xce31be644883d3160b8a3e9adc1caeffd425b268203b19e50c2dc3c950baeddd": {
