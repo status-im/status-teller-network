@@ -5,6 +5,7 @@ import cloneDeep from "clone-deep";
 import {acceptedTransactionWarning} from '../features/network/selectors';
 import {SHOW_TRANSACTION_WARNING} from "../features/network/constants";
 import {neverShowTransactionWarningAgain} from "../features/metadata/selectors";
+import {shouldUseRelay} from "../provider";
 
 export function promiseEventEmitter(promiseEvent, emitter) {
   promiseEvent.on('transactionHash', function(hash) {
@@ -21,12 +22,21 @@ export function promiseEventEmitter(promiseEvent, emitter) {
   return () => {};
 }
 
-function *waitForUserAccept() {
+function *waitForUserAccept(toSend) {
   const neverShow = yield select(neverShowTransactionWarningAgain);
   if (neverShow) {
     return;
   }
-  yield put({type: SHOW_TRANSACTION_WARNING});
+
+  let isGSN = false;
+  try {
+    isGSN = yield shouldUseRelay(toSend.encodeABI(), toSend._parent.options.address, 'eth_sendTransaction');
+  } catch (e) {
+    // Something failed in the check, let's just show the normal modal
+    console.error(e);
+  }
+
+  yield put({type: SHOW_TRANSACTION_WARNING, isGSN});
   let stateSlice = yield select(acceptedTransactionWarning);
   while (stateSlice !== true) {
     yield take();
@@ -43,7 +53,7 @@ export function *doTransaction(preSuccess, success, failed, {value = 0, toSend})
   delete parsedPayload.type;
   try {
     // Wait for the user to accept the warning
-    yield waitForUserAccept();
+    yield waitForUserAccept(toSend);
 
     const estimatedGas = yield call(toSend.estimateGas, {value, from: web3.eth.defaultAccount});
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});

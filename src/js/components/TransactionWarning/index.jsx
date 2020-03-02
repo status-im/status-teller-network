@@ -9,14 +9,14 @@ import lightningIcon from '../../../images/lightning.svg';
 import RoundedIcon from "../../ui/RoundedIcon";
 import {FormGroup, Label, Input} from 'reactstrap';
 
-const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningState}) => {
+const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningState, isGSNWarning}) => {
   const [neverShowAgain, setNeverShowAgain] = useState(false);
   return (
     <ModalDialog display={showTransactionWarning} buttonText={t('transactionWarning.signWithWallet')}
                  onClick={() => setTransactionWarningState(true, neverShowAgain)}>
       <RoundedIcon image={lightningIcon} bgColor="blue"/>
       <h3 className="m-3">{t('transactionWarning.blockchainInteraction')}</h3>
-      <p className="text-muted mb-2">{t('transactionWarning.walletWillAsk')}</p>
+      <p className="text-muted mb-2">{isGSNWarning ? t('transactionWarning.walletWillAskGSN') : t('transactionWarning.walletWillAsk')}</p>
       <FormGroup check>
         <Label check>
           <Input type="checkbox" onChange={(e) => setNeverShowAgain(e.target.checked)}/>
@@ -30,12 +30,14 @@ const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningSta
 TransactionWarning.propTypes = {
   t: PropTypes.func,
   showTransactionWarning: PropTypes.bool,
+  isGSNWarning: PropTypes.bool,
   setTransactionWarningState: PropTypes.func
 };
 
 
 const mapStateToProps = (state) => ({
-  showTransactionWarning: network.selectors.showTransactionWarning(state)
+  showTransactionWarning: network.selectors.showTransactionWarning(state),
+  isGSNWarning: network.selectors.isGSNWarning(state)
 });
 
 export default connect(

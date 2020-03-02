@@ -430,7 +430,8 @@
   "transactionWarning": {
     "signWithWallet": "Sign with wallet",
     "blockchainInteraction": "Blockchain interaction",
-    "walletWillAsk": "Your wallet will ask you to digitally sign a transaction. Expect to pay a small transaction fee for using Ethereum blockchain."
+    "walletWillAsk": "Your wallet will ask you to digitally sign a transaction. Expect to pay a small transaction fee for using the Ethereum blockchain.",
+    "walletWillAskGSN": "Your wallet will ask you to digitally sign a transaction. The transaction fee for using the Ethereum blockchain is paid by Teller."
   },
   "noWeb3Dialog": {
     "title": "Your browser is not supported",
