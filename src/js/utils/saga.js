@@ -1,7 +1,9 @@
 /*global web3*/
 import {END, eventChannel} from "redux-saga";
-import {call, put, take} from "redux-saga/effects";
+import {call, put, take, select} from "redux-saga/effects";
 import cloneDeep from "clone-deep";
+import {acceptedTransactionWarning} from '../features/network/selectors';
+import {SHOW_TRANSACTION_WARNING} from "../features/network/constants";
 
 export function promiseEventEmitter(promiseEvent, emitter) {
   promiseEvent.on('transactionHash', function(hash) {
@@ -18,11 +20,27 @@ export function promiseEventEmitter(promiseEvent, emitter) {
   return () => {};
 }
 
+function *waitForUserAccept() {
+  // TODO also get if it was previously accepted
+  yield put({type: SHOW_TRANSACTION_WARNING});
+  let stateSlice = yield select(acceptedTransactionWarning);
+  while (stateSlice !== true) {
+    yield take();
+    stateSlice = yield select(acceptedTransactionWarning);
+    if (stateSlice === false) {
+      throw new Error('Warning refused');
+    }
+  }
+}
+
 export function *doTransaction(preSuccess, success, failed, {value = 0, toSend}) {
   const parsedPayload = cloneDeep(arguments[3]);
   delete parsedPayload.toSend;
   delete parsedPayload.type;
   try {
+    // Wait for the user to accept the warning
+    yield waitForUserAccept();
+
     const estimatedGas = yield call(toSend.estimateGas, {value, from: web3.eth.defaultAccount});
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 1000, from: web3.eth.defaultAccount, value});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));

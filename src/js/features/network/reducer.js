@@ -1,9 +1,19 @@
 /*global web3*/
-import { INIT_SUCCEEDED, INIT_FAILED, UPDATE_BALANCE_SUCCEEDED, GET_CONTACT_CODE_SUCCEEDED, RESOLVE_ENS_NAME_SUCCEEDED, RESOLVE_ENS_NAME_FAILED, GET_GAS_PRICE_SUCCEEDED } from './constants';
-import { ENABLE_ETHEREUM_SUCCEEDED } from '../metadata/constants';
-import { Networks, Tokens } from '../../utils/networks';
-import { fromTokenDecimals } from '../../utils/numbers';
-import { addressCompare } from '../../utils/address';
+import {
+  INIT_SUCCEEDED,
+  INIT_FAILED,
+  UPDATE_BALANCE_SUCCEEDED,
+  GET_CONTACT_CODE_SUCCEEDED,
+  RESOLVE_ENS_NAME_SUCCEEDED,
+  RESOLVE_ENS_NAME_FAILED,
+  GET_GAS_PRICE_SUCCEEDED,
+  SET_TRANSACTION_WARNING_STATE,
+  SHOW_TRANSACTION_WARNING
+} from './constants';
+import {ENABLE_ETHEREUM_SUCCEEDED} from '../metadata/constants';
+import {Networks, Tokens} from '../../utils/networks';
+import {fromTokenDecimals} from '../../utils/numbers';
+import {addressCompare} from '../../utils/address';
 
 const DEFAULT_STATE = {
   ready: false,
@@ -18,7 +28,10 @@ const DEFAULT_STATE = {
   },
   tokens: {},
   ensError: '',
-  environment: 'testnet'
+  environment: 'testnet',
+  acceptedTransactionWarning: null,
+  showTransactionWarning: false,
+  neverShowAgain: false
 };
 
 function reducer(state = DEFAULT_STATE, action) {
@@ -114,6 +127,19 @@ function reducer(state = DEFAULT_STATE, action) {
         ensError: action.error
       };
     }
+    case SET_TRANSACTION_WARNING_STATE:
+      return {
+        ...state,
+        acceptedTransactionWarning: !!action.acceptation,
+        showTransactionWarning: false,
+        neverShowAgain: !!action.neverShowAgain
+      };
+    case SHOW_TRANSACTION_WARNING:
+      return {
+        ...state,
+        acceptedTransactionWarning: null,
+        showTransactionWarning: true
+      };
     default:
       return state;
   }

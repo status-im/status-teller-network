@@ -45,3 +45,6 @@ export const getStatusContactCode = (state) => state.network.contactCode;
 export const getENSError = state => state.network.ensError;
 export const getNetwork = state => state.network.network;
 export const getEnvironment = state => state.network.environment;
+
+export const acceptedTransactionWarning = state => state.network.acceptedTransactionWarning;
+export const showTransactionWarning = state => state.network.showTransactionWarning;
