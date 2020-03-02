@@ -1,11 +1,11 @@
-/*global contract, config, it, assert, before, describe, beforeEach*/
+/*global contract, config, it, assert, before, describe, beforeEach, artifacts*/
 const TestUtils = require("../utils/testUtils");
-const EscrowInstance = require('Embark/contracts/EscrowInstance');
-const EscrowRelay = require('Embark/contracts/EscrowRelay');
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-const SNT = require('Embark/contracts/SNT');
-const UserStore = require('Embark/contracts/UserStore');
-const OfferStore = require('Embark/contracts/OfferStore');
+const EscrowInstance = artifacts.require('EscrowInstance');
+const EscrowRelay = artifacts.require('EscrowRelay');
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
+const SNT = artifacts.require('SNT');
+const UserStore = artifacts.require('UserStore');
+const OfferStore = artifacts.require('OfferStore');
 
 let accounts, arbitrator;
 let receipt;

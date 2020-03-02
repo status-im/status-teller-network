@@ -1,12 +1,12 @@
-/*global contract, config, it, assert, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach, artifacts*/
 const TestUtils = require("../utils/testUtils");
-const EscrowInstance = require('Embark/contracts/EscrowInstance');
-const EscrowRelay = require('Embark/contracts/EscrowRelay');
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-const SNT = require('Embark/contracts/SNT');
-const UserStore = require('Embark/contracts/UserStore');
-const OfferStore = require('Embark/contracts/OfferStore');
-const TestEscrowUpgrade = require('Embark/contracts/TestEscrowUpgrade');
+const EscrowInstance = artifacts.require('EscrowInstance');
+const EscrowRelay = artifacts.require('EscrowRelay');
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
+const SNT = artifacts.require('SNT');
+const UserStore = artifacts.require('UserStore');
+const OfferStore = artifacts.require('OfferStore');
+const TestEscrowUpgrade = artifacts.require('TestEscrowUpgrade');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 

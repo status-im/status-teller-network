@@ -214,7 +214,7 @@ export function *onIsFallbackArbitrator() {
 
 export function *doCheckFallbackArbitrator() {
   try {
-    const fallbackArbitrator = yield call(Escrow.methods.fallbackArbitrator().call);
+    const fallbackArbitrator = yield call(EscrowInstance.methods.fallbackArbitrator().call);
     const code = yield call(web3.eth.getCode, fallbackArbitrator);
     let isFallbackArbitrator = false;
     if(code === '0x'){
