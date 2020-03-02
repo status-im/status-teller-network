@@ -1,9 +1,9 @@
 /* global web3, subspace */
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
+import ArbitrationLicenseInstance from '../../../embarkArtifacts/contracts/ArbitrationLicenseInstance';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
 import SNT from '../../../embarkArtifacts/contracts/SNT';
 import GnosisSafe from '../../../embarkArtifacts/contracts/GnosisSafe';
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
 import moment from 'moment';
 import {promiseEventEmitter, doTransaction} from '../../utils/saga';
 import {eventChannel, channel} from "redux-saga";
@@ -30,13 +30,6 @@ import {
   GET_BLACKLISTED_SELLERS, GET_BLACKLISTED_SELLERS_FAILED, GET_BLACKLISTED_SELLERS_SUCCEEDED, LOAD_ARBITRATOR_SCORES, RESET_ARBITRATOR_SCORES, ADD_ARBITRATOR_SCORE,
   IS_FALLBACK_ARBITRATOR, IS_FALLBACK_ARBITRATOR_SUCCEEDED, IS_FALLBACK_ARBITRATOR_FAILED
 } from './constants';
-import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-
-OfferStore.options.address = OfferStoreProxy.options.address;
-ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-Escrow.options.address = EscrowProxy.options.address;
 
 export function *onResolveDispute() {
   yield takeEvery(RESOLVE_DISPUTE, doTransaction.bind(null, RESOLVE_DISPUTE_PRE_SUCCESS, RESOLVE_DISPUTE_SUCCEEDED, RESOLVE_DISPUTE_FAILED));
@@ -53,9 +46,9 @@ export function *onCancelDispute() {
 export function *doLoadArbitratorScores() {
   yield put({type: RESET_ARBITRATOR_SCORES});
 
-  const TrackableEscrow = subspace.contract(Escrow);
+  const TrackableEscrow = subspace.contract(EscrowInstance);
   const myArbitration$ = yield TrackableEscrow.events.ArbitrationResolved.track();
- 
+
   const arbChannel = channel();
   myArbitration$.subscribe(x => arbChannel.put(x.arbitrator));
 
@@ -67,18 +60,18 @@ export function *doLoadArbitratorScores() {
 
 export function *doGetArbitrators({address, includeAll}) {
   try {
-    const cnt = yield call(ArbitrationLicense.methods.getNumLicenseOwners().call);
+    const cnt = yield call(ArbitrationLicenseInstance.methods.getNumLicenseOwners().call);
     const arbitrators = {};
     for(let i = 0; i < cnt; i++){
-      const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicense.methods.licenseOwners(i).call));
-      const isAllowed = yield call(ArbitrationLicense.methods.isAllowed(address, arbitrator).call);
-      const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(arbitrator).call);
+      const arbitrator = web3.utils.toChecksumAddress(yield call(ArbitrationLicenseInstance.methods.licenseOwners(i).call));
+      const isAllowed = yield call(ArbitrationLicenseInstance.methods.isAllowed(address, arbitrator).call);
+      const isLicenseOwner = yield call(ArbitrationLicenseInstance.methods.isLicenseOwner(arbitrator).call);
 
       if(isLicenseOwner && (isAllowed || includeAll)) {
         const id = web3.utils.soliditySha3(arbitrator, address);
-        arbitrators[arbitrator] = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(arbitrator).call);
+        arbitrators[arbitrator] = yield call(ArbitrationLicenseInstance.methods.arbitratorlicenseDetails(arbitrator).call);
         arbitrators[arbitrator].isAllowed = isAllowed;
-        arbitrators[arbitrator].request = yield call(ArbitrationLicense.methods.requests(id).call);
+        arbitrators[arbitrator].request = yield call(ArbitrationLicenseInstance.methods.requests(id).call);
       }
     }
     yield put({type: GET_ARBITRATORS_SUCCEEDED, arbitrators});
@@ -95,23 +88,23 @@ export function *doGetEscrows({includeFallbackDisputes, isArbitrator}) {
       filter.arbitrator = web3.eth.defaultAccount;
     }
 
-    const events = yield Escrow.getPastEvents('ArbitrationRequired', {filter, fromBlock: 1});
-    
+    const events = yield EscrowInstance.getPastEvents('ArbitrationRequired', {filter, fromBlock: 1});
+
     let escrows = [];
     for (let i = 0; i < events.length; i++) {
       const escrowId = events[i].returnValues.escrowId;
       const block = yield web3.eth.getBlock(events[0].blockNumber);
-      const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-      const offer = yield OfferStore.methods.offers(escrow.offerId).call();
+      const escrow = yield call(EscrowInstance.methods.transactions(escrowId).call);
+      const offer = yield OfferStoreInstance.methods.offers(escrow.offerId).call();
 
       escrow.escrowId = escrowId;
       escrow.seller = offer.owner;
-      escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
+      escrow.arbitration = yield call(EscrowInstance.methods.arbitrationCases(escrowId).call);
       escrow.arbitration.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
 
       if(escrow.arbitration.open || escrow.arbitration.result !== 0) {
         if(
-          (includeFallbackDisputes && escrow.arbitration.arbitratorTimeout < (Date.now()/1000)) || 
+          (includeFallbackDisputes && escrow.arbitration.arbitratorTimeout < (Date.now()/1000)) ||
           addressCompare(escrow.arbitrator, web3.eth.defaultAccount) ||
           (addressCompare(escrow.buyer, web3.eth.defaultAccount) || addressCompare(escrow.seller, web3.eth.defaultAccount))
           ){
@@ -143,16 +136,16 @@ export function *onGetEscrows() {
 
 export function *doLoadArbitration({escrowId}) {
   try {
-    const escrow = yield call(Escrow.methods.transactions(escrowId).call);
-    const offer = yield OfferStore.methods.offers(escrow.offerId).call();
+    const escrow = yield call(EscrowInstance.methods.transactions(escrowId).call);
+    const offer = yield OfferStoreInstance.methods.offers(escrow.offerId).call();
 
-    const events = yield Escrow.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
+    const events = yield EscrowInstance.getPastEvents('Created', {fromBlock: 1, filter: {escrowId: escrowId} });
     const block = yield web3.eth.getBlock(events[0].blockNumber);
     escrow.createDate = moment(block.timestamp * 1000).format("DD.MM.YY");
     escrow.escrowId = escrowId;
     escrow.seller = offer.owner;
     escrow.offer = offer;
-    escrow.arbitration = yield call(Escrow.methods.arbitrationCases(escrowId).call);
+    escrow.arbitration = yield call(EscrowInstance.methods.arbitrationCases(escrowId).call);
 
     yield put({type: LOAD_ARBITRATION_SUCCEEDED, escrow});
   } catch (error) {
@@ -171,10 +164,10 @@ export function *onGetArbitratorApprovalRequests() {
 
 export function *doGetArbitratorApprovalRequests() {
   try {
-    const events = yield ArbitrationLicense.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const events = yield ArbitrationLicenseInstance.getPastEvents('ArbitratorRequested', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
     const requests = yield all(events.map(function *(event) {
       const request = event.returnValues;
-      const requestDetail = yield ArbitrationLicense.methods.requests(request.id).call();
+      const requestDetail = yield ArbitrationLicenseInstance.methods.requests(request.id).call();
 
       if([NONE, CLOSED].indexOf(requestDetail.status) > -1 || !addressCompare(requestDetail.arbitrator, web3.eth.defaultAccount)) return null;
 
@@ -196,9 +189,9 @@ export function *onGetArbitratorBlacklist() {
 
 export function *doGetArbitratorBlacklist() {
   try {
-    const events = yield ArbitrationLicense.getPastEvents('BlacklistSeller', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
+    const events = yield ArbitrationLicenseInstance.getPastEvents('BlacklistSeller', {fromBlock: 1, filter: {arbitrator: web3.eth.defaultAccount} });
     const sellers = yield all(events.map(function *(event) {
-      const isBlacklisted = yield ArbitrationLicense.methods.blacklist(event.returnValues.seller).call();
+      const isBlacklisted = yield ArbitrationLicenseInstance.methods.blacklist(event.returnValues.seller).call();
 
       if (!isBlacklisted) {
         return null;
@@ -221,7 +214,7 @@ export function *onIsFallbackArbitrator() {
 
 export function *doCheckFallbackArbitrator() {
   try {
-    const fallbackArbitrator = yield call(Escrow.methods.fallbackArbitrator().call);
+    const fallbackArbitrator = yield call(EscrowInstance.methods.fallbackArbitrator().call);
     const code = yield call(web3.eth.getCode, fallbackArbitrator);
     let isFallbackArbitrator = false;
     if(code === '0x'){
@@ -242,7 +235,7 @@ export function *onGetFallbackArbitrator() {
 
 export function *doGetFallbackArbitrator() {
   try {
-    const fallbackArbitrator = yield call(Escrow.methods.fallbackArbitrator().call);
+    const fallbackArbitrator = yield call(EscrowInstance.methods.fallbackArbitrator().call);
     yield put({type: GET_FALLBACK_ARBITRATOR_SUCCEEDED, fallbackArbitrator});
 
   } catch (error) {
@@ -254,9 +247,9 @@ export function *doGetFallbackArbitrator() {
 
 export function *doBuyLicense() {
   try {
-    const price = yield call(ArbitrationLicense.methods.price().call);
-    const encodedCall = ArbitrationLicense.methods.buy().encodeABI();
-    const toSend = SNT.methods.approveAndCall(ArbitrationLicense.options.address, price, encodedCall);
+    const price = yield call(ArbitrationLicenseInstance.methods.price().call);
+    const encodedCall = ArbitrationLicenseInstance.methods.buy().encodeABI();
+    const toSend = SNT.methods.approveAndCall(ArbitrationLicenseInstance.options.address, price, encodedCall);
     const estimatedGas = yield call(toSend.estimateGas);
     const promiseEvent = toSend.send({gasLimit: estimatedGas + 2000});
     const channel = eventChannel(promiseEventEmitter.bind(null, promiseEvent));
@@ -284,7 +277,7 @@ export function *onBuyLicense() {
 
 export function *loadPrice() {
   try {
-    const price = yield call(ArbitrationLicense.methods.price().call);
+    const price = yield call(ArbitrationLicenseInstance.methods.price().call);
     yield put({type: LOAD_PRICE_SUCCEEDED, price});
   } catch (error) {
     console.error(error);
@@ -300,8 +293,8 @@ export function *doCheckLicenseOwner() {
   if(!web3.eth.defaultAccount) return;
 
   try {
-    const isLicenseOwner = yield call(ArbitrationLicense.methods.isLicenseOwner(web3.eth.defaultAccount).call);
-    const licenseDetails = yield call(ArbitrationLicense.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
+    const isLicenseOwner = yield call(ArbitrationLicenseInstance.methods.isLicenseOwner(web3.eth.defaultAccount).call);
+    const licenseDetails = yield call(ArbitrationLicenseInstance.methods.arbitratorlicenseDetails(web3.eth.defaultAccount).call);
     yield put({type: CHECK_LICENSE_OWNER_SUCCEEDED, isLicenseOwner, acceptAny: licenseDetails.acceptAny});
   } catch (error) {
     console.error(error);
@@ -319,7 +312,7 @@ export function *onRequestArbitrator() {
 
 export function *doCancelArbitratorRequest({arbitrator}){
   const id = web3.utils.soliditySha3(arbitrator, web3.eth.defaultAccount);
-  const toSend = ArbitrationLicense.methods.cancelRequest(id);
+  const toSend = ArbitrationLicenseInstance.methods.cancelRequest(id);
   yield doTransaction(CANCEL_ARBITRATOR_REQUEST_PRE_SUCCESS, CANCEL_ARBITRATOR_REQUEST_SUCCEEDED, CANCEL_ARBITRATOR_REQUEST_FAILED, {
     arbitrator,
     toSend

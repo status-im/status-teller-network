@@ -1,12 +1,11 @@
-/*global contract, config, it, assert, before, describe, beforeEach*/
+/*global contract, config, it, assert, before, describe, beforeEach, artifacts*/
 const TestUtils = require("../utils/testUtils");
-const Escrow = require('Embark/contracts/Escrow');
-const EscrowRelay = require('Embark/contracts/EscrowRelay');
-const Proxy = require('Embark/contracts/Proxy');
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-const SNT = require('Embark/contracts/SNT');
-const UserStore = require('Embark/contracts/UserStore');
-const OfferStore = require('Embark/contracts/OfferStore');
+const EscrowInstance = artifacts.require('EscrowInstance');
+const EscrowRelay = artifacts.require('EscrowRelay');
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
+const SNT = artifacts.require('SNT');
+const UserStore = artifacts.require('UserStore');
+const OfferStore = artifacts.require('OfferStore');
 
 let accounts, arbitrator;
 let receipt;
@@ -62,14 +61,11 @@ config({
       */
 
       EscrowRelay: {
-        args: ["$OfferStore", "$Proxy", "$SNT"],
+        args: ["$OfferStore", "$EscrowInstance", "$SNT"],
         onDeploy: [
           "OfferStore.methods.setAllowedContract('$EscrowRelay', true).send()",
           "UserStore.methods.setAllowedContract('$EscrowRelay', true).send()"
         ]
-      },
-      Proxy: {
-        args: ["0x", "$Escrow"]
       },
       Escrow: {
         args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000],
@@ -77,6 +73,14 @@ config({
           "OfferStore.methods.setAllowedContract('$Escrow', true).send()",
           "UserStore.methods.setAllowedContract('$Escrow', true).send()"
         ]
+      },
+      Proxy: {
+        deploy: false
+      },
+      EscrowInstance: {
+        instanceOf: 'Proxy',
+        proxyFor: 'Escrow',
+        args: ["0x", "$Escrow"]
       },
       TestEscrowUpgrade: {
         args: ["$accounts[0]", "0x0000000000000000000000000000000000000002", "$ArbitrationLicense", "$OfferStore", "$UserStore", BURN_ADDRESS, 1000]
@@ -96,8 +100,6 @@ contract("Escrow Relay", function() {
 
 
   before(async () => {
-    Escrow.options.address = Proxy.options.address;
-
     await SNT.methods.generateTokens(accounts[0], 1000).send();
     await SNT.methods.generateTokens(arbitrator, 1000).send();
     const encodedCall2 = ArbitrationLicense.methods.buy().encodeABI();
@@ -108,7 +110,7 @@ contract("Escrow Relay", function() {
 
     ethOfferId = receipt.events.OfferAdded.returnValues.offerId;
 
-    Escrow.methods.init(
+    EscrowInstance.methods.init(
       accounts[0],
       EscrowRelay.options.address,
       ArbitrationLicense.options.address,
@@ -118,10 +120,10 @@ contract("Escrow Relay", function() {
       1000
     ).send({from: accounts[0]});
 
-    await OfferStore.methods.setAllowedContract(Escrow.options.address, true).send();
-    await UserStore.methods.setAllowedContract(Escrow.options.address, true).send();
+    await OfferStore.methods.setAllowedContract(EscrowInstance.options.address, true).send();
+    await UserStore.methods.setAllowedContract(EscrowInstance.options.address, true).send();
 
-    EscrowRelay.options.jsonInterface.push(Escrow.options.jsonInterface.find(x => x.name === 'Created'));
+    EscrowRelay.options.jsonInterface.push(EscrowInstance.options.jsonInterface.find(x => x.name === 'Created'));
   });
 
   it("Can create an escrow", async () => {
@@ -132,7 +134,7 @@ contract("Escrow Relay", function() {
   it("User can cancel the escrow ", async () => {
     receipt = await EscrowRelay.methods.cancel(escrowId).send({from: accounts[1]});
 
-    const escrow = await Escrow.methods.transactions(escrowId).call();
+    const escrow = await EscrowInstance.methods.transactions(escrowId).call();
     const ESCROW_CANCELED = '4';
 
     assert.strictEqual(escrow.status, ESCROW_CANCELED);

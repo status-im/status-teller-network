@@ -30,7 +30,7 @@
         "address": "0x63f5035069E325AC3b2546BBdC4DF49B244CedfA"
       },
       "0xbe9838d455325b991f174d3f932448426468cc85c99fd09e2d265ed16589df60": {
-        "name": "SellerLicenseProxy",
+        "name": "SellerLicenseInstance",
         "address": "0x9e14Ee88715FEB84BC3a2601D7B49d0E8C005498"
       },
       "0x5cbaa8682e60704bcded1a8052f3801c18315767310e9cb852414da51c64e75a": {
@@ -38,7 +38,7 @@
         "address": "0x137a2417Edb173E43Ccc246Dc76dfeb5281005Cc"
       },
       "0x75e2aa15d085f598b196a8014dab786618a8527b10b267853b439991daa8ee05": {
-        "name": "ArbitrationLicenseProxy",
+        "name": "ArbitrationLicenseInstance",
         "address": "0x079A72015Fe55D2F580750fF8Ad7f77ced5a7854"
       },
       "0xd0daabcef7904c8c61b17193d61db0ef525889e72fd37e9ea1344cd95c07e5ba": {
@@ -50,7 +50,7 @@
         "address": "0xcc0Ab31133B71852278fE08D3c8F2a25633b6B92"
       },
       "0xc58eec9e4031117ce12618062f516c0e7fd9df2d54d3d0700b4e6e39f6f51769": {
-        "name": "EscrowProxy",
+        "name": "EscrowInstance",
         "address": "0x23a6F0bdBd6b5e6DBe5768F3aA68DDC3acF610d8"
       },
       "0x4248a86e72c9087cc5f5f9ea64e0da7c4275820f70b245cee78977c6c2fa643c": {

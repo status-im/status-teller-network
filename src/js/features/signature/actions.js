@@ -1,7 +1,5 @@
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
 import {INCLUDE_SIGNATURE, SIGNATURE_OPEN_CASE, SIGNATURE_PAYMENT} from './constants';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-Escrow.options.address = EscrowProxy.options.address;
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 
 export const includeSignature = ({type, escrowId, message}) => {
   let method;
@@ -15,5 +13,5 @@ export const includeSignature = ({type, escrowId, message}) => {
     default:
       throw new Error("Invalid signature type");
   }
-  return { type: INCLUDE_SIGNATURE, toSend: Escrow.methods[method](escrowId, message) };
+  return { type: INCLUDE_SIGNATURE, toSend: EscrowInstance.methods[method](escrowId, message) };
 };

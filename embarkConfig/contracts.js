@@ -44,8 +44,9 @@ module.exports = {
           "$KyberFeeBurner"  // TODO: replace with "$StakingPool"
         ]
       },
-      SellerLicenseProxy: {
+      SellerLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'SellerLicense',
         args: ["0x", "$SellerLicense"]
       },
       ArbitrationLicense: {
@@ -55,8 +56,9 @@ module.exports = {
           "$KyberFeeBurner"  // TODO: replace with "$StakingPool"
         ]
       },
-      ArbitrationLicenseProxy: {
+      ArbitrationLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: "ArbitrationLicense",
         args: ["0x", "$ArbitrationLicense"]
       },
       UserStore: {
@@ -68,12 +70,14 @@ module.exports = {
       OfferStore: {
         args: ["$UserStore", "$SellerLicense", "$ArbitrationLicense", BURN_ADDRESS, "$Medianizer"]
       },
-      UserStoreProxy: {
+      UserStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "UserStore",
         args: ["0x", "$UserStore"]
       },
-      OfferStoreProxy: {
+      OfferStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "OfferStore",
         args: ["0x", "$OfferStore"]
       },
       "RLPReader": {
@@ -83,14 +87,15 @@ module.exports = {
         file: 'tabookey-gasless/contracts/RelayHub.sol'
       },
       EscrowRelay: {
-        args: ["$OfferStoreProxy", "$EscrowProxy", "$SNT"],
+        args: ["$OfferStoreInstance", "$EscrowInstance", "$SNT"],
         deps: ['RelayHub']
       },
       Escrow: {
         args: ["$accounts[0]", FALLBACK_ARBITRATOR_MAINNET, "$ArbitrationLicense", "$OfferStore", "$UserStore", "$KyberFeeBurner", FEE_MILLI_PERCENT]
       },
-      EscrowProxy: {
+      EscrowInstance: {
         instanceOf: "Proxy",
+        proxyFor: "Escrow",
         args: ["0x", "$Escrow"]
       },
       "MiniMeToken": {"deploy": false},
@@ -223,15 +228,17 @@ module.exports = {
       SellerLicense: {
         address: "0xD0fBD1a8D663B3D31312e0cb24910be82387266A"
       },
-      SellerLicenseProxy: {
+      SellerLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'SellerLicense',
         address: "0x18C8e4570DE4D1FA07E2ad8BE4bc0Fe8B2C2dc4d"
       },
       ArbitrationLicense: {
         address: "0x7e571b13aeb1a6abcfc470b7d033a6838e53f440"
       },
-      ArbitrationLicenseProxy: {
+      ArbitrationLicenseInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'ArbitrationLicense',
         address: "0x3e7fc31b9bd5fafde828acc1fd7b7b3dd7c1d927"
       },
       UserStore: {
@@ -243,12 +250,14 @@ module.exports = {
       OfferStore: {
         address: "0x5EaE5D9Fc2F38d18D9F3Bfa584700801850670D0"
       },
-      UserStoreProxy: {
+      UserStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "UserStore",
         address: "0x61fbacebcef64e726ff5b848da5dff0c44c199f5"
       },
-      OfferStoreProxy: {
+      OfferStoreInstance: {
         instanceOf: "Proxy",
+        proxyFor: "OfferStore",
         address: "0xf0dfd170aedf576717b7de14dac257c832a364e2"
       },
       EscrowRelay: {
@@ -257,8 +266,9 @@ module.exports = {
       Escrow: {
         address: "0x727bF4BAed69265bBaFD39f0ab6e508F6fA118a7"
       },
-      EscrowProxy: {
+      EscrowInstance: {
         instanceOf: "Proxy",
+        proxyFor: 'Escrow',
         address: "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
       },
       KyberFeeBurner: {

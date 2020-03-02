@@ -1,9 +1,9 @@
 /* global web3 */
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import UserStore from '../../../embarkArtifacts/contracts/UserStore';
-import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
-import SellerLicense from '../../../embarkArtifacts/contracts/SellerLicense';
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
+import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
+import SellerLicenseInstance from '../../../embarkArtifacts/contracts/SellerLicenseInstance';
+import ArbitrationLicenseInstance from '../../../embarkArtifacts/contracts/ArbitrationLicenseInstance';
 import {eventChannel} from 'redux-saga';
 import {fork, takeEvery, put, all, call, select, take} from 'redux-saga/effects';
 import {
@@ -44,21 +44,10 @@ import {
 import {USER_RATING, LOAD_ESCROWS} from '../escrow/constants';
 import {doTransaction} from '../../utils/saga';
 import {getLocation} from '../../services/googleMap';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
 import { zeroAddress, addressCompare } from '../../utils/address';
 import {getContactData} from '../../utils/strings';
-import SellerLicenseProxy from '../../../embarkArtifacts/contracts/SellerLicenseProxy';
-import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
 import {enableEthereum} from '../../services/embarkjs';
 import network from '../../features/network';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
-
-OfferStore.options.address = OfferStoreProxy.options.address;
-UserStore.options.address = UserStoreProxy.options.address;
-ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-SellerLicense.options.address = SellerLicenseProxy.options.address;
-Escrow.options.address = EscrowProxy.options.address;
 
 export function *loadUser({address}) {
   if(!address) return;
@@ -66,15 +55,15 @@ export function *loadUser({address}) {
   const defaultAccount = web3.eth.defaultAccount || zeroAddress;
 
   try {
-    const isArbitrator = yield ArbitrationLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
-    const isSeller = yield SellerLicense.methods.isLicenseOwner(address).call({from: defaultAccount});
+    const isArbitrator = yield ArbitrationLicenseInstance.methods.isLicenseOwner(address).call({from: defaultAccount});
+    const isSeller = yield SellerLicenseInstance.methods.isLicenseOwner(address).call({from: defaultAccount});
 
     let userLicenses = {
       isArbitrator,
       isSeller
     };
 
-    const user = Object.assign(userLicenses, yield UserStore.methods.users(address).call({from: defaultAccount}));
+    const user = Object.assign(userLicenses, yield UserStoreInstance.methods.users(address).call({from: defaultAccount}));
 
     if (user.location) {
       yield put({type: LOAD_USER_LOCATION, user, address});
@@ -171,9 +160,9 @@ export function *loadOffers({address}) {
 
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
     if (address) {
-      offerIds = yield OfferStore.methods.getOfferIds(address).call({from: defaultAccount});
+      offerIds = yield OfferStoreInstance.methods.getOfferIds(address).call({from: defaultAccount});
     } else {
-      const size = yield OfferStore.methods.offersSize().call({from: defaultAccount});
+      const size = yield OfferStoreInstance.methods.offersSize().call({from: defaultAccount});
       offerIds = Array.apply(null, {length: size}).map(Number.call, Number);
     }
     const loadedUsers = [];
@@ -181,7 +170,7 @@ export function *loadOffers({address}) {
     let allReleased;
     let releasedEscrows;
     if (!address) {
-      allReleased = yield Escrow.getPastEvents('Released', {fromBlock: 1});
+      allReleased = yield EscrowInstance.getPastEvents('Released', {fromBlock: 1});
       releasedEscrows = allReleased.map(e => e.returnValues.escrowId);
     }
 
@@ -189,10 +178,10 @@ export function *loadOffers({address}) {
     const nbCreatedTradesObject = {};
 
     const offers = yield all(offerIds.map(function *(id) {
-      const offer = yield OfferStore.methods.offer(id).call({from: defaultAccount});
+      const offer = yield OfferStoreInstance.methods.offer(id).call({from: defaultAccount});
 
       if(!addressCompare(offer.arbitrator, zeroAddress)){
-        offer.arbitratorData = yield UserStore.methods.users(offer.arbitrator).call({from: defaultAccount});
+        offer.arbitratorData = yield UserStoreInstance.methods.users(offer.arbitrator).call({from: defaultAccount});
       }
 
       if (!loadedUsers.includes(offer.owner)) {
@@ -206,7 +195,7 @@ export function *loadOffers({address}) {
       }
 
       // Get all escrows of that offer
-      const createdTrades = yield Escrow.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
+      const createdTrades = yield EscrowInstance.getPastEvents('Created', {filter: {offerId: id}, fromBlock: 1});
       let nbReleasedTrades = 0;
       createdTrades.forEach(tradeEvent => {
         if (releasedEscrows.includes(tradeEvent.returnValues.escrowId)) {
@@ -263,7 +252,7 @@ export function *addOffer({user, offer}) {
   const priceInEther = parseFloat(web3.utils.fromWei(price, "ether")) * 1.05; // 5% for price variations while mining
   const valueInWei = web3.utils.toWei(priceInEther.toString());
 
-  const toSend = OfferStore.methods.addOffer(
+  const toSend = OfferStoreInstance.methods.addOffer(
     offer.asset,
     user.contactData,
     user.location,
@@ -288,7 +277,7 @@ export function *onAddOffer() {
 }
 
 export function *updateUser({user}) {
-  const toSend = UserStore.methods['addOrUpdateUser(string,string,string)'](
+  const toSend = UserStoreInstance.methods['addOrUpdateUser(string,string,string)'](
     getContactData(user.contactMethod, user.contactData),
     user.location,
     user.username
@@ -306,7 +295,7 @@ export function *onDeleteOffer() {
 
 export function *getOfferPrice() {
   try {
-    const price = yield OfferStore.methods.getAmountToStake(web3.eth.defaultAccount).call();
+    const price = yield OfferStoreInstance.methods.getAmountToStake(web3.eth.defaultAccount).call();
     yield put({type: GET_OFFER_PRICE_SUCCEEDED, price});
     return price;
   } catch(err){
@@ -316,7 +305,7 @@ export function *getOfferPrice() {
 
 export function *getMaxOffers() {
   try {
-    const maxOffers = yield OfferStore.methods.maxOffers().call();
+    const maxOffers = yield OfferStoreInstance.methods.maxOffers().call();
     yield put({type: GET_MAX_OFFERS_SUCCEEDED, maxOffers});
   } catch(err){
     yield put({type: GET_MAX_OFFERS_FAILED, error: err.message});

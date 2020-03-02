@@ -1,13 +1,13 @@
-/*global contract, config, it, assert, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach, artifacts*/
+/* eslint no-await-in-loop: 0 */
 const TestUtils = require("../utils/testUtils");
 
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-const OfferStore = require('Embark/contracts/OfferStore');
-const UserStore = require('Embark/contracts/UserStore');
-const Escrow = require('Embark/contracts/Escrow');
-const SNT = require('Embark/contracts/SNT');
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
+const OfferStore = artifacts.require('OfferStore');
+const UserStore = artifacts.require('UserStore');
+const Escrow = artifacts.require('Escrow');
+const SNT = artifacts.require('SNT');
 
-const ARBITRATION_SOLVED_BUYER = 1;
 const ARBITRATION_SOLVED_SELLER = 2;
 
 let accounts;
@@ -114,7 +114,7 @@ contract("Escrow", function() {
 
     it("base price should be ~1usd", async() => {
       const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
-      // Medianizer for this example has a value of "161567500000000000000", 161.5675 usd per eth      
+      // Medianizer for this example has a value of "161567500000000000000", 161.5675 usd per eth
       const oneUsd = (1 / 161.5675).toFixed(6);
       const amountToStakeUsd = parseFloat(web3.utils.fromWei(amountToStake, "ether")).toFixed(6);
       assert.strictEqual(oneUsd, amountToStakeUsd);
@@ -242,7 +242,7 @@ contract("Escrow", function() {
       const amountToStake = await OfferStore.methods.getAmountToStake(accounts[0]).call();
       assert.strictEqual(amountToStake, "9101470588235294");
     });
-    
+
     it("winning a dispute should not release the stake (only succesful trades do)", async() => {
       let initialContractBalance, finalContractBalance;
 

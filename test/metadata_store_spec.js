@@ -1,10 +1,10 @@
-/*global contract, config, it, assert, before, web3*/
+/*global contract, config, it, assert, before, web3, artifacts*/
+/* eslint no-await-in-loop: 0 */
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
 
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-
-const SNT = require('Embark/contracts/SNT');
-const UserStore = require('Embark/contracts/UserStore');
-const OfferStore = require('Embark/contracts/OfferStore');
+const SNT = artifacts.require('SNT');
+const UserStore = artifacts.require('UserStore');
+const OfferStore = artifacts.require('OfferStore');
 
 const BURN_ADDRESS = "0x0000000000000000000000000000000000000002";
 

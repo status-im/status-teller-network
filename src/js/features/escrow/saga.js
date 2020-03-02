@@ -1,8 +1,8 @@
 /*global web3*/
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import OfferStore from '../../../embarkArtifacts/contracts/OfferStore';
-import UserStore from '../../../embarkArtifacts/contracts/UserStore';
 import EscrowRelay from '../../../embarkArtifacts/contracts/EscrowRelay';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
+import OfferStoreInstance from '../../../embarkArtifacts/contracts/OfferStoreInstance';
+import UserStoreInstance from '../../../embarkArtifacts/contracts/UserStoreInstance';
 
 import {fork, takeEvery, call, put, select, all} from 'redux-saga/effects';
 import {doTransaction, contractEvent} from '../../utils/saga';
@@ -27,19 +27,11 @@ import {
 } from './constants';
 import {eventTypes} from './helpers';
 import {ADD_OFFER_SUCCEEDED, LOAD_USER} from "../metadata/constants";
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-import OfferStoreProxy from '../../../embarkArtifacts/contracts/OfferStoreProxy';
-import UserStoreProxy from '../../../embarkArtifacts/contracts/UserStoreProxy';
-
-OfferStore.options.address = OfferStoreProxy.options.address;
-UserStore.options.address = UserStoreProxy.options.address;
-
-Escrow.options.address = EscrowProxy.options.address;
 
 const { toBN } = web3.utils;
 
 export function *createEscrow({user, escrow}) {
-  const toSend = Escrow.methods.createEscrow(
+  const toSend = EscrowInstance.methods.createEscrow(
     escrow.offerId,
     escrow.tokenAmount,
     escrow.currencyQuantity,
@@ -65,12 +57,12 @@ export function *onPayEscrow() {
 }
 
 export function *fundEscrow({value, escrowId, token}) {
-  const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call();
+  const feeMilliPercent = yield EscrowInstance.methods.feeMilliPercent().call();
   const divider = 100 * (feeMilliPercent / 1000);
   const feeAmount = toBN(value).div(toBN(divider));
   const totalAmount = toBN(value).add(feeAmount);
 
-  const toSend = Escrow.methods.fund(escrowId);
+  const toSend = EscrowInstance.methods.fund(escrowId);
 
   yield doTransaction(FUND_ESCROW_PRE_SUCCESS, FUND_ESCROW_SUCCEEDED, FUND_ESCROW_FAILED, {
     value: (token !== zeroAddress) ? '0' : totalAmount.toString(),
@@ -85,7 +77,7 @@ export function *onFundEscrow() {
 
 export function *payEscrowSignature({escrowId}) {
   try {
-    const messageHash = yield call(Escrow.methods.paySignHash(escrowId).call, {from: web3.eth.defaultAccount});
+    const messageHash = yield call(EscrowInstance.methods.paySignHash(escrowId).call, {from: web3.eth.defaultAccount});
     const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
     yield put({type: PAY_ESCROW_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_PAYMENT});
   } catch (error) {
@@ -100,7 +92,7 @@ export function *onPayEscrowSignature() {
 
 export function *openCaseSignature({escrowId}) {
   try {
-    const messageHash = yield call(Escrow.methods.openCaseSignHash(escrowId).call, {from: web3.eth.defaultAccount});
+    const messageHash = yield call(EscrowInstance.methods.openCaseSignHash(escrowId).call, {from: web3.eth.defaultAccount});
     const signedMessage = yield call(web3.eth.personal.sign, messageHash, web3.eth.defaultAccount);
     yield put({type: OPEN_CASE_SIGNATURE_SUCCEEDED, escrowId, signedMessage, signatureType: SIGNATURE_OPEN_CASE});
   } catch (error) {
@@ -155,10 +147,10 @@ export function *onRateTx() {
 function *formatEscrows(escrowIds) {
   const escrows = [];
   for (let i = 0; i < escrowIds.length; i++) {
-    const escrow = yield call(Escrow.methods.transactions(escrowIds[i]).call);
+    const escrow = yield call(EscrowInstance.methods.transactions(escrowIds[i]).call);
     escrow.escrowId = escrowIds[i];
     if (escrow.paid) {
-      const arbitration = yield call(Escrow.methods.arbitrationCases(escrowIds[i]).call);
+      const arbitration = yield call(EscrowInstance.methods.arbitrationCases(escrowIds[i]).call);
       if (arbitration.open) {
         escrow.arbitration = arbitration;
       }
@@ -176,8 +168,8 @@ export function *doLoadEscrows({address}) {
       throw new Error('No address yet. Wallet is not accessible yet');
     }
 
-    const eventsAsBuyer = yield Escrow.getPastEvents('Created', {filter: {buyer: address}, fromBlock: 1});
-    const eventsAsSeller = yield Escrow.getPastEvents('Created', {filter: {seller: address}, fromBlock: 1});
+    const eventsAsBuyer = yield EscrowInstance.getPastEvents('Created', {filter: {buyer: address}, fromBlock: 1});
+    const eventsAsSeller = yield EscrowInstance.getPastEvents('Created', {filter: {seller: address}, fromBlock: 1});
 
     const events = eventsAsBuyer.map(x => {
       x.isBuyer = true;
@@ -188,25 +180,25 @@ export function *doLoadEscrows({address}) {
     }));
 
     const escrows = yield all(events.map(function *(ev) {
-      const escrow = yield Escrow.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
+      const escrow = yield EscrowInstance.methods.transactions(ev.returnValues.escrowId).call({from: defaultAccount});
       escrow.escrowId = ev.returnValues.escrowId;
-      escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
+      escrow.offer = yield OfferStoreInstance.methods.offer(escrow.offerId).call({from: defaultAccount});
       escrow.currency = escrow.offer.currency;
       escrow.margin = escrow.offer.margin;
 
       let sellerInfo = yield select(state => state.metadata.users[escrow.offer.owner]);
       if(!sellerInfo) {
-        sellerInfo = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
+        sellerInfo = yield UserStoreInstance.methods.users(escrow.offer.owner).call({from: defaultAccount});
       }
 
       let buyerInfo = yield select(state => state.metadata.users[escrow.buyer]);
       if(!buyerInfo){
-        buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
+        buyerInfo = yield UserStoreInstance.methods.users(escrow.buyer).call({from: defaultAccount});
       }
 
       let arbitratorInfo = yield select(state => state.metadata.users[escrow.arbitrator]);
       if(!arbitratorInfo){
-        arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+        arbitratorInfo = yield UserStoreInstance.methods.users(escrow.arbitrator).call({from: defaultAccount});
       }
 
       escrow.seller = sellerInfo;
@@ -230,12 +222,12 @@ export function *onLoadEscrows() {
 export function *doGetEscrow({escrowId}) {
   try {
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
-    const escrow = yield Escrow.methods.transactions(escrowId).call({from: defaultAccount});
+    const escrow = yield EscrowInstance.methods.transactions(escrowId).call({from: defaultAccount});
     escrow.escrowId = escrowId;
-    escrow.offer = yield OfferStore.methods.offer(escrow.offerId).call({from: defaultAccount});
-    escrow.seller = yield UserStore.methods.users(escrow.offer.owner).call({from: defaultAccount});
-    escrow.buyerInfo = yield UserStore.methods.users(escrow.buyer).call({from: defaultAccount});
-    escrow.arbitratorInfo = yield UserStore.methods.users(escrow.arbitrator).call({from: defaultAccount});
+    escrow.offer = yield OfferStoreInstance.methods.offer(escrow.offerId).call({from: defaultAccount});
+    escrow.seller = yield UserStoreInstance.methods.users(escrow.offer.owner).call({from: defaultAccount});
+    escrow.buyerInfo = yield UserStoreInstance.methods.users(escrow.buyer).call({from: defaultAccount});
+    escrow.arbitratorInfo = yield UserStoreInstance.methods.users(escrow.arbitrator).call({from: defaultAccount});
     yield put({type: GET_ESCROW_SUCCEEDED, escrow, escrowId});
   } catch (error) {
     console.error(error);
@@ -249,7 +241,7 @@ export function *onGetEscrow() {
 export function *doGetFeeMilliPercent() {
   try {
     const defaultAccount = web3.eth.defaultAccount || zeroAddress;
-    const feeMilliPercent = yield Escrow.methods.feeMilliPercent().call({from: defaultAccount});
+    const feeMilliPercent = yield EscrowInstance.methods.feeMilliPercent().call({from: defaultAccount});
     yield put({type: GET_FEE_MILLI_PERCENT_SUCCEEDED, feeMilliPercent});
   } catch (error) {
     console.error(error);
@@ -284,7 +276,7 @@ export function *checkUserRating({address}) {
     }
 
     const allEvents = yield all(offers.map(async (offer) => {
-      return Escrow.getPastEvents('Rating', {fromBlock: 1, filter: {offerId: offer.id}});
+      return EscrowInstance.getPastEvents('Rating', {fromBlock: 1, filter: {offerId: offer.id}});
     }));
 
     const ratings = [];
@@ -355,10 +347,10 @@ export function *onGetLastActivity() {
 export function *watchEscrow({escrowId}) {
   try {
     yield all([
-      contractEvent(Escrow, eventTypes.funded, {escrowId}, ESCROW_EVENT_RECEIVED),
-      contractEvent(Escrow, eventTypes.paid, {escrowId}, ESCROW_EVENT_RECEIVED),
-      contractEvent(Escrow, eventTypes.released, {escrowId}, ESCROW_EVENT_RECEIVED),
-      contractEvent(Escrow, eventTypes.canceled, {escrowId}, ESCROW_EVENT_RECEIVED)
+      contractEvent(EscrowInstance, eventTypes.funded, {escrowId}, ESCROW_EVENT_RECEIVED),
+      contractEvent(EscrowInstance, eventTypes.paid, {escrowId}, ESCROW_EVENT_RECEIVED),
+      contractEvent(EscrowInstance, eventTypes.released, {escrowId}, ESCROW_EVENT_RECEIVED),
+      contractEvent(EscrowInstance, eventTypes.canceled, {escrowId}, ESCROW_EVENT_RECEIVED)
     ]);
   } catch (error) {
     console.error(error);
@@ -371,7 +363,7 @@ export function *onWatchEscrow() {
 
 export function *watchEscrowCreations({offers}) {
   try {
-    yield all(offers.map(offer => contractEvent(Escrow, eventTypes.created, {offerId: offer.id}, ESCROW_CREATED_EVENT_RECEIVED, true)));
+    yield all(offers.map(offer => contractEvent(EscrowInstance, eventTypes.created, {offerId: offer.id}, ESCROW_CREATED_EVENT_RECEIVED, true)));
   } catch (error) {
     console.error(error);
   }

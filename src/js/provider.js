@@ -1,17 +1,12 @@
 /* global web3 */
-import Escrow from '../embarkArtifacts/contracts/Escrow';
 import EscrowRelay from '../embarkArtifacts/contracts/EscrowRelay';
-import EscrowProxy from '../embarkArtifacts/contracts/EscrowProxy';
-import OfferStore from '../embarkArtifacts/contracts/OfferStore';
-import OfferStoreProxy from '../embarkArtifacts/contracts/OfferStoreProxy';
+import EscrowInstance from '../embarkArtifacts/contracts/EscrowInstance';
+import OfferStoreInstance from '../embarkArtifacts/contracts/OfferStoreInstance';
 import SNT from '../embarkArtifacts/contracts/SNT';
 import {checkNotEnoughETH} from './utils/transaction';
 import {addressCompare, zeroAddress} from './utils/address';
 import {canRelay} from './features/escrow/helpers';
 import stripHexPrefix from 'strip-hex-prefix';
-
-Escrow.options.address = EscrowProxy.options.address;
-OfferStore.options.address = OfferStoreProxy.options.address;
 
 const CREATE_ESCROW = "createEscrow(uint256,uint256,uint256,address,string,string,string)";
 const RATE_TRANSACTION = "rateTransaction(uint256,uint256)";
@@ -32,8 +27,8 @@ class Provider {
   async isEthOrSNT(web3, data){
     if(!data || data.length < 74) return false;
     const offerId = web3.utils.hexToNumber('0x' + data.substr(10, 64));
-    const offer = await OfferStore.methods.offers(offerId).call();
-    return addressCompare(offer.asset, SNT.options.address) || addressCompare(offer.asset, zeroAddress);    
+    const offer = await OfferStoreInstance.methods.offers(offerId).call();
+    return addressCompare(offer.asset, SNT.options.address) || addressCompare(offer.asset, zeroAddress);
   }
 
   startProvider(web3) {
@@ -46,7 +41,7 @@ class Provider {
       const params = payload.params[0];
       const operation = params && params.data ? params.data.substring(2, 10) : "0x";
 
-      if (!(params && params.to && addressCompare(params.to, Escrow.options.address) &&
+      if (!(params && params.to && addressCompare(params.to, EscrowInstance.options.address) &&
         payload.method === "eth_sendTransaction" &&
         Object.values(VALID_OPERATIONS).includes(operation))) {
         this.origProviderSend(payload, callback);
@@ -76,7 +71,7 @@ class Provider {
 
           payload.params[0].to = EscrowRelay.options.address;
           payload.params[0].gas = web3.utils.fromDecimal(web3.utils.toDecimal(payload.params[0].gas) + 100000);
-          
+
           this.relayProviderSend(payload, (error, result) => {
             callback(error, result);
           });
@@ -85,7 +80,7 @@ class Provider {
         }
       })();
     };
-    
+
     this.origProvider.send = fSend;
     this.origProvider.sendAsync = fSend;
   }

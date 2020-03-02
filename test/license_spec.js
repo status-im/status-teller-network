@@ -1,7 +1,7 @@
-/*global contract, config, it, assert, before*/
+/*global contract, config, it, assert, before, artifacts*/
 
-const License = require('Embark/contracts/License');
-const SNT = require('Embark/contracts/SNT');
+const License = artifacts.require('License');
+const SNT = artifacts.require('SNT');
 
 let accounts;
 

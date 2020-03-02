@@ -24,13 +24,8 @@ import {
   GET_FALLBACK_ARBITRATOR,
   IS_FALLBACK_ARBITRATOR
 } from './constants';
-import Escrow from '../../../embarkArtifacts/contracts/Escrow';
-import ArbitrationLicense from '../../../embarkArtifacts/contracts/ArbitrationLicense';
-import ArbitrationLicenseProxy from '../../../embarkArtifacts/contracts/ArbitrationLicenseProxy';
-import EscrowProxy from '../../../embarkArtifacts/contracts/EscrowProxy';
-
-ArbitrationLicense.options.address = ArbitrationLicenseProxy.options.address;
-Escrow.options.address = EscrowProxy.options.address;
+import ArbitrationLicenseInstance from '../../../embarkArtifacts/contracts/ArbitrationLicenseInstance';
+import EscrowInstance from '../../../embarkArtifacts/contracts/EscrowInstance';
 
 export const getDisputedEscrows = (includeFallbackDisputes = null, isArbitrator = false) => ({type: GET_DISPUTED_ESCROWS, includeFallbackDisputes, isArbitrator});
 
@@ -45,13 +40,13 @@ export const resolveDispute = (escrowId, result) => {
     type: RESOLVE_DISPUTE,
     escrowId,
     result,
-    toSend: Escrow.methods.setArbitrationResult(escrowId, result)
+    toSend: EscrowInstance.methods.setArbitrationResult(escrowId, result)
   };
 };
 
-export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: Escrow.methods.openCase(escrowId, motive || '')});
+export const openDispute = (escrowId, motive) => ({type: OPEN_DISPUTE, escrowId, toSend: EscrowInstance.methods.openCase(escrowId, motive || '')});
 
-export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: Escrow.methods.cancelArbitration(escrowId)});
+export const cancelDispute = (escrowId) => ({type: CANCEL_DISPUTE, escrowId, toSend: EscrowInstance.methods.cancelArbitration(escrowId)});
 
 export const loadArbitration = (escrowId) => {
   return {type: LOAD_ARBITRATION, escrowId};
@@ -65,25 +60,25 @@ export const loadPrice = () => ({ type: LOAD_PRICE });
 
 export const checkLicenseOwner = () => ({ type: CHECK_LICENSE_OWNER });
 
-export const requestArbitrator = (arbitrator) => ({ type: REQUEST_ARBITRATOR, arbitrator, toSend: ArbitrationLicense.methods.requestArbitrator(arbitrator) });
+export const requestArbitrator = (arbitrator) => ({ type: REQUEST_ARBITRATOR, arbitrator, toSend: ArbitrationLicenseInstance.methods.requestArbitrator(arbitrator) });
 
 export const cancelArbitratorRequest = (arbitrator) => ({type: CANCEL_ARBITRATOR_REQUEST, arbitrator});
 
 export const cancelArbitratorActions = () => ({type: CANCEL_ARBITRATOR_SELECTION_ACTIONS});
 
-export const changeAcceptEveryone = (acceptAny) => ({type: CHANGE_ACCEPT_EVERYONE, acceptAny, toSend: ArbitrationLicense.methods.changeAcceptAny(acceptAny)});
+export const changeAcceptEveryone = (acceptAny) => ({type: CHANGE_ACCEPT_EVERYONE, acceptAny, toSend: ArbitrationLicenseInstance.methods.changeAcceptAny(acceptAny)});
 
 export const getArbitratorRequests = () => ({type: GET_ARBITRATION_REQUESTS});
 
-export const acceptRequest = (id) => ({type: ACCEPT_ARBITRATOR_REQUEST, id, toSend: ArbitrationLicense.methods.acceptRequest(id)});
+export const acceptRequest = (id) => ({type: ACCEPT_ARBITRATOR_REQUEST, id, toSend: ArbitrationLicenseInstance.methods.acceptRequest(id)});
 
-export const rejectRequest = (id) => ({type: REJECT_ARBITRATOR_REQUEST, id, toSend: ArbitrationLicense.methods.rejectRequest(id)});
+export const rejectRequest = (id) => ({type: REJECT_ARBITRATOR_REQUEST, id, toSend: ArbitrationLicenseInstance.methods.rejectRequest(id)});
 
 export const getBlacklistedSellers = () => ({type: GET_BLACKLISTED_SELLERS});
 
-export const blacklistSeller = (sellerAddress) => ({type: BLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicense.methods.blacklistSeller(sellerAddress)});
+export const blacklistSeller = (sellerAddress) => ({type: BLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicenseInstance.methods.blacklistSeller(sellerAddress)});
 
-export const unBlacklistSeller = (sellerAddress) => ({type: UNBLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicense.methods.unBlacklistSeller(sellerAddress)});
+export const unBlacklistSeller = (sellerAddress) => ({type: UNBLACKLIST_SELLER, sellerAddress, toSend: ArbitrationLicenseInstance.methods.unBlacklistSeller(sellerAddress)});
 
 export const loadArbitratorScores = () => ({type: LOAD_ARBITRATOR_SCORES});
 

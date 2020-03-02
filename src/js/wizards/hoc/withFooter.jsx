@@ -58,40 +58,39 @@ const withFooterHoC = (WrappedComponent, nextLabel, wizard) => {
       this.setState({visible: true});
     };
 
-    executeChanges() {
+    executeChanges = () => {
       this.changeSubs.forEach(cb => {
         cb.call(cb);
       });
       this.changeSubs = [];
-    }
+    };
 
-    executeNexts() {
+    executeNexts = () => {
       this.nextSubs.forEach(cb => cb());
       this.nextSubs = [];
-    }
+    };
 
-    async executeBeforePageChange() {
+    executeBeforePageChange = (cb) => {
       if (!this.beforeChangeHandler) {
-        return;
+        return cb();
       }
-      return new Promise((resolve) => {
-        this.beforeChangeHandler(resolve);
-        this.beforeChangeHandler = null;
+      this.beforeChangeHandler(cb);
+      this.beforeChangeHandler = null;
+    };
+
+    next = () => {
+      this.executeBeforePageChange(() => {
+        this.executeChanges();
+        this.executeNexts();
+        wizard.next();
       });
-    }
-
-    next = async () => {
-      await this.executeBeforePageChange();
-      this.executeChanges();
-      this.executeNexts();
-      wizard.next();
-
     };
 
     previous = async () => {
-      await this.executeBeforePageChange();
-      this.executeChanges();
-      wizard.previous();
+      this.executeBeforePageChange(() => {
+        this.executeChanges();
+        wizard.previous();
+      });
     };
 
     onPageChange = (cb) => {

@@ -1,10 +1,10 @@
-/*global contract, config, it, assert, web3, before, describe, beforeEach*/
+/*global contract, config, it, assert, web3, before, describe, beforeEach, artifacts*/
 const TestUtils = require("../utils/testUtils");
 
-const Escrow = require('Embark/contracts/Escrow');
-const ArbitrationLicense = require('Embark/contracts/ArbitrationLicense');
-const OfferStore = require('Embark/contracts/OfferStore');
-const SNT = require('Embark/contracts/SNT');
+const Escrow = artifacts.require('Escrow');
+const ArbitrationLicense = artifacts.require('ArbitrationLicense');
+const OfferStore = artifacts.require('OfferStore');
+const SNT = artifacts.require('SNT');
 
 let accounts;
 let arbitrator, arbitrator2, blacklistedAccount;
