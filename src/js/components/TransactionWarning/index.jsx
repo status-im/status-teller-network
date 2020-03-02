@@ -8,15 +8,32 @@ import ModalDialog from "../ModalDialog";
 import lightningIcon from '../../../images/lightning.svg';
 import RoundedIcon from "../../ui/RoundedIcon";
 import {FormGroup, Label, Input} from 'reactstrap';
+import {GSN, TX, SIGN} from "../../utils/saga";
 
-const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningState, isGSNWarning}) => {
+const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningState, warningType}) => {
   const [neverShowAgain, setNeverShowAgain] = useState(false);
+  let message;
+  switch (warningType) {
+    case TX:
+      message = t('transactionWarning.walletWillAsk');
+      break;
+    case GSN:
+      message = t('transactionWarning.walletWillAskGSN');
+      break;
+    case SIGN:
+      message = t('transactionWarning.walletSignature');
+      break;
+    default:
+      message = t('transactionWarning.walletWillAsk');
+  }
   return (
     <ModalDialog display={showTransactionWarning} buttonText={t('transactionWarning.signWithWallet')}
                  onClick={() => setTransactionWarningState(true, neverShowAgain)}>
       <RoundedIcon image={lightningIcon} bgColor="blue"/>
-      <h3 className="m-3">{t('transactionWarning.blockchainInteraction')}</h3>
-      <p className="text-muted mb-2">{isGSNWarning ? t('transactionWarning.walletWillAskGSN') : t('transactionWarning.walletWillAsk')}</p>
+      <h3 className="m-3">
+        {warningType === SIGN ? t('transactionWarning.walletSignatureTitle') : t('transactionWarning.blockchainInteraction')}
+      </h3>
+      <p className="text-muted mb-2">{message}</p>
       <FormGroup check>
         <Label check>
           <Input type="checkbox" onChange={(e) => setNeverShowAgain(e.target.checked)}/>
@@ -30,14 +47,14 @@ const TransactionWarning = ({t, showTransactionWarning, setTransactionWarningSta
 TransactionWarning.propTypes = {
   t: PropTypes.func,
   showTransactionWarning: PropTypes.bool,
-  isGSNWarning: PropTypes.bool,
+  warningType: PropTypes.string,
   setTransactionWarningState: PropTypes.func
 };
 
 
 const mapStateToProps = (state) => ({
   showTransactionWarning: network.selectors.showTransactionWarning(state),
-  isGSNWarning: network.selectors.isGSNWarning(state)
+  warningType: network.selectors.warningType(state)
 });
 
 export default connect(

@@ -3,7 +3,7 @@ import {
   SUBSCRIBE_EMAIL, SUBSCRIBE_EMAIL_SUCCESS, SUBSCRIBE_EMAIL_FAILURE, HIDE_ERROR,
   VERIFY_EMAIL, VERIFY_EMAIL_FAILURE, VERIFY_EMAIL_SUCCESS, HIDE_SUCCESS,
   UNSUBSCRIBE_EMAIL, UNSUBSCRIBE_EMAIL_FAILURE, UNSUBSCRIBE_EMAIL_SUCCESS,
-  SET_REDIRECT_TARGET, REFUSE_EMAIL_NOTIFICATIONS, RESET_NOTIFICATION_WARNINGS, SET_HIDE_SIGNATURE_WARNING
+  SET_REDIRECT_TARGET, REFUSE_EMAIL_NOTIFICATIONS, RESET_NOTIFICATION_WARNINGS
 } from './constants';
 import {RESET_STATE, PURGE_STATE} from '../network/constants';
 
@@ -98,12 +98,6 @@ function reducer(state = DEFAULT_STATE, action) {
       return {
         ...state, ...{
           refusedEmailNotifications: true
-        }
-      };
-    case SET_HIDE_SIGNATURE_WARNING:
-      return {
-        ...state, ...{
-          hideSignatureWarning: action.value
         }
       };
     case RESET_STATE:
