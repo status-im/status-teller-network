@@ -25,9 +25,7 @@ module.exports = {
   // default environment, merges with the settings in default
   // assumed to be the intended environment by `embark run` and `embark blockchain`
   development: {
-    clientConfig: {
-      miningMode: 'dev'
-    },
+    client: 'ganache-cli',
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
     accounts: [
       {
