@@ -2061,6 +2061,22 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.2"
 
+"@babel/runtime-corejs3@7.8.3":
+  version "7.8.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.8.3.tgz#a2445836d0699e5ba77eea2c790ad9ea51e2cd27"
+  integrity sha512-lrIU4aVbmlM/wQPzhEvzvNJskKyYptuXb0fGC0lTQTupTOYtR2Vqbu6/jf8vTr4M8Wt1nIzxVrSvPI5qESa/xA==
+  dependencies:
+    core-js-pure "^3.0.0"
+    regenerator-runtime "^0.13.2"
+
+"@babel/runtime-corejs3@7.8.4":
+  version "7.8.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.8.4.tgz#ccc4e042e2fae419c67fa709567e5d2179ed3940"
+  integrity sha512-+wpLqy5+fbQhvbllvlJEVRIpYj+COUWnnsm+I4jZlA8Lo7/MJmBhGTCHyk1/RWfOqBRJ2MbadddG6QltTKTlrg==
+  dependencies:
+    core-js-pure "^3.0.0"
+    regenerator-runtime "^0.13.2"
+
 "@babel/runtime@7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.0.0.tgz#adeb78fedfc855aa05bc041640f3f6f98e85424c"
@@ -4645,16 +4661,16 @@ babel-plugin-minify-type-constructors@^0.4.3:
   dependencies:
     babel-helper-is-void-0 "^0.4.3"
 
-babel-plugin-module-resolver@3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-3.2.0.tgz#ddfa5e301e3b9aa12d852a9979f18b37881ff5a7"
-  integrity sha512-tjR0GvSndzPew/Iayf4uICWZqjBwnlMWjSx6brryfQ81F9rxBVqwDJtFCV8oOs0+vJeefK9TmdZtkIFdFe1UnA==
+babel-plugin-module-resolver@4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-4.0.0.tgz#8f3a3d9d48287dc1d3b0d5595113adabd36a847f"
+  integrity sha512-3pdEq3PXALilSJ6dnC4wMWr0AZixHRM4utpdpBR9g5QG7B7JwWyukQv7a9hVxkbGFl+nQbrHDqqQOIBtTXTP/Q==
   dependencies:
-    find-babel-config "^1.1.0"
-    glob "^7.1.2"
-    pkg-up "^2.0.0"
-    reselect "^3.0.1"
-    resolve "^1.4.0"
+    find-babel-config "^1.2.0"
+    glob "^7.1.6"
+    pkg-up "^3.1.0"
+    reselect "^4.0.0"
+    resolve "^1.13.1"
 
 babel-plugin-named-asset-import@^0.2.3:
   version "0.2.3"
@@ -5340,11 +5356,6 @@ buffer@^5.0.5, buffer@^5.2.1, buffer@^5.4.2, buffer@^5.4.3:
   dependencies:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
-
-bufferhelper@^0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/bufferhelper/-/bufferhelper-0.2.1.tgz#fa74a385724a58e242f04ad6646c2366f83b913e"
-  integrity sha1-+nSjhXJKWOJC8ErWZGwjZvg7kT4=
 
 builtin-modules@^1.1.1:
   version "1.1.1"
@@ -6208,7 +6219,7 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-concat-stream@1.6.2, concat-stream@^1.5.0, concat-stream@^1.5.1, concat-stream@^1.5.2:
+concat-stream@1.6.2, concat-stream@^1.5.0, concat-stream@^1.5.2:
   version "1.6.2"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.2.tgz#904bdf194cd3122fc675c77fc4ac3d4ff0fd1a34"
   integrity sha512-27HBghJxjiZtIk3Ycvn/4kbJk/1uZuJFfuPEns6LaEvpvG1f0hTea8lilrouyo9mVc2GWdcEZ8OLoGmSADlrCw==
@@ -6364,6 +6375,11 @@ core-js@3.6.2:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.2.tgz#2799ea1a59050f0acf50dfe89b916d6503b16caa"
   integrity sha512-hIE5dXkRzRvnZ5vhkRfQxUvDxQZmD9oueA08jDYRBKJHx+VIl/Pne/e0A4x9LObEEthC/TqiZybUoNM4tRgnKg==
 
+core-js@3.6.4, core-js@^3.5.0:
+  version "3.6.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
+  integrity sha512-4paDGScNgZP2IXXilaffL9X7968RuvwlkK3xWtZRVqgd8SYNiVKRJvkFd1aqqEuPfN7E68ZHEp9hDj6lHj4Hyw==
+
 core-js@^1.0.0:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
@@ -6373,11 +6389,6 @@ core-js@^2.4.0, core-js@^2.5.7:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
   integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
-
-core-js@^3.5.0:
-  version "3.6.4"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.4.tgz#440a83536b458114b9cb2ac1580ba377dc470647"
-  integrity sha512-4paDGScNgZP2IXXilaffL9X7968RuvwlkK3xWtZRVqgd8SYNiVKRJvkFd1aqqEuPfN7E68ZHEp9hDj6lHj4Hyw==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -6924,6 +6935,11 @@ datagram-stream@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/datagram-stream/-/datagram-stream-1.1.1.tgz#aa7d84959a3a1b1a5e43d4c7c03461f40a8ffb7d"
   integrity sha1-qn2ElZo6GxpeQ9THwDRh9AqP+30=
+
+date-and-time@0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/date-and-time/-/date-and-time-0.12.0.tgz#6d30c91c47fa72edadd628b71ec2ac46909b9267"
+  integrity sha512-n2RJIAp93AucgF/U/Rz5WRS2Hjg5Z+QxscaaMCi6pVZT1JpJKRH+C08vyH/lRR1kxNXnPxgo3lWfd+jCb/UcuQ==
 
 date-and-time@0.6.2:
   version "0.6.2"
@@ -7611,24 +7627,24 @@ elliptic@6.5.2, elliptic@^6.0.0, elliptic@^6.4.0, elliptic@^6.4.1, elliptic@^6.5
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-embark-accounts-manager@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-accounts-manager/-/embark-accounts-manager-5.1.0-nightly.5.tgz#b7703e2ff62925cd3934a9378085e1ebb1e28fc0"
-  integrity sha512-Axtm++DbAQqc01WGXA+7Ozz9KQ7Uj8x+3sr4tfmsDM/SM5XUqvQX2qVhMIT+UEekSbZYa2QzQe3nT9AJTD1bBA==
+embark-accounts-manager@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-accounts-manager/-/embark-accounts-manager-5.2.3.tgz#cc10af52bc45b5b48d91e8e2062e59bc72e0c600"
+  integrity sha512-7rqyy4VX60dczfcNJlfqeiAQZDZmX2U0X9nBhrAh89CRp4i4uyKLsEaOb/eTsqYa41NyZYfPYqFauF0dGeqQ9g==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    web3 "1.2.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    web3 "1.2.6"
 
-embark-api@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-api/-/embark-api-5.1.0-nightly.5.tgz#d09df1c578602184cd1a0e147acfbeb59a6ac53a"
-  integrity sha512-zamVwkgibOta61BzM9R0KUt+8VSM8HOzOGFhM8nn+xLS8xUMGVOFVNXUxdWuIdm7zQV6BKPBgkl45SD7/1hQBg==
+embark-api@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-api/-/embark-api-5.2.3.tgz#3ac06b84efa19eddb7942a51b308a219c0239755"
+  integrity sha512-/dTAXnqiZg0o8AdQBdMM8HN11/CmxpIQEIh4QDtol3hrNiaCF0evJzFbd0iJW4CecpjzhuaFTUU9C0kqAnZfjQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/body-parser" "1.17.1"
@@ -7640,31 +7656,32 @@ embark-api@^5.1.0-nightly.5:
     colors "1.3.2"
     core-js "3.4.3"
     cors "2.8.5"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-ui "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-ui "^5.2.3"
+    embark-utils "^5.2.3"
     express "4.17.1"
     express-ws "4.0.0"
     find-up "4.1.0"
     helmet "3.13.0"
+    ws "7.1.2"
 
-embark-authenticator@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-authenticator/-/embark-authenticator-5.1.0-nightly.4.tgz#5a9bec314c5bcbd3f154989d09deb99e6feb36dc"
-  integrity sha512-EUh7j/lgtRPsi5ztNM/fLsPaADOfKsrTIjRoM0aCb1YvbtUo/8kbZgvdAfhb/Kkgq8RZHsiOlItrCUY6nAcB+w==
+embark-authenticator@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-authenticator/-/embark-authenticator-5.2.3.tgz#7ddb1d47c1128cfe966ef4664a96147924c41f98"
+  integrity sha512-NJyyNsvrZDHMsbpL7oG4fJzo08ov8SQcOJ0A3XzMIVaQ47rU+ErvW4sQq9P1apYVk6qT+Lo/um0VKY1MpdyRkw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     keccakjs "0.2.3"
     uuid "3.3.2"
 
-embark-basic-pipeline@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-basic-pipeline/-/embark-basic-pipeline-5.1.0-nightly.5.tgz#6ff28d7ae3bc6d4876bf7db0c57bf32f51d14b11"
-  integrity sha512-Vv1TCmU/c9nIETHS7+Cbe31aEY9jEz1Dnk4tq4WZ7uN+KCpvYEuy/SIU0s2+MOwBJVRV74KhubkgEsF0sVt6rg==
+embark-basic-pipeline@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-basic-pipeline/-/embark-basic-pipeline-5.2.3.tgz#df3bc055637d6c37c153eb3f4b818974ff6277da"
+  integrity sha512-4HEDBh6wEI+s/17u428ewBy8jwBStHOdLi9wfvfrkjXZoKDUt31E5AtxtIU8SUjkjF6gvuiB1WnjwLRZcZOTkA==
   dependencies:
     "@babel/core" "7.7.4"
     "@babel/plugin-proposal-class-properties" "7.7.4"
@@ -7681,15 +7698,15 @@ embark-basic-pipeline@^5.1.0-nightly.5:
     async "2.6.1"
     babel-loader "8.0.6"
     babel-plugin-macros "2.7.1"
-    babel-plugin-module-resolver "3.2.0"
+    babel-plugin-module-resolver "4.0.0"
     babel-plugin-transform-react-remove-prop-types "0.4.24"
     clone-deep "4.0.0"
     colors "1.3.2"
     core-js "3.4.3"
     css-loader "3.2.0"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     file-loader "5.0.2"
     find-up "4.1.0"
     fs-extra "8.1.0"
@@ -7702,134 +7719,127 @@ embark-basic-pipeline@^5.1.0-nightly.5:
     url-loader "2.2.0"
     webpack "4.41.2"
 
-embark-blockchain-client@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-blockchain-client/-/embark-blockchain-client-5.1.0-nightly.1.tgz#b8e38b66a40d00430ff03d73d1ce014757b86649"
-  integrity sha512-b7pZ84BOF4wGxFRbn+B4aMpE5lV7lsmos+bmZZiuCNuy57vcD27ZyhUbC0SZH/BFw9yva5i2fb5JvzjaGkH93g==
-  dependencies:
-    "@babel/runtime-corejs3" "7.7.4"
-    core-js "3.4.3"
-    web3 "1.2.4"
-
-embark-blockchain@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-blockchain/-/embark-blockchain-5.1.0-nightly.5.tgz#299b270a854a57a03524603def796ef67f54eabe"
-  integrity sha512-cbiLHR8arl2B4x5Wf4ZhDg4QoJFJoSFkxu/qki/wZglNz8l1MLwB7R4W5ZBEOui1r2vFtrfM19lU7OkDja7aBw==
+embark-blockchain@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-blockchain/-/embark-blockchain-5.2.3.tgz#240a8c9d1e2f19518ac3f596216719653fa39018"
+  integrity sha512-JZeqp4ZytHg36oRBg6VIHvGCg3RavH0fBO7uC5rT8KyHVug1Yli3pg6jdPArWKXfIKaGHI3FcTlAWq8LkJEY8A==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    web3 "1.2.6"
 
-embark-code-runner@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-code-runner/-/embark-code-runner-5.1.0-nightly.5.tgz#c8dfa947235388265815b7732bc24e9f1b2f285f"
-  integrity sha512-/UTzkl/eqqzKkLiyzoWJMD3lHzcu01DBq1SYRbTt30nidsFftnR7oPONJTHl5lphtu2BOG+pZ9Kxt6LofH/+sw==
+embark-code-runner@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-code-runner/-/embark-code-runner-5.2.3.tgz#fb7f3f6a715d28e2094891e09f7bc704304e10bd"
+  integrity sha512-gMt18t1pp2iOWIuqFKyJkJazqoWaYasnYaeOO0xsIVVTZHh1paSQhyIhgyW6hze2IWEQIEqqC0GFDU80jZ1LQg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.7"
     "@types/async" "3.0.3"
     async "3.1.0"
     colors "1.4.0"
     core-js "3.6.2"
-    embark-core "^5.1.0-nightly.5"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
     fs-extra "8.1.0"
     parse-json "5.0.0"
     vm2 "3.8.4"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embark-communication@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-communication/-/embark-communication-5.1.0-nightly.5.tgz#4915c84b9fede114fe8344d07302c832a6fa05a1"
-  integrity sha512-M2EH+iEHb+E5xwLfRcrR/ZwwCO9fAGEQY46ocKmidueVWRIY1ymfPfbKInwkcHOn+IHH6SC5R0JXet0AZCVCZw==
+embark-communication@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-communication/-/embark-communication-5.2.3.tgz#c73995bc551e851b512a9f1dbb79863840b7bc66"
+  integrity sha512-hr6Db0zWdfppif56jrRRksBmxBNM5YH7XQyTe7WtdDQx0IWCRN7NLkiUEpon9CTw4CuGPiNSw3eDR2i5fxgm7g==
   dependencies:
-    "@babel/runtime-corejs3" "7.7.4"
-    async "2.6.1"
-    clone-deep "4.0.0"
-    core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    "@babel/runtime-corejs3" "7.8.3"
+    core-js "3.6.4"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
 
-embark-compiler@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-5.1.0-nightly.5.tgz#dc7186ab3c0ae916ffaaaa6fcde5d6934737906e"
-  integrity sha512-BUWzcC3WqnMkdZCLk1k+mDWzohEAof3D3GM2AxMe0LwMeOErMInSKCewmGjzooPWPATnawMrF+/3KccoonG0Ww==
+embark-compiler@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-compiler/-/embark-compiler-5.2.3.tgz#56532a9327a4c12785e9a14c7f09e90e66d4c4e5"
+  integrity sha512-Sw8hnOIcyAQeAHXtj22NKXc6qU+7HBLlvUljh/RyrbG40xnXOrhilBxdQwiiDoxjbGp8PD9qdrJjZe7FZ6+haA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
 
-embark-console@^5.1.0-nightly.6:
-  version "5.1.0-nightly.6"
-  resolved "https://registry.yarnpkg.com/embark-console/-/embark-console-5.1.0-nightly.6.tgz#2335251d0f5122ef1a4b332824cbe5cad0991323"
-  integrity sha512-cso+nNgjwx7nOQxLnhM+ceSoif06IwIPqtbISz5Jva1qxJBLXYYGlo/G+ZCQOSu2TJ8kuDNlZChsok01tMPbgw==
+embark-console@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-console/-/embark-console-5.2.3.tgz#f379747d65ef547cc5aab8452cac9b137296bfe0"
+  integrity sha512-Ppe2u9XtZO/gF/fQ/xovsMBQ1+d4zjf2F5yOd/Ij4j/nITD8vaP/SjioXLgI+YcN7ihcf6jSR6hau/vGjTmCNQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/json-stringify-safe" "5.0.0"
     chalk "2.4.2"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     json-stringify-safe "5.0.1"
 
-embark-contracts-manager@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-contracts-manager/-/embark-contracts-manager-5.1.0-nightly.5.tgz#3f00e94a428f3b23ad1003a7bb48d7fa746b2187"
-  integrity sha512-0s+MAuWIbDw0hsHUWHk1wEFA6qml6a21C17/qBErL1WQLYu6VUUFojdBhBALpgIry7WA/ixuDxVc5qAzLvJarw==
+embark-contracts-manager@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-contracts-manager/-/embark-contracts-manager-5.2.3.tgz#a1e3172a6def947a1a63f9c03ccbefd686589a7b"
+  integrity sha512-reo/yxyqaWTTwhmFpJG9DmOX/DAX6b1rB55KNbL/Y6Nhc08hSBbG7i/5kG9dKY+7xWjuvUoDcItIFgNlGOcN1A==
   dependencies:
-    "@babel/runtime-corejs3" "7.7.4"
+    "@babel/runtime-corejs3" "7.8.4"
     async "2.6.1"
-    clone-deep "4.0.0"
-    core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    web3 "1.2.4"
-    web3-utils "1.2.4"
+    core-js "3.6.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    web3 "1.2.6"
+    web3-utils "1.2.6"
 
-embark-core@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-core/-/embark-core-5.1.0-nightly.5.tgz#f5888b1d07d5cfd5bb4e0a94f58615e62e7f4c8b"
-  integrity sha512-dE1cMgymvEHz7ZkzckHDO9AU0UZOQhXCv2xQ21XiH5BXjALyrB4+vtbmRZMN+8zGnk6flv2OwtZKbLkv1+OnOw==
+embark-core@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-core/-/embark-core-5.2.3.tgz#bbf03bf43eb61a2f83fbc0841a167bf0dc59fbef"
+  integrity sha512-/q5SWxyg8VRKHjAeO3cdHfH2GDPClAcy/zExvX/88N4R348uXFaHV+1Ts4BAsrIgjuCkj2OlRyCvOR42GgXJyA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/deep-equal" "1.0.1"
+    async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
     decompress "4.2.0"
     deep-equal "1.0.1"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     find-up "4.1.0"
     flatted "0.2.3"
     fs-extra "8.1.0"
     globule "1.2.1"
+    hosted-git-info "2.8.4"
     lodash.clonedeep "4.5.0"
     node-ipc "9.1.1"
     parse-json "4.0.0"
+    request "2.88.0"
+    semver "5.6.0"
     shelljs "0.8.3"
     uuid "3.3.2"
-    web3 "1.2.4"
-    web3-utils "1.2.4"
+    web3 "1.2.6"
+    web3-utils "1.2.6"
     window-size "1.1.1"
 
-embark-coverage@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-coverage/-/embark-coverage-5.1.0-nightly.5.tgz#0ab17dcc1491ee6af657275f3a9e2f522e27721a"
-  integrity sha512-OI39OiNnf0Sy8zYntOyOEKtJMFmPcVQ7xXKTsW5rBnP2pU385kFosL0KSP2yVaD10bYnPu4L5uwbdHLFgsO+8A==
+embark-coverage@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-coverage/-/embark-coverage-5.2.3.tgz#e731f4e1abfb80dfd4558cd7b3f55418bcf39f81"
+  integrity sha512-vuKJsivZGl2SPrUi1VF61OKHLCQOgHAec2KWHCm1noT9QWyybkO5MtWnR9GMR4tjwvkfSsyXlrVl10uDFJHFtA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/fs-extra" "7.0.0"
@@ -7838,193 +7848,201 @@ embark-coverage@^5.1.0-nightly.5:
     "@types/prettier" "1.16.4"
     "@types/semver" "5.5.0"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     globule "1.2.1"
+    prettier "1.18.2"
     prettier-plugin-solidity "1.0.0-alpha.25"
     semver "5.6.0"
     solidity-parser-antlr "0.4.5"
-    web3-core "1.2.4"
-    web3-eth-contract "1.2.4"
+    web3-core "1.2.6"
+    web3-eth-contract "1.2.6"
 
-embark-debugger@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-debugger/-/embark-debugger-5.1.0-nightly.1.tgz#59d6b654b039cce069275b450d945e676fb293c8"
-  integrity sha512-c81vHt9Mh9nzYWO9yOgJDaj4f70XntPanMFZbvB+40oH/OcgGg4nX4VXyOCo4pxTaOIZNu4GRMI4LugNAfeOoA==
+embark-debugger@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-debugger/-/embark-debugger-5.2.3.tgz#cc8532e51ccde59c6496d8dde8220921908489b0"
+  integrity sha512-jRQNPdIzBP3tFiT9bkcwZLL0Tegw0QgU1X+EL2GHvaEh0mb9LUTJb6g1tfUdv1fCiZausIOlZ7BjinAygniCVA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
+    embark-i18n "^5.2.3"
     remix-debug "0.3.23"
 
-embark-deploy-tracker@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-deploy-tracker/-/embark-deploy-tracker-5.1.0-nightly.4.tgz#15737f55df526f2bd8e01fdb0916137f169d1254"
-  integrity sha512-jcoW2cMdoOEbjsWjv7Xk8qCoU5b7fb10EC8zvRpu4W7n9LYGOuDCTRv0wy1PTCvgzFBZ7wAqEzjyRrYGK4vXpg==
+embark-deploy-tracker@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-deploy-tracker/-/embark-deploy-tracker-5.2.3.tgz#5075a47ba3d856b6cb72415f3063f9932273a16f"
+  integrity sha512-VsL5SdEuzw+DkDWZpMu4n0+Wm8aA0ix4MNxmT2JGcTOkRVx9dsrgx5OM2iKJo8FB6/bdCGhr0svtnjnFf1jLiw==
   dependencies:
     colors "1.3.2"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embark-deployment@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-deployment/-/embark-deployment-5.1.0-nightly.5.tgz#e23250e5ee46aac359ed2303512917ecd3544f15"
-  integrity sha512-NMusK2YMfArriKYYhwymYPFjaHUauO8YDYkPnvDFGb6tfL9EbqNMC/jXPM88C1rNOf1M22VI5SFa6xT2rx9GOg==
+embark-deployment@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-deployment/-/embark-deployment-5.2.3.tgz#c35f0e9687e249ddb312abd8199c46ca572b5964"
+  integrity sha512-cQqLUZPyUwK+IFVAWZyh6AtGYZL29fYP1a88vG84MHJZFgl9+BD/83KaX+tXVqIc7cAcjFEBVbEXdePQETY7lg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     clone-deep "4.0.0"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
 
-embark-embarkjs@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-embarkjs/-/embark-embarkjs-5.1.0-nightly.5.tgz#eb8bb9326385abeebf2e54a2b6df406c4d4facd6"
-  integrity sha512-czodCjzjQFsqArSUqK2PEfehheJgfPrbBK6MdZMAO+y28f8qNHGQWg907uwn+OdrAQ0CEivvaKagwI+MVpTpYw==
+embark-embarkjs@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-embarkjs/-/embark-embarkjs-5.2.3.tgz#5dff544deefd1e018ea15d2b32be6349c52cd5f9"
+  integrity sha512-EonuB3DIMrjgyEK4KglCUxdJee6MHtr2gBx8B/yYeAOHQOZ8dJtniY/4lxXfD3gwncGvxY/qSxlembz+qAIoEQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     ejs "2.6.1"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embarkjs "^5.2.3"
 
-embark-engine@^5.1.0-nightly.6:
-  version "5.1.0-nightly.6"
-  resolved "https://registry.yarnpkg.com/embark-engine/-/embark-engine-5.1.0-nightly.6.tgz#502b6d5d03996831b60388c6e2107ac88d79f31f"
-  integrity sha512-cwARNpXn6fLUI1BTBpVOgdXDvBke6DenYdlVeyM2445cawWVAU8R58ovZDhfnBB0a7QQGV3W+49AcPoNVV4beA==
+embark-engine@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-engine/-/embark-engine-5.2.3.tgz#e0ea4f24a79484a85582d01ef47281fe611975ea"
+  integrity sha512-hAKDNOTbR7jWti2cshWVx1rwogWC9jHt2Hrg94dF7XezVUBmz13495tGvgS1QVaMmQzuvlAfYxSsERnHixpb7A==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-accounts-manager "^5.1.0-nightly.5"
-    embark-api "^5.1.0-nightly.5"
-    embark-authenticator "^5.1.0-nightly.4"
-    embark-basic-pipeline "^5.1.0-nightly.5"
-    embark-blockchain "^5.1.0-nightly.5"
-    embark-blockchain-client "^5.1.0-nightly.1"
-    embark-code-runner "^5.1.0-nightly.5"
-    embark-communication "^5.1.0-nightly.5"
-    embark-compiler "^5.1.0-nightly.5"
-    embark-console "^5.1.0-nightly.6"
-    embark-contracts-manager "^5.1.0-nightly.5"
-    embark-core "^5.1.0-nightly.5"
-    embark-coverage "^5.1.0-nightly.5"
-    embark-debugger "^5.1.0-nightly.1"
-    embark-deployment "^5.1.0-nightly.5"
-    embark-embarkjs "^5.1.0-nightly.5"
-    embark-ens "^5.1.0-nightly.5"
-    embark-ethereum-blockchain-client "^5.1.0-nightly.5"
-    embark-ganache "^5.1.0-nightly.5"
-    embark-geth "^5.1.0-nightly.5"
-    embark-ipfs "^5.1.0-nightly.5"
-    embark-library-manager "^5.1.0-nightly.4"
-    embark-logger "^5.1.0-nightly.1"
-    embark-mocha-tests "^5.1.0-nightly.5"
-    embark-namesystem "^5.1.0-nightly.1"
-    embark-parity "^5.1.0-nightly.5"
-    embark-pipeline "^5.1.0-nightly.5"
-    embark-plugin-cmd "^5.1.0-nightly.4"
-    embark-process-logs-api-manager "^5.1.0-nightly.4"
-    embark-profiler "^5.1.0-nightly.1"
-    embark-proxy "^5.1.0-nightly.5"
-    embark-rpc-manager "^5.1.0-nightly.5"
-    embark-scaffolding "^5.1.0-nightly.5"
-    embark-solidity "^5.1.0-nightly.5"
-    embark-solidity-tests "^5.1.0-nightly.4"
-    embark-specialconfigs "^5.1.0-nightly.1"
-    embark-storage "^5.1.0-nightly.5"
-    embark-swarm "^5.1.0-nightly.5"
-    embark-test-runner "^5.1.0-nightly.5"
-    embark-transaction-logger "^5.1.0-nightly.5"
-    embark-transaction-tracker "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embark-vyper "^5.1.0-nightly.1"
-    embark-watcher "^5.1.0-nightly.4"
-    embark-web3 "^5.1.0-nightly.5"
-    embark-webserver "^5.1.0-nightly.4"
-    embark-whisper-geth "^5.1.0-nightly.5"
-    embark-whisper-parity "^5.1.0-nightly.5"
+    embark-accounts-manager "^5.2.3"
+    embark-api "^5.2.3"
+    embark-authenticator "^5.2.3"
+    embark-basic-pipeline "^5.2.3"
+    embark-blockchain "^5.2.3"
+    embark-code-runner "^5.2.3"
+    embark-communication "^5.2.3"
+    embark-compiler "^5.2.3"
+    embark-console "^5.2.3"
+    embark-contracts-manager "^5.2.3"
+    embark-core "^5.2.3"
+    embark-coverage "^5.2.3"
+    embark-debugger "^5.2.3"
+    embark-deployment "^5.2.3"
+    embark-embarkjs "^5.2.3"
+    embark-ens "^5.2.3"
+    embark-ethereum-blockchain-client "^5.2.3"
+    embark-ganache "^5.2.3"
+    embark-geth "^5.2.3"
+    embark-ipfs "^5.2.3"
+    embark-library-manager "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-mocha-tests "^5.2.3"
+    embark-namesystem "^5.2.3"
+    embark-parity "^5.2.3"
+    embark-pipeline "^5.2.3"
+    embark-plugin-cmd "^5.2.3"
+    embark-process-logs-api-manager "^5.2.3"
+    embark-profiler "^5.2.3"
+    embark-proxy "^5.2.3"
+    embark-rpc-manager "^5.2.3"
+    embark-scaffolding "^5.2.3"
+    embark-solidity "^5.2.3"
+    embark-solidity-tests "^5.2.3"
+    embark-specialconfigs "^5.2.3"
+    embark-storage "^5.2.3"
+    embark-swarm "^5.2.3"
+    embark-test-runner "^5.2.3"
+    embark-transaction-logger "^5.2.3"
+    embark-transaction-tracker "^5.2.3"
+    embark-utils "^5.2.3"
+    embark-vyper "^5.2.3"
+    embark-watcher "^5.2.3"
+    embark-web3 "^5.2.3"
+    embark-webserver "^5.2.3"
+    embark-whisper-geth "^5.2.3"
+    embark-whisper-parity "^5.2.3"
 
-embark-ens@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-ens/-/embark-ens-5.1.0-nightly.5.tgz#79bac6d88e2f55c43b0c2d34d3ad8c78c41bd45e"
-  integrity sha512-G2l26dFPufIOxHFJyIVUoPuv4BLoPe0i0/YPCCNUv4LMm1A4bvCYLAu0RKa8/KqvwblFwkGu0JY/SMgLZkI5xA==
+embark-ens@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-ens/-/embark-ens-5.2.3.tgz#c3771ef069b9b802d6f7264118ca47588bec9c42"
+  integrity sha512-EUP8lU7/HCdVvuMSLg9fnehj07ebWkcs8FL0YXSZ0TOjPYlqEe02kah3Yb3c/vPcE00o2nNQWaGFm4iSBjxJCg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
-    embarkjs-ens "^5.1.0-nightly.5"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
+    embarkjs-ens "^5.2.3"
     eth-ens-namehash "2.0.8"
     lodash.clonedeep "4.5.0"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embark-ethereum-blockchain-client@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-ethereum-blockchain-client/-/embark-ethereum-blockchain-client-5.1.0-nightly.5.tgz#7997c05b29657b8b217b81979c71b39f31ca36b6"
-  integrity sha512-iwszK/oL1NmpZziSalEmfcrUDhqV3JLdfMOCDxDG7jZf5wOoiGlYEPxzXPPuvneM0R+QqIAOFe/0SlMJ4pk1cw==
+embark-ethereum-blockchain-client@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-ethereum-blockchain-client/-/embark-ethereum-blockchain-client-5.2.3.tgz#328cc0d5163d0989bb8b62dabb8cbf9db811f666"
+  integrity sha512-iZ/BI5PVx7QtoSRP22BYyzZI1z7h/eXPJACxLHTYgK/adhMCXs7gsPbl3SFaXk9W6I5jkazs1RKUIxINzuznNA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
     ethereumjs-util "6.0.0"
-    web3 "1.2.4"
-    web3-core-requestmanager "1.2.4"
+    ethers "4.0.0-beta.3"
+    web3 "1.2.6"
+    web3-core-requestmanager "1.2.6"
 
-embark-ganache@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-ganache/-/embark-ganache-5.1.0-nightly.5.tgz#7b926d829a68b7d903f45ebe314db7f54df8df51"
-  integrity sha512-7HJYtm++rXHUdwLv7vseqlegnFfrb78+3phvPioizi5cj5sJQlwmI2X+0uxjnyYtIuWGrI251ycUaoa8+KEKIQ==
+embark-ganache@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-ganache/-/embark-ganache-5.2.3.tgz#6eaa22e3b8a09884890f2077163758be30895794"
+  integrity sha512-G1Bg5ga7qwqwv5KzUT/v0U7ZDPR8ZIn5tJaiPAgP0SD/irMWJ1QuJXzZDsjH3WygA1kXePRgDxh2Q7W7Tfa9TA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     ganache-cli "6.8.2"
 
-embark-geth@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-geth/-/embark-geth-5.1.0-nightly.5.tgz#343e98962b0c5ac758911e59d599bcf10a7a27f4"
-  integrity sha512-lAHcPy3z8SW5iHArdm4WXCVhn0+80H5uHsFUA/Zi54ebOc2cU+eI5Igs36DjDHMiTYWuFYXyj1j+M1oe0Kz7Fg==
+embark-geth@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-geth/-/embark-geth-5.2.3.tgz#0c5b590b48f93037b06af62ed055a04b52e2a0b7"
+  integrity sha512-oz9RnPu1PT7oqf5HcNIsmPecxrPe3mnJZwhr0bqxl9MuPswZti4AFLYLrEG1Jcen9mWn9LsVuSIEWnMcNSAjQQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     netcat "1.3.5"
     semver "5.6.0"
-    web3 "1.2.4"
+    web3 "1.2.6"
+    web3-eth "1.2.6"
     ws "7.1.2"
 
-embark-graph@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-graph/-/embark-graph-5.1.0-nightly.1.tgz#cad269a17415ad7b4cc321de1194c28c9edffb40"
-  integrity sha512-4DKaxSkSvhttCbo/Tu7tDE8jNi+8Md1g9Y9qL+ve6zgnaLR7dS62iQ/qm2w5XKObBMB9smOpv7V2/lkRWbwxEA==
+embark-graph@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-graph/-/embark-graph-5.2.3.tgz#029606abe2d4ec9e3badecc784d9bd9d5924cf21"
+  integrity sha512-OYkVTkIfAiNqJWWBzNoCVQM0ubC08wBcZwjPToyYYim7TZtA/lUwkBsYgZrxzlVr4DZBLPDGtDOVyiU0bF9ChQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
+    embark-utils "^5.2.3"
     viz.js "1.8.2"
 
-embark-i18n@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-i18n/-/embark-i18n-5.1.0-nightly.1.tgz#f376fa9c9541c4a272c385b07a5e126b25236dc4"
-  integrity sha512-IQeh12R2H/pnmxVqOaXLKkFJqGB+E1E+nfhn4JkfVv/8njbi/R6SmNdRRn13i9ZhDoNnME+ERXZUWZlENwzpGg==
+embark-i18n@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-i18n/-/embark-i18n-5.2.3.tgz#f944e9821fdc67d3a3cf7d15cd19796ace4d95df"
+  integrity sha512-qC2cRR8IohWs2OS1XWRILwn+j7yOS0TT8vrup/F0ns9ynP11V0trPPc8YQRmIofaJo51PPOQmPqAbu/H4ayraw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/i18n" "0.8.3"
@@ -8033,138 +8051,140 @@ embark-i18n@^5.1.0-nightly.1:
     i18n "0.8.3"
     os-locale "4.0.0"
 
-embark-ipfs@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-ipfs/-/embark-ipfs-5.1.0-nightly.5.tgz#f2b15019476125505bb434943329bf340b821c7e"
-  integrity sha512-79SvMN/xbec+sx+3Vj/ewrtyGCm9P6fljR+w94DdUgoOawu3Dp47npc0+Um2/vbF8R9AMc0F5cn059muX4RbIw==
+embark-ipfs@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-ipfs/-/embark-ipfs-5.2.3.tgz#ef279b4957c3c95acf10d9a68f59ae047f9c7874"
+  integrity sha512-opOIcU4wrSovRw4IjbCxgqYReaFecwhWvIlc7T4f0PftYPzfA1rlRrPNXlvM6axR6BrFJmmM0VUZfACQyUlXZw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-storage "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
-    embarkjs-ipfs "^5.1.0-nightly.1"
+    ejs "2.6.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-storage "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
+    embarkjs-ipfs "^5.2.3"
     ipfs-http-client "40.0.0"
+    lodash.clonedeep "4.5.0"
     shelljs "0.8.3"
 
-embark-library-manager@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-library-manager/-/embark-library-manager-5.1.0-nightly.4.tgz#9019185084eab8b7409f42caa91d56a4f93e8dab"
-  integrity sha512-tmXSZIaELK2QpxgI9VmK/tJP7wFE8JOUjpZRiyF3l0vazhsDJWhB3woEreFL+SOHYPPGwCE8ypOwzwlK+RZuVg==
+embark-library-manager@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-library-manager/-/embark-library-manager-5.2.3.tgz#26c6c823f5f578e02cf0e9007c671441969a7cc3"
+  integrity sha512-mJ9qFyoyGHzIDPtKP/eehhtJaPZARcEcm01ocF+HG83CtGaeEVDPAoCPQBXRiTNKJek5hr34flxAcwJKfTdzRA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     rimraf "3.0.0"
 
-embark-logger@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-logger/-/embark-logger-5.1.0-nightly.1.tgz#a45d9a9120de44d8990d715a5ad77cba441ea8a6"
-  integrity sha512-mIlc26dkZfTk51NCCJC7opJIvaZppOnWjDYYpnFEdriD2mGUC3m8HPUnlo/0jnkzOWu6dPnY/wNxH1LRYzxeog==
+embark-logger@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-logger/-/embark-logger-5.2.3.tgz#94109293bd734289032a53cd31cd438387eca84c"
+  integrity sha512-rx7U3Nl3DqvWrDtR5mcvsF2iB8oxlhlzuO7CpDgHAMw0pexR3vB+hUxdB4daE3akouFpI3SR9XSm6LLIOmjhhA==
   dependencies:
-    "@babel/runtime-corejs3" "7.7.4"
-    colors "1.3.2"
-    core-js "3.4.3"
-    date-and-time "0.6.2"
+    "@babel/runtime-corejs3" "7.8.3"
+    async "2.6.1"
+    colors "1.4.0"
+    core-js "3.6.4"
+    date-and-time "0.12.0"
+    fs-extra "8.1.0"
 
-embark-mocha-tests@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-mocha-tests/-/embark-mocha-tests-5.1.0-nightly.5.tgz#80a2be2a830997cdb6837cb7cc3d8f384e9415a7"
-  integrity sha512-KlMfmeBk//6HIJzMI6OrGfHoS60Qe8uXD6pKcVubeLUBMZYhSsugmaW0sw8O531lYUlWgW7HypTXT9ViKf5Rlw==
+embark-mocha-tests@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-mocha-tests/-/embark-mocha-tests-5.2.3.tgz#0b6d91282c23ff5e381c1dc9faa9e9039aa73d64"
+  integrity sha512-1A5pPyZTOoizXCePvp2aN1qeO+2nTZTLpKkvsgxCQcHYrvl83GCeQ/7XgbAwRiG4YAYCbJmfaKao8M8c+rPOxA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
     async "3.1.0"
+    colors "1.4.0"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
     mocha "6.2.2"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embark-namesystem@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-namesystem/-/embark-namesystem-5.1.0-nightly.1.tgz#c289faa519eea7d23865ae0a25161e1d3faa5996"
-  integrity sha512-PaKe+8QeJQz9NXwB0OuNeK0NRAkQzZcRsFJ/XVNCJT0xBhMq8VTyNkjbmqjUCfQDplPYRUJ9DCwiqnIfEESyoA==
+embark-namesystem@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-namesystem/-/embark-namesystem-5.2.3.tgz#c4f8899553c745507b9a5354a91d4668245c9ea9"
+  integrity sha512-BI+IrKTQjvwDyFdpAfoj68Mu+n2Sa5EdT5R5uyv1N1wr3wJqfS6s54n2Yvna3LPSB/SLEUihc98qKGRfbr/sfw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
+    embark-i18n "^5.2.3"
 
-embark-parity@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-parity/-/embark-parity-5.1.0-nightly.5.tgz#570fc8aafc89ac7bd18afd08e57b8c6da659b586"
-  integrity sha512-CmCq+A4a9u6VfDOvm4X2GQEGd4aX0Y9FcwXvpOmcOB6M5Gn7ToqJfc7cga6Jdgp2dWlyY8xbDDU4vhKX08bGiQ==
+embark-parity@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-parity/-/embark-parity-5.2.3.tgz#b908d142447773faa2c6f6d80e1625d8b2ef32f9"
+  integrity sha512-rLL52Lrr63oDACm8WRzXsTC+kmnrDP0pOFSZ7qTJ9hj3jQXELaHnl10LVYJx432uDNWzANyimIiREMNKYfuORw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     netcat "1.3.5"
     semver "5.6.0"
     ws "7.1.2"
 
-embark-pipeline@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-pipeline/-/embark-pipeline-5.1.0-nightly.5.tgz#d09f79bd73f8b8d3199bf5c7b74ead46296fb18f"
-  integrity sha512-wpi2EXA9CorOUn6iQMD1dPQ3ZNT9x+6PbP3mtagLxWs9tPAUd8jQ2tv9bXMZBtDv1vFJYVOd6nVsybi4oB9Dyg==
-  dependencies:
-    "@babel/runtime-corejs3" "7.7.4"
-    async "2.6.1"
-    colors "1.3.2"
-    core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    find-up "2.1.0"
-    fs-extra "8.1.0"
-
-embark-plugin-cmd@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-plugin-cmd/-/embark-plugin-cmd-5.1.0-nightly.4.tgz#b3d22c3c82b6693275681abf7574484e9d28651d"
-  integrity sha512-Is7XeRN3C4LeuEH5YLhPD5DaeRn4OYo6z6KUrNvaKbFnVIn2rD4lcBemrWe/BbnmroTcaTRHaUFl5J31WKS+ug==
+embark-pipeline@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-pipeline/-/embark-pipeline-5.2.3.tgz#8fec83eb6cc7ef1282137f3d22ee692eeffc3232"
+  integrity sha512-BuGwNKgR68dlviUORe2RRVTrHRk3yPwR+rNwZVN2NXLhFH5Y1r1cNc87Av3xoPBmpItcO2pAmQ9L3sJANyxbzg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-utils "^5.2.3"
 
-embark-process-logs-api-manager@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-process-logs-api-manager/-/embark-process-logs-api-manager-5.1.0-nightly.4.tgz#03231d1eb4e93aa84d2f34183afab2b6c1472b79"
-  integrity sha512-QsVoTt+vLbGmbbLudOJ+PWaXa724b4ktn2E1DqOkMrdWOvLm7g08sZOwKdSkQU+0xCyzxkIvsQ8DU/5Ouu9jbg==
+embark-plugin-cmd@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-plugin-cmd/-/embark-plugin-cmd-5.2.3.tgz#2986fafb4f6537cf5253dff2f0c2d16aa265841c"
+  integrity sha512-7+HFa/1LDL0Cw6u4PBilQ+TDDwDGfG/Dv9IsG1eFndkPEckJaYV4lvjUaAolgc08I2uUuh9+MJY/LsHs91u4Kw==
+  dependencies:
+    "@babel/runtime-corejs3" "7.7.4"
+    async "2.6.1"
+    core-js "3.4.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+
+embark-process-logs-api-manager@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-process-logs-api-manager/-/embark-process-logs-api-manager-5.2.3.tgz#9577931deb30e200a746ca4e8cb35039b03a2b67"
+  integrity sha512-d4wwVcAB63EPthKcB0zrtyHiH+HpA5r9DlPwFqnRdh3gY1yM89ox0/+YY7L4MkgsvYDCrE4vnEiSDjbYxUP6qQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-utils "^5.1.0-nightly.4"
+    embark-utils "^5.2.3"
 
-embark-profiler@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-profiler/-/embark-profiler-5.1.0-nightly.1.tgz#459a5a804d52401dab331c6c9190a1c1dab0e438"
-  integrity sha512-efVKA6JyQ4vYEDucBKkXay4h6szSz0ulsS/OduCWXBc433txhvZxHkiyxX+bEXASrZA71kt9xf+aYckhku/pDA==
+embark-profiler@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-profiler/-/embark-profiler-5.2.3.tgz#fa7c62f6b5616f779e28f794262aafe22fb2f7d0"
+  integrity sha512-kffSa4t+AImywDkLBn4992yEP0wWHUbfxqOEGOL6kCY/IEyVlugcLf6Hzt7IbxPeV7b9QP9SR1/Io1Z7VV0Bvw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     ascii-table "0.0.9"
     async "2.6.1"
     core-js "3.4.3"
-    web3 "1.2.4"
-    web3-utils "1.2.4"
+    embark-utils "^5.2.3"
+    web3 "1.2.6"
+    web3-utils "1.2.6"
 
-embark-proxy@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-proxy/-/embark-proxy-5.1.0-nightly.5.tgz#9a54c80621fe5ccb6f52668bc93857cda18c12e5"
-  integrity sha512-WIjyZHG44qTGUEZu7NY3QxA5nlTPP+Ta9+vQyg2yEzcqDB0XBsJzebJTE82OnzSSna/fjhvaKJqKzLEzyY279g==
+embark-proxy@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-proxy/-/embark-proxy-5.2.3.tgz#f8601b0ae63db404b79ae95656ad39de696c1c01"
+  integrity sha512-3tdS1zl1dp+9h6mELLsiAg7hUXmfhSVddn9XlMrqaeimJQG3+5HrQcGYO6PNHi8RuYyE3ngwzxSmuAHcTMnVLg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/cors" "2.8.6"
@@ -8172,56 +8192,56 @@ embark-proxy@^5.1.0-nightly.5:
     "@types/express-ws" "3.0.0"
     core-js "3.4.3"
     cors "2.8.5"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     express "4.17.1"
     express-ws "4.0.0"
-    web3-core-requestmanager "1.2.4"
-    web3-providers-ws "1.2.4"
+    web3-core-requestmanager "1.2.6"
+    web3-providers-ws "1.2.6"
 
-embark-reset@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-reset/-/embark-reset-5.1.0-nightly.1.tgz#4fa1d3fe55bc6c7f446ba121f390c72e0d160af7"
-  integrity sha512-wLkN9w31x6ZwWq2RNE6ICJCJrzMm9w2xl+x3efkM77uGqgJX0/uloLActiWGvp+AUyQOsDPLQ/lSfPK/X3lkzQ==
+embark-reset@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-reset/-/embark-reset-5.2.3.tgz#db91efaf9356c2ecbe585e7d6d0f3c8d8d7fad21"
+  integrity sha512-skFQwe+J2Ipavl711FhB7tAOEDNJrS7mtTqf9xqd5IR0uGXQXcNoxbbhxug/XlNMKCPdJUnU2S+vb3OqzVx/rw==
   dependencies:
     rimraf "3.0.0"
 
-embark-rpc-manager@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-rpc-manager/-/embark-rpc-manager-5.1.0-nightly.5.tgz#dfb9a027a73996e4c13025ee3ca9cdf74cf92035"
-  integrity sha512-Ze6igP379XP2yDbd9Ld0+YU0hrdK+p5IVu6eDXakBpSvDLGucDmAs+Ljcnt/+F2lgcHT5JumuHJw0HDcD7QGYg==
+embark-rpc-manager@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-rpc-manager/-/embark-rpc-manager-5.2.3.tgz#bb2ad90b6708cdd22d9ce8e2161050e657c2366a"
+  integrity sha512-SShG09lg4ZsQOgzlwqUkk1LpdN9PfVYxAk7KKBFm4RDiK60A+GmFRz8JqRde9J8vzAM80998oEyQTIirpz+ImA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@omisego/omg-js-util" "2.0.0-v0.2"
     "@types/async" "2.0.50"
     async "2.6.1"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    web3 "1.2.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    web3 "1.2.6"
 
-embark-scaffolding@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-scaffolding/-/embark-scaffolding-5.1.0-nightly.5.tgz#0a3f8b0aeb302f45901713fc0f19c1df7b0df4d6"
-  integrity sha512-YYJOeS1xSAk8LKRnf9DNPGAeww37WhPbxy3ybVrC2BPtrks1QId0lVokx8egoeUivtgrDk9QmSpoHxfqLYmV7w==
+embark-scaffolding@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-scaffolding/-/embark-scaffolding-5.2.3.tgz#4a65373a35710919f6338ee99295cc1adc9572ac"
+  integrity sha512-BEG66mOzqOlZJ8SbXaRN6w8BMn8CYMrnk+TaNxe0Uu6uQ9K98JJrozFADFpxCbbNrqc1ILv3xVESJEIAb/PTOA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     ajv "6.10.2"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
     handlebars "4.3.0"
-    web3-utils "1.2.4"
+    web3-utils "1.2.6"
 
-embark-solc@5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-solc/-/embark-solc-5.1.0-nightly.1.tgz#7900e6589128ba0877ff2c82ddba2a0da147c9a8"
-  integrity sha512-NgcFsgSLChZ6uNw6UjovZmGQeB65KY8Ra1kQDWlS66IN4L8QWfkVXJf2vyrCMQSZuh3z4eEW5KejX/DwtXjiWw==
+embark-solc@5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-solc/-/embark-solc-5.2.3.tgz#751478480e69f626c3807c856486624854bc86ce"
+  integrity sha512-IeUKQLcCKMZTIibywZ3k79Q5DvxX65JDne0UX7nARw78fSKHYC1KMiMP/s2bu5EOlry/2h4sW1isYyR99SmOuQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
@@ -8229,33 +8249,34 @@ embark-solc@5.1.0-nightly.1:
     semver "5.6.0"
     shelljs "0.8.3"
 
-embark-solidity-tests@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-solidity-tests/-/embark-solidity-tests-5.1.0-nightly.4.tgz#21b2aa0657323abe881bcd4f5bf845fcd60700be"
-  integrity sha512-ji9+Zwg3jo/Ud3Ig5tAtLkpeZUOEql2IA8fAhs7s/SlRp4Yf6XabN4s542NO5MkWe1/xzA50RkLcychROew71w==
+embark-solidity-tests@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-solidity-tests/-/embark-solidity-tests-5.2.3.tgz#69b8c377f716a2b85c09907cbc6803c010f95f77"
+  integrity sha512-W30qJ9bMiMKjb/497ojdF+DoU3MJ3xjjlsgre6mJSdt8okj2Tgf4QMtEhlaDmjND5fTSIbuztSCPrx+Lb5vNRg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
     async "3.1.0"
     core-js "3.4.3"
-    embark-utils "^5.1.0-nightly.4"
+    embark-utils "^5.2.3"
     remix-tests "0.1.24"
-    web3 "1.2.4"
+    web3 "1.2.6"
     yo-yoify "4.3.0"
 
-embark-solidity@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-solidity/-/embark-solidity-5.1.0-nightly.5.tgz#ccd52ee03793c35a574fd69727fac9f538b3f634"
-  integrity sha512-gSwo6Ibssx7bt3wvaFPbPa0SbqvxHkhH3vFTsOptaY5pBL2E9dVclUv8qJ3X86a777/8j65hbuXbcvdAhK6fuQ==
+embark-solidity@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-solidity/-/embark-solidity-5.2.3.tgz#981243192dcb160f2d8165549d5367fbfe0108ce"
+  integrity sha512-1e8DZHXac44DpypYMTFl97JZ1UOBrEkAcNXGv6MtMAPvZy+uuL82EOvjefZBDoRmYkRYvwef6DJcdm6LJc08/Q==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     find-up "4.1.0"
     fs-extra "8.1.0"
+    lodash.clonedeep "4.5.0"
     semver "5.6.0"
     solc "0.6.1"
     uuid "3.3.2"
@@ -8268,83 +8289,87 @@ embark-solium@0.1.0:
     solium "1.1.0"
     text-table "^0.2.0"
 
-embark-specialconfigs@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-specialconfigs/-/embark-specialconfigs-5.1.0-nightly.1.tgz#9ee9a3f6b6ebd4616bf35e00969a4f5f83e18f7a"
-  integrity sha512-sKz5K9W47I7rvsaT3K/poQcdgTPkdby6r55LRnFnau71baxvWW0BZLR07/3wgKVEDRgbN4LDBSBcCiIUBz8Mhg==
+embark-specialconfigs@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-specialconfigs/-/embark-specialconfigs-5.2.3.tgz#123e008d43c5406c11883a6ef0e8541c1879aadd"
+  integrity sha512-U4jcGwDjyfiKeUuPzk4/3OR+aENram08mXawjyuwG9gfNutDtXZ9PTDVhvbN33IDfXJc1Gqeco6TCDS8V9+lzw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
+    embark-i18n "^5.2.3"
+    string-replace-async "1.2.1"
     viz.js "1.8.2"
 
-embark-storage@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-storage/-/embark-storage-5.1.0-nightly.5.tgz#2fd84d7564a4685e96c6d7960aa38c83c4a9ff6e"
-  integrity sha512-YCGjHs8QnD9SpdbTADYjmVFVJG3Hj3qxoc0iPcAaiNXBC2J5UAVi8gpTfmk2PtN0A4vK1zQdu6ymGai/6F/kVg==
+embark-storage@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-storage/-/embark-storage-5.2.3.tgz#2c4574ab19c55ff6dd379467576bad2cd4a89a9f"
+  integrity sha512-JfF6GX4SjVdMiYPyH87Sua/ucTiB9BsKN56PGSCw8v8oerApWNqqxHSMZcfA54OzKpbxSwYDbRXsy9VD3HFf8A==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     lodash.clonedeep "4.5.0"
     shelljs "0.8.3"
 
-embark-suggestions@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-suggestions/-/embark-suggestions-5.1.0-nightly.5.tgz#c6d19f25726473a5eb17a2c6051f59469c6d9f9a"
-  integrity sha512-uoCO2hFtpLcCWO6NiJRYZ5jnJNa5u6XWapHA1tuw/xULobKcoOY8i2vtB0tEW1tdXJqpkKBhZwcOy4P4FhCSnQ==
+embark-suggestions@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-suggestions/-/embark-suggestions-5.2.3.tgz#916f37cac7ab1f269f6b15e9a6e4576ed6889345"
+  integrity sha512-ULeQfJsI6oEsnEzUGOYloSxmKQohEXr5HwluK7/kxkAFkc/gvsBwd7eA8i133kAtamso0qWqG7RTbH3GB7xzxA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
 
-embark-swarm@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-swarm/-/embark-swarm-5.1.0-nightly.5.tgz#ea03a20e5210e4581e85b60be31e665ac13fb0b1"
-  integrity sha512-kK0kdIqRxQmBA4hxvHzj1J4CpFPOvj8Tq0wXwPdhPMgyLx1uvh5DaAC9WwToIIbsmzbvyJv1+pvaNqY+PMC5aA==
+embark-swarm@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-swarm/-/embark-swarm-5.2.3.tgz#2385f36db3410b36a8c91c7b4d348c2ea8429f6d"
+  integrity sha512-L0aS+VZoiiuxzUH9uPWByIMlV82/LRIycJnPc6B5ZnT0sRlxi7UY+/Z/ahaZzKeGLOfqAmJ2bDzmRCaX5CRjMQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-storage "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs "^5.1.0-nightly.5"
-    embarkjs-swarm "^5.1.0-nightly.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-storage "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
+    embarkjs-swarm "^5.2.3"
+    lodash.clonedeep "4.5.0"
+    shelljs "0.8.3"
     swarm-api "0.1.2"
 
-embark-test-runner@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-test-runner/-/embark-test-runner-5.1.0-nightly.5.tgz#a94167132558c47ca8fd98cd9a5478a2da0bdde1"
-  integrity sha512-07X9qTX5acePiOEtVre7+I3tWOvtxQsRpqS8uXZRm/uFP0ZEJFoBfgRCNhedAnOPytxOiIosvJG6CfhUY0Gh6g==
+embark-test-runner@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-test-runner/-/embark-test-runner-5.2.3.tgz#a57b60e786219cbe279a8105b6ea9347db707df1"
+  integrity sha512-V5SWrP93L7TKoqFgkkD2uvWFRbhrLCVnmbOfNOHeBPOEB/JCnT1fTGqLB11V5qwTFo8efgk8mH7GB3dgR5X/8g==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     chalk "2.4.2"
     core-js "3.4.3"
     deep-equal "1.0.1"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-testing "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-testing "^5.2.3"
+    embark-utils "^5.2.3"
     fs-extra "8.1.0"
     istanbul-lib-coverage "2.0.5"
     istanbul-lib-report "2.0.8"
     istanbul-reports "2.2.4"
-    mocha "6.2.2"
+    lodash.clonedeep "4.5.0"
     open "6.4.0"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embark-testing@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-testing/-/embark-testing-5.1.0-nightly.5.tgz#bdce3c63984636c8fe5288ff897f62afb169ee8b"
-  integrity sha512-g0t9uI3RdqAIKbnlyR8D27E+FAFMQYp4YX7RnxkVjTDfpZWSstNKi4bnlvr3D/MaAbK17nGlzB2gJ0McK+JBDw==
+embark-testing@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-testing/-/embark-testing-5.2.3.tgz#b127f108ae48f17c09e7820860c96645f60254eb"
+  integrity sha512-WZy06l6IPyfyL8Sp1AdG6Dj1Yxp1EM05hpv2vTO0I8ySj/zaebo+TbO3a5azXspqQBBwP+h2L+w38/LAn/Xfog==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@types/async" "3.0.3"
@@ -8354,41 +8379,42 @@ embark-testing@^5.1.0-nightly.5:
     refute "1.0.2"
     sinon "7.4.2"
 
-embark-transaction-logger@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-transaction-logger/-/embark-transaction-logger-5.1.0-nightly.5.tgz#357ba57caf94e30b4389ae70f7d15f479de7df0f"
-  integrity sha512-ed3mrq+22b/5c33LOBuM32B+hxu7UmHi+UbgtCpjxJUAjYJSJdazk0gJjjmishqgKTetOah7MJdgrHmwuPgBzg==
+embark-transaction-logger@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-transaction-logger/-/embark-transaction-logger-5.2.3.tgz#f2e7c452782aaa35f2283f2a31652d069439f50a"
+  integrity sha512-iLOCjoF6xA9mJZQFiTZqoFCR8SOkGRcT3TF9m/HSEBwe9/kmxq2JmX9DeM+cS2fF4cOXnyLsl02YLXXwwe8jlQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     ethereumjs-tx "1.3.7"
     ethereumjs-util "6.0.0"
-    web3 "1.2.4"
-    web3-utils "1.2.4"
+    web3 "1.2.6"
+    web3-utils "1.2.6"
 
-embark-transaction-tracker@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-transaction-tracker/-/embark-transaction-tracker-5.1.0-nightly.1.tgz#f396ebf62a98d04f11322ed6bfab6db4b4cb2a9c"
-  integrity sha512-KKqB9Usk3KIvxfi/17S5gAT1uCogY3G80fn0Xkj82nS7aqy2kxuMBCQptdCLwaXQ3cYMSWjHoiuEjHIZ+nvfxw==
+embark-transaction-tracker@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-transaction-tracker/-/embark-transaction-tracker-5.2.3.tgz#fe326e5471ef16e1d9d06dee3e1da8c460b65704"
+  integrity sha512-0HPH+uh62OKBl6327gX/oE7op3HtBtHcYnBl2iOTAj1xVv3bYornWYws0fiX8zD8aHvV/C4p3bD9w+LWOmRqzQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
     viz.js "1.8.2"
+    web3 "1.2.6"
 
-embark-ui@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-5.1.0-nightly.5.tgz#40dbe0e593e2682b9e71c90a81dd1b22c34722e0"
-  integrity sha512-nTHN/+h+conHcqjf1XcZGqbUeVsecH8dIMbcRncwQk4cGWqqxeVZHrK8T38XIUeJEcU7NUV9zZa4Os1OcIAdMg==
+embark-ui@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-ui/-/embark-ui-5.2.3.tgz#9250adf45df5704a06ee32b419433d1faa16a1ad"
+  integrity sha512-z6FlNXpNTGmz/u5oNaTP4rcHibr2UTEj5aLX7M/85xfJwvUWJABipQy+Hd7zZj1qoe49UoiYJ8J7nyPr3PYVnQ==
 
-embark-utils@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-utils/-/embark-utils-5.1.0-nightly.4.tgz#5c96bb0ec4f95a7c16d0993c4cea63f055d8e7a5"
-  integrity sha512-LwYGOXxDVI4bkRD1yuhkMz63VbitUOmleJmO+Ts26aMq6crWiFhPfOKV8YkiO6dM0z10yMzDIsXf5P6EGIyRhQ==
+embark-utils@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-utils/-/embark-utils-5.2.3.tgz#e227f7a16bb7adfba56bd8f87222614a47e67ebf"
+  integrity sha512-ogKbimjf2ZgaJCnrkZ4p6rRXlvarDK1juPrSwT5xRbYIuAbJTOVa+6pRmVDoWJqVOkSmZRtM333sZbPtAgu7Iw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     "@embarklabs/ethereumjs-wallet" "0.6.4"
@@ -8396,12 +8422,13 @@ embark-utils@^5.1.0-nightly.4:
     "@types/fs-extra" "7.0.0"
     "@types/node" "12.7.8"
     "@types/pretty-ms" "5.0.1"
+    async "2.6.1"
     bip39 "3.0.2"
     clipboardy "1.2.3"
     colors "1.3.2"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
     find-up "2.1.0"
     follow-redirects "1.9.0"
     fs-extra "8.1.0"
@@ -8412,93 +8439,102 @@ embark-utils@^5.1.0-nightly.4:
     multihashes "0.4.14"
     ora "4.0.3"
     pretty-ms "5.1.0"
+    propose "0.0.5"
     shelljs "0.8.3"
-    web3 "1.2.4"
-    web3-eth "1.2.4"
-    web3-eth-abi "1.2.4"
+    web3 "1.2.6"
+    web3-eth "1.2.6"
+    web3-eth-abi "1.2.6"
     ws "7.1.2"
 
-embark-vyper@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embark-vyper/-/embark-vyper-5.1.0-nightly.1.tgz#c23cf9505c25ca1c9adfe042ec2ec0065f56147c"
-  integrity sha512-y9rA9gr2B036TCZtZB3FNzecbyFGb6ZVg28RiqkVResqmZdxXTXmmyakMDQO7zKXXg2MQmm/cQ4+KbCzH/kEkg==
+embark-vyper@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-vyper/-/embark-vyper-5.2.3.tgz#91d0ae3404e1a187d111ab994af36dd0932e9709"
+  integrity sha512-hfLHeh5rJE3zjcG4n+bSvKCWukiLR7jL5xJ6Lo7SweCrd9b3w7ecRkQKug4dD5TtUp+rAlYcB0lHfrA8K9VhjQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
+    embark-i18n "^5.2.3"
     shelljs "0.8.3"
 
-embark-watcher@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-watcher/-/embark-watcher-5.1.0-nightly.4.tgz#b8714d06469e5dd3c21187a14a53134ba65babaa"
-  integrity sha512-mOnirrsVWGpCJTvw7t8iM/pKP3bvgq6uLbQsKmRqF6nXV4WjYYV3lavpeNe7MSu5F44z7vElVVrwTMwK+XrPxQ==
+embark-watcher@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-watcher/-/embark-watcher-5.2.3.tgz#fe4d60ae911507732ab4a3655e33ba29b795cb2c"
+  integrity sha512-YlwWnDkOoYII20Qd5/V3ZT9kP7GgwKlUHNbbRaVZHHH8GnR22YEqzoByI5KUVCham5zAzSQL5nMm7l3ze5bQig==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     chokidar "2.1.6"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
 
-embark-web3@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-web3/-/embark-web3-5.1.0-nightly.5.tgz#8c323872ab3132eb09d451b825ffe1418d48af1d"
-  integrity sha512-jQCpnKj2bJom+aBTcolkVRnl1JFTTWS1UomCDyMOFYNS+hZgCyBe/5AXFy2geEtQ6w4Vk3xqA0SM06gCQuTGiw==
+embark-web3@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-web3/-/embark-web3-5.2.3.tgz#8987bc36faa54ff38392d047b0f9bd94367c4c42"
+  integrity sha512-5uA856+56sr0eNfaBxbCI8Soq5L4AhNpVcZxswABZkZJqy9eyLWJS1d4+AR5I1pCWDZaVJ83fPCoPEoloTAoAw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     ejs "2.6.1"
-    embark-core "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs-web3 "^5.1.0-nightly.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs-web3 "^5.2.3"
+    web3 "1.2.6"
 
-embark-webserver@^5.1.0-nightly.4:
-  version "5.1.0-nightly.4"
-  resolved "https://registry.yarnpkg.com/embark-webserver/-/embark-webserver-5.1.0-nightly.4.tgz#82ecb6ec18404da2ee418632bca5de1e248958a0"
-  integrity sha512-1798EmnEE6cpNwxlej5BPF+6j2oWfJwYmJleME153e04LoeyDckO3vjnuIibcC/R8Naot62/YwbVjdZDv2LcWA==
+embark-webserver@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-webserver/-/embark-webserver-5.2.3.tgz#1ad5d9b6d44da6279d9c75d3eb1fdcf3f1d68950"
+  integrity sha512-ksHD7OjgymkMtMMuV93658ruARQp9RJFuNQ4LY7MTyL+/MVDx9xzSX7EbBI021kxLvHgf0Vf/GD67pPjIPV8Nw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
+    ejs "2.6.1"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
     express "4.17.1"
     express-ws "4.0.0"
     open "6.4.0"
     serve-static "1.13.2"
 
-embark-whisper-geth@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-whisper-geth/-/embark-whisper-geth-5.1.0-nightly.5.tgz#2ac4fd5891133cf3682e7ba607c5b1bc14c643e7"
-  integrity sha512-ms5Pcho4BElrkmNYAPt9G8FPhbjYgX9NuSh2bayTGQy7l8F7VDAw7U23cCtWW+0ezZmVlZU+ki+tFVDIbV/x+A==
+embark-whisper-geth@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-whisper-geth/-/embark-whisper-geth-5.2.3.tgz#fc881e4784a8a4f7a7031d9b006d84be751d01e2"
+  integrity sha512-AEvWB4Raa2fwAgz7WG2fBVXwduTcJC8OR+iQaB2KGhdxBDLFHbVXxsIpp7fOhZHK59Mixer3VRKGKVpR723mOg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs-whisper "^5.1.0-nightly.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
+    embarkjs-whisper "^5.2.3"
     rxjs "6.4.0"
+    semver "5.6.0"
+    ws "7.1.2"
 
-embark-whisper-parity@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embark-whisper-parity/-/embark-whisper-parity-5.1.0-nightly.5.tgz#948d09879801154323575bbd6bfcb6173c0e37b2"
-  integrity sha512-TOzctpDZ47ka6kulWtVSQ2msDIialHOD7LwaWPvuKkJARfrADaQPHoWkrrEb3viUAfT9qf9jq6de+gww9FqUgQ==
+embark-whisper-parity@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark-whisper-parity/-/embark-whisper-parity-5.2.3.tgz#1109ad1381cf39dc86882cb791aea446d39e778f"
+  integrity sha512-mw7NkJZJCGC1HxYOCOqGvYuEZZCHBtKb0tunnymzJoKMHpwA5+oxxwiQhsU0ub81lcz0kERjpztA2ovsPwOoOQ==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
     core-js "3.4.3"
-    embark-core "^5.1.0-nightly.5"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-utils "^5.1.0-nightly.4"
-    embarkjs-whisper "^5.1.0-nightly.1"
+    embark-core "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-utils "^5.2.3"
+    embarkjs "^5.2.3"
+    embarkjs-whisper "^5.2.3"
     rxjs "6.4.0"
 
-embark@5.1.0-nightly.6:
-  version "5.1.0-nightly.6"
-  resolved "https://registry.yarnpkg.com/embark/-/embark-5.1.0-nightly.6.tgz#d6633c81ca343703dabb3fb0f8fc029b8d571343"
-  integrity sha512-eFdqQj9z6ZjlkShDexjaAdOg7ENq4z889PD/4ljYjxUX/zK9NQGlmwqNcxRPkbVjREK7AVKz/O71GHUCthXdIQ==
+embark@5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embark/-/embark-5.2.3.tgz#a6b37b14955de0a5f9fd73853906361089c6cd3a"
+  integrity sha512-W5yBYD79FWp4hteCagXLYQTFsAKJsLOf5NPzfr8qTg2S5kegJbQsKgtqhxJfSHiPJpJPavMJ/t4HAMpnB0+SoA==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     ajv "6.10.2"
@@ -8512,15 +8548,15 @@ embark@5.1.0-nightly.6:
     core-js "3.4.3"
     date-and-time "0.6.2"
     decompress "4.2.0"
-    embark-core "^5.1.0-nightly.5"
-    embark-deploy-tracker "^5.1.0-nightly.4"
-    embark-engine "^5.1.0-nightly.6"
-    embark-graph "^5.1.0-nightly.1"
-    embark-i18n "^5.1.0-nightly.1"
-    embark-logger "^5.1.0-nightly.1"
-    embark-reset "^5.1.0-nightly.1"
-    embark-suggestions "^5.1.0-nightly.5"
-    embark-utils "^5.1.0-nightly.4"
+    embark-core "^5.2.3"
+    embark-deploy-tracker "^5.2.3"
+    embark-engine "^5.2.3"
+    embark-graph "^5.2.3"
+    embark-i18n "^5.2.3"
+    embark-logger "^5.2.3"
+    embark-reset "^5.2.3"
+    embark-suggestions "^5.2.3"
+    embark-utils "^5.2.3"
     eth-ens-namehash "2.0.8"
     find-up "2.1.0"
     flatted "0.2.3"
@@ -8528,104 +8564,102 @@ embark@5.1.0-nightly.6:
     ganache-cli "6.8.2"
     glob "7.1.4"
     globule "1.2.1"
-    hosted-git-info "2.7.1"
+    hosted-git-info "2.8.4"
     http-proxy "1.17.0"
     istanbul "0.4.5"
     json-parse-better-errors "1.0.2"
     lodash.clonedeep "4.5.0"
     mocha "6.2.2"
     neo-blessed "0.2.0"
-    node-http-proxy-json "0.1.6"
     node-ipc "9.1.1"
     npmlog "4.1.2"
     parse-json "4.0.0"
     pkg-up "2.0.0"
     promptly "2.2.0"
-    propose "0.0.5"
     pump "3.0.0"
-    request "2.88.0"
     semver "5.6.0"
     shelljs "0.8.3"
     simples "0.8.8"
     source-map-support "0.5.13"
-    string-replace-async "1.2.1"
     term.js "0.0.7"
     viz.js "1.8.2"
     vm2 "3.6.4"
-    web3 "1.2.4"
-    web3-bzz "1.2.4"
-    web3-core "1.2.4"
-    web3-core-helpers "1.2.4"
-    web3-core-method "1.2.4"
-    web3-core-promievent "1.2.4"
-    web3-core-subscriptions "1.2.4"
-    web3-eth "1.2.4"
-    web3-eth-abi "1.2.4"
-    web3-eth-accounts "1.2.4"
-    web3-eth-contract "1.2.4"
-    web3-eth-iban "1.2.4"
-    web3-eth-personal "1.2.4"
-    web3-net "1.2.4"
-    web3-providers-http "1.2.4"
-    web3-providers-ipc "1.2.4"
-    web3-providers-ws "1.2.4"
-    web3-shh "1.2.4"
-    web3-utils "1.2.4"
+    web3 "1.2.6"
+    web3-bzz "1.2.6"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-core-promievent "1.2.6"
+    web3-core-subscriptions "1.2.6"
+    web3-eth "1.2.6"
+    web3-eth-abi "1.2.6"
+    web3-eth-accounts "1.2.6"
+    web3-eth-contract "1.2.6"
+    web3-eth-iban "1.2.6"
+    web3-eth-personal "1.2.6"
+    web3-net "1.2.6"
+    web3-providers-http "1.2.6"
+    web3-providers-ipc "1.2.6"
+    web3-providers-ws "1.2.6"
+    web3-shh "1.2.6"
+    web3-utils "1.2.6"
     window-size "1.1.1"
 
-embarkjs-ens@5.1.0-nightly.5, embarkjs-ens@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embarkjs-ens/-/embarkjs-ens-5.1.0-nightly.5.tgz#09730c4055ea0f95e6b0dd7d3c54afda3e71a204"
-  integrity sha512-OhsEphQFIMyvWwlrYBNxgOfn9SAQcoAPZv+1oGc64i5u3+ywnpPLeI1guOABppaIqw8Q7gOOs+Iq3WB5H0teKw==
+embarkjs-ens@5.2.3, embarkjs-ens@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs-ens/-/embarkjs-ens-5.2.3.tgz#88c845e4373061f2ece2119cb82ac1d2e76499ed"
+  integrity sha512-YELIpLke7fqdOpR6d2rRxrJTD4+luYsYyP/XNhCN6CaBPkNg3NaXcDrId2hgf6n6Fuw7t139QbUSau99PrQLVg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
+    async "2.6.1"
     core-js "3.4.3"
-    embarkjs "^5.1.0-nightly.5"
+    embarkjs "^5.2.3"
     eth-ens-namehash "2.0.8"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embarkjs-ipfs@5.1.0-nightly.1, embarkjs-ipfs@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embarkjs-ipfs/-/embarkjs-ipfs-5.1.0-nightly.1.tgz#672a7dfb9e99e9bca20ae7e86ecfbdbd8cb86508"
-  integrity sha512-gOHabGedNWR7FlubSEaPqeGYSgvKyoSEHLIRCu3kJ2QgrAf9/i78fCZ9vRn7aoaosLrAuedhBMLmDTPJOgC2cA==
+embarkjs-ipfs@5.2.3, embarkjs-ipfs@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs-ipfs/-/embarkjs-ipfs-5.2.3.tgz#f7a30dfef75a83b9e5584695d40e921462d667a0"
+  integrity sha512-KB8ogCqwMJAhTeiZLV4qKI8A5ALxY8PuWFTepK0PehPUoHNBYK13QTBR0V0TXlC+mabWd4KcXJ/15FaAjfTp5w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     ipfs-http-client "40.0.0"
 
-embarkjs-swarm@5.1.0-nightly.1, embarkjs-swarm@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embarkjs-swarm/-/embarkjs-swarm-5.1.0-nightly.1.tgz#64ba46d115c4af2c9ff45267a47e2b097aa95e67"
-  integrity sha512-mfmbca2HHyBaYG3GdeC0XrYRVDpZhpYxJsyBdcjSLYGuUOOtdP3T0CSbeOXvDiEw9jBrnpOJg9VhwOcRasl8rg==
+embarkjs-swarm@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs-swarm/-/embarkjs-swarm-5.2.3.tgz#b3117dded1a8a4a8af0297b1590633f77a820a12"
+  integrity sha512-StavFyN2hfjckBE35wqqcCxQMry7SJM16favYhAnH3QhuxKnbhGgJ+rrjRTY96gV4rDoECnMmmxoKPRDG7KcLg==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     swarm-api "0.1.2"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embarkjs-web3@5.1.0-nightly.1, embarkjs-web3@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embarkjs-web3/-/embarkjs-web3-5.1.0-nightly.1.tgz#a93fc2fd86aca1f4782011dbae1b8d7ff1f3c60f"
-  integrity sha512-n36QdLjfl96mPdP0D12ygG5CcUk8Fstr17+p9nxyTWcT0YSktl5NSeksUXHfLBoV/0XXChK+OIcPjdVoxRNc/w==
+embarkjs-web3@5.2.3, embarkjs-web3@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs-web3/-/embarkjs-web3-5.2.3.tgz#371049871afdb40529df1c465246c78af7687cd1"
+  integrity sha512-UE05U+YlsYntvu7durB4avY3ZqDVGLmbgk4DcW6RGCe9p3TYP2jInhR4y/xRMm2+6ADXPlZcA7DTLckfxuaQ5g==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
-    web3 "1.2.4"
+    web3 "1.2.6"
 
-embarkjs-whisper@5.1.0-nightly.1, embarkjs-whisper@^5.1.0-nightly.1:
-  version "5.1.0-nightly.1"
-  resolved "https://registry.yarnpkg.com/embarkjs-whisper/-/embarkjs-whisper-5.1.0-nightly.1.tgz#f51e2164ca7530636967c2a269b35c260f298f4d"
-  integrity sha512-paDt3aG2hsRTN33JEvnmFjA7UCXakAtbUgyV/M/9VWXVOEwS/7XO3iHeO6vf3MUp06is33cW2Mh2UcgAl2kAGA==
+embarkjs-whisper@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs-whisper/-/embarkjs-whisper-5.2.3.tgz#12f2041e85329a3f0d230ab3f240e546b2fba10b"
+  integrity sha512-SM1iiSzJgpsm1PRslaysyatHBRa+OJTy+ux8FG+zcz+ljceye4TOsImUYzf40Bjn4Yzi0sGPiC7s7rxpuaIl7w==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     core-js "3.4.3"
     rxjs "6.4.0"
-    web3 "1.2.4"
+    web3 "1.2.6"
+    web3-core-requestmanager "1.2.6"
 
-embarkjs@5.1.0-nightly.5, embarkjs@^5.1.0-nightly.5:
-  version "5.1.0-nightly.5"
-  resolved "https://registry.yarnpkg.com/embarkjs/-/embarkjs-5.1.0-nightly.5.tgz#ecc78f47bdf8a357d6b7cd3cf5c4a802f2e7e426"
-  integrity sha512-fTo6GFA4H3x9JvvQ6ZSlXl+YkVXbBRWXXJUSC/fbi3IWBsQwyEo7tXvhmbgKjDIYO3o0lBJHyAQjahG07whucQ==
+embarkjs@5.2.3, embarkjs@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/embarkjs/-/embarkjs-5.2.3.tgz#70dfb779e1537e5174fb0062e802d98c6f1e1bd6"
+  integrity sha512-T95mThp95BCDzmTSad0v+kxreLxVPDFn6lf0unjBpkyCWpySg7LX9GjoW36Dhb0SE+sDLvyuqJNjigp05zlXjw==
   dependencies:
     "@babel/runtime-corejs3" "7.7.4"
     async "2.6.1"
@@ -10350,7 +10384,7 @@ finalhandler@~1.1.2:
     statuses "~1.5.0"
     unpipe "~1.0.0"
 
-find-babel-config@^1.1.0:
+find-babel-config@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/find-babel-config/-/find-babel-config-1.2.0.tgz#a9b7b317eb5b9860cda9d54740a8c8337a2283a2"
   integrity sha512-jB2CHJeqy6a820ssiqwrKMeyC6nNdmrcgkKWJWmpoxpE8RKciYJXCcXRq1h2AzCo5I5BJeN2tkGEO3hLTuePRA==
@@ -11519,10 +11553,10 @@ hoopy@^0.1.4:
   resolved "https://registry.yarnpkg.com/hoopy/-/hoopy-0.1.4.tgz#609207d661100033a9a9402ad3dea677381c1b1d"
   integrity sha512-HRcs+2mr52W0K+x8RzcLzuPPmVIKMSv97RGHy0Ea9y/mpcaK+xTrjICA04KAHi4GRzxliNqNJEFYWHghy3rSfQ==
 
-hosted-git-info@2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
-  integrity sha512-7T/BxH19zbcCTa8XkMlbK5lTo1WtgkFi3GvdWEyNuc4Vex7/9Dqbnpsf4JMydcfj9HCg4zUWFTL3Za6lapg5/w==
+hosted-git-info@2.8.4:
+  version "2.8.4"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.8.4.tgz#44119abaf4bc64692a16ace34700fed9c03e2546"
+  integrity sha512-pzXIvANXEFrc5oFFXRMkbLPQ2rXRoDERwDLyrcUxGhaZhgP54BBSl9Oheh7Vv0T090cszWBxPjkQQ5Sq1PbBRQ==
 
 hosted-git-info@^2.1.4:
   version "2.8.5"
@@ -15256,14 +15290,6 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-node-http-proxy-json@0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/node-http-proxy-json/-/node-http-proxy-json-0.1.6.tgz#4b554befd04e607f3726092d67b60bf888906849"
-  integrity sha1-S1VL79BOYH83JgktZ7YL+IiQaEk=
-  dependencies:
-    bufferhelper "^0.2.1"
-    concat-stream "^1.5.1"
-
 node-int64@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
@@ -16347,14 +16373,14 @@ pkg-dir@^4.1.0:
   dependencies:
     find-up "^4.0.0"
 
-pkg-up@2.0.0, pkg-up@^2.0.0:
+pkg-up@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-2.0.0.tgz#c819ac728059a461cab1c3889a2be3c49a004d7f"
   integrity sha1-yBmscoBZpGHKscOImivjxJoATX8=
   dependencies:
     find-up "^2.1.0"
 
-pkg-up@3.1.0:
+pkg-up@3.1.0, pkg-up@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/pkg-up/-/pkg-up-3.1.0.tgz#100ec235cc150e4fd42519412596a28512a0def5"
   integrity sha512-nDywThFk1i4BQK4twPQ6TA4RT8bDY96yeuCVBWL3ePARCiEKDRSrNGbFIgUJpLp+XeIR65v8ra7WuJOFUBtkMA==
@@ -17175,6 +17201,11 @@ prettier-plugin-solidity@1.0.0-alpha.25:
     semver "^5.6.0"
     solidity-parser-antlr "^0.4.4"
     string-width "^3.0.0"
+
+prettier@1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
+  integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
 prettier@^1.15.3:
   version "1.19.1"
@@ -18743,10 +18774,10 @@ requires-port@^1.0.0:
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
-reselect@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
-  integrity sha1-79qpjqdFEyTQkrKyFjpqHXqaIUc=
+reselect@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.0.0.tgz#f2529830e5d3d0e021408b246a206ef4ea4437f7"
+  integrity sha512-qUgANli03jjAyGlnbYVAV5vvnOmJnODyABz51RdBN7M4WaVu8mecZWgyQNkG8Yqe3KRGRt0l4K4B3XVEULC4CA==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"
@@ -18816,7 +18847,7 @@ resolve@1.15.0:
   dependencies:
     path-parse "^1.0.6"
 
-resolve@^1.1.6, resolve@^1.1.7, resolve@^1.10.0, resolve@^1.12.0, resolve@^1.3.2, resolve@^1.4.0, resolve@^1.8.1:
+resolve@^1.1.6, resolve@^1.1.7, resolve@^1.10.0, resolve@^1.12.0, resolve@^1.3.2, resolve@^1.8.1:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.13.1.tgz#be0aa4c06acd53083505abb35f4d66932ab35d16"
   integrity sha512-CxqObCX8K8YtAhOBRg+lrcdn+LK+WYOS8tSjqSFbjtrI5PnS63QPhZl4+yKfrU9tdsbMu9Anr/amegT87M9Z6w==
@@ -21506,6 +21537,16 @@ web3-bzz@1.2.4:
     swarm-js "0.1.39"
     underscore "1.9.1"
 
+web3-bzz@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-bzz/-/web3-bzz-1.2.6.tgz#0b88c0b96029eaf01b10cb47c4d5f79db4668883"
+  integrity sha512-9NiHLlxdI1XeFtbPJAmi2jnnIHVF+GNy517wvOS72P7ZfuJTPwZaSNXfT01vWgPPE9R96/uAHDWHOg+T4WaDQQ==
+  dependencies:
+    "@types/node" "^10.12.18"
+    got "9.6.0"
+    swarm-js "0.1.39"
+    underscore "1.9.1"
+
 web3-core-helpers@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-core-helpers/-/web3-core-helpers-1.2.0.tgz#023947323cebd021e43a67145a5087627ce87fb3"
@@ -21532,6 +21573,15 @@ web3-core-helpers@1.2.5:
     underscore "1.9.1"
     web3-eth-iban "1.2.5"
     web3-utils "1.2.5"
+
+web3-core-helpers@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core-helpers/-/web3-core-helpers-1.2.6.tgz#7aacd25bf8015adcdfc0f3243d0dcfdff0373f7d"
+  integrity sha512-gYKWmC2HmO7RcDzpo4L1K8EIoy5L8iubNDuTC6q69UxczwqKF/Io0kbK/1Z10Av++NlzOSiuyGp2gc4t4UOsDw==
+  dependencies:
+    underscore "1.9.1"
+    web3-eth-iban "1.2.6"
+    web3-utils "1.2.6"
 
 web3-core-method@1.2.0:
   version "1.2.0"
@@ -21566,6 +21616,17 @@ web3-core-method@1.2.5:
     web3-core-subscriptions "1.2.5"
     web3-utils "1.2.5"
 
+web3-core-method@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core-method/-/web3-core-method-1.2.6.tgz#f5a3e4d304abaf382923c8ab88ec8eeef45c1b3b"
+  integrity sha512-r2dzyPEonqkBg7Mugq5dknhV5PGaZTHBZlS/C+aMxNyQs3T3eaAsCTqlQDitwNUh/sUcYPEGF0Vo7ahYK4k91g==
+  dependencies:
+    underscore "1.9.1"
+    web3-core-helpers "1.2.6"
+    web3-core-promievent "1.2.6"
+    web3-core-subscriptions "1.2.6"
+    web3-utils "1.2.6"
+
 web3-core-promievent@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-core-promievent/-/web3-core-promievent-1.2.0.tgz#d6454837a307da5b453fe3077743fe25801a07a1"
@@ -21586,6 +21647,14 @@ web3-core-promievent@1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/web3-core-promievent/-/web3-core-promievent-1.2.5.tgz#8ca3791afe0f6ea86da3f0644743dcf3dfa9883a"
   integrity sha512-IlrmWl3piOCPJC9IiP1Z1BC9Be4GiNTKw9MfgWL1ZnyQ+GSFHwW2TjDlZbV4IaoCr4K/RvHpxUxd/txrPLI8QQ==
+  dependencies:
+    any-promise "1.3.0"
+    eventemitter3 "3.1.2"
+
+web3-core-promievent@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core-promievent/-/web3-core-promievent-1.2.6.tgz#b1550a3a4163e48b8b704c1fe4b0084fc2dad8f5"
+  integrity sha512-km72kJef/qtQNiSjDJJVHIZvoVOm6ytW3FCYnOcCs7RIkviAb5JYlPiye0o4pJOLzCXYID7DK7Q9bhY8qWb1lw==
   dependencies:
     any-promise "1.3.0"
     eventemitter3 "3.1.2"
@@ -21623,6 +21692,17 @@ web3-core-requestmanager@1.2.5:
     web3-providers-ipc "1.2.5"
     web3-providers-ws "1.2.5"
 
+web3-core-requestmanager@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core-requestmanager/-/web3-core-requestmanager-1.2.6.tgz#5808c0edc0d6e2991a87b65508b3a1ab065b68ec"
+  integrity sha512-QU2cbsj9Dm0r6om40oSwk8Oqbp3wTa08tXuMpSmeOTkGZ3EMHJ1/4LiJ8shwg1AvPMrKVU0Nri6+uBNCdReZ+g==
+  dependencies:
+    underscore "1.9.1"
+    web3-core-helpers "1.2.6"
+    web3-providers-http "1.2.6"
+    web3-providers-ipc "1.2.6"
+    web3-providers-ws "1.2.6"
+
 web3-core-subscriptions@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-core-subscriptions/-/web3-core-subscriptions-1.2.0.tgz#d359b9b5fb6f6a700f1b383be11de7925cb7549f"
@@ -21649,6 +21729,15 @@ web3-core-subscriptions@1.2.5:
     eventemitter3 "3.1.2"
     underscore "1.9.1"
     web3-core-helpers "1.2.5"
+
+web3-core-subscriptions@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core-subscriptions/-/web3-core-subscriptions-1.2.6.tgz#9d44189e2321f8f1abc31f6c09103b5283461b57"
+  integrity sha512-M0PzRrP2Ct13x3wPulFtc5kENH4UtnPxO9YxkfQlX2WRKENWjt4Rfq+BCVGYEk3rTutDfWrjfzjmqMRvXqEY5Q==
+  dependencies:
+    eventemitter3 "3.1.2"
+    underscore "1.9.1"
+    web3-core-helpers "1.2.6"
 
 web3-core@1.2.0:
   version "1.2.0"
@@ -21685,6 +21774,18 @@ web3-core@1.2.5:
     web3-core-requestmanager "1.2.5"
     web3-utils "1.2.5"
 
+web3-core@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-core/-/web3-core-1.2.6.tgz#bb42a1d7ae49a7258460f0d95ddb00906f59ef92"
+  integrity sha512-y/QNBFtr5cIR8vxebnotbjWJpOnO8LDYEAzZjeRRUJh2ijmhjoYk7dSNx9ExgC0UCfNFRoNCa9dGRu/GAxwRlw==
+  dependencies:
+    "@types/bn.js" "^4.11.4"
+    "@types/node" "^12.6.1"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-core-requestmanager "1.2.6"
+    web3-utils "1.2.6"
+
 web3-eth-abi@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-eth-abi/-/web3-eth-abi-1.2.0.tgz#26b22261756ffbb3363bc37c1a6f5143bebb6469"
@@ -21711,6 +21812,15 @@ web3-eth-abi@1.2.5:
     ethers "4.0.0-beta.3"
     underscore "1.9.1"
     web3-utils "1.2.5"
+
+web3-eth-abi@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-abi/-/web3-eth-abi-1.2.6.tgz#b495383cc5c0d8e2857b26e7fe25606685983b25"
+  integrity sha512-w9GAyyikn8nSifSDZxAvU9fxtQSX+W2xQWMmrtTXmBGCaE4/ywKOSPAO78gq8AoU4Wq5yqVGKZLLbfpt7/sHlA==
+  dependencies:
+    ethers "4.0.0-beta.3"
+    underscore "1.9.1"
+    web3-utils "1.2.6"
 
 web3-eth-accounts@1.2.0:
   version "1.2.0"
@@ -21764,6 +21874,24 @@ web3-eth-accounts@1.2.5:
     web3-core-method "1.2.5"
     web3-utils "1.2.5"
 
+web3-eth-accounts@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-accounts/-/web3-eth-accounts-1.2.6.tgz#a1ba4bf75fa8102a3ec6cddd0eccd72462262720"
+  integrity sha512-cDVtonHRgzqi/ZHOOf8kfCQWFEipcfQNAMzXIaKZwc0UUD9mgSI5oJrN45a89Ze+E6Lz9m77cDG5Ax9zscSkcw==
+  dependencies:
+    "@web3-js/scrypt-shim" "^0.1.0"
+    any-promise "1.3.0"
+    crypto-browserify "3.12.0"
+    eth-lib "^0.2.8"
+    ethereumjs-common "^1.3.2"
+    ethereumjs-tx "^2.1.1"
+    underscore "1.9.1"
+    uuid "3.3.2"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-utils "1.2.6"
+
 web3-eth-contract@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-eth-contract/-/web3-eth-contract-1.2.0.tgz#8d1c235c6624b5df428969ea2e9c26337095f6f0"
@@ -21808,6 +21936,21 @@ web3-eth-contract@1.2.5:
     web3-eth-abi "1.2.5"
     web3-utils "1.2.5"
 
+web3-eth-contract@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-contract/-/web3-eth-contract-1.2.6.tgz#39111543960035ed94c597a239cf5aa1da796741"
+  integrity sha512-ak4xbHIhWgsbdPCkSN+HnQc1SH4c856y7Ly+S57J/DQVzhFZemK5HvWdpwadJrQTcHET3ZeId1vq3kmW7UYodw==
+  dependencies:
+    "@types/bn.js" "^4.11.4"
+    underscore "1.9.1"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-core-promievent "1.2.6"
+    web3-core-subscriptions "1.2.6"
+    web3-eth-abi "1.2.6"
+    web3-utils "1.2.6"
+
 web3-eth-ens@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-eth-ens/-/web3-eth-ens-1.2.0.tgz#af66308542f4acfa09ccd3ce370e3ad2de20ec30"
@@ -21850,6 +21993,20 @@ web3-eth-ens@1.2.5:
     web3-eth-contract "1.2.5"
     web3-utils "1.2.5"
 
+web3-eth-ens@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-ens/-/web3-eth-ens-1.2.6.tgz#bf86a624c4c72bc59913c2345180d3ea947e110d"
+  integrity sha512-8UEqt6fqR/dji/jBGPFAyBs16OJjwi0t2dPWXPyGXmty/fH+osnXwWXE4HRUyj4xuafiM5P1YkXMsPhKEadjiw==
+  dependencies:
+    eth-ens-namehash "2.0.8"
+    underscore "1.9.1"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-promievent "1.2.6"
+    web3-eth-abi "1.2.6"
+    web3-eth-contract "1.2.6"
+    web3-utils "1.2.6"
+
 web3-eth-iban@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-eth-iban/-/web3-eth-iban-1.2.0.tgz#1bece9cebf817dca82fa03230203351f4f263866"
@@ -21873,6 +22030,14 @@ web3-eth-iban@1.2.5:
   dependencies:
     bn.js "4.11.8"
     web3-utils "1.2.5"
+
+web3-eth-iban@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-iban/-/web3-eth-iban-1.2.6.tgz#0b22191fd1aa6e27f7ef0820df75820bfb4ed46b"
+  integrity sha512-TPMc3BW9Iso7H+9w+ytbqHK9wgOmtocyCD3PaAe5Eie50KQ/j7ThA60dGJnxItVo6yyRv5pZAYxPVob9x/fJlg==
+  dependencies:
+    bn.js "4.11.8"
+    web3-utils "1.2.6"
 
 web3-eth-personal@1.2.0:
   version "1.2.0"
@@ -21908,6 +22073,18 @@ web3-eth-personal@1.2.5:
     web3-core-method "1.2.5"
     web3-net "1.2.5"
     web3-utils "1.2.5"
+
+web3-eth-personal@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth-personal/-/web3-eth-personal-1.2.6.tgz#47a0a0657ec04dd77f95451a6869d4751d324b6b"
+  integrity sha512-T2NUkh1plY8d7wePXSoHnaiKOd8dLNFaQfgBl9JHU6S7IJrG9jnYD9bVxLEgRUfHs9gKf9tQpDf7AcPFdq/A8g==
+  dependencies:
+    "@types/node" "^12.6.1"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-net "1.2.6"
+    web3-utils "1.2.6"
 
 web3-eth@1.2.0:
   version "1.2.0"
@@ -21946,6 +22123,25 @@ web3-eth@1.2.4:
     web3-eth-personal "1.2.4"
     web3-net "1.2.4"
     web3-utils "1.2.4"
+
+web3-eth@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-eth/-/web3-eth-1.2.6.tgz#15a8c65fdde0727872848cae506758d302d8d046"
+  integrity sha512-ROWlDPzh4QX6tlGGGlAK6X4kA2n0/cNj/4kb0nNVWkRouGmYO0R8k6s47YxYHvGiXt0s0++FUUv5vAbWovtUQw==
+  dependencies:
+    underscore "1.9.1"
+    web3-core "1.2.6"
+    web3-core-helpers "1.2.6"
+    web3-core-method "1.2.6"
+    web3-core-subscriptions "1.2.6"
+    web3-eth-abi "1.2.6"
+    web3-eth-accounts "1.2.6"
+    web3-eth-contract "1.2.6"
+    web3-eth-ens "1.2.6"
+    web3-eth-iban "1.2.6"
+    web3-eth-personal "1.2.6"
+    web3-net "1.2.6"
+    web3-utils "1.2.6"
 
 web3-eth@^1.2.1:
   version "1.2.5"
@@ -21993,6 +22189,15 @@ web3-net@1.2.5:
     web3-core-method "1.2.5"
     web3-utils "1.2.5"
 
+web3-net@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-net/-/web3-net-1.2.6.tgz#035ca0fbe55282fda848ca17ebb4c8966147e5ea"
+  integrity sha512-hsNHAPddrhgjWLmbESW0KxJi2GnthPcow0Sqpnf4oB6+/+ZnQHU9OsIyHb83bnC1OmunrK2vf9Ye2mLPdFIu3A==
+  dependencies:
+    web3-core "1.2.6"
+    web3-core-method "1.2.6"
+    web3-utils "1.2.6"
+
 web3-providers-http@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-providers-http/-/web3-providers-http-1.2.0.tgz#c6ebf9b6a23564439fa3c4a431cd6b405cc1ec0f"
@@ -22015,6 +22220,14 @@ web3-providers-http@1.2.5:
   integrity sha512-cmZqHYhV3a1ZQUDAWCR3xtGjAo7zYds9fza5M90CHINoDLOlXYWoaBeoMTnLm3bydF8Sc22BQhGdrzPZTIiGqQ==
   dependencies:
     web3-core-helpers "1.2.5"
+    xhr2-cookies "1.1.0"
+
+web3-providers-http@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-providers-http/-/web3-providers-http-1.2.6.tgz#3c7b1252751fb37e53b873fce9dbb6340f5e31d9"
+  integrity sha512-2+SaFCspb5f82QKuHB3nEPQOF9iSWxRf7c18fHtmnLNVkfG9SwLN1zh67bYn3tZGUdOI3gj8aX4Uhfpwx9Ezpw==
+  dependencies:
+    web3-core-helpers "1.2.6"
     xhr2-cookies "1.1.0"
 
 web3-providers-ipc@1.2.0:
@@ -22044,6 +22257,15 @@ web3-providers-ipc@1.2.5:
     underscore "1.9.1"
     web3-core-helpers "1.2.5"
 
+web3-providers-ipc@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-providers-ipc/-/web3-providers-ipc-1.2.6.tgz#adabab5ac66b3ff8a26c7dc97af3f1a6a7609701"
+  integrity sha512-b0Es+/GTZyk5FG3SgUDW+2/mBwJAXWt5LuppODptiOas8bB2khLjG6+Gm1K4uwOb+1NJGPt5mZZ8Wi7vibtQ+A==
+  dependencies:
+    oboe "2.1.4"
+    underscore "1.9.1"
+    web3-core-helpers "1.2.6"
+
 web3-providers-ws@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-providers-ws/-/web3-providers-ws-1.2.0.tgz#c45929f0d1e1743301372e6e604aab63e83f66e3"
@@ -22071,6 +22293,15 @@ web3-providers-ws@1.2.5:
     underscore "1.9.1"
     web3-core-helpers "1.2.5"
 
+web3-providers-ws@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-providers-ws/-/web3-providers-ws-1.2.6.tgz#3cecc49f7c99f07a75076d3c54247050bc4f7e11"
+  integrity sha512-20waSYX+gb5M5yKhug5FIwxBBvkKzlJH7sK6XEgdOx6BZ9YYamLmvg9wcRVtnSZO8hV/3cWenO/tRtTrHVvIgQ==
+  dependencies:
+    "@web3-js/websocket" "^1.0.29"
+    underscore "1.9.1"
+    web3-core-helpers "1.2.6"
+
 web3-shh@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3-shh/-/web3-shh-1.2.0.tgz#c07c306d761f70782c64e2b5b119db54e16f301f"
@@ -22090,6 +22321,16 @@ web3-shh@1.2.4:
     web3-core-method "1.2.4"
     web3-core-subscriptions "1.2.4"
     web3-net "1.2.4"
+
+web3-shh@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-shh/-/web3-shh-1.2.6.tgz#2492616da4cac32d4c7534b890f43bac63190c14"
+  integrity sha512-rouWyOOM6YMbLQd65grpj8BBezQfgNeRRX+cGyW4xsn6Xgu+B73Zvr6OtA/ftJwwa9bqHGpnLrrLMeWyy4YLUw==
+  dependencies:
+    web3-core "1.2.6"
+    web3-core-method "1.2.6"
+    web3-core-subscriptions "1.2.6"
+    web3-net "1.2.6"
 
 web3-utils@1.2.0:
   version "1.2.0"
@@ -22132,6 +22373,20 @@ web3-utils@1.2.5:
     underscore "1.9.1"
     utf8 "3.0.0"
 
+web3-utils@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3-utils/-/web3-utils-1.2.6.tgz#b9a25432da00976457fcc1094c4af8ac6d486db9"
+  integrity sha512-8/HnqG/l7dGmKMgEL9JeKPTtjScxOePTzopv5aaKFExPfaBrYRkgoMqhoowCiAl/s16QaTn4DoIF1QC4YsT7Mg==
+  dependencies:
+    bn.js "4.11.8"
+    eth-lib "0.2.7"
+    ethereum-bloom-filters "^1.0.6"
+    ethjs-unit "0.1.6"
+    number-to-bn "1.7.0"
+    randombytes "^2.1.0"
+    underscore "1.9.1"
+    utf8 "3.0.0"
+
 web3@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.2.0.tgz#ef9c43a99eac348a85c09179690290d45a96a5f2"
@@ -22145,7 +22400,21 @@ web3@1.2.0:
     web3-shh "1.2.0"
     web3-utils "1.2.0"
 
-web3@1.2.4, web3@^1.2.1, web3@^1.2.4:
+web3@1.2.6:
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/web3/-/web3-1.2.6.tgz#c497dcb14cdd8d6d9fb6b445b3b68ff83f8ccf68"
+  integrity sha512-tpu9fLIComgxGrFsD8LUtA4s4aCZk7px8UfcdEy6kS2uDi/ZfR07KJqpXZMij7Jvlq+cQrTAhsPSiBVvoMaivA==
+  dependencies:
+    "@types/node" "^12.6.1"
+    web3-bzz "1.2.6"
+    web3-core "1.2.6"
+    web3-eth "1.2.6"
+    web3-eth-personal "1.2.6"
+    web3-net "1.2.6"
+    web3-shh "1.2.6"
+    web3-utils "1.2.6"
+
+web3@^1.2.1, web3@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/web3/-/web3-1.2.4.tgz#6e7ab799eefc9b4648c2dab63003f704a1d5e7d9"
   integrity sha512-xPXGe+w0x0t88Wj+s/dmAdASr3O9wmA9mpZRtixGZxmBexAF0MjfqYM+MS4tVl5s11hMTN3AZb8cDD4VLfC57A==
