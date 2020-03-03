@@ -1,4 +1,4 @@
-/*global contract, config, it, assert, web3, before, describe, beforeEach, artifacts*/
+/*global contract, config, assert, web3, artifacts, increaseTime, before*/
 /* eslint no-await-in-loop: 0 */
 const TestUtils = require("../utils/testUtils");
 
@@ -102,7 +102,11 @@ contract("Escrow", function() {
   // util
   const expireTransaction = async() => {
     const addTime = 5 * 86400;
-    await TestUtils.increaseTime(addTime + 1);
+    try {
+      await increaseTime(addTime + 1);
+    } catch (e) {
+      console.error('Error with the increase time', e);
+    }
   };
 
   let receipt, escrowId, escrowTokenId, _offerId, sntOfferId, ethOfferId, tokenOfferId, hash, signature, nonce;

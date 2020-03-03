@@ -140,8 +140,3 @@ exports.evmRevert = (id) => {
   const params = [id];
   return evmMethod("evm_revert", params);
 };
-
-exports.increaseTime = async (amount) => {
-  await evmMethod("evm_increaseTime", [Number(amount)]);
-  await evmMethod("evm_mine");
-};
