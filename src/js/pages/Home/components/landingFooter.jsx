@@ -7,7 +7,9 @@ import logo from "../../../../images/teller-logo-icon.svg";
 import statusLogo from "../../../../images/landing/statusLogo.svg";
 import logoText from "../../../../images/teller-logo-text.svg";
 import betaTag from "../../../../images/beta-tag.svg";
-import {Link} from "react-router-dom";
+import githubIcon from "../../../../images/landing/github-icon.png";
+import twitterIcon from "../../../../images/landing/twitter-icon.svg";
+import statusIcon from "../../../../images/landing/status-icon.svg";
 
 const LandingFooter = ({t}) => (
   <footer className="landing-footer border-top pt-5 mt-5" data-aos="fade-up">
@@ -18,9 +20,17 @@ const LandingFooter = ({t}) => (
       </Col>
 
       <Col xs={6} md={3} className="order-1 order-md-0">
-        <h5>{t('home.footer.documentation')}</h5>
+        <h5>{t('home.footer.socialLinks')}</h5>
         <ul>
-          <li><Link to="buy">{t('home.footer.gettingStarted')}</Link></li>
+          <li><a target="_blank" rel="noopener noreferrer" href="https://statusnetwork.com/">
+            <img src={statusIcon} alt="status icon" width={35} height={35} className="mr-2"/> Status
+          </a></li>
+          <li className="mt-3"><a target="_blank" rel="noopener noreferrer" href="https://twitter.com/TellerExchange">
+            <img src={twitterIcon} alt="twitter icon" width={35} height={35} className="mr-2"/> Twitter
+          </a></li>
+          <li className="mt-3"><a target="_blank" rel="noopener noreferrer" href="https://github.com/status-im/status-teller-network">
+            <img src={githubIcon} alt="github icon" width={35} height={35} className="mr-2"/> Github
+          </a></li>
         </ul>
       </Col>
 
