@@ -56,6 +56,7 @@
     "dompurify": "^2.0.1",
     "elliptic": "^6.5.0",
     "embark": "5.2.3",
+    "embark-geth": "5.2.3",
     "embark-solc": "5.2.3",
     "embark-solium": "0.1.0",
     "embarkjs": "5.2.3",

@@ -12,7 +12,8 @@
     "@trailofbits/embark-contract-info": {
       "flags": ""
     },
-    "embark-solc": {}
+    "embark-solc": {},
+    "embark-geth": {}
   },
   "options": {
     "solc": {

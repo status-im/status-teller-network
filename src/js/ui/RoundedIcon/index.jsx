@@ -4,7 +4,6 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import classnames from "classnames";
 
 import './index.scss';
-import FundingEscrow from "../../pages/Escrow/components/FundingEscrow";
 
 const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, className, onClick}) => {
   let sizePx;
@@ -32,7 +31,7 @@ const RoundedIcon = ({icon, image, imageComponent, text, bgColor, size, classNam
   </span>);
 };
 
-FundingEscrow.defaultProps = {
+RoundedIcon.defaultProps = {
   size: 'lg'
 };
 
