@@ -9,17 +9,7 @@ module.exports = {
   // applies to all environments
   default: {
     enabled: true,
-    client: "geth",
-
-    // Accounts to use as node accounts
-    // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
-    accounts: [
-      {
-        nodeAccounts: true, // Accounts use for the node
-        numAddresses: 2, // Number of addresses/accounts (defaults to 1)
-        password: "embarkConfig/development/password" // Password file for the accounts
-      }
-    ]
+    client: "geth"
   },
 
   // default environment, merges with the settings in default
@@ -29,14 +19,14 @@ module.exports = {
     // The order here corresponds to the order of `web3.eth.getAccounts`, so the first one is the `defaultAccount`
     accounts: [
       {
-        nodeAccounts: true
-      },
-      {
         mnemonic: "foster gesture flock merge beach plate dish view friend leave drink valley shield list enemy",
-        balance: "5 ether",
+        balance: "10 ether",
         numAddresses: "10"
       }
-    ]
+    ],
+    clientConfig: {
+      miningMode: 'dev' // Mode in which the node mines. Options: dev, auto, always, off
+    }
   },
 
   // merges with the settings in default

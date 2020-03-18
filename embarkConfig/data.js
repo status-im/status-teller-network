@@ -184,24 +184,6 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
 
     const sntToken = 10000000;
 
-    console.log('Send ETH...');
-    const value = 100 * Math.pow(10, 18);
-    let startNonce = await deps.web3.eth.getTransactionCount(main, undefined);
-    try {
-    await Promise.all(addresses.slice(1, 10).map(async (address, idx) => {
-      return deps.web3.eth.sendTransaction({
-        to: address,
-        from: main,
-        value: value.toString(),
-        nonce: startNonce + idx,
-        gas: 21000
-      });
-    }));
-  } catch(ex){
-    console.log(ex);
-    return;
-  }
-
     console.log('Generate SNT...');
     await async.eachLimit(addresses, 1, async (address) => {
         const generateToken = deps.contracts.SNT.methods.generateTokens(address, sntToken + '000000000000000000');
