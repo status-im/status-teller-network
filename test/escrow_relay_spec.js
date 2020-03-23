@@ -1,4 +1,4 @@
-/*global contract, config, it, assert, before, describe, beforeEach, artifacts*/
+/*global contract, config, assert, before, artifacts*/
 const TestUtils = require("../utils/testUtils");
 const EscrowInstance = artifacts.require('EscrowInstance');
 const EscrowRelay = artifacts.require('EscrowRelay');
