@@ -1,4 +1,4 @@
-/*global contract, config, it, assert, web3, before, describe, beforeEach, artifacts*/
+/*global contract, config, assert, web3, before, artifacts*/
 const TestUtils = require("../utils/testUtils");
 
 const Escrow = artifacts.require('Escrow');
