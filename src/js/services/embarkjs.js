@@ -16,7 +16,7 @@ export function onReady() {
       const customProvider = new TellerProvider(relayProvider);
       customProvider.startProvider(web3);
 
-      global.subspace = new Subspace(web3.currentProvider);
+      global.subspace = new Subspace(web3);
       global.subspace.init().then(resolve);
     });
   });
