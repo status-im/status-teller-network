@@ -3,7 +3,7 @@
     "contracts": {
       "0x3043b04ad856d169c8f0b0509c0bc63192dc7edd92d6933c58708298a0e381be": {
         "name": "ENSRegistry",
-        "address": "0x314159265dd8dbb310642f98f50c066173c1259b"
+        "address": "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e"
       },
       "0xf76f012d3c43e72d3c619be7e2afb3ddb9c9146b24231693160813cc172663ba": {
         "name": "KyberNetworkProxy",
