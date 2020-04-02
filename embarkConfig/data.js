@@ -43,26 +43,6 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
     }
 
-    if(mainnetOwner){
-      console.log("Setting ownership of 7 contracts");
-      let receipt;
-      receipt = await sendTrxAccount0(deps.contracts.EscrowInstance.methods.transferOwnership(mainnetOwner));
-      console.log('- 1/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.transferOwnership(mainnetOwner));
-      console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicenseInstance.methods.transferOwnership(mainnetOwner));
-      console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.transferOwnership(mainnetOwner));
-      console.log('- 4/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.UserStoreInstance.methods.transferOwnership(mainnetOwner));
-      console.log('- 5/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner));
-      console.log('- 6/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-      receipt = await sendTrxAccount0(deps.contracts.EscrowRelay.methods.transferOwnership(mainnetOwner));
-      console.log('- 7/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
-    }
-
-
     {
       console.log("Setting the initial SellerLicense template calling the init() function");
       const receipt = await sendTrxAccount0(deps.contracts.SellerLicenseInstance.methods.init(
@@ -147,6 +127,25 @@ module.exports = async (gasPrice, licensePrice, arbitrationLicensePrice, feeMill
       console.log("Setting the EscrowRelay address in OfferStore");
       const receipt = await sendTrxAccount0(deps.contracts.OfferStoreInstance.methods.setAllowedContract(deps.contracts.EscrowRelay.options.address, true));
       console.log((receipt.status === true || receipt.status === 1) ? '- Success' : '- FAILURE!!!');
+    }
+
+    if(mainnetOwner){
+      console.log("Setting ownership of 7 contracts");
+      let receipt;
+      receipt = await sendTrxAccount0(deps.contracts.Escrow.methods.transferOwnership(mainnetOwner));
+      console.log('- 1/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.SellerLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 2/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.ArbitrationLicense.methods.transferOwnership(mainnetOwner));
+      console.log('- 3/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.OfferStore.methods.transferOwnership(mainnetOwner));
+      console.log('- 4/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.UserStore.methods.transferOwnership(mainnetOwner));
+      console.log('- 5/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.KyberFeeBurner.methods.transferOwnership(mainnetOwner));
+      console.log('- 6/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
+      receipt = await sendTrxAccount0(deps.contracts.EscrowRelay.methods.transferOwnership(mainnetOwner));
+      console.log('- 7/7: ' + ((receipt.status === true || receipt.status === 1) ? 'Success' : 'FAILURE!!!'));
     }
 
 
