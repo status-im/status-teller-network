@@ -5819,10 +5819,9 @@ cryptocompare@^1.0.0:
   resolved "https://registry.yarnpkg.com/cryptocompare/-/cryptocompare-1.0.0.tgz#d93bafd037686ec13bbf3cf6b40187310f991a3d"
   integrity sha512-Xk6+hJJ+XSlWsofIx2WHF2n410ADLkXMfCn/1aLTI4NlWLo2LPtQzw+j3aBEPQ+HVar1dO5HVLAJFBQqGyhdOQ==
 
-cryptocurrency-icons@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/cryptocurrency-icons/-/cryptocurrency-icons-0.16.1.tgz#33ec0b828c666f773b53866b4b803b2a06c28efc"
-  integrity sha512-C6y+r56g0ZJzZ9kCbeKa/WXb/oz1elilsaSGjv86T93P0oZWr4v5pxnbtZrEnvHn63qbTxo/Pz3NvzLbKrnQVQ==
+cryptocurrency-icons@embarklabs/cryptocurrency-icons#0.16.2:
+  version "0.16.2"
+  resolved "https://codeload.github.com/embarklabs/cryptocurrency-icons/tar.gz/6a266ee97c5f11d838a380af7e777965b88c8d8b"
 
 csextends@^1.0.3:
   version "1.2.0"
