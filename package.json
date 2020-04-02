@@ -52,7 +52,7 @@
     "clone-deep": "^4.0.1",
     "connected-react-router": "^6.8.0",
     "cryptocompare": "^1.0.0",
-    "cryptocurrency-icons": "^0.16.1",
+    "cryptocurrency-icons": "embarklabs/cryptocurrency-icons#0.16.2",
     "css-loader": "^3.4.2",
     "dompurify": "^2.0.8",
     "elliptic": "^6.5.2",
