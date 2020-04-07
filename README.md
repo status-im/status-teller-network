@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/status-im/status-teller-network.svg?branch=master)](https://travis-ci.org/status-im/status-teller-network) [![Join the chat at https://gitter.im/status-im/status-teller-network](https://badges.gitter.im/status-im/status-teller-network.svg)](https://gitter.im/status-im/status-teller-network?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-# status-teller-network
+![Teller.Exchange](https://raw.githubusercontent.com/status-im/status-teller-network/master/teller-logo.png?token=AABLEUFLVJ24SL7R6JIRXVS5T2MFI)
 
 Teller is a DApp which provides a platform for borderless, peer-to-peer, fiat-to-crypto echanges that allows Stakeholders to find nearby users to exchange their cash for digital assets and currency.
 
