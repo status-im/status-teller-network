@@ -81,76 +81,9 @@ To send funds to the gas relayer using Embark, the following instruction must be
 RelayHub.methods.depositFor(EscrowRelay.options.address).send({from: web3.eth.defaultAccount, value: web3.utils.toWei("0.1", "ether")});
 ```
 
-## Contact
-If you have any questions or queries the whole team is on Status on the `#teller` public chat group which can be opened here on Status mobile: https://get.status.im/chat/public/teller . We are also available on Gitter and Discord.
-
 ## Contribution
 Thank you for considering to help out with the source code! We welcome contributions from anyone on the internet, and are grateful for even the smallest of fixes!
 
-If you'd like to contribute to Teller, please send a pull request for the maintainers to review and merge into the main code base. Before you submit your Pull Request (PR) consider the following guidelines:
+If you'd like to contribute to Teller, please send a pull request for the maintainers to review and merge into the main code base. Before you submit your Pull Request (PR) consider the our [guidelines](https://github.com/status-im/status-teller-network/blob/master/CONTRIBUTING.md)
 
-1. Search [GitHub](https://github.com/status-im/status-teller-network/pulls) for an open or closed PR
-  that relates to your submission. You don't want to duplicate effort.
-1. Fork the status-im/status-teller-network repo.
-1. Make your changes in a new git branch:
-
-```shell
-git checkout -b my-fix-branch master
-```
-
-1. Create your patch, **including appropriate test cases**.
-1. Run the QA suite, by running `$ embark test` and ensure that all steps succeed.
-1. Commit your changes using a descriptive commit message.
-
-```shell
-git commit -a
-```
-Note: the optional commit `-a` command line option will automatically "add" and "rm" edited files.
-
-1. Push your branch to GitHub:
-
-```shell
-git push origin my-fix-branch
-```
-
-1. In GitHub, send a pull request to `master`.
-* If we suggest changes then:
-  * Make the required updates.
-  * Re-run the test suites to ensure tests are still passing.
-  * Rebase your branch and force push to your GitHub repository (this will update your Pull Request):
-
-    ```shell
-    git rebase master -i
-    git push -f
-    ```
-
-That's it! Thank you for your contribution!
-
-#### After your pull request is merged
-
-After your pull request is merged, you can safely delete your branch and pull the changes
-from the main (upstream) repository:
-
-* Delete the remote branch on GitHub either through the GitHub web UI or your local shell as follows:
-
-```shell
-git push origin --delete my-fix-branch
-```
-
-* Check out the master branch:
-
-```shell
-git checkout master -f
-```
-
-* Delete the local branch:
-
-```shell
-git branch -D my-fix-branch
-```
-
-* Update your master with the latest upstream version:
-
-```shell
-git pull --ff upstream master
-```
+If you have any questions or queries the whole team is on Status on the `#teller` public chat group which can be opened here on Status mobile: https://get.status.im/chat/public/teller . We are also available on Gitter and Discord.
