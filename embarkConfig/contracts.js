@@ -214,48 +214,48 @@ module.exports = {
         address: "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
       },
       SellerLicense: {
-        address: "0xD0fBD1a8D663B3D31312e0cb24910be82387266A"
+        address: ""
       },
       SellerLicenseProxy: {
         instanceOf: "Proxy",
-        address: "0x18C8e4570DE4D1FA07E2ad8BE4bc0Fe8B2C2dc4d"
+        address: ""
       },
       ArbitrationLicense: {
-        address: "0x7e571b13aeb1a6abcfc470b7d033a6838e53f440"
+        address: ""
       },
       ArbitrationLicenseProxy: {
         instanceOf: "Proxy",
-        address: "0x3e7fc31b9bd5fafde828acc1fd7b7b3dd7c1d927"
+        address: ""
       },
       UserStore: {
-        address: "0x0ab611f28165a5b694959c1454c0a9027eae536d"
+        address: ""
       },
       Medianizer: {
         address: "0x729D19f657BD0614b4985Cf1D82531c67569197B"
       },
       OfferStore: {
-        address: "0x5EaE5D9Fc2F38d18D9F3Bfa584700801850670D0"
+        address: ""
       },
       UserStoreProxy: {
         instanceOf: "Proxy",
-        address: "0x61fbacebcef64e726ff5b848da5dff0c44c199f5"
+        address: ""
       },
       OfferStoreProxy: {
         instanceOf: "Proxy",
-        address: "0xf0dfd170aedf576717b7de14dac257c832a364e2"
+        address: ""
       },
       EscrowRelay: {
-        address: "0xd53A5F60bAb07898a295579f0e17E8746B7B857F"
+        address: ""
       },
       Escrow: {
-        address: "0x727bF4BAed69265bBaFD39f0ab6e508F6fA118a7"
+        address: ""
       },
       EscrowProxy: {
         instanceOf: "Proxy",
-        address: "0xD5baC31a10b8938dd47326f01802fa23f1032AeE"
+        address: ""
       },
       KyberFeeBurner: {
-        address: "0x7702CaaE3D8feE750c4464d80FCb14Ce05e00743"
+        address: ""
       }
     }
   }
