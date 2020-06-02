@@ -78,7 +78,7 @@ const EscrowDetail = ({t, escrow, currentPrice, isBuyer, arbitrationDetails, onC
         </Col>
         <Col xs={3} className="pt-3">
           {isStatus && otherUserContactObj.method === 'Status' &&
-          <a href={"https://get.status.im/user/" + otherUserContactObj.userId}
+          <a href={"https://join.status.im/u/" + otherUserContactObj.userId}
              rel="noopener noreferrer" target="_blank" className="btn btn-primary btn-sm">
             {t('escrow.openChat.chat')}
           </a>}

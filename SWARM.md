@@ -18,7 +18,7 @@ contributors:
 
 ## Communication
 (required)
-`status channel (same as swarm id)`: [#000-foobar](https://get.status.im/chat/public/000-foobar)
+`status channel (same as swarm id)`: [#000-foobar](https://join.status.im/000-foobar)
 `sync frequency`: Weekly Sync
 
 TODO
