@@ -21,7 +21,7 @@ const ContactUser = ({t, isStatus, userInfo, isBuyer, onClick}) => {
   </Row>;
 
   if (isStatus && userContactObject.method === 'Status') {
-    return <a href={"https://get.status.im/user/" + userContactObject.userId}
+    return <a href={"https://join.status.im/u/" + userContactObject.userId}
               rel="noopener noreferrer" target="_blank">{button}</a>;
   }
 
