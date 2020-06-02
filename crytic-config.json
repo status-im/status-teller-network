@@ -1,0 +1,18 @@
+{
+    "cwd": ".", 
+    "custom_unit_test": {
+        "enabled": false
+    }, 
+    "embark": {
+        "enable": true
+    }, 
+    "truffle": {
+        "enabled": false
+    }, 
+    "slither": {
+        "target": "."
+    }, 
+    "echidna": {
+        "contract": ""
+    }
+}
