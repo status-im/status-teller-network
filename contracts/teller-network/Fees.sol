@@ -68,9 +68,9 @@ contract Fees is Ownable, ReentrancyGuard, SafeTransfer {
 
         if (_tokenAddress != address(0)) {
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(_safeTransfer(tokenToPay, _arbitrator, arbitratorValue), "Unsuccessful token transfer - arbitrator");
+            _safeTransfer(tokenToPay, _arbitrator, arbitratorValue);
             if (destinationValue > 0) {
-                require(_safeTransfer(tokenToPay, feeDestination, destinationValue), "Unsuccessful token transfer - destination");
+                _safeTransfer(tokenToPay, feeDestination, destinationValue);
             }
         } else {
             // EIP1884 fix
@@ -117,7 +117,7 @@ contract Fees is Ownable, ReentrancyGuard, SafeTransfer {
             require(msg.value == 0, "Cannot send ETH with token address different from 0");
 
             ERC20Token tokenToPay = ERC20Token(_tokenAddress);
-            require(_safeTransferFrom(tokenToPay, _from, address(this), feeAmount + _value), "Unsuccessful token transfer");
+            _safeTransferFrom(tokenToPay, _from, address(this), feeAmount + _value);
         } else {
             require(msg.value == (_value + feeAmount), "ETH amount is required");
         }

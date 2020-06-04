@@ -93,7 +93,7 @@ contract Stakable is Ownable, SafeTransfer {
             (bool success, ) = s.owner.call.value(amount)("");
             require(success, "Transfer failed.");
         } else {
-            require(_safeTransfer(ERC20Token(s.token), s.owner, amount), "Couldn't transfer funds");
+            _safeTransfer(ERC20Token(s.token), s.owner, amount);
         }
 
         emit Unstaked(_itemId, s.owner, amount);
@@ -117,7 +117,7 @@ contract Stakable is Ownable, SafeTransfer {
             (bool success, ) = burnAddress.call.value(amount)("");
             require(success, "Transfer failed.");
         } else {
-            require(_safeTransfer(ERC20Token(s.token), burnAddress, amount), "Couldn't transfer funds");
+            _safeTransfer(ERC20Token(s.token), burnAddress, amount);
         }
 
         emit Slashed(
@@ -149,7 +149,7 @@ contract Stakable is Ownable, SafeTransfer {
                 (bool success, ) = s.owner.call.value(amount)("");
                 require(success, "Transfer failed.");
             } else {
-                require(_safeTransfer(ERC20Token(s.token), s.owner, amount), "Couldn't transfer funds");
+                _safeTransfer(ERC20Token(s.token), s.owner, amount);
             }
         }
     }

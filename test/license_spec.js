@@ -62,7 +62,7 @@ contract("License", function () {
       await SNT.methods.approve(License.options.address, 5).send();
       await License.methods.buy().send({from: accounts[0]});
     } catch(error) {
-      assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert Unsuccessful token transfer");
+      assert.strictEqual(error.message, "Returned error: VM Exception while processing transaction: revert SafeTransfer: ERC20 operation did not succeed");
     }
   });
 
