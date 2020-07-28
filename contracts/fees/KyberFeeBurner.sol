@@ -137,7 +137,7 @@ contract KyberFeeBurner is Ownable, SafeTransfer {
             require(_amount <= t.balanceOf(address(this)), "Invalid amount");
 
             if (_token == SNT) {
-                require(_safeTransfer(t, burnAddress, _amount), "SNT transfer failure");
+                _safeTransfer(t, burnAddress, _amount);
                 emit Swap(msg.sender, SNT, SNT, _amount, _amount);
                 return;
             } else {
@@ -175,7 +175,7 @@ contract KyberFeeBurner is Ownable, SafeTransfer {
         } else {
             ERC20Token t = ERC20Token(_token);
             uint tokenBalance = t.balanceOf(address(this));
-            require(_safeTransfer(t, owner(), tokenBalance), "Token transfer error");
+            _safeTransfer(t, owner(), tokenBalance);
             emit EscapeTriggered(msg.sender, _token, tokenBalance);
         }
     }

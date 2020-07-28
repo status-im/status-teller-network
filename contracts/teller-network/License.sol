@@ -112,7 +112,7 @@ contract License is Ownable, ApproveAndCallFallBack, SafeTransfer, Proxiable {
 
         emit Bought(_licenseOwner, price);
 
-        require(_safeTransferFrom(token, _licenseOwner, burnAddress, price), "Unsuccessful token transfer");
+        _safeTransferFrom(token, _licenseOwner, burnAddress, price);
 
         return idx;
     }
