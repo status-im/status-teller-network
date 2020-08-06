@@ -14,7 +14,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -56,14 +58,14 @@
     "css-loader": "^3.4.2",
     "dompurify": "^2.0.8",
     "elliptic": "^6.5.2",
-    "embark": "5.3.0-nightly.10",
-    "embark-geth": "5.3.0-nightly.10",
+    "embark": "8.0.0",
+    "embark-geth": "5.3.0",
     "embark-solc": "5.3.0-nightly.6",
     "embark-solium": "0.1.0",
     "embarkjs": "5.3.0-nightly.6",
-    "embarkjs-ens": "5.3.0-nightly.6",
+    "embarkjs-ens": "5.3.0",
     "embarkjs-ipfs": "5.3.0-nightly.4",
-    "embarkjs-web3": "5.3.0-nightly.4",
+    "embarkjs-web3": "5.3.0",
     "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.2.0",
     "flag-icon-css": "^3.4.6",
@@ -102,7 +104,8 @@
     "sass-loader": "^8.0.2",
     "strip-hex-prefix": "^1.0.0",
     "tabookey-gasless": "^0.4.5",
-    "web3": "1.2.6"
+    "web3": "1.2.8",
+    "snyk": "^1.335.0"
   },
   "jest": {
     "moduleNameMapper": {
@@ -124,5 +127,6 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "snyk": true
 }
