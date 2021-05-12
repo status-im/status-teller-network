@@ -72,7 +72,7 @@
     "i18next-browser-languagedetector": "^4.0.2",
     "identicon.js": "^2.3.3",
     "lodash": "^4.17.15",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "number-to-bn": "^1.7.0",
