@@ -74,7 +74,7 @@
     "lodash": "^4.17.15",
     "merge": "^1.2.1",
     "moment": "^2.24.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "number-to-bn": "^1.7.0",
     "qrcode.react": "^1.0.0",
     "rc-slider": "^9.2.4",
